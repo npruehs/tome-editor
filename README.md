@@ -24,3 +24,7 @@ If you've got no idea how to help, head over to our [issue tracker](https://gith
 
 If you know exactly what you're missing, [open a new issue](https://github.com/npruehs/game-data-editor/issues/new) to begin a short discussion about your idea and how it fits the project. If we all agree, you're good to go!
 
+## Step 2: Check out the code
+
+Tome is developed using the [GitFlow branching model](http://nvie.com/posts/a-successful-git-branching-model/). In order to contribute, you should check out the latest develop branch, and create a new feature or hotfix branch to be merged back.
+
