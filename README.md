@@ -2,6 +2,22 @@
 
 Tome is a generic .NET data editor for games supporting arbitrary input and output formats.
 
+Developing games is all about data. With game systems for modifying data and user interfaces for presenting it, finding a sophisticated data model is key to creating successful games. Even more, being able to change this data and iterate on a day-to-day basis is mandatory in today's production cycles.
+
+Tome solves two problems that arise with every new game you build: First, you can import the definition of your game's data so game designers can create new data records and modify existing ones very conveniently. Second, you can export the results to any format your game engine understands.
+
+The tool is pretty self-explanatory. However, to give you a headstart, feel free to take a look at the [Tome wiki pages](https://github.com/npruehs/game-data-editor/wiki).
+
+## Features
+
+* Import of arbitrary data field definitions including constraints
+* Arbitrary output data formats through templates
+* Hierarchical record structure
+* Splitting data up into multiple files for improved collaboration
+* Data import from various sources such as Microsoft Excel
+* Export and import of localization tables as CSV and TMX
+* Command-line support for easy integration into CI and other tool chains
+
 ## Development Cycle
 
 We know that using a tool like Tome in production requires you to be completely sure about stability and compatibility. Thus, new releases of Tome are created using [Semantic Versioning](http://semver.org/). In short:
