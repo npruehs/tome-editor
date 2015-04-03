@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="App.xaml.cs" company="Tome">
+//   Copyright (c) Tome. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Tome
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
+    using System.Windows;
+
     public partial class App : Application
     {
     }
