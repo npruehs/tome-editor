@@ -2,6 +2,15 @@
 
 Tome is a generic .NET data editor for games supporting arbitrary input and output formats.
 
+## Development Cycle
+
+We know that using a tool like Tome in production requires you to be completely sure about stability and compatibility. Thus, new releases of Tome are created using [Semantic Versioning](http://semver.org/). In short:
+
+* Version numbers are specified as MAJOR.MINOR.PATCH.
+* MAJOR version increases indicate incompatible changes with respect to Tome [data types](https://github.com/npruehs/game-data-editor/wiki/Data-Types) and/or [files](https://github.com/npruehs/game-data-editor/wiki/Project-Structure).
+* MINOR version increases indicate new functionality that are backwards-compatible.
+* PATCH version increases indicate backwards-compatible bug fixes.
+
 ## Bugs & Feature Requests
 
 We are sorry that you've experienced issues or are missing a feature! After verifying that you are using the [latest version](https://github.com/npruehs/game-data-editor/releases) of Tome and having checked whether a [similar issue](https://github.com/npruehs/game-data-editor/issues) has already been reported, feel free to [open a new issue](https://github.com/npruehs/game-data-editor/issues/new). In order to help us resolving your problem as fast as possible, please include the following details in your report:
