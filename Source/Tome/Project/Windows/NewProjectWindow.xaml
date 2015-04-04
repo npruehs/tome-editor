@@ -4,21 +4,40 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tome.Project.Windows"
-        xmlns:project = "clr-namespace:Tome.Model.Project;assembly=Tome.Model"
+        xmlns:viewModels = "clr-namespace:Tome.Project.ViewModels"
         mc:Ignorable="d"
-        Title="New Tome Project" Height="110" Width="300" Loaded="OnLoaded"
-        d:DataContext = "{d:DesignInstance project:TomeProject}">
+        Title="New Tome Project" Height="110" Width="640" Loaded="OnLoaded"
+        d:DataContext = "{d:DesignInstance viewModels:NewProjectViewModel}">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="150"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition />
         </Grid.RowDefinitions>
         
-        <Label Grid.Row="0">
-            Enter the name of the project to create:
+        <Label Grid.Row="0" Grid.Column="0">
+            Name:
         </Label>
-        <TextBox Grid.Row="1" Name="ProjectTitleTextBox" Text="{Binding Name}"/>
-        <Button Grid.Row="2" Click="OnClickCreateProject">Create Project</Button>
+        <TextBox Grid.Row="0" Grid.Column="1" Name="NameTextBox" Text="{Binding Name}"/>
+        
+        <Label Grid.Row="1" Grid.Column="0">
+            Location:
+        </Label>
+        <TextBox Grid.Row="1" Grid.Column="1" Name="LocationTextBox" Text="{Binding Path}"/>
+        <Button Grid.Row="1"  Grid.Column="2"  Click="OnClickBrowseLocation">Browse</Button>
+        
+        <Grid Grid.Row="2" Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Click="OnClickCreateProject">OK</Button>
+            <Button Grid.Column="1" Click="OnClickCancel">Cancel</Button>
+        </Grid>
     </Grid>
 </Window>

@@ -1,20 +1,24 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Record.cs" company="Tome">
+// <copyright file="TomeProjectFile.cs" company="Tome">
 //   Copyright (c) Tome. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Tome.Model.Records
+namespace Tome.Model.Project
 {
-    using System.Collections.Generic;
-
-    public class Record
+    public class TomeProjectFile
     {
+        #region Constants
+
+        public const string FileExtension = ".tproj";
+
+        #endregion
+
         #region Properties
 
-        public Dictionary<string, object> FieldValues { get; set; }
+        public string Path { get; set; }
 
-        public string Id { get; set; }
+        public TomeProject Project { get; set; }
 
         #endregion
     }
