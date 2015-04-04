@@ -4,10 +4,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Tome
+namespace Tome.Core.Windows
 {
     using System.Windows;
     using System.Windows.Input;
+
+    using Tome.Help.Windows;
 
     public partial class MainWindow : Window
     {
@@ -21,6 +23,15 @@ namespace Tome
         #endregion
 
         #region Methods
+
+        private void CanExecuteNew(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = false;
+        }
+
+        private void ExecutedNew(object target, ExecutedRoutedEventArgs e)
+        {
+        }
 
         private void CanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
         {

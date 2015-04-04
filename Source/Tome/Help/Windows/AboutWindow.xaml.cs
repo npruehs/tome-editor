@@ -4,7 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Tome
+namespace Tome.Help.Windows
 {
     using System.Diagnostics;
     using System.Windows;
