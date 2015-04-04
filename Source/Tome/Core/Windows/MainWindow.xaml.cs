@@ -56,6 +56,11 @@ namespace Tome.Core.Windows
             e.CanExecute = true;
         }
 
+        private void CanExecuteSave(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.currentProject != null;
+        }
+
         private void ExecutedClose(object target, ExecutedRoutedEventArgs e)
         {
             this.Close();
@@ -69,6 +74,13 @@ namespace Tome.Core.Windows
         private void ExecutedNew(object target, ExecutedRoutedEventArgs e)
         {
             this.newProjectWindow = this.ShowWindow(this.newProjectWindow, this.OnNewProjectWindowClosed);
+        }
+
+        private void ExecutedSave(object target, ExecutedRoutedEventArgs e)
+        {
+            // Write project files.
+            var serializer = new TomeProjectFileSerializer();
+            serializer.Serialize(this.currentProject);
         }
 
         private void OnNewProjectWindowClosed(object sender, EventArgs e)

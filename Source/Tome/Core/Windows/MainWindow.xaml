@@ -16,6 +16,7 @@
         <Menu Grid.Row="0">
             <MenuItem Header="File">
                 <MenuItem Header="New Project..." Command="ApplicationCommands.New" />
+                <MenuItem Header="Save Project" Command="ApplicationCommands.Save" />
                 <MenuItem Header="Close" Command="ApplicationCommands.Close" />
             </MenuItem>
             <MenuItem Header="Help">
@@ -32,6 +33,9 @@
                 <CommandBinding Command="ApplicationCommands.New"
                   Executed="ExecutedNew"
                   CanExecute="CanExecuteNew"/>
+                <CommandBinding Command="ApplicationCommands.Save"
+                  Executed="ExecutedSave"
+                  CanExecute="CanExecuteSave"/>
         <CommandBinding Command="ApplicationCommands.Close"
                   Executed="ExecutedClose"
                   CanExecute="CanExecuteClose"/>
