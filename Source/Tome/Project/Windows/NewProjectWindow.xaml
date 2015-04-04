@@ -1,0 +1,24 @@
+﻿<Window x:Class="Tome.Project.Windows.NewProjectWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tome.Project.Windows"
+        xmlns:project = "clr-namespace:Tome.Model.Project;assembly=Tome.Model"
+        mc:Ignorable="d"
+        Title="New Tome Project" Height="110" Width="300" Loaded="OnLoaded"
+        d:DataContext = "{d:DesignInstance project:TomeProject}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        
+        <Label Grid.Row="0">
+            Enter the name of the project to create:
+        </Label>
+        <TextBox Grid.Row="1" Name="ProjectTitleTextBox" Text="{Binding Name}"/>
+        <Button Grid.Row="2" Click="OnClickCreateProject">Create Project</Button>
+    </Grid>
+</Window>

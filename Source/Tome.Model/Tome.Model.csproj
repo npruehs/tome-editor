@@ -41,7 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fields\FieldDefinition.cs" />
+    <Compile Include="Fields\FieldDefinitionFile.cs" />
+    <Compile Include="Fields\FieldType.cs" />
+    <Compile Include="Project\TomeProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Records\Record.cs" />
+    <Compile Include="Records\RecordFile.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,4 +1,4 @@
-﻿<Window x:Class = "Tome.MainWindow"
+﻿<Window x:Class = "Tome.Core.Windows.MainWindow"
         xmlns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x = "http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d = "http://schemas.microsoft.com/expression/blend/2008"
@@ -15,6 +15,7 @@
         
         <Menu Grid.Row="0">
             <MenuItem Header="File">
+                <MenuItem Header="New Project..." Command="ApplicationCommands.New" />
                 <MenuItem Header="Close" Command="ApplicationCommands.Close" />
             </MenuItem>
             <MenuItem Header="Help">
@@ -28,6 +29,9 @@
     </Grid>
     
     <Window.CommandBindings>
+                <CommandBinding Command="ApplicationCommands.New"
+                  Executed="ExecutedNew"
+                  CanExecute="CanExecuteNew"/>
         <CommandBinding Command="ApplicationCommands.Close"
                   Executed="ExecutedClose"
                   CanExecute="CanExecuteClose"/>

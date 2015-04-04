@@ -1,14 +1,19 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="App.xaml.cs" company="Tome">
+// <copyright file="Record.cs" company="Tome">
 //   Copyright (c) Tome. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Tome
+namespace Tome.Model.Records
 {
-    using System.Windows;
+    using System.Collections.Generic;
 
-    public partial class App : Application
+    public class Record
     {
+        #region Properties
+
+        public Dictionary<string, object> FieldValues { get; set; }
+
+        #endregion
     }
 }
