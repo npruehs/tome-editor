@@ -6,6 +6,7 @@
 
 namespace Tome.Model.Project
 {
+    using System;
     using System.Collections.Generic;
 
     using Tome.Model.Fields;
@@ -22,6 +23,25 @@ namespace Tome.Model.Project
         public string Name { get; set; }
 
         public List<RecordFile> RecordFiles { get; set; }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public void InitProject()
+        {
+            if (string.IsNullOrEmpty(this.Name))
+            {
+                throw new InvalidOperationException("Project name must not be empty.");
+            }
+
+            this.Description = string.Empty;
+            this.FieldDefinitionFiles = new List<FieldDefinitionFile>
+            {
+                new FieldDefinitionFile { Path = this.Name + FieldDefinitionFile.FileExtension }
+            };
+            this.RecordFiles = new List<RecordFile> { new RecordFile { Path = this.Name + RecordFile.FileExtension } };
+        }
 
         #endregion
     }

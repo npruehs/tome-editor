@@ -10,6 +10,12 @@ namespace Tome.Model.Records
 
     public class RecordFile
     {
+        #region Constants
+
+        public const string FileExtension = ".tdata";
+
+        #endregion
+
         #region Properties
 
         public string Path { get; set; }

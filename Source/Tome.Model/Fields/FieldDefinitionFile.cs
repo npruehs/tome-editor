@@ -10,6 +10,12 @@ namespace Tome.Model.Fields
 
     public class FieldDefinitionFile
     {
+        #region Constants
+
+        public const string FileExtension = ".tproj";
+
+        #endregion
+
         #region Properties
 
         public List<FieldDefinition> FieldDefinitions { get; set; }
