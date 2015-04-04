@@ -12,7 +12,7 @@ namespace Tome.Model.Fields
     {
         #region Constants
 
-        public const string FileExtension = ".tproj";
+        public const string FileExtension = ".tfields";
 
         #endregion
 

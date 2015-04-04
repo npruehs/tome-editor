@@ -31,9 +31,16 @@ namespace Tome.Model.Project
             this.Description = string.Empty;
             this.FieldDefinitionFiles = new List<FieldDefinitionFile>
             {
-                new FieldDefinitionFile { Path = this.Name + FieldDefinitionFile.FileExtension }
+                new FieldDefinitionFile
+                {
+                    Path = this.Name + FieldDefinitionFile.FileExtension,
+                    FieldDefinitions = new List<FieldDefinition>()
+                }
             };
-            this.RecordFiles = new List<RecordFile> { new RecordFile { Path = this.Name + RecordFile.FileExtension } };
+            this.RecordFiles = new List<RecordFile>
+            {
+                new RecordFile { Path = this.Name + RecordFile.FileExtension, Records = new List<Record>() }
+            };
         }
 
         #endregion

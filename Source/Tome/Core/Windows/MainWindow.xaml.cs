@@ -7,11 +7,15 @@
 namespace Tome.Core.Windows
 {
     using System;
+    using System.Collections.Generic;
+    using System.IO;
     using System.Windows;
     using System.Windows.Input;
 
     using Tome.Help.Windows;
+    using Tome.Model.Fields;
     using Tome.Model.Project;
+    using Tome.Model.Records;
     using Tome.Project.Windows;
 
     public partial class MainWindow : Window
@@ -20,7 +24,7 @@ namespace Tome.Core.Windows
 
         private AboutWindow aboutWindow;
 
-        private TomeProject currentProject;
+        private TomeProjectFile currentProject;
 
         private NewProjectWindow newProjectWindow;
 
@@ -78,8 +82,40 @@ namespace Tome.Core.Windows
 
             try
             {
+                // Create new project.
                 var newProject = new TomeProject(this.newProjectWindow.NewProjectViewModel.Name);
-                this.currentProject = newProject; 
+                var newProjectFile = new TomeProjectFile
+                {
+                    Path =
+                        Path.Combine(
+                            this.newProjectWindow.NewProjectViewModel.Path,
+                            newProject.Name + TomeProjectFile.FileExtension),
+                    Project = newProject
+                };
+
+                // TODO(np): Remove - Add dummy data.
+                newProject.FieldDefinitionFiles[0].FieldDefinitions.Add(
+                    new FieldDefinition
+                    {
+                        DefaultValue = 33.0f,
+                        Description = "Increase of speed per second",
+                        DisplayName = "Acceleration",
+                        FieldType = FieldType.None,
+                        Id = "acceleration"
+                    });
+                newProject.RecordFiles[0].Records.Add(
+                    new Record
+                    {
+                        Id = "Fighter",
+                        FieldValues = new Dictionary<string, object> { { "acceleration", "46.0f" } }
+                    });
+
+                // Write project files.
+                var serializer = new TomeProjectFileSerializer();
+                serializer.Serialize(newProjectFile);
+
+                // Set current project.
+                this.currentProject = newProjectFile;
             }
             catch (ArgumentNullException exception)
             {
