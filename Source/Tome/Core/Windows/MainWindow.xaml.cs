@@ -92,6 +92,9 @@ namespace Tome.Core.Windows
                 return;
             }
 
+            // Focus main window again.
+            this.Focus();
+
             try
             {
                 // Create new project.
