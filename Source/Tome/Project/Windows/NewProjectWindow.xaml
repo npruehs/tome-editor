@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Tome.Project.Windows"
         xmlns:project = "clr-namespace:Tome.Model.Project;assembly=Tome.Model"
         mc:Ignorable="d"
-        Title="New Tome Project" Height="110" Width="300" ShowInTaskbar="False" Loaded="OnLoaded"
+        Title="New Tome Project" Height="110" Width="300" Loaded="OnLoaded"
         d:DataContext = "{d:DesignInstance project:TomeProject}">
     <Grid>
         <Grid.RowDefinitions>

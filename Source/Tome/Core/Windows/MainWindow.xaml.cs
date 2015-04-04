@@ -18,6 +18,8 @@ namespace Tome.Core.Windows
     {
         #region Fields
 
+        private AboutWindow aboutWindow;
+
         private TomeProject currentProject;
 
         private NewProjectWindow newProjectWindow;
@@ -57,19 +59,18 @@ namespace Tome.Core.Windows
 
         private void ExecutedHelp(object target, ExecutedRoutedEventArgs e)
         {
-            // Create and show about window.
-            new AboutWindow { Owner = this }.Show();
+            this.aboutWindow = this.ShowWindow(this.aboutWindow);
         }
 
         private void ExecutedNew(object target, ExecutedRoutedEventArgs e)
         {
-            this.newProjectWindow = new NewProjectWindow { Owner = this };
-            this.newProjectWindow.Closed += this.OnNewProjectWindowClosed;
-            this.newProjectWindow.Show();
+            this.newProjectWindow = this.ShowWindow(this.newProjectWindow, this.OnNewProjectWindowClosed);
         }
 
         private void OnNewProjectWindowClosed(object sender, EventArgs e)
         {
+            this.newProjectWindow.Closed -= this.OnNewProjectWindowClosed;
+
             try
             {
                 var newProject = this.newProjectWindow.TomeProject;
@@ -85,6 +86,28 @@ namespace Tome.Core.Windows
         private void ShowErrorMessage(string title, string error)
         {
             MessageBox.Show(error, title, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
+        }
+
+        private T ShowWindow<T>(T currentWindow) where T : Window, new()
+        {
+            return this.ShowWindow(currentWindow, null);
+        }
+
+        private T ShowWindow<T>(T currentWindow, EventHandler onClosed) where T : Window, new()
+        {
+            if (currentWindow == null || !currentWindow.IsLoaded)
+            {
+                currentWindow = new T { Owner = this, ShowInTaskbar = false };
+
+                if (onClosed != null)
+                {
+                    currentWindow.Closed += onClosed;
+                }
+            }
+
+            currentWindow.Show();
+            currentWindow.Focus();
+            return currentWindow;
         }
 
         #endregion

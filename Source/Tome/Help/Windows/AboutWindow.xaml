@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tome"
         mc:Ignorable="d"
-        Title="About Tome" Height="300" Width="300" ShowInTaskbar="False">
+        Title="About Tome" Height="300" Width="300">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
