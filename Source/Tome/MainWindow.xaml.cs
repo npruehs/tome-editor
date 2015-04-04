@@ -7,6 +7,7 @@
 namespace Tome
 {
     using System.Windows;
+    using System.Windows.Input;
 
     public partial class MainWindow : Window
     {
@@ -15,6 +16,20 @@ namespace Tome
         public MainWindow()
         {
             this.InitializeComponent();
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void CanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void ExecutedClose(object target, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
         }
 
         #endregion
