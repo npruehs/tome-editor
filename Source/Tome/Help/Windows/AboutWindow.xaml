@@ -6,20 +6,20 @@
         xmlns:local="clr-namespace:Tome"
         mc:Ignorable="d"
         Title="About Tome" Height="300" Width="300">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        
-        <TextBlock Grid.Row="0">
-            Tome Game Editor<LineBreak />
-            Version 0.1.0<LineBreak />
-            Copyright 2015 <Hyperlink NavigateUri="https://github.com/npruehs/game-data-editor" RequestNavigate="HyperlinkRequestNavigate">Tome</Hyperlink>.<LineBreak />
-            All rights reserved.<LineBreak />
-        </TextBlock>
-        <TextBlock Grid.Row="1">
-            Tome is released under the <Hyperlink NavigateUri="https://github.com/npruehs/game-data-editor/blob/master/LICENSE" RequestNavigate="HyperlinkRequestNavigate">MIT License</Hyperlink>.
-        </TextBlock>
-    </Grid>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<TextBlock Grid.Row="0">
+			Tome Game Editor<LineBreak />
+			Version 0.1.0<LineBreak />
+			Copyright 2015 <Hyperlink NavigateUri="https://github.com/npruehs/game-data-editor" RequestNavigate="HyperlinkRequestNavigate">Tome</Hyperlink>.<LineBreak />
+			All rights reserved.<LineBreak />
+		</TextBlock>
+		<TextBlock Grid.Row="1">
+			Tome is released under the <Hyperlink NavigateUri="https://github.com/npruehs/game-data-editor/blob/master/LICENSE" RequestNavigate="HyperlinkRequestNavigate">MIT License</Hyperlink>.
+		</TextBlock>
+	</Grid>
 </Window>
