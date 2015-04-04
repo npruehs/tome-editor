@@ -32,6 +32,18 @@ namespace Tome
             this.Close();
         }
 
+        private void CanExecuteHelp(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void ExecutedHelp(object target, ExecutedRoutedEventArgs e)
+        {
+            // Create and show about window.
+            var window = new AboutWindow { Owner = this };
+            window.Show();
+        }
+
         #endregion
     }
 }

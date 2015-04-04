@@ -1,0 +1,25 @@
+﻿<Window x:Class="Tome.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tome"
+        mc:Ignorable="d"
+        Title="About Tome" Height="300" Width="300" ShowInTaskbar="False">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Grid.Row="0">
+            Tome Game Editor<LineBreak />
+            Version 0.1.0<LineBreak />
+            Copyright 2015 <Hyperlink NavigateUri="https://github.com/npruehs/game-data-editor" RequestNavigate="HyperlinkRequestNavigate">Tome</Hyperlink>.<LineBreak />
+            All rights reserved.<LineBreak />
+        </TextBlock>
+        <TextBlock Grid.Row="1">
+            Tome is released under the <Hyperlink NavigateUri="https://github.com/npruehs/game-data-editor/blob/master/LICENSE" RequestNavigate="HyperlinkRequestNavigate">MIT License</Hyperlink>.
+        </TextBlock>
+    </Grid>
+</Window>

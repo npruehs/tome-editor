@@ -17,6 +17,9 @@
             <MenuItem Header="File">
                 <MenuItem Header="Close" Command="ApplicationCommands.Close" />
             </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About" Command="ApplicationCommands.Help" />
+            </MenuItem>
         </Menu>
         <Grid Grid.Row="1" />
 	    <StatusBar Grid.Row="2">
@@ -28,6 +31,9 @@
         <CommandBinding Command="ApplicationCommands.Close"
                   Executed="ExecutedClose"
                   CanExecute="CanExecuteClose"/>
+        <CommandBinding Command="ApplicationCommands.Help"
+                  Executed="ExecutedHelp"
+                  CanExecute="CanExecuteHelp"/>
     </Window.CommandBindings>
 
 </Window>
