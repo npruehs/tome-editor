@@ -71,13 +71,17 @@ namespace Tome.Core.Windows
         {
             this.newProjectWindow.Closed -= this.OnNewProjectWindowClosed;
 
+            if (!this.newProjectWindow.Result)
+            {
+                return;
+            }
+
             try
             {
-                var newProject = this.newProjectWindow.TomeProject;
-                newProject.InitProject();
-                this.currentProject = newProject;
+                var newProject = new TomeProject(this.newProjectWindow.NewProjectViewModel.Name);
+                this.currentProject = newProject; 
             }
-            catch (InvalidOperationException exception)
+            catch (ArgumentNullException exception)
             {
                 this.ShowErrorMessage("Error creating project", exception.Message);
             }
