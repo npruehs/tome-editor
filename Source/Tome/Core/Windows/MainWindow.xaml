@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tome"
+        xmlns:commands="clr-namespace:Tome.Core.Commands"
         mc:Ignorable="d"
-        Title="Tome - Game Data Editor" Height="350" Width="525">
+        Title="Tome - Game Data Editor" Height="350" Width="525" WindowState="Maximized">
 	<Grid Margin="0,0,0,0">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -16,10 +17,15 @@
 		<Menu Grid.Row="0">
 			<MenuItem Header="File">
 				<MenuItem Header="New Project..." Command="ApplicationCommands.New" />
+                <Separator />
 				<MenuItem Header="Open Project..." Command="ApplicationCommands.Open" />
 				<MenuItem Header="Save Project" Command="ApplicationCommands.Save" />
+                <Separator />
 				<MenuItem Header="Exit" Command="ApplicationCommands.Close" />
 			</MenuItem>
+            <MenuItem Header="Fields">
+                <MenuItem Header="Field Definitions..." Command="commands:MainWindowCommands.FieldDefinitions" />
+            </MenuItem>
 			<MenuItem Header="Help">
 				<MenuItem Header="About" Command="ApplicationCommands.Help" />
 			</MenuItem>
@@ -43,6 +49,9 @@
 		<CommandBinding Command="ApplicationCommands.Close"
 		                Executed="ExecutedClose"
 		                CanExecute="CanExecuteClose" />
+        <CommandBinding Command="commands:MainWindowCommands.FieldDefinitions"
+		        Executed="ExecutedFieldDefinitions"
+		        CanExecute="CanExecuteFieldDefinitions" />
 		<CommandBinding Command="ApplicationCommands.Help"
 		                Executed="ExecutedHelp"
 		                CanExecute="CanExecuteHelp" />

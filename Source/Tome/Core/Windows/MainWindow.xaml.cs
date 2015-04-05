@@ -14,6 +14,7 @@ namespace Tome.Core.Windows
 
     using Microsoft.Win32;
 
+    using Tome.Fields.Windows;
     using Tome.Help.Windows;
     using Tome.Model.Fields;
     using Tome.Model.Project;
@@ -27,6 +28,8 @@ namespace Tome.Core.Windows
         private AboutWindow aboutWindow;
 
         private TomeProjectFile currentProject;
+
+        private FieldDefinitionsWindow fieldDefinitionsWindow;
 
         private NewProjectWindow newProjectWindow;
 
@@ -43,6 +46,14 @@ namespace Tome.Core.Windows
 
         #region Properties
 
+        private bool ProjectLoaded
+        {
+            get
+            {
+                return this.currentProject != null;
+            }
+        }
+
         private string TomeProjectFileFilter
         {
             get
@@ -58,6 +69,11 @@ namespace Tome.Core.Windows
         private void CanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
+        }
+
+        private void CanExecuteFieldDefinitions(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ProjectLoaded;
         }
 
         private void CanExecuteHelp(object sender, CanExecuteRoutedEventArgs e)
@@ -77,12 +93,18 @@ namespace Tome.Core.Windows
 
         private void CanExecuteSave(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.currentProject != null;
+            e.CanExecute = this.ProjectLoaded;
         }
 
         private void ExecutedClose(object target, ExecutedRoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void ExecutedFieldDefinitions(object target, ExecutedRoutedEventArgs e)
+        {
+            this.fieldDefinitionsWindow = this.ShowWindow(this.fieldDefinitionsWindow);
+            this.fieldDefinitionsWindow.SetFieldDefinitions(this.currentProject.Project);
         }
 
         private void ExecutedHelp(object target, ExecutedRoutedEventArgs e)
