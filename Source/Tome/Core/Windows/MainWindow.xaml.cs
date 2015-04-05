@@ -12,6 +12,8 @@ namespace Tome.Core.Windows
     using System.Windows;
     using System.Windows.Input;
 
+    using Microsoft.Win32;
+
     using Tome.Help.Windows;
     using Tome.Model.Fields;
     using Tome.Model.Project;
@@ -39,6 +41,18 @@ namespace Tome.Core.Windows
 
         #endregion
 
+        #region Properties
+
+        private string TomeProjectFileFilter
+        {
+            get
+            {
+                return string.Format("Tome Project Files (*{0})|*{0}", TomeProjectFile.FileExtension);
+            }
+        }
+
+        #endregion
+
         #region Methods
 
         private void CanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
@@ -52,6 +66,11 @@ namespace Tome.Core.Windows
         }
 
         private void CanExecuteNew(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void CanExecuteOpen(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
         }
@@ -74,6 +93,29 @@ namespace Tome.Core.Windows
         private void ExecutedNew(object target, ExecutedRoutedEventArgs e)
         {
             this.newProjectWindow = this.ShowWindow(this.newProjectWindow, this.OnNewProjectWindowClosed);
+        }
+
+        private void ExecutedOpen(object target, ExecutedRoutedEventArgs e)
+        {
+            // Show file dialog.
+            var openFileDialog = new OpenFileDialog
+            {
+                CheckFileExists = true,
+                CheckPathExists = true,
+                Filter = this.TomeProjectFileFilter
+            };
+
+            var result = openFileDialog.ShowDialog(this);
+
+            if (result != true)
+            {
+                return;
+            }
+
+            // Read project files.
+            var serializer = new TomeProjectFileSerializer();
+            var loadedProjectFile = serializer.Deserialize(openFileDialog.FileName);
+            this.currentProject = loadedProjectFile;
         }
 
         private void ExecutedSave(object target, ExecutedRoutedEventArgs e)
