@@ -56,6 +56,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Fields\ViewModels\FieldDefinitionViewModel.cs" />
+    <Compile Include="Util\StringUtils.cs" />
+    <Compile Include="Util\WindowUtils.cs" />
+    <Page Include="Fields\Windows\EditFieldDefinitionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Fields\Windows\FieldDefinitionsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Help\Windows\AboutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -64,6 +75,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Core\Commands\MainWindowCommands.cs" />
+    <Compile Include="Fields\ViewModels\FieldDefinitionsViewModel.cs" />
+    <Compile Include="Fields\Windows\EditFieldDefinitionWindow.xaml.cs">
+      <DependentUpon>EditFieldDefinitionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Fields\Windows\FieldDefinitionsWindow.xaml.cs">
+      <DependentUpon>FieldDefinitionsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Help\Windows\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>

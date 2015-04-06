@@ -14,11 +14,13 @@ namespace Tome.Core.Windows
 
     using Microsoft.Win32;
 
+    using Tome.Fields.Windows;
     using Tome.Help.Windows;
     using Tome.Model.Fields;
     using Tome.Model.Project;
     using Tome.Model.Records;
     using Tome.Project.Windows;
+    using Tome.Util;
 
     public partial class MainWindow : Window
     {
@@ -27,6 +29,8 @@ namespace Tome.Core.Windows
         private AboutWindow aboutWindow;
 
         private TomeProjectFile currentProject;
+
+        private FieldDefinitionsWindow fieldDefinitionsWindow;
 
         private NewProjectWindow newProjectWindow;
 
@@ -43,6 +47,14 @@ namespace Tome.Core.Windows
 
         #region Properties
 
+        private bool ProjectLoaded
+        {
+            get
+            {
+                return this.currentProject != null;
+            }
+        }
+
         private string TomeProjectFileFilter
         {
             get
@@ -58,6 +70,11 @@ namespace Tome.Core.Windows
         private void CanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
+        }
+
+        private void CanExecuteFieldDefinitions(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ProjectLoaded;
         }
 
         private void CanExecuteHelp(object sender, CanExecuteRoutedEventArgs e)
@@ -77,7 +94,7 @@ namespace Tome.Core.Windows
 
         private void CanExecuteSave(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.currentProject != null;
+            e.CanExecute = this.ProjectLoaded;
         }
 
         private void ExecutedClose(object target, ExecutedRoutedEventArgs e)
@@ -85,14 +102,20 @@ namespace Tome.Core.Windows
             this.Close();
         }
 
+        private void ExecutedFieldDefinitions(object target, ExecutedRoutedEventArgs e)
+        {
+            this.fieldDefinitionsWindow = WindowUtils.ShowWindow(this.fieldDefinitionsWindow, this);
+            this.fieldDefinitionsWindow.SetFieldDefinitions(this.currentProject.Project);
+        }
+
         private void ExecutedHelp(object target, ExecutedRoutedEventArgs e)
         {
-            this.aboutWindow = this.ShowWindow(this.aboutWindow);
+            this.aboutWindow = WindowUtils.ShowWindow(this.aboutWindow, this);
         }
 
         private void ExecutedNew(object target, ExecutedRoutedEventArgs e)
         {
-            this.newProjectWindow = this.ShowWindow(this.newProjectWindow, this.OnNewProjectWindowClosed);
+            this.newProjectWindow = WindowUtils.ShowWindow(this.newProjectWindow, this, this.OnNewProjectWindowClosed);
         }
 
         private void ExecutedOpen(object target, ExecutedRoutedEventArgs e)
@@ -176,35 +199,8 @@ namespace Tome.Core.Windows
             }
             catch (ArgumentNullException exception)
             {
-                this.ShowErrorMessage("Error creating project", exception.Message);
+                WindowUtils.ShowErrorMessage("Error creating project", exception.Message);
             }
-        }
-
-        private void ShowErrorMessage(string title, string error)
-        {
-            MessageBox.Show(error, title, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
-        }
-
-        private T ShowWindow<T>(T currentWindow) where T : Window, new()
-        {
-            return this.ShowWindow(currentWindow, null);
-        }
-
-        private T ShowWindow<T>(T currentWindow, EventHandler onClosed) where T : Window, new()
-        {
-            if (currentWindow == null || !currentWindow.IsLoaded)
-            {
-                currentWindow = new T { Owner = this, ShowInTaskbar = false };
-
-                if (onClosed != null)
-                {
-                    currentWindow.Closed += onClosed;
-                }
-            }
-
-            currentWindow.Show();
-            currentWindow.Focus();
-            return currentWindow;
         }
 
         #endregion

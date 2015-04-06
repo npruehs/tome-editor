@@ -1,0 +1,44 @@
+﻿<Window x:Class="Tome.Fields.Windows.FieldDefinitionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tome.Fields.Windows"
+        xmlns:viewModels="clr-namespace:Tome.Fields.ViewModels"
+        mc:Ignorable="d"
+        Title="Field Definitions" Height="600" Width="800"
+        d:DataContext="{d:DesignInstance viewModels:FieldDefinitionsViewModel}">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+
+   		<Menu Grid.Row="0">
+			<MenuItem Header="Fields">
+				<MenuItem Header="New Field..." Command="ApplicationCommands.New" />
+                <Separator />
+				<MenuItem Header="Close" Command="ApplicationCommands.Close" />
+			</MenuItem>
+		</Menu>
+
+		<DataGrid Name="FieldGrid" Grid.Row="1" ItemsSource="{Binding FieldDefinitions}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True" MouseDoubleClick="OnMouseDoubleClickGrid">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Id" Binding="{Binding Id}" />
+				<DataGridTextColumn Header="Display Name" Binding="{Binding DisplayName}" />
+				<DataGridTextColumn Header="Type" Binding="{Binding FieldType}" />
+				<DataGridTextColumn Header="Default Value" Binding="{Binding DefaultValue}" />
+				<DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" />
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.New"
+		                Executed="ExecutedNew"
+		                CanExecute="CanExecuteNew" />
+        <CommandBinding Command="ApplicationCommands.Close"
+		                Executed="ExecutedClose"
+		                CanExecute="CanExecuteClose" />
+    </Window.CommandBindings>
+</Window>
