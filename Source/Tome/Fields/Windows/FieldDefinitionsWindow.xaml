@@ -14,7 +14,15 @@
 			<RowDefinition />
 		</Grid.RowDefinitions>
 
-		<DataGrid Grid.Row="1" ItemsSource="{Binding FieldDefinitions}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True">
+   		<Menu Grid.Row="0">
+			<MenuItem Header="Fields">
+				<MenuItem Header="New Field..." Command="ApplicationCommands.New" />
+                <Separator />
+				<MenuItem Header="Close" Command="ApplicationCommands.Close" />
+			</MenuItem>
+		</Menu>
+
+		<DataGrid Name="FieldGrid" Grid.Row="1" ItemsSource="{Binding FieldDefinitions}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True" MouseDoubleClick="OnMouseDoubleClickGrid">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Id" Binding="{Binding Id}" />
 				<DataGridTextColumn Header="Display Name" Binding="{Binding DisplayName}" />
@@ -24,4 +32,13 @@
 			</DataGrid.Columns>
 		</DataGrid>
 	</Grid>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.New"
+		                Executed="ExecutedNew"
+		                CanExecute="CanExecuteNew" />
+        <CommandBinding Command="ApplicationCommands.Close"
+		                Executed="ExecutedClose"
+		                CanExecute="CanExecuteClose" />
+    </Window.CommandBindings>
 </Window>

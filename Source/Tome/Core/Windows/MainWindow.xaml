@@ -36,25 +36,24 @@
 		</StatusBar>
 	</Grid>
 
-	<Window.CommandBindings>
-		<CommandBinding Command="ApplicationCommands.New"
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.New"
 		                Executed="ExecutedNew"
 		                CanExecute="CanExecuteNew" />
-		<CommandBinding Command="ApplicationCommands.Open"
+        <CommandBinding Command="ApplicationCommands.Open"
 		                Executed="ExecutedOpen"
 		                CanExecute="CanExecuteOpen" />
-		<CommandBinding Command="ApplicationCommands.Save"
+        <CommandBinding Command="ApplicationCommands.Save"
 		                Executed="ExecutedSave"
 		                CanExecute="CanExecuteSave" />
-		<CommandBinding Command="ApplicationCommands.Close"
+        <CommandBinding Command="ApplicationCommands.Close"
 		                Executed="ExecutedClose"
 		                CanExecute="CanExecuteClose" />
         <CommandBinding Command="commands:MainWindowCommands.FieldDefinitions"
 		        Executed="ExecutedFieldDefinitions"
 		        CanExecute="CanExecuteFieldDefinitions" />
-		<CommandBinding Command="ApplicationCommands.Help"
+        <CommandBinding Command="ApplicationCommands.Help"
 		                Executed="ExecutedHelp"
 		                CanExecute="CanExecuteHelp" />
-	</Window.CommandBindings>
-
+    </Window.CommandBindings>
 </Window>

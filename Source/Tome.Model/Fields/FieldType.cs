@@ -8,6 +8,10 @@ namespace Tome.Model.Fields
 {
     public enum FieldType
     {
-        None
+        None,
+
+        Int,
+
+        String
     }
 }

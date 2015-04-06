@@ -1,0 +1,50 @@
+﻿<Window x:Class="Tome.Fields.Windows.EditFieldDefinitionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tome.Fields.Windows"
+        xmlns:viewModels="clr-namespace:Tome.Fields.ViewModels"
+        mc:Ignorable="d"
+        Title="Field Definition" Height="300" Width="300"
+        d:DataContext="{d:DesignInstance viewModels:FieldDefinitionViewModel}">
+	<Grid Name="EditFieldDefinitionGrid">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+
+		<Label Grid.Row="0" Grid.Column="0">Display Name:</Label>
+		<TextBox Grid.Row="0" Grid.Column="1" Name="TextBoxDisplayName" Text="{Binding DisplayName}" TextChanged="OnTextBoxDisplayNameChanged" />
+
+		<Label Grid.Row="1" Grid.Column="0">Id:</Label>
+		<TextBox Grid.Row="1" Grid.Column="1" Name="TextBoxId" Text="{Binding Id}" />
+
+		<Label Grid.Row="2" Grid.Column="0">Type:</Label>
+		<ComboBox Grid.Row="2" Grid.Column="1" Name="ComboBoxFieldType" Text="{Binding FieldType}" SelectionChanged="OnComboBoxFieldTypeChanged" />
+
+		<Label Grid.Row="3" Grid.Column="0">Default Value:</Label>
+		<DockPanel Grid.Row="3" Grid.Column="1" Name="DockPanelDefaultValueUIElement" />
+
+		<Label Grid.Row="4" Grid.Column="0">Description:</Label>
+		<TextBox Grid.Row="4" Grid.Column="1" Name="TextBoxDescription" Text="{Binding Description}" />
+
+		<Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<Button Grid.Column="0" Click="OnClickOk">OK</Button>
+			<Button Grid.Column="1" Click="OnClickCancel">Cancel</Button>
+		</Grid>
+	</Grid>
+</Window>
