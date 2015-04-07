@@ -80,14 +80,19 @@ namespace Tome.Fields.Windows
             e.CanExecute = true;
         }
 
-        private void CanExecuteNew(object sender, CanExecuteRoutedEventArgs e)
+        private void CanExecuteDelete(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
         }
 
-        private void CanExecuteOpen(object sender, CanExecuteRoutedEventArgs e)
+        private void CanExecuteEdit(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = this.FieldDefinitionSelected;
+        }
+
+        private void CanExecuteNew(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
         }
 
         private void EditSelectedFieldDefinition()
@@ -122,6 +127,29 @@ namespace Tome.Fields.Windows
             this.Close();
         }
 
+        private void ExecutedDelete(object target, ExecutedRoutedEventArgs e)
+        {
+            if (!this.FieldDefinitionSelected)
+            {
+                return;
+            }
+
+            var field = (FieldDefinition)this.FieldGrid.SelectedItem;
+
+            // Remove field.
+            this.FieldDefinitionsViewModel.FieldDefinitions.Remove(field);
+
+            foreach (var fieldDefinitionFile in this.fieldDefinitionFiles)
+            {
+                fieldDefinitionFile.FieldDefinitions.Remove(field);
+            }
+        }
+
+        private void ExecutedEdit(object target, ExecutedRoutedEventArgs e)
+        {
+            this.EditSelectedFieldDefinition();
+        }
+
         private void ExecutedNew(object target, ExecutedRoutedEventArgs e)
         {
             // Show window.
@@ -132,11 +160,6 @@ namespace Tome.Fields.Windows
 
             // Set edit mode.
             this.editFieldDefinitionWindow.ExistingFieldDefinition = null;
-        }
-
-        private void ExecutedOpen(object target, ExecutedRoutedEventArgs e)
-        {
-            this.EditSelectedFieldDefinition();
         }
 
         private void OnEditFieldDefinitionWindowClosed(object sender, EventArgs e)

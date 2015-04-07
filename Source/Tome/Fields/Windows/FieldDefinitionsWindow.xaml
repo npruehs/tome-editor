@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tome.Fields.Windows"
         xmlns:viewModels="clr-namespace:Tome.Fields.ViewModels"
+        xmlns:commands="clr-namespace:Tome.Fields.Commands"
         mc:Ignorable="d"
         Title="Field Definitions" Height="600" Width="800"
         d:DataContext="{d:DesignInstance viewModels:FieldDefinitionsViewModel}">
@@ -14,11 +15,12 @@
 			<RowDefinition />
 		</Grid.RowDefinitions>
 
-   		<Menu Grid.Row="0">
+		<Menu Grid.Row="0">
 			<MenuItem Header="Fields">
 				<MenuItem Header="New Field..." Command="ApplicationCommands.New" />
-                <MenuItem Header="Edit Field..." Command="ApplicationCommands.Open" />
-                <Separator />
+				<MenuItem Header="Edit Field..." Command="commands:FieldDefinitionWindowCommands.Edit" />
+				<MenuItem Header="Delete Field" Command="commands:FieldDefinitionWindowCommands.Delete" />
+				<Separator />
 				<MenuItem Header="Close" Command="ApplicationCommands.Close" />
 			</MenuItem>
 		</Menu>
@@ -34,15 +36,18 @@
 		</DataGrid>
 	</Grid>
 
-    <Window.CommandBindings>
-        <CommandBinding Command="ApplicationCommands.New"
+	<Window.CommandBindings>
+		<CommandBinding Command="ApplicationCommands.New"
 		                Executed="ExecutedNew"
 		                CanExecute="CanExecuteNew" />
-        <CommandBinding Command="ApplicationCommands.Open"
-		                Executed="ExecutedOpen"
-		                CanExecute="CanExecuteOpen" />
-        <CommandBinding Command="ApplicationCommands.Close"
+		<CommandBinding Command="commands:FieldDefinitionWindowCommands.Edit"
+		                Executed="ExecutedEdit"
+		                CanExecute="CanExecuteEdit" />
+		<CommandBinding Command="commands:FieldDefinitionWindowCommands.Delete"
+		                Executed="ExecutedDelete"
+		                CanExecute="CanExecuteDelete" />
+		<CommandBinding Command="ApplicationCommands.Close"
 		                Executed="ExecutedClose"
 		                CanExecute="CanExecuteClose" />
-    </Window.CommandBindings>
+	</Window.CommandBindings>
 </Window>
