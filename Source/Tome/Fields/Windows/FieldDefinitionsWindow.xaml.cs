@@ -44,6 +44,14 @@ namespace Tome.Fields.Windows
 
         public FieldDefinitionsViewModel FieldDefinitionsViewModel { get; }
 
+        private bool FieldDefinitionSelected
+        {
+            get
+            {
+                return this.FieldGrid.SelectedItem != null;
+            }
+        }
+
         #endregion
 
         #region Public Methods and Operators
@@ -77,6 +85,38 @@ namespace Tome.Fields.Windows
             e.CanExecute = true;
         }
 
+        private void CanExecuteOpen(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.FieldDefinitionSelected;
+        }
+
+        private void EditSelectedFieldDefinition()
+        {
+            if (!this.FieldDefinitionSelected)
+            {
+                return;
+            }
+
+            var field = (FieldDefinition)this.FieldGrid.SelectedItem;
+
+            // Show window.
+            this.editFieldDefinitionWindow = WindowUtils.ShowWindow(
+                this.editFieldDefinitionWindow,
+                this,
+                this.OnEditFieldDefinitionWindowClosed);
+
+            // Set edit mode.
+            this.editFieldDefinitionWindow.ExistingFieldDefinition = field;
+
+            // Fill view model.
+            var viewModel = this.editFieldDefinitionWindow.FieldDefinitionViewModel;
+            viewModel.DisplayName = field.DisplayName;
+            viewModel.Id = field.Id;
+            viewModel.FieldType = field.FieldType;
+            viewModel.DefaultValue = field.DefaultValue;
+            viewModel.Description = field.Description;
+        }
+
         private void ExecutedClose(object target, ExecutedRoutedEventArgs e)
         {
             this.Close();
@@ -91,7 +131,12 @@ namespace Tome.Fields.Windows
                 this.OnEditFieldDefinitionWindowClosed);
 
             // Set edit mode.
-            this.editFieldDefinitionWindow.EditMode = EditFieldDefinitionWindow.FieldDefinitionEditMode.Add;
+            this.editFieldDefinitionWindow.ExistingFieldDefinition = null;
+        }
+
+        private void ExecutedOpen(object target, ExecutedRoutedEventArgs e)
+        {
+            this.EditSelectedFieldDefinition();
         }
 
         private void OnEditFieldDefinitionWindowClosed(object sender, EventArgs e)
@@ -104,26 +149,37 @@ namespace Tome.Fields.Windows
             }
 
             var viewModel = this.editFieldDefinitionWindow.FieldDefinitionViewModel;
+            var field = this.editFieldDefinitionWindow.ExistingFieldDefinition;
 
-            var newFieldDefinition = new FieldDefinition
+            if (field == null)
             {
-                DisplayName = viewModel.DisplayName,
-                Id = viewModel.Id,
-                FieldType = viewModel.FieldType,
-                DefaultValue = viewModel.DefaultValue,
-                Description = viewModel.Description
-            };
+                var newFieldDefinition = new FieldDefinition
+                {
+                    DisplayName = viewModel.DisplayName,
+                    Id = viewModel.Id,
+                    FieldType = viewModel.FieldType,
+                    DefaultValue = viewModel.DefaultValue,
+                    Description = viewModel.Description
+                };
 
-            this.FieldDefinitionsViewModel.FieldDefinitions.Add(newFieldDefinition);
-            this.fieldDefinitionFiles[0].FieldDefinitions.Add(newFieldDefinition);
+                this.FieldDefinitionsViewModel.FieldDefinitions.Add(newFieldDefinition);
+                this.fieldDefinitionFiles[0].FieldDefinitions.Add(newFieldDefinition);
+            }
+            else
+            {
+                field.DisplayName = viewModel.DisplayName;
+                field.Id = viewModel.Id;
+                field.FieldType = viewModel.FieldType;
+                field.DefaultValue = viewModel.DefaultValue;
+                field.Description = viewModel.Description;
+            }
+
+            this.FieldGrid.Items.Refresh();
         }
 
         private void OnMouseDoubleClickGrid(object sender, MouseButtonEventArgs args)
         {
-            if (this.FieldGrid.SelectedItem != null)
-            {
-                var field = (FieldDefinition)this.FieldGrid.SelectedItem;
-            }
+            this.EditSelectedFieldDefinition();
         }
 
         #endregion

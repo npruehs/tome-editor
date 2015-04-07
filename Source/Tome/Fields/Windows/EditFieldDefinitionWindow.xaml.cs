@@ -18,18 +18,11 @@ namespace Tome.Fields.Windows
     /// </summary>
     public partial class EditFieldDefinitionWindow : Window
     {
-        public enum FieldDefinitionEditMode
-        {
-            Add,
-
-            Edit
-        }
-
         #region Constructors and Destructors
 
         public EditFieldDefinitionWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             this.FieldDefinitionViewModel = new FieldDefinitionViewModel();
             this.DataContext = this.FieldDefinitionViewModel;
@@ -44,7 +37,7 @@ namespace Tome.Fields.Windows
 
         #region Properties
 
-        public FieldDefinitionEditMode EditMode { get; set; }
+        public FieldDefinition ExistingFieldDefinition { get; set; }
 
         public FieldDefinitionViewModel FieldDefinitionViewModel { get; set; }
 
@@ -81,15 +74,26 @@ namespace Tome.Fields.Windows
         private void OnComboBoxFieldTypeChanged(object sender, RoutedEventArgs e)
         {
             var fieldType = (FieldType)this.ComboBoxFieldType.SelectedItem;
+            var currentDefaultValue = this.FieldDefinitionViewModel.DefaultValue;
 
+            // Convert default value to new type.
             switch (fieldType)
             {
                 case FieldType.Int:
-                    this.FieldDefinitionViewModel.DefaultValue = 0;
+                    var newDefaultValue = 0;
+
+                    if (currentDefaultValue != null)
+                    {
+                        int.TryParse(currentDefaultValue.ToString(), out newDefaultValue);
+                    }
+
+                    this.FieldDefinitionViewModel.DefaultValue = newDefaultValue;
                     break;
 
                 case FieldType.String:
-                    this.FieldDefinitionViewModel.DefaultValue = string.Empty;
+                    this.FieldDefinitionViewModel.DefaultValue = currentDefaultValue != null
+                        ? currentDefaultValue.ToString()
+                        : string.Empty;
                     break;
             }
         }

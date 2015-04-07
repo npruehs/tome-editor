@@ -104,7 +104,10 @@ namespace Tome.Core.Windows
 
         private void ExecutedFieldDefinitions(object target, ExecutedRoutedEventArgs e)
         {
-            this.fieldDefinitionsWindow = WindowUtils.ShowWindow(this.fieldDefinitionsWindow, this);
+            this.fieldDefinitionsWindow = WindowUtils.ShowWindow(
+                           this.fieldDefinitionsWindow,
+                           this,
+                           this.OnFieldDefinitionsWindowClosed);
             this.fieldDefinitionsWindow.SetFieldDefinitions(this.currentProject.Project.FieldDefinitionFiles);
         }
 
@@ -146,6 +149,11 @@ namespace Tome.Core.Windows
             // Write project files.
             var serializer = new TomeProjectFileSerializer();
             serializer.Serialize(this.currentProject);
+        }
+
+        private void OnFieldDefinitionsWindowClosed(object sender, EventArgs e)
+        {
+            this.Focus();
         }
 
         private void OnNewProjectWindowClosed(object sender, EventArgs e)

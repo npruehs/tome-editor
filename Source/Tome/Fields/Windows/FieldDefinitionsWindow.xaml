@@ -17,6 +17,7 @@
    		<Menu Grid.Row="0">
 			<MenuItem Header="Fields">
 				<MenuItem Header="New Field..." Command="ApplicationCommands.New" />
+                <MenuItem Header="Edit Field..." Command="ApplicationCommands.Open" />
                 <Separator />
 				<MenuItem Header="Close" Command="ApplicationCommands.Close" />
 			</MenuItem>
@@ -37,6 +38,9 @@
         <CommandBinding Command="ApplicationCommands.New"
 		                Executed="ExecutedNew"
 		                CanExecute="CanExecuteNew" />
+        <CommandBinding Command="ApplicationCommands.Open"
+		                Executed="ExecutedOpen"
+		                CanExecute="CanExecuteOpen" />
         <CommandBinding Command="ApplicationCommands.Close"
 		                Executed="ExecutedClose"
 		                CanExecute="CanExecuteClose" />
