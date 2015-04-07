@@ -7,12 +7,12 @@
 namespace Tome.Fields.Windows
 {
     using System;
+    using System.Collections.Generic;
     using System.Windows;
     using System.Windows.Input;
 
     using Tome.Fields.ViewModels;
     using Tome.Model.Fields;
-    using Tome.Model.Project;
     using Tome.Util;
 
     /// <summary>
@@ -23,6 +23,8 @@ namespace Tome.Fields.Windows
         #region Fields
 
         private EditFieldDefinitionWindow editFieldDefinitionWindow;
+
+        private List<FieldDefinitionFile> fieldDefinitionFiles;
 
         #endregion
 
@@ -46,11 +48,13 @@ namespace Tome.Fields.Windows
 
         #region Public Methods and Operators
 
-        public void SetFieldDefinitions(TomeProject project)
+        public void SetFieldDefinitions(List<FieldDefinitionFile> fieldDefinitionFiles)
         {
+            this.fieldDefinitionFiles = fieldDefinitionFiles;
+
             this.FieldDefinitionsViewModel.FieldDefinitions.Clear();
 
-            foreach (var fieldDefinitionFile in project.FieldDefinitionFiles)
+            foreach (var fieldDefinitionFile in fieldDefinitionFiles)
             {
                 foreach (var fieldDefinition in fieldDefinitionFile.FieldDefinitions)
                 {
@@ -101,15 +105,17 @@ namespace Tome.Fields.Windows
 
             var viewModel = this.editFieldDefinitionWindow.FieldDefinitionViewModel;
 
-            this.FieldDefinitionsViewModel.FieldDefinitions.Add(
-                new FieldDefinition
-                {
-                    DisplayName = viewModel.DisplayName,
-                    Id = viewModel.Id,
-                    FieldType = viewModel.FieldType,
-                    DefaultValue = viewModel.DefaultValue,
-                    Description = viewModel.Description
-                });
+            var newFieldDefinition = new FieldDefinition
+            {
+                DisplayName = viewModel.DisplayName,
+                Id = viewModel.Id,
+                FieldType = viewModel.FieldType,
+                DefaultValue = viewModel.DefaultValue,
+                Description = viewModel.Description
+            };
+
+            this.FieldDefinitionsViewModel.FieldDefinitions.Add(newFieldDefinition);
+            this.fieldDefinitionFiles[0].FieldDefinitions.Add(newFieldDefinition);
         }
 
         private void OnMouseDoubleClickGrid(object sender, MouseButtonEventArgs args)

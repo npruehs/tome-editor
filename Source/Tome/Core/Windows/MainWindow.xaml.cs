@@ -105,7 +105,7 @@ namespace Tome.Core.Windows
         private void ExecutedFieldDefinitions(object target, ExecutedRoutedEventArgs e)
         {
             this.fieldDefinitionsWindow = WindowUtils.ShowWindow(this.fieldDefinitionsWindow, this);
-            this.fieldDefinitionsWindow.SetFieldDefinitions(this.currentProject.Project);
+            this.fieldDefinitionsWindow.SetFieldDefinitions(this.currentProject.Project.FieldDefinitionFiles);
         }
 
         private void ExecutedHelp(object target, ExecutedRoutedEventArgs e)
