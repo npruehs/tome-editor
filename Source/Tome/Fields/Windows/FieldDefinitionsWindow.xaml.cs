@@ -15,12 +15,11 @@ namespace Tome.Fields.Windows
     using Tome.Model.Fields;
     using Tome.Util;
 
-    /// <summary>
-    ///   Interaction logic for FieldDefinitionsWindow.xaml
-    /// </summary>
     public partial class FieldDefinitionsWindow : Window
     {
         #region Fields
+
+        private FieldDefinition editedFieldDefinition;
 
         private EditFieldDefinitionWindow editFieldDefinitionWindow;
 
@@ -111,7 +110,7 @@ namespace Tome.Fields.Windows
                 this.OnEditFieldDefinitionWindowClosed);
 
             // Set edit mode.
-            this.editFieldDefinitionWindow.ExistingFieldDefinition = field;
+            this.editedFieldDefinition = field;
 
             // Fill view model.
             var viewModel = this.editFieldDefinitionWindow.FieldDefinitionViewModel;
@@ -159,7 +158,7 @@ namespace Tome.Fields.Windows
                 this.OnEditFieldDefinitionWindowClosed);
 
             // Set edit mode.
-            this.editFieldDefinitionWindow.ExistingFieldDefinition = null;
+            this.editedFieldDefinition = null;
         }
 
         private void OnEditFieldDefinitionWindowClosed(object sender, EventArgs e)
@@ -172,7 +171,7 @@ namespace Tome.Fields.Windows
             }
 
             var viewModel = this.editFieldDefinitionWindow.FieldDefinitionViewModel;
-            var field = this.editFieldDefinitionWindow.ExistingFieldDefinition;
+            var field = this.editedFieldDefinition;
 
             if (field == null)
             {

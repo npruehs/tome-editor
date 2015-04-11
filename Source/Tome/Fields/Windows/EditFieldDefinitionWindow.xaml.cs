@@ -37,8 +37,6 @@ namespace Tome.Fields.Windows
 
         #region Properties
 
-        public FieldDefinition ExistingFieldDefinition { get; set; }
-
         public FieldDefinitionViewModel FieldDefinitionViewModel { get; set; }
 
         public bool Result { get; set; }
