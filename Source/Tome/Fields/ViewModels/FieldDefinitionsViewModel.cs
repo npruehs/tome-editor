@@ -7,72 +7,40 @@
 namespace Tome.Fields.ViewModels
 {
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
-    using System.Windows.Data;
 
     using Tome.Collections;
     using Tome.Model.Fields;
 
-    public class FieldDefinitionsViewModel : INotifyPropertyChanged
+    public class FieldDefinitionsViewModel
     {
-        #region Fields
-
-        private MultipleCollectionsView<FieldDefinition> fieldDefinitions;
-
-        #endregion
-
         #region Constructors and Destructors
 
-        public FieldDefinitionsViewModel(List<ObservableWrappedCollection<FieldDefinition>> fieldDefinitionFiles)
+        public FieldDefinitionsViewModel(List<FieldDefinitionFile> fieldDefinitionFiles)
         {
-            // Build flattened list of field definitions.
-            this.fieldDefinitions = new MultipleCollectionsView<FieldDefinition>();
+            // Build field definition file view models.
+            this.FieldDefinitionFiles = new List<FieldDefinitionFileViewModel>();
 
             foreach (var fieldDefinitionFile in fieldDefinitionFiles)
             {
-                this.fieldDefinitions.AddCollection(fieldDefinitionFile);
+                this.FieldDefinitionFiles.Add(new FieldDefinitionFileViewModel(fieldDefinitionFile));
+            }
+
+            // Build flattened list of field definitions.
+            this.FieldDefinitions = new MultipleCollectionsView<FieldDefinition>();
+
+            foreach (var fieldDefinitionFile in this.FieldDefinitionFiles)
+            {
+                this.FieldDefinitions.AddCollection(fieldDefinitionFile.FieldDefinitions);
             }
         }
-
-        #endregion
-
-        #region Events
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
 
         #region Properties
 
-        public MultipleCollectionsView<FieldDefinition> FieldDefinitions
-        {
-            get
-            {
-                return this.fieldDefinitions;
-            }
-            set
-            {
-                if (!Equals(this.fieldDefinitions, value))
-                {
-                    this.fieldDefinitions = value;
-                    this.OnPropertyChanged();
-                }
-            }
-        }
+        public List<FieldDefinitionFileViewModel> FieldDefinitionFiles { get; }
 
-        #endregion
-
-        #region Methods
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            if (this.PropertyChanged != null)
-            {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        public MultipleCollectionsView<FieldDefinition> FieldDefinitions { get; set; }
 
         #endregion
     }

@@ -25,8 +25,6 @@ namespace Tome.Fields.Windows
 
         private EditFieldDefinitionWindow editFieldDefinitionWindow;
 
-        private List<ObservableWrappedCollection<FieldDefinition>> fieldDefinitionFiles;
-
         #endregion
 
         #region Constructors and Destructors
@@ -56,17 +54,7 @@ namespace Tome.Fields.Windows
 
         public void SetFieldDefinitions(List<FieldDefinitionFile> fieldDefinitionFiles)
         {
-            // Observe changes of each of the field definition files.
-            this.fieldDefinitionFiles = new List<ObservableWrappedCollection<FieldDefinition>>();
-
-            foreach (var fieldDefinitionFile in fieldDefinitionFiles)
-            {
-                this.fieldDefinitionFiles.Add(
-                    new ObservableWrappedCollection<FieldDefinition>(fieldDefinitionFile.FieldDefinitions));
-            }
-
-            // Build flattened list of field definitions.
-            this.FieldDefinitionsViewModel = new FieldDefinitionsViewModel(this.fieldDefinitionFiles);
+            this.FieldDefinitionsViewModel = new FieldDefinitionsViewModel(fieldDefinitionFiles);
             this.DataContext = this.FieldDefinitionsViewModel;
         }
 
@@ -122,7 +110,7 @@ namespace Tome.Fields.Windows
 
             // Set forbidden field ids.
             this.editFieldDefinitionWindow.ExistingFieldIds =
-                this.fieldDefinitionFiles.SelectMany(file => file)
+                this.FieldDefinitionsViewModel.FieldDefinitions
                     .Select(existingField => existingField.Id)
                     .Where(fieldId => !Equals(fieldId, field.Id));
         }
@@ -142,9 +130,9 @@ namespace Tome.Fields.Windows
             var field = (FieldDefinition)this.FieldGrid.SelectedItem;
 
             // Remove field.
-            foreach (var fieldDefinitionFile in this.fieldDefinitionFiles)
+            foreach (var fieldDefinitionFile in this.FieldDefinitionsViewModel.FieldDefinitionFiles)
             {
-                fieldDefinitionFile.Remove(field);
+                fieldDefinitionFile.FieldDefinitions.Remove(field);
             }
         }
 
@@ -163,7 +151,7 @@ namespace Tome.Fields.Windows
 
             // Set forbidden field ids.
             this.editFieldDefinitionWindow.ExistingFieldIds =
-                this.fieldDefinitionFiles.SelectMany(file => file).Select(field => field.Id);
+                this.FieldDefinitionsViewModel.FieldDefinitions.Select(field => field.Id);
 
             // Set edit mode.
             this.editedFieldDefinition = null;
@@ -192,7 +180,7 @@ namespace Tome.Fields.Windows
                     Description = viewModel.Description
                 };
 
-                this.fieldDefinitionFiles[0].Add(newFieldDefinition);
+                this.FieldDefinitionsViewModel.FieldDefinitionFiles[0].FieldDefinitions.Add(newFieldDefinition);
             }
             else
             {
