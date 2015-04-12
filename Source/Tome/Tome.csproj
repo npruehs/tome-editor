@@ -56,6 +56,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Collections\CollectionDecorator.cs" />
+    <Compile Include="Collections\MultipleCollectionsView.cs" />
+    <Compile Include="Collections\ObservableWrappedCollection.cs" />
     <Compile Include="Fields\Commands\FieldDefinitionWindowCommands.cs" />
     <Compile Include="Fields\ViewModels\FieldDefinitionViewModel.cs" />
     <Compile Include="Util\StringUtils.cs" />

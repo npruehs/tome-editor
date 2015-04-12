@@ -6,25 +6,34 @@
 
 namespace Tome.Fields.ViewModels
 {
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
+    using System.Windows.Data;
 
+    using Tome.Collections;
     using Tome.Model.Fields;
 
     public class FieldDefinitionsViewModel : INotifyPropertyChanged
     {
         #region Fields
 
-        private ObservableCollection<FieldDefinition> fieldDefinitions;
+        private MultipleCollectionsView<FieldDefinition> fieldDefinitions;
 
         #endregion
 
         #region Constructors and Destructors
 
-        public FieldDefinitionsViewModel()
+        public FieldDefinitionsViewModel(List<ObservableWrappedCollection<FieldDefinition>> fieldDefinitionFiles)
         {
-            this.fieldDefinitions = new ObservableCollection<FieldDefinition>();
+            // Build flattened list of field definitions.
+            this.fieldDefinitions = new MultipleCollectionsView<FieldDefinition>();
+
+            foreach (var fieldDefinitionFile in fieldDefinitionFiles)
+            {
+                this.fieldDefinitions.AddCollection(fieldDefinitionFile);
+            }
         }
 
         #endregion
@@ -37,7 +46,7 @@ namespace Tome.Fields.ViewModels
 
         #region Properties
 
-        public ObservableCollection<FieldDefinition> FieldDefinitions
+        public MultipleCollectionsView<FieldDefinition> FieldDefinitions
         {
             get
             {

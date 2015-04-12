@@ -11,6 +11,7 @@ namespace Tome.Fields.Windows
     using System.Windows;
     using System.Windows.Input;
 
+    using Tome.Collections;
     using Tome.Fields.ViewModels;
     using Tome.Model.Fields;
     using Tome.Util;
@@ -23,7 +24,7 @@ namespace Tome.Fields.Windows
 
         private EditFieldDefinitionWindow editFieldDefinitionWindow;
 
-        private List<FieldDefinitionFile> fieldDefinitionFiles;
+        private List<ObservableWrappedCollection<FieldDefinition>> fieldDefinitionFiles;
 
         #endregion
 
@@ -32,16 +33,13 @@ namespace Tome.Fields.Windows
         public FieldDefinitionsWindow()
         {
             this.InitializeComponent();
-
-            this.FieldDefinitionsViewModel = new FieldDefinitionsViewModel();
-            this.DataContext = this.FieldDefinitionsViewModel;
         }
 
         #endregion
 
         #region Properties
 
-        public FieldDefinitionsViewModel FieldDefinitionsViewModel { get; }
+        public FieldDefinitionsViewModel FieldDefinitionsViewModel { get; private set; }
 
         private bool FieldDefinitionSelected
         {
@@ -57,17 +55,18 @@ namespace Tome.Fields.Windows
 
         public void SetFieldDefinitions(List<FieldDefinitionFile> fieldDefinitionFiles)
         {
-            this.fieldDefinitionFiles = fieldDefinitionFiles;
-
-            this.FieldDefinitionsViewModel.FieldDefinitions.Clear();
+            // Observe changes of each of the field definition files.
+            this.fieldDefinitionFiles = new List<ObservableWrappedCollection<FieldDefinition>>();
 
             foreach (var fieldDefinitionFile in fieldDefinitionFiles)
             {
-                foreach (var fieldDefinition in fieldDefinitionFile.FieldDefinitions)
-                {
-                    this.FieldDefinitionsViewModel.FieldDefinitions.Add(fieldDefinition);
-                }
+                this.fieldDefinitionFiles.Add(
+                    new ObservableWrappedCollection<FieldDefinition>(fieldDefinitionFile.FieldDefinitions));
             }
+
+            // Build flattened list of field definitions.
+            this.FieldDefinitionsViewModel = new FieldDefinitionsViewModel(this.fieldDefinitionFiles);
+            this.DataContext = this.FieldDefinitionsViewModel;
         }
 
         #endregion
@@ -136,11 +135,9 @@ namespace Tome.Fields.Windows
             var field = (FieldDefinition)this.FieldGrid.SelectedItem;
 
             // Remove field.
-            this.FieldDefinitionsViewModel.FieldDefinitions.Remove(field);
-
             foreach (var fieldDefinitionFile in this.fieldDefinitionFiles)
             {
-                fieldDefinitionFile.FieldDefinitions.Remove(field);
+                fieldDefinitionFile.Remove(field);
             }
         }
 
@@ -184,8 +181,7 @@ namespace Tome.Fields.Windows
                     Description = viewModel.Description
                 };
 
-                this.FieldDefinitionsViewModel.FieldDefinitions.Add(newFieldDefinition);
-                this.fieldDefinitionFiles[0].FieldDefinitions.Add(newFieldDefinition);
+                this.fieldDefinitionFiles[0].Add(newFieldDefinition);
             }
             else
             {
