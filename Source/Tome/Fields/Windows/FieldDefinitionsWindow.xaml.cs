@@ -12,7 +12,6 @@ namespace Tome.Fields.Windows
     using System.Windows;
     using System.Windows.Input;
 
-    using Tome.Collections;
     using Tome.Fields.ViewModels;
     using Tome.Model.Fields;
     using Tome.Util;
@@ -107,12 +106,18 @@ namespace Tome.Fields.Windows
             viewModel.FieldType = field.FieldType;
             viewModel.DefaultValue = field.DefaultValue;
             viewModel.Description = field.Description;
+            viewModel.File =
+                this.FieldDefinitionsViewModel.FieldDefinitionFiles.FirstOrDefault(
+                    file => file.FieldDefinitions.Contains(field));
 
             // Set forbidden field ids.
             this.editFieldDefinitionWindow.ExistingFieldIds =
-                this.FieldDefinitionsViewModel.FieldDefinitions
-                    .Select(existingField => existingField.Id)
+                this.FieldDefinitionsViewModel.FieldDefinitions.Select(existingField => existingField.Id)
                     .Where(fieldId => !Equals(fieldId, field.Id));
+
+            // Set available field definition files.
+            this.editFieldDefinitionWindow.SetFieldDefinitionFiles(this.FieldDefinitionsViewModel.FieldDefinitionFiles);
+            this.editFieldDefinitionWindow.ComboBoxFile.IsEnabled = false;
         }
 
         private void ExecutedClose(object target, ExecutedRoutedEventArgs e)
@@ -149,12 +154,20 @@ namespace Tome.Fields.Windows
                 this,
                 this.OnEditFieldDefinitionWindowClosed);
 
+            // Set edit mode.
+            this.editedFieldDefinition = null;
+
+            // Fill view model.
+            var viewModel = this.editFieldDefinitionWindow.FieldDefinitionViewModel;
+            viewModel.FieldType = FieldType.Int;
+            viewModel.File = this.FieldDefinitionsViewModel.FieldDefinitionFiles[0];
+
             // Set forbidden field ids.
             this.editFieldDefinitionWindow.ExistingFieldIds =
                 this.FieldDefinitionsViewModel.FieldDefinitions.Select(field => field.Id);
 
-            // Set edit mode.
-            this.editedFieldDefinition = null;
+            // Set available field definition files.
+            this.editFieldDefinitionWindow.SetFieldDefinitionFiles(this.FieldDefinitionsViewModel.FieldDefinitionFiles);
         }
 
         private void OnEditFieldDefinitionWindowClosed(object sender, EventArgs e)
@@ -180,7 +193,7 @@ namespace Tome.Fields.Windows
                     Description = viewModel.Description
                 };
 
-                this.FieldDefinitionsViewModel.FieldDefinitionFiles[0].FieldDefinitions.Add(newFieldDefinition);
+                viewModel.File.FieldDefinitions.Add(newFieldDefinition);
             }
             else
             {

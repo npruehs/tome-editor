@@ -12,6 +12,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
@@ -28,16 +29,19 @@
 		<Label Grid.Row="1" Grid.Column="0">Id:</Label>
 		<TextBox Grid.Row="1" Grid.Column="1" Name="TextBoxId" Text="{Binding Id}" />
 
-		<Label Grid.Row="2" Grid.Column="0">Type:</Label>
-		<ComboBox Grid.Row="2" Grid.Column="1" Name="ComboBoxFieldType" Text="{Binding FieldType}" SelectionChanged="OnComboBoxFieldTypeChanged" />
+        <Label Grid.Row="2" Grid.Column="0">File:</Label>
+		<ComboBox Grid.Row="2" Grid.Column="1" Name="ComboBoxFile" SelectedItem="{Binding File}" />
 
-		<Label Grid.Row="3" Grid.Column="0">Default Value:</Label>
-		<DockPanel Grid.Row="3" Grid.Column="1" Name="DockPanelDefaultValueUIElement" />
+		<Label Grid.Row="3" Grid.Column="0">Type:</Label>
+		<ComboBox Grid.Row="3" Grid.Column="1" Name="ComboBoxFieldType" SelectedItem="{Binding FieldType}" SelectionChanged="OnComboBoxFieldTypeChanged" />
 
-		<Label Grid.Row="4" Grid.Column="0">Description:</Label>
-		<TextBox Grid.Row="4" Grid.Column="1" Name="TextBoxDescription" Text="{Binding Description}" />
+		<Label Grid.Row="4" Grid.Column="0">Default Value:</Label>
+		<DockPanel Grid.Row="4" Grid.Column="1" Name="DockPanelDefaultValueUIElement" />
 
-		<Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2">
+		<Label Grid.Row="5" Grid.Column="0">Description:</Label>
+		<TextBox Grid.Row="5" Grid.Column="1" Name="TextBoxDescription" Text="{Binding Description}" />
+
+		<Grid Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="*" />

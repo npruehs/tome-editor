@@ -59,6 +59,15 @@ namespace Tome.Fields.ViewModels
 
         #endregion
 
+        #region Public Methods and Operators
+
+        public override string ToString()
+        {
+            return this.Path != null ? System.IO.Path.GetFileName(this.Path) : string.Empty;
+        }
+
+        #endregion
+
         #region Methods
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = "")

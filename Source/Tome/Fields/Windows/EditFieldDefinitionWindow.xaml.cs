@@ -31,7 +31,10 @@ namespace Tome.Fields.Windows
 
             foreach (var fieldType in Enum.GetValues(typeof(FieldType)))
             {
-                this.ComboBoxFieldType.Items.Add(fieldType);
+                if (!Equals(fieldType, FieldType.None))
+                {
+                    this.ComboBoxFieldType.Items.Add(fieldType);
+                }
             }
         }
 
@@ -44,6 +47,20 @@ namespace Tome.Fields.Windows
         public FieldDefinitionViewModel FieldDefinitionViewModel { get; set; }
 
         public bool Result { get; set; }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public void SetFieldDefinitionFiles(List<FieldDefinitionFileViewModel> fieldDefinitionFiles)
+        {
+            this.ComboBoxFile.Items.Clear();
+
+            foreach (var fieldDefinitionFile in fieldDefinitionFiles)
+            {
+                this.ComboBoxFile.Items.Add(fieldDefinitionFile);
+            }
+        }
 
         #endregion
 

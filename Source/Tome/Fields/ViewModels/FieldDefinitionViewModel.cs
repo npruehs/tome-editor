@@ -23,6 +23,8 @@ namespace Tome.Fields.ViewModels
 
         private FieldType fieldType;
 
+        private FieldDefinitionFileViewModel file;
+
         private string id;
 
         #endregion
@@ -94,6 +96,22 @@ namespace Tome.Fields.ViewModels
                 if (!Equals(this.fieldType, value))
                 {
                     this.fieldType = value;
+                    this.OnPropertyChanged();
+                }
+            }
+        }
+
+        public FieldDefinitionFileViewModel File
+        {
+            get
+            {
+                return this.file;
+            }
+            set
+            {
+                if (!Equals(this.file, value))
+                {
+                    this.file = value;
                     this.OnPropertyChanged();
                 }
             }
