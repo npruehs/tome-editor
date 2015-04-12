@@ -8,6 +8,7 @@ namespace Tome.Fields.Windows
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Input;
 
@@ -118,6 +119,12 @@ namespace Tome.Fields.Windows
             viewModel.FieldType = field.FieldType;
             viewModel.DefaultValue = field.DefaultValue;
             viewModel.Description = field.Description;
+
+            // Set forbidden field ids.
+            this.editFieldDefinitionWindow.ExistingFieldIds =
+                this.fieldDefinitionFiles.SelectMany(file => file)
+                    .Select(existingField => existingField.Id)
+                    .Where(fieldId => !Equals(fieldId, field.Id));
         }
 
         private void ExecutedClose(object target, ExecutedRoutedEventArgs e)
@@ -153,6 +160,10 @@ namespace Tome.Fields.Windows
                 this.editFieldDefinitionWindow,
                 this,
                 this.OnEditFieldDefinitionWindowClosed);
+
+            // Set forbidden field ids.
+            this.editFieldDefinitionWindow.ExistingFieldIds =
+                this.fieldDefinitionFiles.SelectMany(file => file).Select(field => field.Id);
 
             // Set edit mode.
             this.editedFieldDefinition = null;

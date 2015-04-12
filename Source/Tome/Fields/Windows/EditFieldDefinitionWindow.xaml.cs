@@ -7,6 +7,8 @@
 namespace Tome.Fields.Windows
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Windows;
 
     using Tome.Fields.ViewModels;
@@ -37,6 +39,8 @@ namespace Tome.Fields.Windows
 
         #region Properties
 
+        public IEnumerable<string> ExistingFieldIds { get; set; }
+
         public FieldDefinitionViewModel FieldDefinitionViewModel { get; set; }
 
         public bool Result { get; set; }
@@ -62,6 +66,14 @@ namespace Tome.Fields.Windows
             if (string.IsNullOrWhiteSpace(this.FieldDefinitionViewModel.DisplayName))
             {
                 WindowUtils.ShowErrorMessage("Error", "Display name must not be empty.");
+                return;
+            }
+
+            if (this.ExistingFieldIds.Contains(this.FieldDefinitionViewModel.Id))
+            {
+                WindowUtils.ShowErrorMessage(
+                    "Error",
+                    string.Format("A field with the id {0} already exists.", this.FieldDefinitionViewModel.Id));
                 return;
             }
 
