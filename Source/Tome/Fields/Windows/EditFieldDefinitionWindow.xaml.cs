@@ -10,6 +10,8 @@ namespace Tome.Fields.Windows
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Data;
 
     using Tome.Fields.ViewModels;
     using Tome.Model.Fields;
@@ -121,6 +123,22 @@ namespace Tome.Fields.Windows
                     this.FieldDefinitionViewModel.DefaultValue = currentDefaultValue != null
                         ? currentDefaultValue.ToString()
                         : string.Empty;
+                    break;
+            }
+
+            // Create control.
+            switch (fieldType)
+            {
+                case FieldType.Int:
+                case FieldType.String:
+                    var binding = new Binding("DefaultValue");
+                    binding.Source = this.FieldDefinitionViewModel;
+
+                    var textBox = new TextBox();
+                    textBox.SetBinding(TextBox.TextProperty, binding);
+
+                    this.DockPanelDefaultValueUIElement.Children.Clear();
+                    this.DockPanelDefaultValueUIElement.Children.Add(textBox);
                     break;
             }
         }
