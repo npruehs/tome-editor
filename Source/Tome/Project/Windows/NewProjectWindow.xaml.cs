@@ -11,6 +11,7 @@ namespace Tome.Project.Windows
     using System.Windows.Forms;
 
     using Tome.Project.ViewModels;
+    using Tome.Util;
 
     public partial class NewProjectWindow : Window
     {
@@ -22,6 +23,7 @@ namespace Tome.Project.Windows
 
             this.NewProjectViewModel = new NewProjectViewModel
             {
+                Name = "Another Tome Project",
                 Path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
             };
 
@@ -64,6 +66,11 @@ namespace Tome.Project.Windows
 
         private void OnClickCreateProject(object sender, RoutedEventArgs e)
         {
+            if (!ValidationUtils.IsValid(this))
+            {
+                return;
+            }
+
             this.Result = true;
             this.Close();
         }

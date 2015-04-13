@@ -59,10 +59,13 @@
     <Compile Include="Collections\CollectionDecorator.cs" />
     <Compile Include="Collections\MultipleCollectionsView.cs" />
     <Compile Include="Collections\ObservableWrappedCollection.cs" />
+    <Compile Include="Core\Validation\DirectoryMustExistValidationRule.cs" />
+    <Compile Include="Core\Validation\StringNotEmptyValidationRule.cs" />
     <Compile Include="Fields\Commands\FieldDefinitionWindowCommands.cs" />
     <Compile Include="Fields\ViewModels\FIeldDefinitionFileViewModel.cs" />
     <Compile Include="Fields\ViewModels\FieldDefinitionViewModel.cs" />
     <Compile Include="Util\StringUtils.cs" />
+    <Compile Include="Util\ValidationUtils.cs" />
     <Compile Include="Util\WindowUtils.cs" />
     <Page Include="Fields\Windows\EditFieldDefinitionWindow.xaml">
       <SubType>Designer</SubType>
