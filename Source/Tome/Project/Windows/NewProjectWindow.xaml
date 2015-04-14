@@ -7,21 +7,9 @@
         xmlns:viewModels="clr-namespace:Tome.Project.ViewModels"
         xmlns:coreValidation="clr-namespace:Tome.Core.Validation"
         mc:Ignorable="d"
-        Title="New Tome Project" Height="110" Width="640" Loaded="OnLoaded"
+        Title="New Tome Project" Height="150" Width="640" Loaded="OnLoaded"
         d:DataContext="{d:DesignInstance viewModels:NewProjectViewModel}">
 	<Grid>
-		<Grid.Resources>
-			<Style x:Key="TextBoxWithErrorTooltip" TargetType="TextBox">
-				<Style.Triggers>
-					<Trigger Property="Validation.HasError" Value="true">
-						<Setter Property="ToolTip"
-						        Value="{Binding RelativeSource={RelativeSource Self},
-                        Path=(Validation.Errors)[0].ErrorContent}" />
-					</Trigger>
-				</Style.Triggers>
-			</Style>
-		</Grid.Resources>
-
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition />
@@ -33,10 +21,10 @@
 			<RowDefinition />
 		</Grid.RowDefinitions>
 
-		<Label Grid.Row="0" Grid.Column="0">
+		<Label Grid.Row="0" Grid.Column="0" Style="{StaticResource ErrorLabelMargin}">
 			Name:
 		</Label>
-		<TextBox Grid.Row="0" Grid.Column="1" Name="NameTextBox" Style="{StaticResource TextBoxWithErrorTooltip}">
+		<TextBox Grid.Row="0" Grid.Column="1" Name="NameTextBox" Style="{StaticResource ErrorLabelMargin}" Validation.ErrorTemplate="{StaticResource ErrorLabel}">
 			<TextBox.Text>
 				<Binding Path="Name">
 					<Binding.ValidationRules>
@@ -46,10 +34,10 @@
 			</TextBox.Text>
 		</TextBox>
 
-		<Label Grid.Row="1" Grid.Column="0">
+		<Label Grid.Row="1" Grid.Column="0" Style="{StaticResource ErrorLabelMargin}">
 			Location:
 		</Label>
-		<TextBox Grid.Row="1" Grid.Column="1" Name="LocationTextBox" Style="{StaticResource TextBoxWithErrorTooltip}">
+		<TextBox Grid.Row="1" Grid.Column="1" Name="LocationTextBox" Style="{StaticResource ErrorLabelMargin}" Validation.ErrorTemplate="{StaticResource ErrorLabel}">
 			<TextBox.Text>
 				<Binding Path="Path">
 					<Binding.ValidationRules>
@@ -58,7 +46,7 @@
 				</Binding>
 			</TextBox.Text>
 		</TextBox>
-		<Button Grid.Row="1" Grid.Column="2" Click="OnClickBrowseLocation">Browse</Button>
+		<Button Grid.Row="1" Grid.Column="2" Click="OnClickBrowseLocation" Style="{StaticResource ErrorLabelMargin}">Browse</Button>
 
 		<Grid Grid.Row="2" Grid.Column="2">
 			<Grid.ColumnDefinitions>
