@@ -68,7 +68,7 @@ namespace Tome.Fields.Windows
 
         private void CanExecuteDelete(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            e.CanExecute = this.FieldDefinitionSelected;
         }
 
         private void CanExecuteEdit(object sender, CanExecuteRoutedEventArgs e)
