@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tome.Fields.Windows"
         xmlns:viewModels="clr-namespace:Tome.Fields.ViewModels"
+        xmlns:coreValidation="clr-namespace:Tome.Core.Validation"
         mc:Ignorable="d"
         Title="Field Definition" Height="300" Width="300"
         d:DataContext="{d:DesignInstance viewModels:FieldDefinitionViewModel}">
@@ -23,11 +24,28 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 
-		<Label Grid.Row="0" Grid.Column="0">Display Name:</Label>
-		<TextBox Grid.Row="0" Grid.Column="1" Name="TextBoxDisplayName" Text="{Binding DisplayName}" TextChanged="OnTextBoxDisplayNameChanged" />
+		<Label Grid.Row="0" Grid.Column="0" Style="{StaticResource ErrorLabelMargin}">Display Name:</Label>
+		<TextBox Grid.Row="0" Grid.Column="1" Name="TextBoxDisplayName" TextChanged="OnTextBoxDisplayNameChanged" Style="{StaticResource ErrorLabelMargin}" Validation.ErrorTemplate="{StaticResource ErrorLabel}">
+            <TextBox.Text>
+				<Binding Path="DisplayName">
+					<Binding.ValidationRules>
+						<coreValidation:StringNotEmptyValidationRule />
+					</Binding.ValidationRules>
+				</Binding>
+			</TextBox.Text>
+        </TextBox>
 
-		<Label Grid.Row="1" Grid.Column="0">Id:</Label>
-		<TextBox Grid.Row="1" Grid.Column="1" Name="TextBoxId" Text="{Binding Id}" />
+		<Label Grid.Row="1" Grid.Column="0" Style="{StaticResource ErrorLabelMargin}">Id:</Label>
+		<TextBox Grid.Row="1" Grid.Column="1" Name="TextBoxId" Style="{StaticResource ErrorLabelMargin}" Validation.ErrorTemplate="{StaticResource ErrorLabel}">
+            <TextBox.Text>
+				<Binding Path="Id">
+					<Binding.ValidationRules>
+                        <coreValidation:StringNotEmptyValidationRule />
+                        <DataErrorValidationRule />
+                    </Binding.ValidationRules>
+				</Binding>
+			</TextBox.Text>
+        </TextBox>
 
         <Label Grid.Row="2" Grid.Column="0">File:</Label>
 		<ComboBox Grid.Row="2" Grid.Column="1" Name="ComboBoxFile" SelectedItem="{Binding File}" />

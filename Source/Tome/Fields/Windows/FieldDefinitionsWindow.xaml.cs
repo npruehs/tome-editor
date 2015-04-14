@@ -109,9 +109,7 @@ namespace Tome.Fields.Windows
             viewModel.File =
                 this.FieldDefinitionsViewModel.FieldDefinitionFiles.FirstOrDefault(
                     file => file.FieldDefinitions.Contains(field));
-
-            // Set forbidden field ids.
-            this.editFieldDefinitionWindow.ExistingFieldIds =
+            viewModel.ExistingFieldIds =
                 this.FieldDefinitionsViewModel.FieldDefinitions.Select(existingField => existingField.Id)
                     .Where(fieldId => !Equals(fieldId, field.Id));
 
@@ -161,9 +159,7 @@ namespace Tome.Fields.Windows
             var viewModel = this.editFieldDefinitionWindow.FieldDefinitionViewModel;
             viewModel.FieldType = FieldType.Int;
             viewModel.File = this.FieldDefinitionsViewModel.FieldDefinitionFiles[0];
-
-            // Set forbidden field ids.
-            this.editFieldDefinitionWindow.ExistingFieldIds =
+            viewModel.ExistingFieldIds =
                 this.FieldDefinitionsViewModel.FieldDefinitions.Select(field => field.Id);
 
             // Set available field definition files.

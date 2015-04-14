@@ -6,12 +6,14 @@
 
 namespace Tome.Fields.ViewModels
 {
+    using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using System.Runtime.CompilerServices;
 
     using Tome.Model.Fields;
 
-    public class FieldDefinitionViewModel : INotifyPropertyChanged
+    public class FieldDefinitionViewModel : INotifyPropertyChanged, IDataErrorInfo
     {
         #region Fields
 
@@ -20,6 +22,8 @@ namespace Tome.Fields.ViewModels
         private string description;
 
         private string displayName;
+
+        private IEnumerable<string> existingFieldIds;
 
         private FieldType fieldType;
 
@@ -85,6 +89,24 @@ namespace Tome.Fields.ViewModels
             }
         }
 
+        public string Error { get; }
+
+        public IEnumerable<string> ExistingFieldIds
+        {
+            get
+            {
+                return this.existingFieldIds;
+            }
+            set
+            {
+                if (!Equals(this.existingFieldIds, value))
+                {
+                    this.existingFieldIds = value;
+                    this.OnPropertyChanged();
+                }
+            }
+        }
+
         public FieldType FieldType
         {
             get
@@ -130,6 +152,22 @@ namespace Tome.Fields.ViewModels
                     this.id = value;
                     this.OnPropertyChanged();
                 }
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                if (columnName == "Id")
+                {
+                    if (this.ExistingFieldIds != null && this.ExistingFieldIds.Contains(this.Id))
+                    {
+                        return "Field id already in use.";
+                    }
+                }
+
+                return null;
             }
         }
 

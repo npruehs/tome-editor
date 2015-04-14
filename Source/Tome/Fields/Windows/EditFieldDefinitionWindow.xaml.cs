@@ -44,8 +44,6 @@ namespace Tome.Fields.Windows
 
         #region Properties
 
-        public IEnumerable<string> ExistingFieldIds { get; set; }
-
         public FieldDefinitionViewModel FieldDefinitionViewModel { get; set; }
 
         public bool Result { get; set; }
@@ -76,26 +74,19 @@ namespace Tome.Fields.Windows
 
         private void OnClickOk(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(this.FieldDefinitionViewModel.Id))
+            // Validate data.
+            var bindingExpression = this.TextBoxDisplayName.GetBindingExpression(TextBox.TextProperty);
+            bindingExpression?.UpdateSource();
+
+            bindingExpression = this.TextBoxId.GetBindingExpression(TextBox.TextProperty);
+            bindingExpression?.UpdateSource();
+
+            if (!ValidationUtils.IsValid(this))
             {
-                WindowUtils.ShowErrorMessage("Error", "Id must not be empty.");
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(this.FieldDefinitionViewModel.DisplayName))
-            {
-                WindowUtils.ShowErrorMessage("Error", "Display name must not be empty.");
-                return;
-            }
-
-            if (this.ExistingFieldIds.Contains(this.FieldDefinitionViewModel.Id))
-            {
-                WindowUtils.ShowErrorMessage(
-                    "Error",
-                    string.Format("A field with the id {0} already exists.", this.FieldDefinitionViewModel.Id));
-                return;
-            }
-
+            // Close window.
             this.Result = true;
             this.Close();
         }
