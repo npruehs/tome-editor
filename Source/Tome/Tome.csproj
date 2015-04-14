@@ -57,6 +57,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Collections\CollectionDecorator.cs" />
+    <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Collections\MultipleCollectionsView.cs" />
     <Compile Include="Collections\ObservableWrappedCollection.cs" />
     <Compile Include="Core\Validation\DirectoryMustExistValidationRule.cs" />

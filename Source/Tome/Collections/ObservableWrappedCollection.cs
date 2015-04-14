@@ -9,6 +9,7 @@ namespace Tome.Collections
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
+    using System.Linq;
 
     /// <summary>
     ///   Decorates the <seealso cref="ICollection{T}.Add"/>,
@@ -69,6 +70,10 @@ namespace Tome.Collections
 
         public override bool Remove(T item)
         {
+            // Get index of removed item for CollectionChanged event.
+            var itemIndex = this.Collection.IndexOf(item);
+
+            // Remove item.
             var removed = base.Remove(item);
 
             if (!removed)
@@ -76,7 +81,8 @@ namespace Tome.Collections
                 return false;
             }
 
-            var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new List<T> { item });
+            // Notify listeners.
+            var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new List<T> { item }, itemIndex);
             this.OnCollectionChanged(e);
 
             return true;
