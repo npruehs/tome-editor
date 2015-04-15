@@ -8,11 +8,11 @@ namespace Tome.Fields.Windows
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Data;
 
+    using Tome.Core.Validation;
     using Tome.Fields.ViewModels;
     using Tome.Model.Fields;
     using Tome.Util;
@@ -118,18 +118,26 @@ namespace Tome.Fields.Windows
             }
 
             // Create control.
+            var binding = new Binding("DefaultValue");
+            binding.Source = this.FieldDefinitionViewModel;
+            binding.ValidationRules.Add(new StringNotEmptyValidationRule());
+
+            var textBox = new TextBox();
+            textBox.SetBinding(TextBox.TextProperty, binding);
+            textBox.Style = (Style)this.FindResource("ErrorLabelMargin");
+            Validation.SetErrorTemplate(textBox, (ControlTemplate)this.FindResource("ErrorLabel"));
+
+            this.DockPanelDefaultValueUIElement.Children.Clear();
+            this.DockPanelDefaultValueUIElement.Children.Add(textBox);
+
             switch (fieldType)
             {
                 case FieldType.Int:
+                    binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(int)));
+                    break;
+
                 case FieldType.String:
-                    var binding = new Binding("DefaultValue");
-                    binding.Source = this.FieldDefinitionViewModel;
-
-                    var textBox = new TextBox();
-                    textBox.SetBinding(TextBox.TextProperty, binding);
-
-                    this.DockPanelDefaultValueUIElement.Children.Clear();
-                    this.DockPanelDefaultValueUIElement.Children.Add(textBox);
+                    binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(string)));
                     break;
             }
         }
