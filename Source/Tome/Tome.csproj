@@ -64,6 +64,7 @@
     <Compile Include="Core\Validation\DirectoryMustExistValidationRule.cs" />
     <Compile Include="Core\Validation\StringNotEmptyValidationRule.cs" />
     <Compile Include="Fields\Commands\FieldDefinitionWindowCommands.cs" />
+    <Compile Include="Fields\Validation\UniqueFieldIdValidationRule.cs" />
     <Compile Include="Fields\ViewModels\FIeldDefinitionFileViewModel.cs" />
     <Compile Include="Fields\ViewModels\FieldDefinitionViewModel.cs" />
     <Compile Include="Util\StringUtils.cs" />

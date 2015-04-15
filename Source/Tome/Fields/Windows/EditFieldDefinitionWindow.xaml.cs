@@ -13,6 +13,7 @@ namespace Tome.Fields.Windows
     using System.Windows.Data;
 
     using Tome.Core.Validation;
+    using Tome.Fields.Validation;
     using Tome.Fields.ViewModels;
     using Tome.Model.Fields;
     using Tome.Util;
@@ -51,6 +52,16 @@ namespace Tome.Fields.Windows
         #endregion
 
         #region Public Methods and Operators
+
+        public void SetExistingFieldIds(IEnumerable<string> existingFieldIds)
+        {
+            var bindingExpression = this.TextBoxId.GetBindingExpression(TextBox.TextProperty);
+            var binding = bindingExpression.ParentBinding;
+
+            binding.ValidationRules.Clear();
+            binding.ValidationRules.Add(new StringNotEmptyValidationRule());
+            binding.ValidationRules.Add(new UniqueFieldIdValidationRule { ExistingFieldIds = existingFieldIds });
+        }
 
         public void SetFieldDefinitionFiles(List<FieldDefinitionFileViewModel> fieldDefinitionFiles)
         {

@@ -36,17 +36,8 @@
         </TextBox>
 
 		<Label Grid.Row="1" Grid.Column="0" Style="{StaticResource ErrorLabelMargin}">Id:</Label>
-		<TextBox Grid.Row="1" Grid.Column="1" Name="TextBoxId" Style="{StaticResource ErrorLabelMargin}" Validation.ErrorTemplate="{StaticResource ErrorLabel}">
-            <TextBox.Text>
-				<Binding Path="Id">
-					<Binding.ValidationRules>
-                        <coreValidation:StringNotEmptyValidationRule />
-                        <DataErrorValidationRule />
-                    </Binding.ValidationRules>
-				</Binding>
-			</TextBox.Text>
-        </TextBox>
-
+        <TextBox Grid.Row="1" Grid.Column="1" Name="TextBoxId" Text="{Binding Id}"  Style="{StaticResource ErrorLabelMargin}" Validation.ErrorTemplate="{StaticResource ErrorLabel}" />
+        
         <Label Grid.Row="2" Grid.Column="0">File:</Label>
 		<ComboBox Grid.Row="2" Grid.Column="1" Name="ComboBoxFile" SelectedItem="{Binding File}" />
 

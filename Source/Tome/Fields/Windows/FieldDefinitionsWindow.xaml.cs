@@ -109,13 +109,15 @@ namespace Tome.Fields.Windows
             viewModel.File =
                 this.FieldDefinitionsViewModel.FieldDefinitionFiles.FirstOrDefault(
                     file => file.FieldDefinitions.Contains(field));
-            viewModel.ExistingFieldIds =
-                this.FieldDefinitionsViewModel.FieldDefinitions.Select(existingField => existingField.Id)
-                    .Where(fieldId => !Equals(fieldId, field.Id));
 
             // Set available field definition files.
             this.editFieldDefinitionWindow.SetFieldDefinitionFiles(this.FieldDefinitionsViewModel.FieldDefinitionFiles);
             this.editFieldDefinitionWindow.ComboBoxFile.IsEnabled = false;
+
+            // Enforce unique field ids.
+            this.editFieldDefinitionWindow.SetExistingFieldIds(
+                this.FieldDefinitionsViewModel.FieldDefinitions.Select(existingField => existingField.Id)
+                    .Where(fieldId => !Equals(fieldId, field.Id)));
         }
 
         private void ExecutedClose(object target, ExecutedRoutedEventArgs e)
@@ -159,11 +161,13 @@ namespace Tome.Fields.Windows
             var viewModel = this.editFieldDefinitionWindow.FieldDefinitionViewModel;
             viewModel.FieldType = FieldType.Int;
             viewModel.File = this.FieldDefinitionsViewModel.FieldDefinitionFiles[0];
-            viewModel.ExistingFieldIds =
-                this.FieldDefinitionsViewModel.FieldDefinitions.Select(field => field.Id);
 
             // Set available field definition files.
             this.editFieldDefinitionWindow.SetFieldDefinitionFiles(this.FieldDefinitionsViewModel.FieldDefinitionFiles);
+
+            // Enforce unique field ids.
+            this.editFieldDefinitionWindow.SetExistingFieldIds(
+                this.FieldDefinitionsViewModel.FieldDefinitions.Select(field => field.Id));
         }
 
         private void OnEditFieldDefinitionWindowClosed(object sender, EventArgs e)
