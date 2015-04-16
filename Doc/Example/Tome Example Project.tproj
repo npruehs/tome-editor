@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TomeProject>
+  <Name>Tome Example Project</Name>
+  <Description />
+  <FieldDefinitions>
+    <Path>Tome Example Project.tfields</Path>
+  </FieldDefinitions>
+  <Records>
+    <Path>Tome Example Project.tdata</Path>
+  </Records>
+</TomeProject>
