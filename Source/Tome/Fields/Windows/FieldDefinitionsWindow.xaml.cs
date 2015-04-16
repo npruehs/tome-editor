@@ -184,6 +184,7 @@ namespace Tome.Fields.Windows
 
             if (field == null)
             {
+                // Add new field.
                 var newFieldDefinition = new FieldDefinition
                 {
                     DisplayName = viewModel.DisplayName,
@@ -197,6 +198,7 @@ namespace Tome.Fields.Windows
             }
             else
             {
+                // Edit existing field.
                 field.DisplayName = viewModel.DisplayName;
                 field.Id = viewModel.Id;
                 field.FieldType = viewModel.FieldType;
@@ -204,6 +206,11 @@ namespace Tome.Fields.Windows
                 field.Description = viewModel.Description;
             }
 
+            // Sort fields by display name.
+            viewModel.File.FieldDefinitions.Sort(
+                (f1, f2) => string.Compare(f1.DisplayName, f2.DisplayName, StringComparison.Ordinal));
+
+            // Update view.
             this.FieldGrid.Items.Refresh();
         }
 

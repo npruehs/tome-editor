@@ -6,26 +6,26 @@
 
 namespace Tome.Collections
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
-    using System.Linq;
 
     /// <summary>
-    ///   Decorates the <seealso cref="ICollection{T}.Add"/>,
-    ///   <seealso cref="ICollection{T}.Clear"/> and
-    ///   <seealso cref="ICollection{T}.Remove"/> operations of a
-    ///   <seealso cref="ICollection{T}"/> in order to notify interested
+    ///   Decorates the <seealso cref="ICollection{T}.Add" />,
+    ///   <seealso cref="ICollection{T}.Clear" /> and
+    ///   <seealso cref="ICollection{T}.Remove" /> operations of a
+    ///   <seealso cref="ICollection{T}" /> in order to notify interested
     ///   listeners.
     /// </summary>
     /// <remarks>
-    ///   In contrast to <seealso cref="ObservableCollection{T}"/>, this
+    ///   In contrast to <seealso cref="ObservableCollection{T}" />, this
     ///   collection does not copy all items of the underlying collection,
     ///   requiring updates of both collections, but holds a reference to it
     ///   instead. Thus, modifying this collection will modify the underlying
     ///   collection as well. However, note that modifying the underlying
     ///   collection directly won't raise the respective
-    ///   <seealso cref="INotifyCollectionChanged"/> events.
+    ///   <seealso cref="INotifyCollectionChanged" /> events.
     /// </remarks>
     /// <typeparam name="T">Type of the collection items.</typeparam>
     public class ObservableWrappedCollection<T> : CollectionDecorator<T>, INotifyCollectionChanged
@@ -82,10 +82,36 @@ namespace Tome.Collections
             }
 
             // Notify listeners.
-            var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new List<T> { item }, itemIndex);
+            var e = new NotifyCollectionChangedEventArgs(
+                NotifyCollectionChangedAction.Remove,
+                new List<T> { item },
+                itemIndex);
             this.OnCollectionChanged(e);
 
             return true;
+        }
+
+        public void Sort(Comparison<T> comparison)
+        {
+            if (this.Count == 0)
+            {
+                return;
+            }
+
+            // Sort underlying collection.
+            var items = new List<T>(this.Collection);
+            items.Sort(comparison);
+
+            base.Clear();
+
+            foreach (var item in items)
+            {
+                base.Add(item);
+            }
+
+            // Notify listeners.
+            var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+            this.OnCollectionChanged(e);
         }
 
         #endregion
