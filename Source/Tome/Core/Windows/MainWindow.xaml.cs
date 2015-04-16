@@ -181,23 +181,6 @@ namespace Tome.Core.Windows
                     Project = newProject
                 };
 
-                // TODO(np): Remove - Add dummy data.
-                newProject.FieldDefinitionFiles[0].FieldDefinitions.Add(
-                    new FieldDefinition
-                    {
-                        DefaultValue = 33.0f,
-                        Description = "Increase of speed per second",
-                        DisplayName = "Acceleration",
-                        FieldType = FieldType.None,
-                        Id = "acceleration"
-                    });
-                newProject.RecordFiles[0].Records.Add(
-                    new Record
-                    {
-                        Id = "Fighter",
-                        FieldValues = new Dictionary<string, object> { { "acceleration", "46.0f" } }
-                    });
-
                 // Write project files.
                 var serializer = new TomeProjectFileSerializer();
                 serializer.Serialize(newProjectFile);
