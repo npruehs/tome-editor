@@ -132,7 +132,6 @@ namespace Tome.Fields.Windows
             // Create binding.
             var binding = new Binding("DefaultValue");
             binding.Source = this.FieldDefinitionViewModel;
-            binding.ValidationRules.Add(new StringNotEmptyValidationRule());
 
             switch (fieldType)
             {
