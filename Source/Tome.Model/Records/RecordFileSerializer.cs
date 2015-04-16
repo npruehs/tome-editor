@@ -68,7 +68,6 @@ namespace Tome.Model.Records
                             records.Add(record);
                         }
                     }
-                    xmlReader.ReadEndElement();
                 }
             }
         }

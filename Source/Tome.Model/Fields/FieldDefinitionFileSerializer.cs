@@ -69,7 +69,6 @@ namespace Tome.Model.Fields
                             xmlReader.Read();
                         }
                     }
-                    xmlReader.ReadEndElement();
                 }
             }
         }
