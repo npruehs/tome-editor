@@ -60,6 +60,7 @@
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Collections\MultipleCollectionsView.cs" />
     <Compile Include="Collections\ObservableWrappedCollection.cs" />
+    <Compile Include="Core\Conversion\FieldValueConverter.cs" />
     <Compile Include="Core\Validation\CanConvertToTypeValidationRule.cs" />
     <Compile Include="Core\Validation\DirectoryMustExistValidationRule.cs" />
     <Compile Include="Core\Validation\StringNotEmptyValidationRule.cs" />

@@ -12,6 +12,7 @@ namespace Tome.Fields.Windows
     using System.Windows.Controls;
     using System.Windows.Data;
 
+    using Tome.Core.Conversion;
     using Tome.Core.Validation;
     using Tome.Fields.Validation;
     using Tome.Fields.ViewModels;
@@ -128,29 +129,33 @@ namespace Tome.Fields.Windows
                     break;
             }
 
-            // Create control.
+            // Create binding.
             var binding = new Binding("DefaultValue");
             binding.Source = this.FieldDefinitionViewModel;
             binding.ValidationRules.Add(new StringNotEmptyValidationRule());
-
-            var textBox = new TextBox();
-            textBox.SetBinding(TextBox.TextProperty, binding);
-            textBox.Style = (Style)this.FindResource("ErrorLabelMargin");
-            Validation.SetErrorTemplate(textBox, (ControlTemplate)this.FindResource("ErrorLabel"));
-
-            this.DockPanelDefaultValueUIElement.Children.Clear();
-            this.DockPanelDefaultValueUIElement.Children.Add(textBox);
 
             switch (fieldType)
             {
                 case FieldType.Int:
                     binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(int)));
+                    binding.Converter = new FieldValueConverter(typeof(int));
                     break;
 
                 case FieldType.String:
                     binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(string)));
+                    binding.Converter = new FieldValueConverter(typeof(string));
                     break;
             }
+
+            // Create control.
+            var textBox = new TextBox();
+            textBox.SetBinding(TextBox.TextProperty, binding);
+            textBox.Style = (Style)this.FindResource("ErrorLabelMargin");
+            Validation.SetErrorTemplate(textBox, (ControlTemplate)this.FindResource("ErrorLabel"));
+
+            // Add control to window.
+            this.DockPanelDefaultValueUIElement.Children.Clear();
+            this.DockPanelDefaultValueUIElement.Children.Add(textBox);
         }
 
         private void OnTextBoxDisplayNameChanged(object sender, RoutedEventArgs e)
