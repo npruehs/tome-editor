@@ -55,7 +55,7 @@ Tome is developed using the [GitFlow branching model](http://nvie.com/posts/a-su
 
 ### Step 3: Implement your feature or bugfix
 
-Tome is based on Microsoft's [Windows Presentation Foundation](https://msdn.microsoft.com/en-us/library/ms754130(v=vs.110).aspx) and the .NET Framework. We recommend using [Visual Studio](https://www.visualstudio.com/en-us/downloads/visual-studio-2015-downloads-vs.aspx) for developing, and [StyleCop](http://stylecop.codeplex.com/) for verifying your code against our [coding guidelines](https://msdn.microsoft.com/en-us/library/ff926074.aspx).
+Tome is based on Microsoft's [Windows Presentation Foundation](https://msdn.microsoft.com/en-us/library/ms754130(v=vs.110).aspx) and the .NET Framework. We recommend using [Visual Studio 2015](https://www.visualstudio.com/en-us/downloads/visual-studio-2015-downloads-vs.aspx) for developing, and [StyleCop](http://stylecop.codeplex.com/) for verifying your code against our [coding guidelines](https://msdn.microsoft.com/en-us/library/ff926074.aspx).
 
 You might also take a look at our [development wiki](https://github.com/npruehs/game-data-editor/wiki) in order to get a better understanding of how everything's tied together.
 
