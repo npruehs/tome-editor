@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tome"
         xmlns:commands="clr-namespace:Tome.Core.Commands"
+        xmlns:records="clr-namespace:Tome.Records.ViewModels"
         mc:Ignorable="d"
         Title="Tome - Game Data Editor" Height="350" Width="525" WindowState="Maximized">
 	<Grid Margin="0,0,0,0">
@@ -37,7 +38,17 @@
                 <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
             
-            <TreeView Grid.Column="0"></TreeView>
+            <TreeView Grid.Column="0" Name="RecordsTreeView">
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type records:RecordFileViewModel}" ItemsSource="{Binding Records}">
+                        <TextBlock Text="{Binding Path}" />
+                    </HierarchicalDataTemplate>
+
+                    <HierarchicalDataTemplate DataType="{x:Type records:RecordViewModel}">
+                        <TextBlock Text="{Binding Id}" />
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+            </TreeView>
             
             <GridSplitter
                 Grid.Column="1"

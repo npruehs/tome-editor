@@ -66,8 +66,11 @@
     <Compile Include="Core\Validation\StringNotEmptyValidationRule.cs" />
     <Compile Include="Fields\Commands\FieldDefinitionWindowCommands.cs" />
     <Compile Include="Fields\Validation\UniqueFieldIdValidationRule.cs" />
-    <Compile Include="Fields\ViewModels\FIeldDefinitionFileViewModel.cs" />
+    <Compile Include="Fields\ViewModels\FieldDefinitionFileViewModel.cs" />
     <Compile Include="Fields\ViewModels\FieldDefinitionViewModel.cs" />
+    <Compile Include="Records\ViewModels\RecordFileViewModel.cs" />
+    <Compile Include="Records\ViewModels\RecordsViewModel.cs" />
+    <Compile Include="Records\ViewModels\RecordViewModel.cs" />
     <Compile Include="Util\StringUtils.cs" />
     <Compile Include="Util\ValidationUtils.cs" />
     <Compile Include="Util\WindowUtils.cs" />

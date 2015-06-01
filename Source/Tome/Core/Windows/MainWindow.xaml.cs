@@ -7,7 +7,6 @@
 namespace Tome.Core.Windows
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Windows;
     using System.Windows.Input;
@@ -16,10 +15,9 @@ namespace Tome.Core.Windows
 
     using Tome.Fields.Windows;
     using Tome.Help.Windows;
-    using Tome.Model.Fields;
     using Tome.Model.Project;
-    using Tome.Model.Records;
     using Tome.Project.Windows;
+    using Tome.Records.ViewModels;
     using Tome.Util;
 
     public partial class MainWindow : Window
@@ -46,6 +44,8 @@ namespace Tome.Core.Windows
         #endregion
 
         #region Properties
+
+        public RecordsViewModel RecordsViewModel { get; private set; }
 
         private bool ProjectLoaded
         {
@@ -105,9 +105,9 @@ namespace Tome.Core.Windows
         private void ExecutedFieldDefinitions(object target, ExecutedRoutedEventArgs e)
         {
             this.fieldDefinitionsWindow = WindowUtils.ShowWindow(
-                           this.fieldDefinitionsWindow,
-                           this,
-                           this.OnFieldDefinitionsWindowClosed);
+                this.fieldDefinitionsWindow,
+                this,
+                this.OnFieldDefinitionsWindowClosed);
             this.fieldDefinitionsWindow.SetFieldDefinitions(this.currentProject.Project.FieldDefinitionFiles);
         }
 
@@ -142,6 +142,10 @@ namespace Tome.Core.Windows
             var serializer = new TomeProjectFileSerializer();
             var loadedProjectFile = serializer.Deserialize(openFileDialog.FileName);
             this.currentProject = loadedProjectFile;
+
+            // Setup records.
+            this.RecordsViewModel = new RecordsViewModel(this.currentProject.Project.RecordFiles);
+            this.RecordsTreeView.ItemsSource = this.RecordsViewModel.RecordFiles;
         }
 
         private void ExecutedSave(object target, ExecutedRoutedEventArgs e)
