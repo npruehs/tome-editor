@@ -16,7 +16,7 @@ namespace Tome.Core.Validation
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             var s = value as string;
-            if (s == null || string.IsNullOrEmpty(s))
+            if (string.IsNullOrEmpty(s))
             {
                 return new ValidationResult(false, "Must not be empty.");
             }
