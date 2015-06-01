@@ -16,6 +16,7 @@ namespace Tome.Core.Windows
     using Tome.Fields.Windows;
     using Tome.Help.Windows;
     using Tome.Model.Project;
+    using Tome.Model.Records;
     using Tome.Project.Windows;
     using Tome.Records.ViewModels;
     using Tome.Util;
@@ -67,6 +68,11 @@ namespace Tome.Core.Windows
 
         #region Methods
 
+        private void CanExecuteAddRecord(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ProjectLoaded;
+        }
+
         private void CanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
@@ -95,6 +101,11 @@ namespace Tome.Core.Windows
         private void CanExecuteSave(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = this.ProjectLoaded;
+        }
+
+        private void ExecutedAddRecord(object target, ExecutedRoutedEventArgs e)
+        {
+            this.RecordsViewModel.RecordFiles[0].Records.Add(new Record { Id = "New Record" });
         }
 
         private void ExecutedClose(object target, ExecutedRoutedEventArgs e)

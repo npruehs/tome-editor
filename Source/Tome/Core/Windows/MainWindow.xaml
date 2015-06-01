@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tome"
         xmlns:commands="clr-namespace:Tome.Core.Commands"
-        xmlns:records="clr-namespace:Tome.Records.ViewModels"
+        xmlns:recordViewModels="clr-namespace:Tome.Records.ViewModels"
+        xmlns:recordCommands="clr-namespace:Tome.Records.Records"
+        xmlns:records="clr-namespace:Tome.Model.Records;assembly=Tome.Model"
         mc:Ignorable="d"
         Title="Tome - Game Data Editor" Height="350" Width="525" WindowState="Maximized">
 	<Grid Margin="0,0,0,0">
@@ -24,6 +26,9 @@
                 <Separator />
 				<MenuItem Header="Exit" Command="ApplicationCommands.Close" />
 			</MenuItem>
+            <MenuItem Header="Records">
+                <MenuItem Header="New Record..." Command="recordCommands:RecordCommands.Add" />
+            </MenuItem>
             <MenuItem Header="Fields">
                 <MenuItem Header="Field Definitions..." Command="commands:MainWindowCommands.FieldDefinitions" />
             </MenuItem>
@@ -40,11 +45,11 @@
             
             <TreeView Grid.Column="0" Name="RecordsTreeView">
                 <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type records:RecordFileViewModel}" ItemsSource="{Binding Records}">
+                    <HierarchicalDataTemplate DataType="{x:Type recordViewModels:RecordFileViewModel}" ItemsSource="{Binding Records}">
                         <TextBlock Text="{Binding Path}" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type records:RecordViewModel}">
+                    <HierarchicalDataTemplate DataType="{x:Type records:Record}">
                         <TextBlock Text="{Binding Id}" />
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
@@ -77,6 +82,9 @@
         <CommandBinding Command="ApplicationCommands.Close"
 		                Executed="ExecutedClose"
 		                CanExecute="CanExecuteClose" />
+        <CommandBinding Command="recordCommands:RecordCommands.Add"
+		        Executed="ExecutedAddRecord"
+		        CanExecute="CanExecuteAddRecord" />
         <CommandBinding Command="commands:MainWindowCommands.FieldDefinitions"
 		        Executed="ExecutedFieldDefinitions"
 		        CanExecute="CanExecuteFieldDefinitions" />

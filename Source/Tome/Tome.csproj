@@ -68,6 +68,7 @@
     <Compile Include="Fields\Validation\UniqueFieldIdValidationRule.cs" />
     <Compile Include="Fields\ViewModels\FieldDefinitionFileViewModel.cs" />
     <Compile Include="Fields\ViewModels\FieldDefinitionViewModel.cs" />
+    <Compile Include="Records\Records\RecordCommands.cs" />
     <Compile Include="Records\ViewModels\RecordFileViewModel.cs" />
     <Compile Include="Records\ViewModels\RecordsViewModel.cs" />
     <Compile Include="Records\ViewModels\RecordViewModel.cs" />
