@@ -1,22 +1,18 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Record.cs" company="Tome">
+// <copyright file="RecordCommands.cs" company="Tome">
 //   Copyright (c) Tome. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Tome.Model.Records
+namespace Tome.Records.Records
 {
-    using System.Collections.Generic;
+    using System.Windows.Input;
 
-    public class Record
+    public class RecordCommands
     {
-        #region Properties
+        #region Constants
 
-        public string DisplayName { get; set; }
-
-        public Dictionary<string, object> FieldValues { get; set; }
-
-        public string Id { get; set; }
+        public static RoutedCommand Add = new RoutedCommand("Add Record", typeof(RecordCommands));
 
         #endregion
     }

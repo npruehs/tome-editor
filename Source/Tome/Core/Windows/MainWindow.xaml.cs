@@ -7,9 +7,11 @@
 namespace Tome.Core.Windows
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Forms.VisualStyles;
     using System.Windows.Input;
 
     using Microsoft.Win32;
@@ -20,6 +22,8 @@ namespace Tome.Core.Windows
     using Tome.Model.Project;
     using Tome.Model.Records;
     using Tome.Project.Windows;
+    using Tome.Records.ViewModels;
+    using Tome.Records.Windows;
     using Tome.Util;
 
     public partial class MainWindow : Window
@@ -34,6 +38,8 @@ namespace Tome.Core.Windows
 
         private NewProjectWindow newProjectWindow;
 
+        private NewRecordWindow newRecordWindow;
+
         #endregion
 
         #region Constructors and Destructors
@@ -46,6 +52,8 @@ namespace Tome.Core.Windows
         #endregion
 
         #region Properties
+
+        public RecordsViewModel RecordsViewModel { get; private set; }
 
         private bool ProjectLoaded
         {
@@ -66,6 +74,11 @@ namespace Tome.Core.Windows
         #endregion
 
         #region Methods
+
+        private void CanExecuteAddRecord(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ProjectLoaded;
+        }
 
         private void CanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -97,6 +110,21 @@ namespace Tome.Core.Windows
             e.CanExecute = this.ProjectLoaded;
         }
 
+        private void ExecutedAddRecord(object target, ExecutedRoutedEventArgs e)
+        {
+            // Show window.
+            this.newRecordWindow = WindowUtils.ShowWindow(this.newRecordWindow, this, this.OnNewRecordWindowClosed);
+
+            // Fill view model.
+            this.newRecordWindow.RecordViewModel.File = this.RecordsViewModel.RecordFiles[0];
+
+            // Set available record definition files.
+            this.newRecordWindow.SetRecordFiles(this.RecordsViewModel.RecordFiles);
+
+            // Enforce unique record ids.
+            this.newRecordWindow.SetExistingRecordIds(this.RecordsViewModel.Records.Select(record => record.Id));
+        }
+
         private void ExecutedClose(object target, ExecutedRoutedEventArgs e)
         {
             this.Close();
@@ -105,9 +133,9 @@ namespace Tome.Core.Windows
         private void ExecutedFieldDefinitions(object target, ExecutedRoutedEventArgs e)
         {
             this.fieldDefinitionsWindow = WindowUtils.ShowWindow(
-                           this.fieldDefinitionsWindow,
-                           this,
-                           this.OnFieldDefinitionsWindowClosed);
+                this.fieldDefinitionsWindow,
+                this,
+                this.OnFieldDefinitionsWindowClosed);
             this.fieldDefinitionsWindow.SetFieldDefinitions(this.currentProject.Project.FieldDefinitionFiles);
         }
 
@@ -142,6 +170,10 @@ namespace Tome.Core.Windows
             var serializer = new TomeProjectFileSerializer();
             var loadedProjectFile = serializer.Deserialize(openFileDialog.FileName);
             this.currentProject = loadedProjectFile;
+
+            // Setup records.
+            this.RecordsViewModel = new RecordsViewModel(this.currentProject.Project.RecordFiles);
+            this.RecordsTreeView.ItemsSource = this.RecordsViewModel.RecordFiles;
         }
 
         private void ExecutedSave(object target, ExecutedRoutedEventArgs e)
@@ -192,6 +224,27 @@ namespace Tome.Core.Windows
             {
                 WindowUtils.ShowErrorMessage("Error creating project", exception.Message);
             }
+        }
+
+        private void OnNewRecordWindowClosed(object sender, EventArgs e)
+        {
+            this.Focus();
+
+            if (!this.newRecordWindow.Result)
+            {
+                return;
+            }
+
+            var viewModel = this.newRecordWindow.RecordViewModel;
+
+            // Add new record.
+            var newRecord = new Record { DisplayName = viewModel.DisplayName, Id = viewModel.Id };
+
+            viewModel.File.Records.Add(newRecord);
+
+            // Update view.
+            this.RecordsTreeView.Items.Refresh();
+            ControlUtils.ExpandAndSelectItem(this.RecordsTreeView, newRecord);
         }
 
         #endregion

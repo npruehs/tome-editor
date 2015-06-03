@@ -65,11 +65,19 @@
     <Compile Include="Core\Validation\DirectoryMustExistValidationRule.cs" />
     <Compile Include="Core\Validation\StringNotEmptyValidationRule.cs" />
     <Compile Include="Fields\Commands\FieldDefinitionWindowCommands.cs" />
-    <Compile Include="Fields\Validation\UniqueFieldIdValidationRule.cs" />
-    <Compile Include="Fields\ViewModels\FIeldDefinitionFileViewModel.cs" />
+    <Compile Include="Core\Validation\UniqueIdValidationRule.cs" />
+    <Compile Include="Fields\ViewModels\FieldDefinitionFileViewModel.cs" />
     <Compile Include="Fields\ViewModels\FieldDefinitionViewModel.cs" />
+    <Compile Include="Records\Records\RecordCommands.cs" />
+    <Compile Include="Records\ViewModels\RecordFileViewModel.cs" />
+    <Compile Include="Records\ViewModels\RecordsViewModel.cs" />
+    <Compile Include="Records\ViewModels\RecordViewModel.cs" />
+    <Compile Include="Records\Windows\NewRecordWindow.xaml.cs">
+      <DependentUpon>NewRecordWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Util\StringUtils.cs" />
     <Compile Include="Util\ValidationUtils.cs" />
+    <Compile Include="Util\ControlUtils.cs" />
     <Compile Include="Util\WindowUtils.cs" />
     <Page Include="Fields\Windows\EditFieldDefinitionWindow.xaml">
       <SubType>Designer</SubType>
@@ -107,6 +115,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Project\Windows\NewProjectWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Records\Windows\NewRecordWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -150,6 +162,7 @@
       <Name>Tome.Model</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

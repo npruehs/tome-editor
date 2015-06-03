@@ -1,21 +1,21 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="UniqueFieldIdValidationRule.cs" company="Tome">
+// <copyright file="UniqueIdValidationRule.cs" company="Tome">
 //   Copyright (c) Tome. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Tome.Fields.Validation
+namespace Tome.Core.Validation
 {
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Windows.Controls;
 
-    public class UniqueFieldIdValidationRule : ValidationRule
+    public class UniqueIdValidationRule : ValidationRule
     {
         #region Properties
 
-        public IEnumerable<string> ExistingFieldIds { get; set; }
+        public IEnumerable<string> ExistingIds { get; set; }
 
         #endregion
 
@@ -23,10 +23,10 @@ namespace Tome.Fields.Validation
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            var fieldId = (string)value;
-            if (this.ExistingFieldIds.Contains(fieldId))
+            var id = (string)value;
+            if (this.ExistingIds.Contains(id))
             {
-                return new ValidationResult(false, "Field id already in use.");
+                return new ValidationResult(false, "Id already in use.");
             }
 
             return ValidationResult.ValidResult;

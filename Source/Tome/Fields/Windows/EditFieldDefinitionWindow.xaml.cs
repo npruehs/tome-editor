@@ -14,7 +14,6 @@ namespace Tome.Fields.Windows
 
     using Tome.Core.Conversion;
     using Tome.Core.Validation;
-    using Tome.Fields.Validation;
     using Tome.Fields.ViewModels;
     using Tome.Model.Fields;
     using Tome.Util;
@@ -61,7 +60,7 @@ namespace Tome.Fields.Windows
 
             binding.ValidationRules.Clear();
             binding.ValidationRules.Add(new StringNotEmptyValidationRule());
-            binding.ValidationRules.Add(new UniqueFieldIdValidationRule { ExistingFieldIds = existingFieldIds });
+            binding.ValidationRules.Add(new UniqueIdValidationRule { ExistingIds = existingFieldIds });
         }
 
         public void SetFieldDefinitionFiles(List<FieldDefinitionFileViewModel> fieldDefinitionFiles)
