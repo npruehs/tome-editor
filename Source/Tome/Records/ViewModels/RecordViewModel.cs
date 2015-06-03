@@ -13,6 +13,10 @@ namespace Tome.Records.ViewModels
     {
         #region Fields
 
+        private string displayName;
+
+        private RecordFileViewModel file;
+
         private string id;
 
         #endregion
@@ -24,6 +28,38 @@ namespace Tome.Records.ViewModels
         #endregion
 
         #region Properties
+
+        public string DisplayName
+        {
+            get
+            {
+                return this.displayName;
+            }
+            set
+            {
+                if (!Equals(this.displayName, value))
+                {
+                    this.displayName = value;
+                    this.OnPropertyChanged();
+                }
+            }
+        }
+
+        public RecordFileViewModel File
+        {
+            get
+            {
+                return this.file;
+            }
+            set
+            {
+                if (!Equals(this.file, value))
+                {
+                    this.file = value;
+                    this.OnPropertyChanged();
+                }
+            }
+        }
 
         public string Id
         {

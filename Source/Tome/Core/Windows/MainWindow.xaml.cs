@@ -8,17 +8,22 @@ namespace Tome.Core.Windows
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Forms.VisualStyles;
     using System.Windows.Input;
 
     using Microsoft.Win32;
 
     using Tome.Fields.Windows;
     using Tome.Help.Windows;
+    using Tome.Model.Fields;
     using Tome.Model.Project;
     using Tome.Model.Records;
     using Tome.Project.Windows;
     using Tome.Records.ViewModels;
+    using Tome.Records.Windows;
     using Tome.Util;
 
     public partial class MainWindow : Window
@@ -32,6 +37,8 @@ namespace Tome.Core.Windows
         private FieldDefinitionsWindow fieldDefinitionsWindow;
 
         private NewProjectWindow newProjectWindow;
+
+        private NewRecordWindow newRecordWindow;
 
         #endregion
 
@@ -105,7 +112,17 @@ namespace Tome.Core.Windows
 
         private void ExecutedAddRecord(object target, ExecutedRoutedEventArgs e)
         {
-            this.RecordsViewModel.RecordFiles[0].Records.Add(new Record { Id = "New Record" });
+            // Show window.
+            this.newRecordWindow = WindowUtils.ShowWindow(this.newRecordWindow, this, this.OnNewRecordWindowClosed);
+
+            // Fill view model.
+            this.newRecordWindow.RecordViewModel.File = this.RecordsViewModel.RecordFiles[0];
+
+            // Set available record definition files.
+            this.newRecordWindow.SetRecordFiles(this.RecordsViewModel.RecordFiles);
+
+            // Enforce unique record ids.
+            this.newRecordWindow.SetExistingRecordIds(this.RecordsViewModel.Records.Select(record => record.Id));
         }
 
         private void ExecutedClose(object target, ExecutedRoutedEventArgs e)
@@ -207,6 +224,27 @@ namespace Tome.Core.Windows
             {
                 WindowUtils.ShowErrorMessage("Error creating project", exception.Message);
             }
+        }
+
+        private void OnNewRecordWindowClosed(object sender, EventArgs e)
+        {
+            this.Focus();
+
+            if (!this.newRecordWindow.Result)
+            {
+                return;
+            }
+
+            var viewModel = this.newRecordWindow.RecordViewModel;
+
+            // Add new record.
+            var newRecord = new Record { DisplayName = viewModel.DisplayName, Id = viewModel.Id };
+
+            viewModel.File.Records.Add(newRecord);
+
+            // Update view.
+            this.RecordsTreeView.Items.Refresh();
+            ControlUtils.ExpandAndSelectItem(this.RecordsTreeView, newRecord);
         }
 
         #endregion

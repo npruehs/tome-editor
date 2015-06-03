@@ -12,6 +12,8 @@ namespace Tome.Model.Records
     {
         #region Properties
 
+        public string DisplayName { get; set; }
+
         public Dictionary<string, object> FieldValues { get; set; }
 
         public string Id { get; set; }
