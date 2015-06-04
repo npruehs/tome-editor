@@ -38,7 +38,8 @@
         <Label Grid.Row="2" Grid.Column="0">File:</Label>
         <ComboBox Grid.Row="2" Grid.Column="1" Name="ComboBoxFile" SelectedItem="{Binding File}" />
 
-        <DataGrid Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding RecordFields}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow">
+        <Label Grid.Row="3" Grid.Column="0">Fields:</Label>
+        <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding RecordFields}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" HeadersVisibility="None" CanUserAddRows="False" CanUserDeleteRows="False">
             <DataGrid.Columns>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
