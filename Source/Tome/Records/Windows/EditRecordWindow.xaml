@@ -38,8 +38,24 @@
         <Label Grid.Row="2" Grid.Column="0">File:</Label>
         <ComboBox Grid.Row="2" Grid.Column="1" Name="ComboBoxFile" SelectedItem="{Binding File}" />
 
-        <DataGrid Grid.Row="3" Grid.ColumnSpan="2">
-            
+        <DataGrid Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding RecordFields}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding Path=Enabled, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding FieldId}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
         </DataGrid>
         
         <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">

@@ -6,6 +6,7 @@
 
 namespace Tome.Records.ViewModels
 {
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
@@ -18,6 +19,15 @@ namespace Tome.Records.ViewModels
         private RecordFileViewModel file;
 
         private string id;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        public RecordViewModel()
+        {
+            this.RecordFields = new ObservableCollection<RecordFieldViewModel>();
+        }
 
         #endregion
 
@@ -76,6 +86,8 @@ namespace Tome.Records.ViewModels
                 }
             }
         }
+
+        public ObservableCollection<RecordFieldViewModel> RecordFields { get; }
 
         #endregion
 

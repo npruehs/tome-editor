@@ -14,7 +14,7 @@ namespace Tome.Model.Records
 
         public string DisplayName { get; set; }
 
-        public Dictionary<string, object> FieldValues { get; set; }
+        public Dictionary<string, object> FieldValues { get; set; } = new Dictionary<string, object>();
 
         public string Id { get; set; }
 
