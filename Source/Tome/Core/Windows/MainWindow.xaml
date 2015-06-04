@@ -28,6 +28,7 @@
 			</MenuItem>
             <MenuItem Header="Records">
                 <MenuItem Header="New Record..." Command="recordCommands:RecordCommands.Add" />
+                <MenuItem Header="Edit Record..." Command="recordCommands:RecordCommands.Edit" />
             </MenuItem>
             <MenuItem Header="Fields">
                 <MenuItem Header="Field Definitions..." Command="commands:MainWindowCommands.FieldDefinitions" />
@@ -42,8 +43,8 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
-            
-            <TreeView Grid.Column="0" Name="RecordsTreeView">
+
+            <TreeView Grid.Column="0" Name="RecordsTreeView" MouseDoubleClick="OnMouseDoubleClickTreeView">
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type recordViewModels:RecordFileViewModel}" ItemsSource="{Binding Records}">
                         <TextBlock Text="{Binding Path}" />
@@ -85,6 +86,9 @@
         <CommandBinding Command="recordCommands:RecordCommands.Add"
 		        Executed="ExecutedAddRecord"
 		        CanExecute="CanExecuteAddRecord" />
+        <CommandBinding Command="recordCommands:RecordCommands.Edit"
+		                Executed="ExecutedEditRecord"
+		                CanExecute="CanExecuteEditRecord" />
         <CommandBinding Command="commands:MainWindowCommands.FieldDefinitions"
 		        Executed="ExecutedFieldDefinitions"
 		        CanExecute="CanExecuteFieldDefinitions" />

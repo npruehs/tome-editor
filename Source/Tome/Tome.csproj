@@ -72,8 +72,8 @@
     <Compile Include="Records\ViewModels\RecordFileViewModel.cs" />
     <Compile Include="Records\ViewModels\RecordsViewModel.cs" />
     <Compile Include="Records\ViewModels\RecordViewModel.cs" />
-    <Compile Include="Records\Windows\NewRecordWindow.xaml.cs">
-      <DependentUpon>NewRecordWindow.xaml</DependentUpon>
+    <Compile Include="Records\Windows\EditRecordWindow.xaml.cs">
+      <DependentUpon>EditRecordWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\StringUtils.cs" />
     <Compile Include="Util\ValidationUtils.cs" />
@@ -118,7 +118,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Records\Windows\NewRecordWindow.xaml">
+    <Page Include="Records\Windows\EditRecordWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

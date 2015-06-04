@@ -14,6 +14,8 @@ namespace Tome.Records.Records
 
         public static RoutedCommand Add = new RoutedCommand("Add Record", typeof(RecordCommands));
 
+        public static RoutedCommand Edit = new RoutedCommand("Edit Record", typeof(RecordCommands));
+
         #endregion
     }
 }

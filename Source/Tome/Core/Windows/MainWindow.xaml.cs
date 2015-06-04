@@ -10,15 +10,12 @@ namespace Tome.Core.Windows
     using System.IO;
     using System.Linq;
     using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Forms.VisualStyles;
     using System.Windows.Input;
 
     using Microsoft.Win32;
 
     using Tome.Fields.Windows;
     using Tome.Help.Windows;
-    using Tome.Model.Fields;
     using Tome.Model.Project;
     using Tome.Model.Records;
     using Tome.Project.Windows;
@@ -34,11 +31,13 @@ namespace Tome.Core.Windows
 
         private TomeProjectFile currentProject;
 
+        private Record editedRecord;
+
+        private EditRecordWindow editRecordWindow;
+
         private FieldDefinitionsWindow fieldDefinitionsWindow;
 
         private NewProjectWindow newProjectWindow;
-
-        private NewRecordWindow newRecordWindow;
 
         #endregion
 
@@ -63,6 +62,14 @@ namespace Tome.Core.Windows
             }
         }
 
+        private bool RecordSelected
+        {
+            get
+            {
+                return this.RecordsTreeView.SelectedItem != null;
+            }
+        }
+
         private string TomeProjectFileFilter
         {
             get
@@ -83,6 +90,16 @@ namespace Tome.Core.Windows
         private void CanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
+        }
+
+        private void CanExecuteDeleteRecord(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.RecordSelected;
+        }
+
+        private void CanExecuteEditRecord(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.RecordSelected;
         }
 
         private void CanExecuteFieldDefinitions(object sender, CanExecuteRoutedEventArgs e)
@@ -110,24 +127,63 @@ namespace Tome.Core.Windows
             e.CanExecute = this.ProjectLoaded;
         }
 
+        private void EditSelectedRecordDefinition()
+        {
+            if (!this.RecordSelected)
+            {
+                return;
+            }
+
+            var record = (Record)this.RecordsTreeView.SelectedItem;
+
+            // Show window.
+            this.editRecordWindow = WindowUtils.ShowWindow(this.editRecordWindow, this, this.OnEditRecordWindowClosed);
+
+            // Set edit mode.
+            this.editedRecord = record;
+
+            // Fill view model.
+            var viewModel = this.editRecordWindow.RecordViewModel;
+            viewModel.DisplayName = record.DisplayName;
+            viewModel.Id = record.Id;
+            viewModel.File = this.RecordsViewModel.RecordFiles.FirstOrDefault(file => file.Records.Contains(record));
+
+            // Set available field definition files.
+            this.editRecordWindow.SetRecordFiles(this.RecordsViewModel.RecordFiles);
+            this.editRecordWindow.ComboBoxFile.IsEnabled = false;
+
+            // Enforce unique field ids.
+            this.editRecordWindow.SetExistingRecordIds(
+                this.RecordsViewModel.Records.Select(existingRecord => existingRecord.Id)
+                    .Where(recordId => !Equals(recordId, record.Id)));
+        }
+
         private void ExecutedAddRecord(object target, ExecutedRoutedEventArgs e)
         {
             // Show window.
-            this.newRecordWindow = WindowUtils.ShowWindow(this.newRecordWindow, this, this.OnNewRecordWindowClosed);
+            this.editRecordWindow = WindowUtils.ShowWindow(this.editRecordWindow, this, this.OnEditRecordWindowClosed);
+
+            // Set edit mode.
+            this.editedRecord = null;
 
             // Fill view model.
-            this.newRecordWindow.RecordViewModel.File = this.RecordsViewModel.RecordFiles[0];
+            this.editRecordWindow.RecordViewModel.File = this.RecordsViewModel.RecordFiles[0];
 
             // Set available record definition files.
-            this.newRecordWindow.SetRecordFiles(this.RecordsViewModel.RecordFiles);
+            this.editRecordWindow.SetRecordFiles(this.RecordsViewModel.RecordFiles);
 
             // Enforce unique record ids.
-            this.newRecordWindow.SetExistingRecordIds(this.RecordsViewModel.Records.Select(record => record.Id));
+            this.editRecordWindow.SetExistingRecordIds(this.RecordsViewModel.Records.Select(record => record.Id));
         }
 
         private void ExecutedClose(object target, ExecutedRoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void ExecutedEditRecord(object target, ExecutedRoutedEventArgs e)
+        {
+            this.EditSelectedRecordDefinition();
         }
 
         private void ExecutedFieldDefinitions(object target, ExecutedRoutedEventArgs e)
@@ -183,9 +239,46 @@ namespace Tome.Core.Windows
             serializer.Serialize(this.currentProject);
         }
 
+        private void OnEditRecordWindowClosed(object sender, EventArgs e)
+        {
+            this.Focus();
+
+            if (!this.editRecordWindow.Result)
+            {
+                return;
+            }
+
+            var viewModel = this.editRecordWindow.RecordViewModel;
+            var record = this.editedRecord;
+
+            if (record == null)
+            {
+                // Add new record.
+                var newRecord = new Record { DisplayName = viewModel.DisplayName, Id = viewModel.Id };
+
+                viewModel.File.Records.Add(newRecord);
+            }
+            else
+
+            {
+                // Edit existing record.
+                record.DisplayName = viewModel.DisplayName;
+                record.Id = viewModel.Id;
+            }
+
+            // Update view.
+            this.RecordsTreeView.Items.Refresh();
+            ControlUtils.ExpandAndSelectItem(this.RecordsTreeView, record);
+        }
+
         private void OnFieldDefinitionsWindowClosed(object sender, EventArgs e)
         {
             this.Focus();
+        }
+
+        private void OnMouseDoubleClickTreeView(object sender, MouseButtonEventArgs args)
+        {
+            this.EditSelectedRecordDefinition();
         }
 
         private void OnNewProjectWindowClosed(object sender, EventArgs e)
@@ -224,27 +317,6 @@ namespace Tome.Core.Windows
             {
                 WindowUtils.ShowErrorMessage("Error creating project", exception.Message);
             }
-        }
-
-        private void OnNewRecordWindowClosed(object sender, EventArgs e)
-        {
-            this.Focus();
-
-            if (!this.newRecordWindow.Result)
-            {
-                return;
-            }
-
-            var viewModel = this.newRecordWindow.RecordViewModel;
-
-            // Add new record.
-            var newRecord = new Record { DisplayName = viewModel.DisplayName, Id = viewModel.Id };
-
-            viewModel.File.Records.Add(newRecord);
-
-            // Update view.
-            this.RecordsTreeView.Items.Refresh();
-            ControlUtils.ExpandAndSelectItem(this.RecordsTreeView, newRecord);
         }
 
         #endregion

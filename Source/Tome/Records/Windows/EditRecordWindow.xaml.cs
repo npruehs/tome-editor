@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="NewRecordWindow.xaml.cs" company="Tome">
+// <copyright file="EditRecordWindow.xaml.cs" company="Tome">
 //   Copyright (c) Tome. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -15,13 +15,13 @@ namespace Tome.Records.Windows
     using Tome.Util;
 
     /// <summary>
-    ///   Interaction logic for NewRecordWindow.xaml
+    ///   Interaction logic for EditRecordWindow.xaml
     /// </summary>
-    public partial class NewRecordWindow : Window
+    public partial class EditRecordWindow : Window
     {
         #region Constructors and Destructors
 
-        public NewRecordWindow()
+        public EditRecordWindow()
         {
             this.InitializeComponent();
 

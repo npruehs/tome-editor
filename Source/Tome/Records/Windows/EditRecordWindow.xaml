@@ -1,4 +1,4 @@
-﻿<Window x:Class="Tome.Records.Windows.NewRecordWindow"
+﻿<Window x:Class="Tome.Records.Windows.EditRecordWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,13 +6,14 @@
         xmlns:viewModels="clr-namespace:Tome.Records.ViewModels"
         xmlns:coreValidation="clr-namespace:Tome.Core.Validation"
         mc:Ignorable="d"
-        Title="New Record" Height="300" Width="300"
+        Title="Record" Height="300" Width="300"
         d:DataContext="{d:DesignInstance viewModels:RecordViewModel}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -37,7 +38,11 @@
         <Label Grid.Row="2" Grid.Column="0">File:</Label>
         <ComboBox Grid.Row="2" Grid.Column="1" Name="ComboBoxFile" SelectedItem="{Binding File}" />
 
-        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+        <DataGrid Grid.Row="3" Grid.ColumnSpan="2">
+            
+        </DataGrid>
+        
+        <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
