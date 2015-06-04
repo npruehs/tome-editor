@@ -29,6 +29,7 @@
             <MenuItem Header="Records">
                 <MenuItem Header="New Record..." Command="recordCommands:RecordCommands.Add" />
                 <MenuItem Header="Edit Record..." Command="recordCommands:RecordCommands.Edit" />
+                <MenuItem Header="Delete Record" Command="recordCommands:RecordCommands.Delete" />
             </MenuItem>
             <MenuItem Header="Fields">
                 <MenuItem Header="Field Definitions..." Command="commands:MainWindowCommands.FieldDefinitions" />
@@ -89,6 +90,9 @@
         <CommandBinding Command="recordCommands:RecordCommands.Edit"
 		                Executed="ExecutedEditRecord"
 		                CanExecute="CanExecuteEditRecord" />
+        <CommandBinding Command="recordCommands:RecordCommands.Delete"
+		                Executed="ExecutedDeleteRecord"
+		                CanExecute="CanExecuteDeleteRecord" />
         <CommandBinding Command="commands:MainWindowCommands.FieldDefinitions"
 		        Executed="ExecutedFieldDefinitions"
 		        CanExecute="CanExecuteFieldDefinitions" />

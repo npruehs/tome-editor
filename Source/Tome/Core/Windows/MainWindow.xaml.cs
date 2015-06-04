@@ -181,6 +181,22 @@ namespace Tome.Core.Windows
             this.Close();
         }
 
+        private void ExecutedDeleteRecord(object target, ExecutedRoutedEventArgs e)
+        {
+            if (!this.RecordSelected)
+            {
+                return;
+            }
+
+            var record = (Record)this.RecordsTreeView.SelectedItem;
+
+            // Remove record.
+            foreach (var recordFile in this.RecordsViewModel.RecordFiles)
+            {
+                recordFile.Records.Remove(record);
+            }
+        }
+
         private void ExecutedEditRecord(object target, ExecutedRoutedEventArgs e)
         {
             this.EditSelectedRecordDefinition();
