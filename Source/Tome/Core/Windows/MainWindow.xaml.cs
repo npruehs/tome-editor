@@ -67,7 +67,15 @@ namespace Tome.Core.Windows
         {
             get
             {
-                return this.RecordsTreeView.SelectedItem != null;
+                return this.SelectedRecord != null;
+            }
+        }
+
+        private Record SelectedRecord
+        {
+            get
+            {
+                return this.RecordsTreeView.SelectedItem as Record;
             }
         }
 
@@ -135,24 +143,24 @@ namespace Tome.Core.Windows
                 return;
             }
 
-            var record = (Record)this.RecordsTreeView.SelectedItem;
-
             // Show window.
             this.editRecordWindow = WindowUtils.ShowWindow(this.editRecordWindow, this, this.OnEditRecordWindowClosed);
 
             // Set edit mode.
-            this.editedRecord = record;
+            this.editedRecord = this.SelectedRecord;
 
             // Fill view model.
             var viewModel = this.editRecordWindow.RecordViewModel;
-            viewModel.DisplayName = record.DisplayName;
-            viewModel.Id = record.Id;
-            viewModel.File = this.RecordsViewModel.RecordFiles.FirstOrDefault(file => file.Records.Contains(record));
+            viewModel.DisplayName = this.SelectedRecord.DisplayName;
+            viewModel.Id = this.SelectedRecord.Id;
+            viewModel.File =
+                this.RecordsViewModel.RecordFiles.FirstOrDefault(file => file.Records.Contains(this.SelectedRecord));
 
-            foreach (var field in this.currentProject.Project.FieldDefinitionFiles.SelectMany(file => file.FieldDefinitions))
+            foreach (
+                var field in this.currentProject.Project.FieldDefinitionFiles.SelectMany(file => file.FieldDefinitions))
             {
                 var fieldViewModel = new RecordFieldViewModel(field);
-                fieldViewModel.Enabled = record.FieldValues.ContainsKey(field.Id);
+                fieldViewModel.Enabled = this.SelectedRecord.FieldValues.ContainsKey(field.Id);
                 viewModel.RecordFields.Add(fieldViewModel);
             }
 
@@ -163,7 +171,7 @@ namespace Tome.Core.Windows
             // Enforce unique field ids.
             this.editRecordWindow.SetExistingRecordIds(
                 this.RecordsViewModel.Records.Select(existingRecord => existingRecord.Id)
-                    .Where(recordId => !Equals(recordId, record.Id)));
+                    .Where(recordId => !Equals(recordId, this.SelectedRecord.Id)));
         }
 
         private void ExecutedAddRecord(object target, ExecutedRoutedEventArgs e)
@@ -179,7 +187,8 @@ namespace Tome.Core.Windows
 
             viewModel.File = this.RecordsViewModel.RecordFiles[0];
 
-            foreach (var field in this.currentProject.Project.FieldDefinitionFiles.SelectMany(file => file.FieldDefinitions))
+            foreach (
+                var field in this.currentProject.Project.FieldDefinitionFiles.SelectMany(file => file.FieldDefinitions))
             {
                 var fieldViewModel = new RecordFieldViewModel(field);
                 viewModel.RecordFields.Add(fieldViewModel);
@@ -204,12 +213,10 @@ namespace Tome.Core.Windows
                 return;
             }
 
-            var record = (Record)this.RecordsTreeView.SelectedItem;
-
             // Remove record.
             foreach (var recordFile in this.RecordsViewModel.RecordFiles)
             {
-                recordFile.Records.Remove(record);
+                recordFile.Records.Remove(this.SelectedRecord);
             }
         }
 
@@ -230,13 +237,6 @@ namespace Tome.Core.Windows
         private void ExecutedHelp(object target, ExecutedRoutedEventArgs e)
         {
             this.aboutWindow = WindowUtils.ShowWindow(this.aboutWindow, this);
-        }
-
-        private FieldDefinition GetFieldDefinition(string fieldId)
-        {
-            return
-                this.currentProject.Project.FieldDefinitionFiles.SelectMany(file => file.FieldDefinitions)
-                    .FirstOrDefault(field => Equals(field.Id, fieldId));
         }
 
         private void ExecutedNew(object target, ExecutedRoutedEventArgs e)
@@ -278,6 +278,13 @@ namespace Tome.Core.Windows
             serializer.Serialize(this.currentProject);
         }
 
+        private FieldDefinition GetFieldDefinition(string fieldId)
+        {
+            return
+                this.currentProject.Project.FieldDefinitionFiles.SelectMany(file => file.FieldDefinitions)
+                    .FirstOrDefault(field => Equals(field.Id, fieldId));
+        }
+
         private void OnEditRecordWindowClosed(object sender, EventArgs e)
         {
             this.Focus();
@@ -293,15 +300,15 @@ namespace Tome.Core.Windows
             if (record == null)
             {
                 // Add new record.
-                var newRecord = new Record { DisplayName = viewModel.DisplayName, Id = viewModel.Id };
+                record = new Record { DisplayName = viewModel.DisplayName, Id = viewModel.Id };
 
                 foreach (var field in viewModel.RecordFields.Where(f => f.Enabled))
                 {
                     var fieldDefinition = this.GetFieldDefinition(field.FieldId);
-                    newRecord.FieldValues.Add(field.FieldId, fieldDefinition.DefaultValue);
+                    record.FieldValues.Add(field.FieldId, fieldDefinition.DefaultValue);
                 }
 
-                viewModel.File.Records.Add(newRecord);
+                viewModel.File.Records.Add(record);
             }
             else
 
@@ -319,7 +326,7 @@ namespace Tome.Core.Windows
                     else if (!field.Enabled && record.FieldValues.ContainsKey(field.FieldId))
                     {
                         record.FieldValues.Remove(field.FieldId);
-                    }  
+                    }
                 }
             }
 
