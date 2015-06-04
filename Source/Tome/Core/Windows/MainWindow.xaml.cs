@@ -7,6 +7,8 @@
 namespace Tome.Core.Windows
 {
     using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
     using System.Windows;
@@ -47,6 +49,8 @@ namespace Tome.Core.Windows
         public MainWindow()
         {
             this.InitializeComponent();
+
+            this.DataContext = this;
         }
 
         #endregion
@@ -54,6 +58,9 @@ namespace Tome.Core.Windows
         #region Properties
 
         public RecordsViewModel RecordsViewModel { get; private set; }
+
+        public ObservableCollection<RecordFieldViewModel> SelectedRecordFields { get; } =
+            new ObservableCollection<RecordFieldViewModel>();
 
         private bool ProjectLoaded
         {
@@ -159,7 +166,8 @@ namespace Tome.Core.Windows
             foreach (
                 var field in this.currentProject.Project.FieldDefinitionFiles.SelectMany(file => file.FieldDefinitions))
             {
-                var fieldViewModel = new RecordFieldViewModel(field);
+                var fieldViewModel = new RecordFieldViewModel();
+                fieldViewModel.FieldId = field.Id;
                 fieldViewModel.Enabled = this.SelectedRecord.FieldValues.ContainsKey(field.Id);
                 viewModel.RecordFields.Add(fieldViewModel);
             }
@@ -190,7 +198,8 @@ namespace Tome.Core.Windows
             foreach (
                 var field in this.currentProject.Project.FieldDefinitionFiles.SelectMany(file => file.FieldDefinitions))
             {
-                var fieldViewModel = new RecordFieldViewModel(field);
+                var fieldViewModel = new RecordFieldViewModel();
+                fieldViewModel.FieldId = field.Id;
                 viewModel.RecordFields.Add(fieldViewModel);
             }
 
@@ -321,7 +330,8 @@ namespace Tome.Core.Windows
                 {
                     if (field.Enabled && !record.FieldValues.ContainsKey(field.FieldId))
                     {
-                        record.FieldValues.Add(field.FieldId, null);
+                        var fieldDefinition = this.GetFieldDefinition(field.FieldId);
+                        record.FieldValues.Add(field.FieldId, fieldDefinition.DefaultValue);
                     }
                     else if (!field.Enabled && record.FieldValues.ContainsKey(field.FieldId))
                     {
@@ -338,6 +348,10 @@ namespace Tome.Core.Windows
         private void OnFieldDefinitionsWindowClosed(object sender, EventArgs e)
         {
             this.Focus();
+        }
+
+        private void OnMouseDoubleClickGrid(object sender, MouseButtonEventArgs args)
+        {
         }
 
         private void OnMouseDoubleClickTreeView(object sender, MouseButtonEventArgs args)
@@ -380,6 +394,28 @@ namespace Tome.Core.Windows
             catch (ArgumentNullException exception)
             {
                 WindowUtils.ShowErrorMessage("Error creating project", exception.Message);
+            }
+        }
+
+        private void OnSelectedRecordChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            var record = e.NewValue as Record;
+
+            this.SelectedRecordFields.Clear();
+
+            if (record != null)
+            {
+                var fields = new List<RecordFieldViewModel>();
+
+                foreach (var field in record.FieldValues)
+                {
+                    fields.Add(new RecordFieldViewModel { FieldId = field.Key, FieldValue = field.Value });
+                }
+
+                foreach (var field in fields.OrderBy(field => field.FieldId))
+                {
+                    this.SelectedRecordFields.Add(field);
+                }
             }
         }
 

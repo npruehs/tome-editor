@@ -3,13 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Tome"
+        xmlns:local="clr-namespace:Tome.Core.Windows"
         xmlns:commands="clr-namespace:Tome.Core.Commands"
         xmlns:recordViewModels="clr-namespace:Tome.Records.ViewModels"
         xmlns:recordCommands="clr-namespace:Tome.Records.Records"
         xmlns:records="clr-namespace:Tome.Model.Records;assembly=Tome.Model"
         mc:Ignorable="d"
-        Title="Tome - Game Data Editor" Height="350" Width="525" WindowState="Maximized">
+        Title="Tome - Game Data Editor" Height="350" Width="525" WindowState="Maximized"
+        d:DataContext="{d:DesignInstance local:MainWindow}">
 	<Grid Margin="0,0,0,0">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -45,7 +46,7 @@
                 <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
 
-            <TreeView Grid.Column="0" Name="RecordsTreeView" MouseDoubleClick="OnMouseDoubleClickTreeView">
+            <TreeView Grid.Column="0" Name="RecordsTreeView" MouseDoubleClick="OnMouseDoubleClickTreeView" SelectedItemChanged="OnSelectedRecordChanged">
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type recordViewModels:RecordFileViewModel}" ItemsSource="{Binding Records}">
                         <TextBlock Text="{Binding Path}" />
@@ -63,8 +64,13 @@
                 VerticalAlignment="Stretch"
                 ShowsPreview="True"
                 Width="5" />
-            
-            <DataGrid Grid.Column="2"></DataGrid>
+
+            <DataGrid Grid.Column="2" ItemsSource="{Binding SelectedRecordFields}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True" MouseDoubleClick="OnMouseDoubleClickGrid">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Field" Binding="{Binding FieldId}" Width="*"/>
+                    <DataGridTextColumn Header="Value" Binding="{Binding FieldValue}" Width="2*"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
         <StatusBar Grid.Row="2">
 			<Label />
