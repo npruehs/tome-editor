@@ -390,6 +390,10 @@ namespace Tome.Core.Windows
 
                 // Set current project.
                 this.currentProject = newProjectFile;
+
+                // Setup records.
+                this.RecordsViewModel = new RecordsViewModel(this.currentProject.Project.RecordFiles);
+                this.RecordsTreeView.ItemsSource = this.RecordsViewModel.RecordFiles;
             }
             catch (ArgumentNullException exception)
             {
