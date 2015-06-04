@@ -14,6 +14,8 @@ namespace Tome.Model.Records
     {
         #region Constants
 
+        private const string AttributeDisplayName = "DisplayName";
+
         private const string AttributeId = "Id";
 
         private const string AttributeValue = "Value";
@@ -48,6 +50,7 @@ namespace Tome.Model.Records
                         {
                             var record = new Record();
                             record.Id = xmlReader[AttributeId];
+                            record.DisplayName = xmlReader[AttributeDisplayName];
                             record.FieldValues = new Dictionary<string, object>();
 
                             xmlReader.ReadStartElement(ElementRecord);
@@ -93,6 +96,7 @@ namespace Tome.Model.Records
                         {
                             xmlWriter.WriteStartElement(ElementRecord);
                             xmlWriter.WriteAttributeString(AttributeId, record.Id);
+                            xmlWriter.WriteAttributeString(AttributeDisplayName, record.DisplayName);
                             {
                                 // Write record fields.
                                 foreach (var recordField in record.FieldValues)

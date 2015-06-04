@@ -53,7 +53,7 @@
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type records:Record}">
-                        <TextBlock Text="{Binding Id}" />
+                        <TextBlock Text="{Binding DisplayName}" />
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
             </TreeView>
