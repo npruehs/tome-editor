@@ -7,10 +7,40 @@
 namespace Tome.Util
 {
     using System.Windows.Controls;
+    using System.Windows.Data;
+
+    using Tome.Core.Conversion;
+    using Tome.Core.Validation;
+    using Tome.Model.Fields;
 
     public class ControlUtils
     {
         #region Public Methods and Operators
+
+        public static TextBox CreateValueControl(object viewModel, string bindingPath, FieldType fieldType)
+        {
+            // Create binding.
+            var binding = new Binding(bindingPath);
+            binding.Source = viewModel;
+
+            switch (fieldType)
+            {
+                case FieldType.Int:
+                    binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(int)));
+                    binding.Converter = new FieldValueConverter(typeof(int));
+                    break;
+
+                case FieldType.String:
+                    binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(string)));
+                    binding.Converter = new FieldValueConverter(typeof(string));
+                    break;
+            }
+
+            // Create control.
+            var textBox = new TextBox();
+            textBox.SetBinding(TextBox.TextProperty, binding);
+            return textBox;
+        }
 
         /// <summary>
         ///   "It's a real pain for some strange reason."

@@ -73,6 +73,9 @@
     <Compile Include="Records\ViewModels\RecordFileViewModel.cs" />
     <Compile Include="Records\ViewModels\RecordsViewModel.cs" />
     <Compile Include="Records\ViewModels\RecordViewModel.cs" />
+    <Compile Include="Records\Windows\EditRecordFieldValueWindow.xaml.cs">
+      <DependentUpon>EditRecordFieldValueWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Records\Windows\EditRecordWindow.xaml.cs">
       <DependentUpon>EditRecordWindow.xaml</DependentUpon>
     </Compile>
@@ -116,6 +119,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Project\Windows\NewProjectWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Records\Windows\EditRecordFieldValueWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

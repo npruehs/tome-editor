@@ -36,6 +36,8 @@ namespace Tome.Core.Windows
 
         private Record editedRecord;
 
+        private EditRecordFieldValueWindow editRecordFieldValueWindow;
+
         private EditRecordWindow editRecordWindow;
 
         private FieldDefinitionsWindow fieldDefinitionsWindow;
@@ -70,6 +72,14 @@ namespace Tome.Core.Windows
             }
         }
 
+        private bool RecordFieldSelected
+        {
+            get
+            {
+                return this.SelectedRecordField != null;
+            }
+        }
+
         private bool RecordSelected
         {
             get
@@ -83,6 +93,14 @@ namespace Tome.Core.Windows
             get
             {
                 return this.RecordsTreeView.SelectedItem as Record;
+            }
+        }
+
+        private RecordFieldViewModel SelectedRecordField
+        {
+            get
+            {
+                return this.RecordFieldsDataGrid.SelectedItem as RecordFieldViewModel;
             }
         }
 
@@ -294,6 +312,24 @@ namespace Tome.Core.Windows
                     .FirstOrDefault(field => Equals(field.Id, fieldId));
         }
 
+        private void OnEditRecordFieldValueWindowClosed(object sender, EventArgs e)
+        {
+            this.Focus();
+
+            if (!this.editRecordFieldValueWindow.Result)
+            {
+                return;
+            }
+
+            var viewModel = this.editRecordFieldValueWindow.RecordFieldViewModel;
+
+            // Edit record.
+            this.SelectedRecord.FieldValues[viewModel.FieldId] = viewModel.FieldValue;
+
+            // Update view.
+            this.RecordFieldsDataGrid.Items.Refresh();
+        }
+
         private void OnEditRecordWindowClosed(object sender, EventArgs e)
         {
             this.Focus();
@@ -352,6 +388,19 @@ namespace Tome.Core.Windows
 
         private void OnMouseDoubleClickGrid(object sender, MouseButtonEventArgs args)
         {
+            if (!this.RecordFieldSelected)
+            {
+                return;
+            }
+
+            // Show window.
+            this.editRecordFieldValueWindow = WindowUtils.ShowWindow(
+                this.editRecordFieldValueWindow,
+                this,
+                this.OnEditRecordFieldValueWindowClosed);
+
+            // Fill view model.
+            this.editRecordFieldValueWindow.RecordFieldViewModel = this.SelectedRecordField;
         }
 
         private void OnMouseDoubleClickTreeView(object sender, MouseButtonEventArgs args)
@@ -413,7 +462,16 @@ namespace Tome.Core.Windows
 
                 foreach (var field in record.FieldValues)
                 {
-                    fields.Add(new RecordFieldViewModel { FieldId = field.Key, FieldValue = field.Value });
+                    var fieldDefinition = this.GetFieldDefinition(field.Key);
+                    fields.Add(
+                        new RecordFieldViewModel
+                        {
+                            FieldId = field.Key,
+                            FieldValue = field.Value,
+                            Description = fieldDefinition.Description,
+                            DisplayName = fieldDefinition.DisplayName,
+                            FieldType = fieldDefinition.FieldType
+                        });
                 }
 
                 foreach (var field in fields.OrderBy(field => field.FieldId))

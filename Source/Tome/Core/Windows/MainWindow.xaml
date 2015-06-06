@@ -65,7 +65,7 @@
                 ShowsPreview="True"
                 Width="5" />
 
-            <DataGrid Grid.Column="2" ItemsSource="{Binding SelectedRecordFields}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True" MouseDoubleClick="OnMouseDoubleClickGrid">
+            <DataGrid Grid.Column="2" Name="RecordFieldsDataGrid" ItemsSource="{Binding SelectedRecordFields}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True" MouseDoubleClick="OnMouseDoubleClickGrid">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Field" Binding="{Binding FieldId}" Width="*"/>
                     <DataGridTextColumn Header="Value" Binding="{Binding FieldValue}" Width="2*"/>

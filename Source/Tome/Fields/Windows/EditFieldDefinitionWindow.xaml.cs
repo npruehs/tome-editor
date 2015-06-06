@@ -45,7 +45,7 @@ namespace Tome.Fields.Windows
 
         #region Properties
 
-        public FieldDefinitionViewModel FieldDefinitionViewModel { get; set; }
+        public FieldDefinitionViewModel FieldDefinitionViewModel { get; private set; }
 
         public bool Result { get; set; }
 
@@ -128,26 +128,8 @@ namespace Tome.Fields.Windows
                     break;
             }
 
-            // Create binding.
-            var binding = new Binding("DefaultValue");
-            binding.Source = this.FieldDefinitionViewModel;
-
-            switch (fieldType)
-            {
-                case FieldType.Int:
-                    binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(int)));
-                    binding.Converter = new FieldValueConverter(typeof(int));
-                    break;
-
-                case FieldType.String:
-                    binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(string)));
-                    binding.Converter = new FieldValueConverter(typeof(string));
-                    break;
-            }
-
             // Create control.
-            var textBox = new TextBox();
-            textBox.SetBinding(TextBox.TextProperty, binding);
+            var textBox = ControlUtils.CreateValueControl(this.FieldDefinitionViewModel, "DefaultValue", fieldType);
             textBox.Style = (Style)this.FindResource("ErrorLabelMargin");
             Validation.SetErrorTemplate(textBox, (ControlTemplate)this.FindResource("ErrorLabel"));
 

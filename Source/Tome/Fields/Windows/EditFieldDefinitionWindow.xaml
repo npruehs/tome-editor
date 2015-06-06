@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="Field Definition" Height="300" Width="300"
         d:DataContext="{d:DesignInstance viewModels:FieldDefinitionViewModel}">
-	<Grid Name="EditFieldDefinitionGrid">
+	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
