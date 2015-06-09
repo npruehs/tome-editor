@@ -12,20 +12,34 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
-			<RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
 		</Grid.RowDefinitions>
 
 		<Menu Grid.Row="0">
 			<MenuItem Header="Fields">
-				<MenuItem Header="New Field..." Command="ApplicationCommands.New" />
-				<MenuItem Header="Edit Field..." Command="commands:FieldDefinitionWindowCommands.Edit" />
+                <MenuItem Header="New Field..." Command="ApplicationCommands.New">
+                    <MenuItem.Icon>
+                        <Image Source="/Tome;component/Resources/NewField_6862.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Edit Field..." Command="commands:FieldDefinitionWindowCommands.Edit" />
 				<MenuItem Header="Delete Field" Command="commands:FieldDefinitionWindowCommands.Delete" />
 				<Separator />
 				<MenuItem Header="Close" Command="ApplicationCommands.Close" />
 			</MenuItem>
 		</Menu>
 
-		<DataGrid Name="FieldGrid" Grid.Row="1" ItemsSource="{Binding FieldDefinitions}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True" MouseDoubleClick="OnMouseDoubleClickGrid">
+        <ToolBarTray Grid.Row="1">
+            <ToolBar>
+                <Button Command="ApplicationCommands.New">
+                    <Button.ToolTip>New Field</Button.ToolTip>
+                    <Image Source="/Tome;component/Resources/NewField_6862.png" />
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        
+		<DataGrid Name="FieldGrid" Grid.Row="2" ItemsSource="{Binding FieldDefinitions}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True" MouseDoubleClick="OnMouseDoubleClickGrid">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Id" Binding="{Binding Id}" />
 				<DataGridTextColumn Header="Display Name" Binding="{Binding DisplayName}" />

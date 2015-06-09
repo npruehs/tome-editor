@@ -11,35 +11,75 @@
         mc:Ignorable="d"
         Title="Tome - Game Data Editor" Height="350" Width="525" WindowState="Maximized"
         d:DataContext="{d:DesignInstance local:MainWindow}">
-	<Grid Margin="0,0,0,0">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+    <Grid Margin="0,0,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-		<Menu Grid.Row="0">
-			<MenuItem Header="File">
-				<MenuItem Header="New Project..." Command="ApplicationCommands.New" />
+        <Menu Grid.Row="0">
+            <MenuItem Header="File">
+                <MenuItem Header="New Project..." Command="ApplicationCommands.New">
+                    <MenuItem.Icon>
+                        <Image Source="/Tome;component/Resources/NewFile_6276.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
-				<MenuItem Header="Open Project..." Command="ApplicationCommands.Open" />
-				<MenuItem Header="Save Project" Command="ApplicationCommands.Save" />
+                <MenuItem Header="Open Project..." Command="ApplicationCommands.Open">
+                    <MenuItem.Icon>
+                        <Image Source="/Tome;component/Resources/Open_6529.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Save Project" Command="ApplicationCommands.Save">
+                    <MenuItem.Icon>
+                        <Image Source="/Tome;component/Resources/Saveall_6518.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
-				<MenuItem Header="Exit" Command="ApplicationCommands.Close" />
-			</MenuItem>
+                <MenuItem Header="Exit" Command="ApplicationCommands.Close" />
+            </MenuItem>
             <MenuItem Header="Records">
-                <MenuItem Header="New Record..." Command="recordCommands:RecordCommands.Add" />
+                <MenuItem Header="New Record..." Command="recordCommands:RecordCommands.Add">
+                    <MenuItem.Icon>
+                        <Image Source="/Tome;component/Resources/AddNewItem_6273.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="Edit Record..." Command="recordCommands:RecordCommands.Edit" />
                 <MenuItem Header="Delete Record" Command="recordCommands:RecordCommands.Delete" />
             </MenuItem>
             <MenuItem Header="Fields">
                 <MenuItem Header="Field Definitions..." Command="commands:MainWindowCommands.FieldDefinitions" />
             </MenuItem>
-			<MenuItem Header="Help">
-				<MenuItem Header="About" Command="ApplicationCommands.Help" />
-			</MenuItem>
-		</Menu>
-        <Grid Grid.Row="1">
+            <MenuItem Header="Help">
+                <MenuItem Header="About" Command="ApplicationCommands.Help" />
+            </MenuItem>
+        </Menu>
+        
+        <ToolBarTray Grid.Row="1">
+            <ToolBar>
+                <Button Command="ApplicationCommands.New">
+                    <Button.ToolTip>New Project</Button.ToolTip>
+                    <Image Source="/Tome;component/Resources/NewFile_6276.png" />
+                </Button>
+                <Button Command="ApplicationCommands.Open">
+                    <Button.ToolTip>Open Project</Button.ToolTip>
+                    <Image Source="/Tome;component/Resources/Open_6529.png" />
+                </Button>
+                <Button Command="ApplicationCommands.Save">
+                    <Button.ToolTip>Save Project</Button.ToolTip>
+                    <Image Source="/Tome;component/Resources/Saveall_6518.png" />
+                </Button>
+                <Separator />
+                <Button Command="recordCommands:RecordCommands.Add">
+                    <Button.ToolTip>Add Record</Button.ToolTip>
+                    <Image Source="/Tome;component/Resources/AddNewItem_6273.png" />
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -57,7 +97,7 @@
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
             </TreeView>
-            
+
             <GridSplitter
                 Grid.Column="1"
                 HorizontalAlignment="Center"
@@ -67,43 +107,44 @@
 
             <DataGrid Grid.Column="2" Name="RecordFieldsDataGrid" ItemsSource="{Binding SelectedRecordFields}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True" MouseDoubleClick="OnMouseDoubleClickGrid">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Field" Binding="{Binding FieldId}" Width="*"/>
-                    <DataGridTextColumn Header="Value" Binding="{Binding FieldValue}" Width="2*"/>
+                    <DataGridTextColumn Header="Field" Binding="{Binding FieldId}" Width="*" />
+                    <DataGridTextColumn Header="Value" Binding="{Binding FieldValue}" Width="2*" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
-        <StatusBar Grid.Row="2">
-			<Label />
-		</StatusBar>
-	</Grid>
+        
+        <StatusBar Grid.Row="3">
+            <Label />
+        </StatusBar>
+    </Grid>
 
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.New"
-		                Executed="ExecutedNew"
-		                CanExecute="CanExecuteNew" />
+                        Executed="ExecutedNew"
+                        CanExecute="CanExecuteNew" />
         <CommandBinding Command="ApplicationCommands.Open"
-		                Executed="ExecutedOpen"
-		                CanExecute="CanExecuteOpen" />
+                        Executed="ExecutedOpen"
+                        CanExecute="CanExecuteOpen" />
         <CommandBinding Command="ApplicationCommands.Save"
-		                Executed="ExecutedSave"
-		                CanExecute="CanExecuteSave" />
+                        Executed="ExecutedSave"
+                        CanExecute="CanExecuteSave" />
         <CommandBinding Command="ApplicationCommands.Close"
-		                Executed="ExecutedClose"
-		                CanExecute="CanExecuteClose" />
+                        Executed="ExecutedClose"
+                        CanExecute="CanExecuteClose" />
         <CommandBinding Command="recordCommands:RecordCommands.Add"
-		        Executed="ExecutedAddRecord"
-		        CanExecute="CanExecuteAddRecord" />
+                        Executed="ExecutedAddRecord"
+                        CanExecute="CanExecuteAddRecord" />
         <CommandBinding Command="recordCommands:RecordCommands.Edit"
-		                Executed="ExecutedEditRecord"
-		                CanExecute="CanExecuteEditRecord" />
+                        Executed="ExecutedEditRecord"
+                        CanExecute="CanExecuteEditRecord" />
         <CommandBinding Command="recordCommands:RecordCommands.Delete"
-		                Executed="ExecutedDeleteRecord"
-		                CanExecute="CanExecuteDeleteRecord" />
+                        Executed="ExecutedDeleteRecord"
+                        CanExecute="CanExecuteDeleteRecord" />
         <CommandBinding Command="commands:MainWindowCommands.FieldDefinitions"
-		        Executed="ExecutedFieldDefinitions"
-		        CanExecute="CanExecuteFieldDefinitions" />
+                        Executed="ExecutedFieldDefinitions"
+                        CanExecute="CanExecuteFieldDefinitions" />
         <CommandBinding Command="ApplicationCommands.Help"
-		                Executed="ExecutedHelp"
-		                CanExecute="CanExecuteHelp" />
+                        Executed="ExecutedHelp"
+                        CanExecute="CanExecuteHelp" />
     </Window.CommandBindings>
 </Window>
