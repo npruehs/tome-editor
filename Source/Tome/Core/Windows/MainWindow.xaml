@@ -52,6 +52,7 @@
             <MenuItem Header="Fields">
                 <MenuItem Header="Field Definitions..." Command="commands:MainWindowCommands.FieldDefinitions" />
             </MenuItem>
+            <MenuItem Name="ExportMenu" Header="Export" />
             <MenuItem Header="Help">
                 <MenuItem Header="About" Command="ApplicationCommands.Help" />
             </MenuItem>

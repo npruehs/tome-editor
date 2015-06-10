@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Export\RecordExporter.cs" />
     <Compile Include="Export\RecordExportTemplate.cs" />
     <Compile Include="Export\RecordExportTemplateFile.cs" />
     <Compile Include="Export\RecordExportTemplateFileSerializer.cs" />

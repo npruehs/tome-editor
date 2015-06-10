@@ -31,6 +31,15 @@ namespace Tome.Model.Export
             {
                 recordExportTemplateFile.Template.RecordTemplate = streamReader.ReadToEnd();
             }
+
+            // Read field value template.
+            var fieldValueTemplatePath = Path.Combine(basePath, recordExportTemplateFile.FieldValueTemplatePath);
+            var fieldValueTemplateFileInfo = new FileInfo(fieldValueTemplatePath);
+
+            using (var streamReader = fieldValueTemplateFileInfo.OpenText())
+            {
+                recordExportTemplateFile.Template.FieldValueTemplate = streamReader.ReadToEnd();
+            }
         }
 
         public void Serialize(RecordExportTemplateFile recordExportTemplateFile, string basePath)
@@ -51,6 +60,15 @@ namespace Tome.Model.Export
             using (var streamWriter = recordTemplateFileInfo.CreateText())
             {
                 streamWriter.Write(recordExportTemplateFile.Template.RecordTemplate);
+            }
+
+            // Write field value template.
+            var fieldValueTemplatePath = Path.Combine(basePath, recordExportTemplateFile.FieldValueTemplatePath);
+            var fieldValueTemplateFileInfo = new FileInfo(fieldValueTemplatePath);
+
+            using (var streamWriter = fieldValueTemplateFileInfo.CreateText())
+            {
+                streamWriter.Write(recordExportTemplateFile.Template.FieldValueTemplate);
             }
         }
 

@@ -9,5 +9,12 @@
     <Path>Tome Example Project.tdata</Path>
   </Records>
   <RecordExportTemplates>
+    <Template>
+	  <Name>JSON</Name>
+	  <FileExtension>.json</FileExtension>
+	  <RecordFileTemplate>Tome Example Project JSON Export.texportf</RecordFileTemplate>
+	  <RecordTemplate>Tome Example Project JSON Export.texportr</RecordTemplate>
+	  <FieldValueTemplate>Tome Example Project JSON Export.texportv</FieldValueTemplate>
+	</Template>
   </RecordExportTemplates>
 </TomeProject>

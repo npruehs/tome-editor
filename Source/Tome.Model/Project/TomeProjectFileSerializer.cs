@@ -6,7 +6,6 @@
 
 namespace Tome.Model.Project
 {
-    using System.Collections.Generic;
     using System.IO;
     using System.Xml;
 
@@ -22,6 +21,8 @@ namespace Tome.Model.Project
 
         private const string ElementFieldDefinitions = "FieldDefinitions";
 
+        private const string ElementFieldValueTemplate = "FieldValueTemplate";
+
         private const string ElementName = "Name";
 
         private const string ElementPath = "Path";
@@ -33,6 +34,10 @@ namespace Tome.Model.Project
         private const string ElementRecords = "Records";
 
         private const string ElementRecordTemplate = "RecordTemplate";
+
+        private const string ElementRecordTemplateFileExtension = "FileExtension";
+
+        private const string ElementRecordTemplateName = "Name";
 
         private const string ElementTemplate = "Template";
 
@@ -89,26 +94,43 @@ namespace Tome.Model.Project
                         xmlReader.ReadEndElement();
 
                         // Read record export template file paths.
-                        xmlReader.ReadStartElement(ElementRecordExportTemplates);
+                        if (!xmlReader.IsEmptyElement)
                         {
-                            while (xmlReader.Name.Equals(ElementTemplate))
+                            xmlReader.ReadStartElement(ElementRecordExportTemplates);
                             {
-                                xmlReader.ReadStartElement(ElementTemplate);
+                                while (xmlReader.Name.Equals(ElementTemplate))
                                 {
-                                    var recordFileTemplatePath = xmlReader.ReadElementString(ElementRecordFileTemplate);
-                                    var recordTemplatePath = xmlReader.ReadElementString(ElementRecordTemplate);
+                                    xmlReader.ReadStartElement(ElementTemplate);
+                                    {
+                                        var name = xmlReader.ReadElementString(ElementRecordTemplateName);
+                                        var fileExtension =
+                                            xmlReader.ReadElementString(ElementRecordTemplateFileExtension);
+                                        var recordFileTemplatePath =
+                                            xmlReader.ReadElementString(ElementRecordFileTemplate);
+                                        var recordTemplatePath = xmlReader.ReadElementString(ElementRecordTemplate);
+                                        var fieldValueTemplatePath =
+                                            xmlReader.ReadElementString(ElementFieldValueTemplate);
 
-                                    project.RecordExportTemplateFiles.Add(
-                                        new RecordExportTemplateFile
+                                        var recordExportTemplateFile = new RecordExportTemplateFile
                                         {
+                                            FieldValueTemplatePath = fieldValueTemplatePath,
                                             RecordFileTemplatePath = recordFileTemplatePath,
-                                            RecordTemplatePath = recordTemplatePath
-                                        });
+                                            RecordTemplatePath = recordTemplatePath,
+                                            Template =
+                                                new RecordExportTemplate { Name = name, FileExtension = fileExtension }
+                                        };
+
+                                        project.RecordExportTemplateFiles.Add(recordExportTemplateFile);
+                                    }
+                                    xmlReader.ReadEndElement();
                                 }
-                                xmlReader.ReadEndElement();
                             }
+                            xmlReader.ReadEndElement();
                         }
-                        xmlReader.ReadEndElement();
+                        else
+                        {
+                            xmlReader.ReadStartElement(ElementRecordExportTemplates);
+                        }
                     }
                     xmlReader.ReadEndElement();
                 }
@@ -189,11 +211,20 @@ namespace Tome.Model.Project
                                 xmlWriter.WriteStartElement(ElementTemplate);
                                 {
                                     xmlWriter.WriteElementString(
+                                        ElementRecordTemplateName,
+                                        recordExportTemplateFile.Template.Name);
+                                    xmlWriter.WriteElementString(
+                                        ElementRecordTemplateFileExtension,
+                                        recordExportTemplateFile.Template.FileExtension);
+                                    xmlWriter.WriteElementString(
                                         ElementRecordFileTemplate,
                                         recordExportTemplateFile.RecordFileTemplatePath);
                                     xmlWriter.WriteElementString(
                                         ElementRecordTemplate,
                                         recordExportTemplateFile.RecordTemplatePath);
+                                    xmlWriter.WriteElementString(
+                                        ElementFieldValueTemplate,
+                                        recordExportTemplateFile.FieldValueTemplatePath);
                                 }
                                 xmlWriter.WriteEndElement();
                             }

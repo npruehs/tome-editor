@@ -1,0 +1,78 @@
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RecordExporter.cs" company="Tome">
+//   Copyright (c) Tome. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Tome.Model.Export
+{
+    using System.IO;
+    using System.Text;
+
+    using Tome.Model.Project;
+
+    public class RecordExporter
+    {
+        #region Constants
+
+        private const string FieldIdPlaceholder = "$FIELD_ID$";
+
+        private const string FieldValuePlaceholder = "$FIELD_VALUE$";
+
+        private const string RecordFieldsPlaceholder = "$RECORD_FIELDS$";
+
+        private const string RecordIdPlaceholder = "$RECORD_ID$";
+
+        private const string RecordsPlaceholder = "$RECORDS$";
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public void Export(TomeProject project, RecordExportTemplate template, string fileName)
+        {
+            // Build record file string.
+            var recordStringBuilder = new StringBuilder();
+
+            foreach (var recordFile in project.RecordFiles)
+            {
+                foreach (var record in recordFile.Records)
+                {
+                    // Build field values string.
+                    var fieldValuesStringBuilder = new StringBuilder();
+
+                    foreach (var field in record.FieldValues)
+                    {
+                        // Apply field value template.
+                        var fieldValueString = template.FieldValueTemplate;
+                        fieldValueString = fieldValueString.Replace(FieldIdPlaceholder, field.Key);
+                        fieldValueString = fieldValueString.Replace(FieldValuePlaceholder, field.Value.ToString());
+
+                        fieldValuesStringBuilder.Append(fieldValueString);
+                    }
+
+                    // Apply record template.
+                    var recordString = template.RecordTemplate;
+                    recordString = recordString.Replace(RecordIdPlaceholder, record.Id);
+                    recordString = recordString.Replace(RecordFieldsPlaceholder, fieldValuesStringBuilder.ToString());
+
+                    recordStringBuilder.Append(recordString);
+                }
+            }
+
+            // Apply record file template.
+            var recordFileString = template.RecordFileTemplate;
+            recordFileString = recordFileString.Replace(RecordsPlaceholder, recordStringBuilder.ToString());
+
+            // Write record file.
+            var recordFileInfo = new FileInfo(fileName);
+
+            using (var streamWriter = recordFileInfo.CreateText())
+            {
+                streamWriter.Write(recordFileString);
+            }
+        }
+
+        #endregion
+    }
+}
