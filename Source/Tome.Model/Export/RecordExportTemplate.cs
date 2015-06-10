@@ -10,11 +10,15 @@ namespace Tome.Model.Export
     {
         #region Properties
 
+        public string FieldValueDelimiter { get; set; }
+
         public string FieldValueTemplate { get; set; }
 
         public string FileExtension { get; set; }
 
         public string Name { get; set; }
+
+        public string RecordDelimiter { get; set; }
 
         public string RecordFileTemplate { get; set; }
 

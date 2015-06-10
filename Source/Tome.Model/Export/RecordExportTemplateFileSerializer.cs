@@ -40,6 +40,24 @@ namespace Tome.Model.Export
             {
                 recordExportTemplateFile.Template.FieldValueTemplate = streamReader.ReadToEnd();
             }
+
+            // Read record delimiter.
+            var recordDelimiterPath = Path.Combine(basePath, recordExportTemplateFile.RecordDelimiterPath);
+            var recordDelimiterFileInfo = new FileInfo(recordDelimiterPath);
+
+            using (var streamReader = recordDelimiterFileInfo.OpenText())
+            {
+                recordExportTemplateFile.Template.RecordDelimiter = streamReader.ReadToEnd();
+            }
+
+            // Read field value template.
+            var fieldValueDelimiterPath = Path.Combine(basePath, recordExportTemplateFile.FieldValueDelimiterPath);
+            var fieldValueDelimiterFileInfo = new FileInfo(fieldValueDelimiterPath);
+
+            using (var streamReader = fieldValueDelimiterFileInfo.OpenText())
+            {
+                recordExportTemplateFile.Template.FieldValueDelimiter = streamReader.ReadToEnd();
+            }
         }
 
         public void Serialize(RecordExportTemplateFile recordExportTemplateFile, string basePath)
@@ -69,6 +87,24 @@ namespace Tome.Model.Export
             using (var streamWriter = fieldValueTemplateFileInfo.CreateText())
             {
                 streamWriter.Write(recordExportTemplateFile.Template.FieldValueTemplate);
+            }
+
+            // Write record delimiter.
+            var recordDelimiterPath = Path.Combine(basePath, recordExportTemplateFile.RecordDelimiterPath);
+            var recordDelimiterFileInfo = new FileInfo(recordDelimiterPath);
+
+            using (var streamWriter = recordDelimiterFileInfo.CreateText())
+            {
+                streamWriter.Write(recordExportTemplateFile.Template.RecordDelimiter);
+            }
+
+            // Write field value delimiter.
+            var fieldValueDelimiterPath = Path.Combine(basePath, recordExportTemplateFile.FieldValueDelimiterPath);
+            var fieldValueDelimiterFileInfo = new FileInfo(fieldValueDelimiterPath);
+
+            using (var streamWriter = fieldValueDelimiterFileInfo.CreateText())
+            {
+                streamWriter.Write(recordExportTemplateFile.Template.FieldValueDelimiter);
             }
         }
 

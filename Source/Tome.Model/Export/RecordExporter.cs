@@ -7,6 +7,7 @@
 namespace Tome.Model.Export
 {
     using System.IO;
+    using System.Linq;
     using System.Text;
 
     using Tome.Model.Project;
@@ -36,19 +37,30 @@ namespace Tome.Model.Export
 
             foreach (var recordFile in project.RecordFiles)
             {
-                foreach (var record in recordFile.Records)
+                for (var recordIndex = 0; recordIndex < recordFile.Records.Count; ++recordIndex)
                 {
+                    var record = recordFile.Records[recordIndex];
+
                     // Build field values string.
                     var fieldValuesStringBuilder = new StringBuilder();
+                    var fieldValues = record.FieldValues.ToList();
 
-                    foreach (var field in record.FieldValues)
+                    for (var fieldIndex = 0; fieldIndex < fieldValues.Count; ++fieldIndex)
                     {
+                        var field = fieldValues[fieldIndex];
+
                         // Apply field value template.
                         var fieldValueString = template.FieldValueTemplate;
                         fieldValueString = fieldValueString.Replace(FieldIdPlaceholder, field.Key);
                         fieldValueString = fieldValueString.Replace(FieldValuePlaceholder, field.Value.ToString());
 
                         fieldValuesStringBuilder.Append(fieldValueString);
+
+                        // Add delimiter, if necessary.
+                        if (fieldIndex < fieldValues.Count - 1)
+                        {
+                            fieldValuesStringBuilder.Append(template.FieldValueDelimiter);
+                        }
                     }
 
                     // Apply record template.
@@ -57,6 +69,12 @@ namespace Tome.Model.Export
                     recordString = recordString.Replace(RecordFieldsPlaceholder, fieldValuesStringBuilder.ToString());
 
                     recordStringBuilder.Append(recordString);
+
+                    // Add delimiter, if necessary.
+                    if (recordIndex < recordFile.Records.Count - 1)
+                    {
+                        recordStringBuilder.Append(template.RecordDelimiter);
+                    }
                 }
             }
 

@@ -1,4 +1,4 @@
-{
-  "id": "$RECORD_ID$",
-  $RECORD_FIELDS$
-},
+    {
+      "id": "$RECORD_ID$",
+$RECORD_FIELDS$
+    }

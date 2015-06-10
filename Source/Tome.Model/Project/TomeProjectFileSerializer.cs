@@ -21,11 +21,15 @@ namespace Tome.Model.Project
 
         private const string ElementFieldDefinitions = "FieldDefinitions";
 
+        private const string ElementFieldValueDelimiter = "FieldValueDelimiter";
+
         private const string ElementFieldValueTemplate = "FieldValueTemplate";
 
         private const string ElementName = "Name";
 
         private const string ElementPath = "Path";
+
+        private const string ElementRecordDelimiter = "RecordDelimiter";
 
         private const string ElementRecordExportTemplates = "RecordExportTemplates";
 
@@ -108,12 +112,17 @@ namespace Tome.Model.Project
                                         var recordFileTemplatePath =
                                             xmlReader.ReadElementString(ElementRecordFileTemplate);
                                         var recordTemplatePath = xmlReader.ReadElementString(ElementRecordTemplate);
+                                        var recordDelimiterPath = xmlReader.ReadElementString(ElementRecordDelimiter);
                                         var fieldValueTemplatePath =
                                             xmlReader.ReadElementString(ElementFieldValueTemplate);
+                                        var fieldValueDelimiterPath =
+                                            xmlReader.ReadElementString(ElementFieldValueDelimiter);
 
                                         var recordExportTemplateFile = new RecordExportTemplateFile
                                         {
+                                            FieldValueDelimiterPath = fieldValueDelimiterPath,
                                             FieldValueTemplatePath = fieldValueTemplatePath,
+                                            RecordDelimiterPath = recordDelimiterPath,
                                             RecordFileTemplatePath = recordFileTemplatePath,
                                             RecordTemplatePath = recordTemplatePath,
                                             Template =
@@ -223,8 +232,14 @@ namespace Tome.Model.Project
                                         ElementRecordTemplate,
                                         recordExportTemplateFile.RecordTemplatePath);
                                     xmlWriter.WriteElementString(
+                                       ElementRecordDelimiter,
+                                       recordExportTemplateFile.RecordDelimiterPath);
+                                    xmlWriter.WriteElementString(
                                         ElementFieldValueTemplate,
                                         recordExportTemplateFile.FieldValueTemplatePath);
+                                    xmlWriter.WriteElementString(
+                                        ElementFieldValueDelimiter,
+                                        recordExportTemplateFile.FieldValueDelimiterPath);
                                 }
                                 xmlWriter.WriteEndElement();
                             }

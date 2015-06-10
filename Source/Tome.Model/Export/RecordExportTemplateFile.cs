@@ -10,7 +10,11 @@ namespace Tome.Model.Export
     {
         #region Constants
 
+        public const string FieldValueDelimiterExtension = ".texportvd";
+
         public const string FieldValueTemplateExtension = ".texportv";
+
+        public const string RecordDelimiterExtension = ".texportrd";
 
         public const string RecordFileTemplateExtension = ".texportf";
 
@@ -20,7 +24,11 @@ namespace Tome.Model.Export
 
         #region Properties
 
+        public string FieldValueDelimiterPath { get; set; }
+
         public string FieldValueTemplatePath { get; set; }
+
+        public string RecordDelimiterPath { get; set; }
 
         public string RecordFileTemplatePath { get; set; }
 
