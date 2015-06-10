@@ -9,15 +9,18 @@ namespace Tome.Core.Windows
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Input;
 
     using Microsoft.Win32;
 
     using Tome.Fields.Windows;
     using Tome.Help.Windows;
+    using Tome.Model.Export;
     using Tome.Model.Fields;
     using Tome.Model.Project;
     using Tome.Model.Records;
@@ -252,6 +255,39 @@ namespace Tome.Core.Windows
             this.EditSelectedRecordDefinition();
         }
 
+        private void ExecutedExport(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+            var templateName = (string)menuItem.Header;
+
+            // Get export template.
+            var template =
+                this.currentProject.Project.RecordExportTemplateFiles.FirstOrDefault(
+                    file => Equals(file.Template.Name, templateName)).Template;
+
+            // Show file dialog.
+            var saveFileDialog = new SaveFileDialog
+            {
+                AddExtension = true,
+                CheckPathExists = true,
+                Filter = string.Format("{0} (*{1})|*{1}", template.Name, template.FileExtension)
+            };
+
+            var result = saveFileDialog.ShowDialog(this);
+
+            if (result != true)
+            {
+                return;
+            }
+
+            // Export records.
+            var exporter = new RecordExporter();
+            exporter.Export(this.currentProject.Project, template, saveFileDialog.FileName);
+
+            // Open exported file.
+            Process.Start(saveFileDialog.FileName);
+        }
+
         private void ExecutedFieldDefinitions(object target, ExecutedRoutedEventArgs e)
         {
             this.fieldDefinitionsWindow = WindowUtils.ShowWindow(
@@ -296,6 +332,19 @@ namespace Tome.Core.Windows
             // Setup records.
             this.RecordsViewModel = new RecordsViewModel(this.currentProject.Project.RecordFiles);
             this.RecordsTreeView.ItemsSource = this.RecordsViewModel.RecordFiles;
+
+            // Setup export templates.
+            this.ExportMenu.Items.Clear();
+
+            foreach (var recordExportTemplateFile in this.currentProject.Project.RecordExportTemplateFiles)
+            {
+                var menuItem = new MenuItem();
+
+                menuItem.Header = recordExportTemplateFile.Template.Name;
+                menuItem.Click += this.ExecutedExport;
+
+                this.ExportMenu.Items.Add(menuItem);
+            }
         }
 
         private void ExecutedSave(object target, ExecutedRoutedEventArgs e)

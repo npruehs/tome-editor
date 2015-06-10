@@ -9,6 +9,7 @@ namespace Tome.Model.Project
     using System;
     using System.Collections.Generic;
 
+    using Tome.Model.Export;
     using Tome.Model.Fields;
     using Tome.Model.Records;
 
@@ -18,6 +19,9 @@ namespace Tome.Model.Project
 
         public TomeProject()
         {
+            this.FieldDefinitionFiles = new List<FieldDefinitionFile>();
+            this.RecordExportTemplateFiles = new List<RecordExportTemplateFile>();
+            this.RecordFiles = new List<RecordFile>();
         }
 
         public TomeProject(string name)
@@ -41,6 +45,7 @@ namespace Tome.Model.Project
             {
                 new RecordFile { Path = this.Name + RecordFile.FileExtension, Records = new List<Record>() }
             };
+            this.RecordExportTemplateFiles = new List<RecordExportTemplateFile>();
         }
 
         #endregion
@@ -52,6 +57,8 @@ namespace Tome.Model.Project
         public List<FieldDefinitionFile> FieldDefinitionFiles { get; set; }
 
         public string Name { get; set; }
+
+        public List<RecordExportTemplateFile> RecordExportTemplateFiles { get; set; }
 
         public List<RecordFile> RecordFiles { get; set; }
 

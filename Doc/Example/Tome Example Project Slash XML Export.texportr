@@ -1,0 +1,8 @@
+  <Entry>
+    <Id>$RECORD_ID$</Id>
+    <Blueprint>
+      <AttributeTable>
+$RECORD_FIELDS$
+      </AttributeTable>
+    </Blueprint>
+  </Entry>

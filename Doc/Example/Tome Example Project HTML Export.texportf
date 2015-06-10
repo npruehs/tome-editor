@@ -1,0 +1,22 @@
+<html>
+  <head>
+	<title>Tome Example Project Records</title>
+  </head>
+
+  <body>
+	<h1>Units</h1>
+	<table>
+	  <tr>
+		<th>Unit</th>
+		<th>Acceleration</th>
+		<th>Armor Type</th>
+		<th>Attack Damage</th>
+		<th>Attack Range</th>
+		<th>Cooldown</th>
+		<th>Damage Type</th>
+	  </tr>
+
+$RECORDS$
+	</table>
+  </body>
+</html>
