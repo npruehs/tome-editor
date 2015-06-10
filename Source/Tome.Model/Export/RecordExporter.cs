@@ -18,6 +18,8 @@ namespace Tome.Model.Export
 
         private const string FieldIdPlaceholder = "$FIELD_ID$";
 
+        private const string FieldTypePlaceholder = "$FIELD_TYPE$";
+
         private const string FieldValuePlaceholder = "$FIELD_VALUE$";
 
         private const string RecordFieldsPlaceholder = "$RECORD_FIELDS$";
@@ -52,6 +54,9 @@ namespace Tome.Model.Export
                         // Apply field value template.
                         var fieldValueString = template.FieldValueTemplate;
                         fieldValueString = fieldValueString.Replace(FieldIdPlaceholder, field.Key);
+                        fieldValueString = fieldValueString.Replace(
+                            FieldTypePlaceholder,
+                            field.Value.GetType().ToString());
                         fieldValueString = fieldValueString.Replace(FieldValuePlaceholder, field.Value.ToString());
 
                         fieldValuesStringBuilder.Append(fieldValueString);

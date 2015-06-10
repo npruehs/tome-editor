@@ -18,5 +18,14 @@
       <FieldValueTemplate>Tome Example Project JSON Export.texportv</FieldValueTemplate>
       <FieldValueDelimiter>Tome Example Project JSON Export.texportvd</FieldValueDelimiter>
     </Template>
+    <Template>
+      <Name>Slash XML</Name>
+      <FileExtension>.blueprints.xml</FileExtension>
+      <RecordFileTemplate>Tome Example Project Slash XML Export.texportf</RecordFileTemplate>
+      <RecordTemplate>Tome Example Project Slash XML Export.texportr</RecordTemplate>
+      <RecordDelimiter>Tome Example Project Slash XML Export.texportrd</RecordDelimiter>
+      <FieldValueTemplate>Tome Example Project Slash XML Export.texportv</FieldValueTemplate>
+      <FieldValueDelimiter>Tome Example Project Slash XML Export.texportvd</FieldValueDelimiter>
+    </Template>
   </RecordExportTemplates>
 </TomeProject>
