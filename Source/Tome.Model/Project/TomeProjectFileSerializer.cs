@@ -10,6 +10,7 @@ namespace Tome.Model.Project
     using System.IO;
     using System.Xml;
 
+    using Tome.Model.Export;
     using Tome.Model.Fields;
     using Tome.Model.Records;
 
@@ -25,7 +26,15 @@ namespace Tome.Model.Project
 
         private const string ElementPath = "Path";
 
+        private const string ElementRecordExportTemplates = "RecordExportTemplates";
+
+        private const string ElementRecordFileTemplate = "RecordFileTemplate";
+
         private const string ElementRecords = "Records";
+
+        private const string ElementRecordTemplate = "RecordTemplate";
+
+        private const string ElementTemplate = "Template";
 
         private const string ElementTomeProject = "TomeProject";
 
@@ -36,16 +45,7 @@ namespace Tome.Model.Project
         public TomeProjectFile Deserialize(string path)
         {
             // Create new project file object.
-            var projectFile = new TomeProjectFile
-            {
-                Path = path,
-                Project =
-                    new TomeProject
-                    {
-                        FieldDefinitionFiles = new List<FieldDefinitionFile>(),
-                        RecordFiles = new List<RecordFile>()
-                    }
-            };
+            var projectFile = new TomeProjectFile { Path = path, Project = new TomeProject() };
 
             // Read project file.
             var projectFileInfo = new FileInfo(path);
@@ -87,6 +87,28 @@ namespace Tome.Model.Project
                             }
                         }
                         xmlReader.ReadEndElement();
+
+                        // Read record export template file paths.
+                        xmlReader.ReadStartElement(ElementRecordExportTemplates);
+                        {
+                            while (xmlReader.Name.Equals(ElementTemplate))
+                            {
+                                xmlReader.ReadStartElement(ElementTemplate);
+                                {
+                                    var recordFileTemplatePath = xmlReader.ReadElementString(ElementRecordFileTemplate);
+                                    var recordTemplatePath = xmlReader.ReadElementString(ElementRecordTemplate);
+
+                                    project.RecordExportTemplateFiles.Add(
+                                        new RecordExportTemplateFile
+                                        {
+                                            RecordFileTemplatePath = recordFileTemplatePath,
+                                            RecordTemplatePath = recordTemplatePath
+                                        });
+                                }
+                                xmlReader.ReadEndElement();
+                            }
+                        }
+                        xmlReader.ReadEndElement();
                     }
                     xmlReader.ReadEndElement();
                 }
@@ -106,6 +128,14 @@ namespace Tome.Model.Project
             foreach (var recordFile in projectFile.Project.RecordFiles)
             {
                 recordFileSerializer.Deserialize(recordFile, basePath);
+            }
+
+            // Read record export template files.
+            var recordExportTemplateFileSerializer = new RecordExportTemplateFileSerializer();
+
+            foreach (var recordExportTemplateFile in projectFile.Project.RecordExportTemplateFiles)
+            {
+                recordExportTemplateFileSerializer.Deserialize(recordExportTemplateFile, basePath);
             }
 
             return projectFile;
@@ -146,7 +176,26 @@ namespace Tome.Model.Project
                         {
                             foreach (var recordFile in project.RecordFiles)
                             {
-                                xmlWriter.WriteElementString("Path", recordFile.Path);
+                                xmlWriter.WriteElementString(ElementPath, recordFile.Path);
+                            }
+                        }
+                        xmlWriter.WriteEndElement();
+
+                        // Write record export template file paths.
+                        xmlWriter.WriteStartElement(ElementRecordExportTemplates);
+                        {
+                            foreach (var recordExportTemplateFile in project.RecordExportTemplateFiles)
+                            {
+                                xmlWriter.WriteStartElement(ElementTemplate);
+                                {
+                                    xmlWriter.WriteElementString(
+                                        ElementRecordFileTemplate,
+                                        recordExportTemplateFile.RecordFileTemplatePath);
+                                    xmlWriter.WriteElementString(
+                                        ElementRecordTemplate,
+                                        recordExportTemplateFile.RecordTemplatePath);
+                                }
+                                xmlWriter.WriteEndElement();
                             }
                         }
                         xmlWriter.WriteEndElement();
@@ -169,6 +218,14 @@ namespace Tome.Model.Project
             foreach (var recordFile in projectFile.Project.RecordFiles)
             {
                 recordFileSerializer.Serialize(recordFile, basePath);
+            }
+
+            // Write record export template files.
+            var recordExportTemplateFileSerializer = new RecordExportTemplateFileSerializer();
+
+            foreach (var recordExportTemplateFile in projectFile.Project.RecordExportTemplateFiles)
+            {
+                recordExportTemplateFileSerializer.Serialize(recordExportTemplateFile, basePath);
             }
         }
 

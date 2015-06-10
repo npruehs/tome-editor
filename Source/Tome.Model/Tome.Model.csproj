@@ -41,6 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Export\RecordExportTemplate.cs" />
+    <Compile Include="Export\RecordExportTemplateFile.cs" />
+    <Compile Include="Export\RecordExportTemplateFileSerializer.cs" />
     <Compile Include="Fields\FieldDefinition.cs" />
     <Compile Include="Fields\FieldDefinitionFile.cs" />
     <Compile Include="Fields\FieldDefinitionFileSerializer.cs" />
