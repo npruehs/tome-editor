@@ -10,6 +10,15 @@
   </Records>
   <RecordExportTemplates>
     <Template>
+      <Name>HTML</Name>
+      <FileExtension>.html</FileExtension>
+      <RecordFileTemplate>Tome Example Project HTML Export.texportf</RecordFileTemplate>
+      <RecordTemplate>Tome Example Project HTML Export.texportr</RecordTemplate>
+      <RecordDelimiter>Tome Example Project HTML Export.texportrd</RecordDelimiter>
+      <FieldValueTemplate>Tome Example Project HTML Export.texportv</FieldValueTemplate>
+      <FieldValueDelimiter>Tome Example Project HTML Export.texportvd</FieldValueDelimiter>
+    </Template>
+    <Template>
       <Name>JSON</Name>
       <FileExtension>.json</FileExtension>
       <RecordFileTemplate>Tome Example Project JSON Export.texportf</RecordFileTemplate>
