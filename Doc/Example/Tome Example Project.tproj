@@ -36,5 +36,14 @@
       <FieldValueTemplate>Tome Example Project Slash XML Export.texportv</FieldValueTemplate>
       <FieldValueDelimiter>Tome Example Project Slash XML Export.texportvd</FieldValueDelimiter>
     </Template>
+    <Template>
+      <Name>StarCraft II XML</Name>
+      <FileExtension>.xml</FileExtension>
+      <RecordFileTemplate>Tome Example Project StarCraft II XML Export.texportf</RecordFileTemplate>
+      <RecordTemplate>Tome Example Project StarCraft II XML Export.texportr</RecordTemplate>
+      <RecordDelimiter>Tome Example Project StarCraft II XML Export.texportrd</RecordDelimiter>
+      <FieldValueTemplate>Tome Example Project StarCraft II XML Export.texportv</FieldValueTemplate>
+      <FieldValueDelimiter>Tome Example Project StarCraft II XML Export.texportvd</FieldValueDelimiter>
+    </Template>
   </RecordExportTemplates>
 </TomeProject>
