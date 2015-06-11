@@ -7,19 +7,20 @@
         mc:Ignorable="d"
         Title="About Tome" Height="300" Width="300">
 	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0">
+            <TextBlock Height="Auto">Tome Game Editor</TextBlock>
+            <TextBlock Height="Auto" Name="VersionTextBlock"/>
+            <TextBlock Height="Auto">Copyright 2015 <Hyperlink NavigateUri="https://github.com/npruehs/game-data-editor" RequestNavigate="HyperlinkRequestNavigate">Tome</Hyperlink>.</TextBlock>
+			<TextBlock Height="Auto">All rights reserved.</TextBlock>
+        </StackPanel>
 
-		<TextBlock Grid.Row="0">
-			Tome Game Editor<LineBreak />
-			Version 0.1.0<LineBreak />
-			Copyright 2015 <Hyperlink NavigateUri="https://github.com/npruehs/game-data-editor" RequestNavigate="HyperlinkRequestNavigate">Tome</Hyperlink>.<LineBreak />
-			All rights reserved.<LineBreak />
-		</TextBlock>
-		<TextBlock Grid.Row="1">
+        <TextBlock Grid.Row="1">
 			Tome is released under the <Hyperlink NavigateUri="https://github.com/npruehs/game-data-editor/blob/master/LICENSE" RequestNavigate="HyperlinkRequestNavigate">MIT License</Hyperlink>.
-		</TextBlock>
-	</Grid>
+        </TextBlock>
+    </Grid>
 </Window>

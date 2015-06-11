@@ -10,6 +10,8 @@ namespace Tome.Help.Windows
     using System.Windows;
     using System.Windows.Navigation;
 
+    using Tome.Util;
+
     public partial class AboutWindow : Window
     {
         #region Constructors and Destructors
@@ -17,6 +19,8 @@ namespace Tome.Help.Windows
         public AboutWindow()
         {
             this.InitializeComponent();
+
+            this.VersionTextBlock.Text = $"Version {VersionUtils.GetVersion()}";
         }
 
         #endregion
