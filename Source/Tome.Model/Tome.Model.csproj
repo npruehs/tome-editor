@@ -48,6 +48,7 @@
     <Compile Include="Fields\FieldDefinition.cs" />
     <Compile Include="Fields\FieldDefinitionFile.cs" />
     <Compile Include="Fields\FieldDefinitionFileSerializer.cs" />
+    <Compile Include="Fields\FieldDefinitionImporter.cs" />
     <Compile Include="Fields\FieldType.cs" />
     <Compile Include="Project\TomeProject.cs" />
     <Compile Include="Project\TomeProjectFile.cs" />

@@ -53,6 +53,9 @@
                 <MenuItem Header="Field Definitions..." Command="commands:MainWindowCommands.FieldDefinitions" />
             </MenuItem>
             <MenuItem Name="ExportMenu" Header="Export" />
+            <MenuItem Header="Import">
+                <MenuItem Header="Import Field Definitions..." Command="commands:MainWindowCommands.ImportFieldDefinitions" />
+            </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="About" Command="ApplicationCommands.Help" />
             </MenuItem>
@@ -144,6 +147,9 @@
         <CommandBinding Command="commands:MainWindowCommands.FieldDefinitions"
                         Executed="ExecutedFieldDefinitions"
                         CanExecute="CanExecuteFieldDefinitions" />
+        <CommandBinding Command="commands:MainWindowCommands.ImportFieldDefinitions"
+                        Executed="ExecutedImportFieldDefinitions"
+                        CanExecute="CanExecuteImportFieldDefinitions" />
         <CommandBinding Command="ApplicationCommands.Help"
                         Executed="ExecutedHelp"
                         CanExecute="CanExecuteHelp" />

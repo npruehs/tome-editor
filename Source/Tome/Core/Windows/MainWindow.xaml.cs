@@ -13,10 +13,8 @@ namespace Tome.Core.Windows
     using System.IO;
     using System.Linq;
     using System.Windows;
-    using System.Windows.Controls;
+    using System.Windows.Forms;
     using System.Windows.Input;
-
-    using Microsoft.Win32;
 
     using Tome.Fields.Windows;
     using Tome.Help.Windows;
@@ -28,6 +26,10 @@ namespace Tome.Core.Windows
     using Tome.Records.ViewModels;
     using Tome.Records.Windows;
     using Tome.Util;
+
+    using MenuItem = System.Windows.Controls.MenuItem;
+    using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+    using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 
     public partial class MainWindow : Window
     {
@@ -147,6 +149,11 @@ namespace Tome.Core.Windows
         private void CanExecuteHelp(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
+        }
+
+        private void CanExecuteImportFieldDefinitions(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ProjectLoaded;
         }
 
         private void CanExecuteNew(object sender, CanExecuteRoutedEventArgs e)
@@ -300,6 +307,58 @@ namespace Tome.Core.Windows
         private void ExecutedHelp(object target, ExecutedRoutedEventArgs e)
         {
             this.aboutWindow = WindowUtils.ShowWindow(this.aboutWindow, this);
+        }
+
+        private void ExecutedImportFieldDefinitions(object target, ExecutedRoutedEventArgs e)
+        {
+            // Show folder browser.
+            var folderBrowserDialog = new FolderBrowserDialog { ShowNewFolderButton = false };
+
+            var result = folderBrowserDialog.ShowDialog();
+
+            if (result != System.Windows.Forms.DialogResult.OK)
+            {
+                return;
+            }
+
+            // Parse all source files in specified folder for field definitions to import.
+            var fieldDefinitionImporter = new FieldDefinitionImporter();
+            var fields = fieldDefinitionImporter.Import(folderBrowserDialog.SelectedPath);
+
+            // Get field definition file to add imported fields to.
+            var fieldDefinitionFile = this.currentProject.Project.FieldDefinitionFiles.FirstOrDefault();
+
+            // Count imported fields for success message.
+            var newFields = 0;
+            var updatedFields = 0;
+
+            foreach (var field in fields)
+            {
+                var existingField = fieldDefinitionFile.FieldDefinitions.FirstOrDefault(f => Equals(f.Id, field.Id));
+
+                if (existingField == null)
+                {
+                    // Add new field.
+                    fieldDefinitionFile.FieldDefinitions.Add(field);
+
+                    ++newFields;
+                }
+                else
+                {
+                    // Update existing field.
+                    existingField.FieldType = field.FieldType;
+                    existingField.DefaultValue = field.DefaultValue;
+                    existingField.Description = field.Description;
+                    existingField.DisplayName = field.DisplayName;
+
+                    ++updatedFields;
+                }
+            }
+
+            // Notify user.
+            WindowUtils.ShowInfoMessage(
+                "Success",
+                $"{newFields} field(s) added.\r\n{updatedFields} field(s) updated or up-to-date.");
         }
 
         private void ExecutedNew(object target, ExecutedRoutedEventArgs e)

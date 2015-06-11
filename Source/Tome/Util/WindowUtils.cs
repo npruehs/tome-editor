@@ -24,6 +24,16 @@ namespace Tome.Util
         }
 
         /// <summary>
+        ///   Shows a modal information message with the specified title and content.
+        /// </summary>
+        /// <param name="title">Title of the information message to show.</param>
+        /// <param name="message">Content of the information message to show.</param>
+        public static void ShowInfoMessage(string title, string message)
+        {
+            MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+        }
+
+        /// <summary>
         ///   Shows a window of the specified type. If the window has never
         ///   been created or has already been closed, a new one is created.
         ///   The window is shown and focused immediately.

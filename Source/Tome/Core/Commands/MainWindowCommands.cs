@@ -12,6 +12,10 @@ namespace Tome.Core.Commands
     {
         #region Constants
 
+        public static RoutedCommand ImportFieldDefinitions = new RoutedCommand(
+            "Import Field Definitions",
+            typeof(MainWindowCommands));
+
         public static RoutedCommand FieldDefinitions = new RoutedCommand(
             "Field Definitions",
             typeof(MainWindowCommands));
