@@ -20,7 +20,7 @@ namespace Tome.Help.Windows
         {
             this.InitializeComponent();
 
-            this.VersionTextBlock.Text = $"Version {VersionUtils.GetVersion()}";
+            this.VersionTextBlock.Text = $"Version {AssemblyUtils.GetVersion()}";
         }
 
         #endregion

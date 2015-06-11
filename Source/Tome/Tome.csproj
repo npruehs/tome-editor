@@ -83,7 +83,7 @@
     <Compile Include="Util\StringUtils.cs" />
     <Compile Include="Util\ValidationUtils.cs" />
     <Compile Include="Util\ControlUtils.cs" />
-    <Compile Include="Util\VersionUtils.cs" />
+    <Compile Include="Util\AssemblyUtils.cs" />
     <Compile Include="Util\WindowUtils.cs" />
     <Page Include="Fields\Windows\EditFieldDefinitionWindow.xaml">
       <SubType>Designer</SubType>

@@ -58,6 +58,9 @@ namespace Tome.Core.Windows
             this.InitializeComponent();
 
             this.DataContext = this;
+
+            // Update window title.
+            this.UpdateWindowTitle();
         }
 
         #endregion
@@ -404,6 +407,9 @@ namespace Tome.Core.Windows
 
                 this.ExportMenu.Items.Add(menuItem);
             }
+
+            // Update window title.
+            this.UpdateWindowTitle();
         }
 
         private void ExecutedSave(object target, ExecutedRoutedEventArgs e)
@@ -551,6 +557,9 @@ namespace Tome.Core.Windows
                 // Setup records.
                 this.RecordsViewModel = new RecordsViewModel(this.currentProject.Project.RecordFiles);
                 this.RecordsTreeView.ItemsSource = this.RecordsViewModel.RecordFiles;
+
+                // Update window title.
+                this.UpdateWindowTitle();
             }
             catch (ArgumentNullException exception)
             {
@@ -587,6 +596,18 @@ namespace Tome.Core.Windows
                     this.SelectedRecordFields.Add(field);
                 }
             }
+        }
+
+        private void UpdateWindowTitle()
+        {
+            var title = $"{AssemblyUtils.GetName()} {AssemblyUtils.GetVersion()}";
+
+            if (this.ProjectLoaded)
+            {
+                title += " - " + this.currentProject.Path;
+            }
+
+            this.Title = title;
         }
 
         #endregion
