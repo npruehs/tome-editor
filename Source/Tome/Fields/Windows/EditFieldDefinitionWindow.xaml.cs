@@ -118,6 +118,11 @@ namespace Tome.Fields.Windows
                         ConversionUtils.ConvertOrDefault<bool>(currentDefaultValue);
                     break;
 
+                case FieldType.Float:
+                    this.FieldDefinitionViewModel.DefaultValue =
+                        ConversionUtils.ConvertOrDefault<float>(currentDefaultValue);
+                    break;
+
                 case FieldType.Int:
                     this.FieldDefinitionViewModel.DefaultValue =
                         ConversionUtils.ConvertOrDefault<int>(currentDefaultValue);

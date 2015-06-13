@@ -34,6 +34,13 @@ namespace Tome.Util
                     control.SetBinding(ToggleButton.IsCheckedProperty, binding);
                     return control;
 
+                case FieldType.Float:
+                    control = new TextBox();
+                    binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(float)));
+                    binding.Converter = new FieldValueConverter(typeof(float));
+                    control.SetBinding(TextBox.TextProperty, binding);
+                    return control;
+
                 case FieldType.Int:
                     control = new TextBox();
                     binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(int)));
