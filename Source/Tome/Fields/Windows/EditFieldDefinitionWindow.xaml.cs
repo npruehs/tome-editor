@@ -113,6 +113,11 @@ namespace Tome.Fields.Windows
             // Convert default value to new type.
             switch (fieldType)
             {
+                case FieldType.Boolean:
+                    this.FieldDefinitionViewModel.DefaultValue =
+                        ConversionUtils.ConvertOrDefault<bool>(currentDefaultValue);
+                    break;
+
                 case FieldType.Int:
                     this.FieldDefinitionViewModel.DefaultValue =
                         ConversionUtils.ConvertOrDefault<int>(currentDefaultValue);

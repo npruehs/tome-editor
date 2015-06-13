@@ -27,7 +27,7 @@ namespace Tome.Util
         public static object Convert(object o, Type type)
         {
             var typeConverter = TypeDescriptor.GetConverter(type);
-            return typeConverter.ConvertTo(o, type);
+            return o is string ? typeConverter.ConvertFrom(o) : typeConverter.ConvertTo(o, type);
         }
 
         public static object Convert<T>(object o)

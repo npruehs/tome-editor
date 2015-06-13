@@ -10,6 +10,8 @@ namespace Tome.Model.Fields
     {
         None,
 
+        Boolean,
+
         Int,
 
         String

@@ -8,6 +8,7 @@
   <Field Id="DamageType" DisplayName="Damage Type" Type="String" Description="Type of the damage dealt by this entity. Affects actual damage dealt by its attacks, depending on the target's armor type." DefaultValue="Light" />
   <Field Id="Health" DisplayName="Health" Type="Int" Description="Maximum health of this entity. If reduced to zero, it dies." DefaultValue="200" />
   <Field Id="HealthRegeneration" DisplayName="Health Regeneration" Type="Int" Description="Health regeneration rate of this entity, in health / second." DefaultValue="0" />
+  <Field Id="Invulnerable" DisplayName="Invulnerable" Type="Boolean" Description="Whether this entity can take damage and be targeted, or not." DefaultValue="False" />
   <Field Id="Mana" DisplayName="Mana" Type="Int" Description="Maximum mana of this entity. Regenerates automatically. Required for most spells." DefaultValue="100" />
   <Field Id="MP5" DisplayName="Mana Regeneration" Type="Int" Description="Mana regeneration rate of this entity, in mana / 5 seconds." DefaultValue="3" />
   <Field Id="MovementSpeed" DisplayName="Movement Speed" Type="Int" Description="Speed of this entity, in m/s." DefaultValue="10" />
