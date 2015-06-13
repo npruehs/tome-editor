@@ -8,6 +8,7 @@ namespace Tome.Fields.Windows
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Data;
@@ -105,37 +106,33 @@ namespace Tome.Fields.Windows
         private void OnComboBoxFieldTypeChanged(object sender, RoutedEventArgs e)
         {
             var fieldType = (FieldType)this.ComboBoxFieldType.SelectedItem;
-            var currentDefaultValue = this.FieldDefinitionViewModel.DefaultValue;
+
+            // Convert current value to string.
+            var currentDefaultValue = this.FieldDefinitionViewModel.DefaultValue.ToString();
 
             // Convert default value to new type.
             switch (fieldType)
             {
                 case FieldType.Int:
-                    var newDefaultValue = 0;
-
-                    if (currentDefaultValue != null)
-                    {
-                        int.TryParse(currentDefaultValue.ToString(), out newDefaultValue);
-                    }
-
-                    this.FieldDefinitionViewModel.DefaultValue = newDefaultValue;
+                    var typeConverter = TypeDescriptor.GetConverter(typeof(int));
+                    this.FieldDefinitionViewModel.DefaultValue = typeConverter.CanConvertFrom(typeof(string))
+                        ? typeConverter.ConvertFromString(currentDefaultValue)
+                        : 0;
                     break;
 
                 case FieldType.String:
-                    this.FieldDefinitionViewModel.DefaultValue = currentDefaultValue != null
-                        ? currentDefaultValue.ToString()
-                        : string.Empty;
+                    this.FieldDefinitionViewModel.DefaultValue = currentDefaultValue;
                     break;
             }
 
             // Create control.
-            var textBox = ControlUtils.CreateValueControl(this.FieldDefinitionViewModel, "DefaultValue", fieldType);
-            textBox.Style = (Style)this.FindResource("ErrorLabelMargin");
-            Validation.SetErrorTemplate(textBox, (ControlTemplate)this.FindResource("ErrorLabel"));
+            var control = ControlUtils.CreateValueControl(this.FieldDefinitionViewModel, "DefaultValue", fieldType);
+            control.Style = (Style)this.FindResource("ErrorLabelMargin");
+            Validation.SetErrorTemplate(control, (ControlTemplate)this.FindResource("ErrorLabel"));
 
             // Add control to window.
             this.DockPanelDefaultValueUIElement.Children.Clear();
-            this.DockPanelDefaultValueUIElement.Children.Add(textBox);
+            this.DockPanelDefaultValueUIElement.Children.Add(control);
         }
 
         private void OnTextBoxDisplayNameChanged(object sender, RoutedEventArgs e)

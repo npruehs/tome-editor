@@ -17,7 +17,7 @@ namespace Tome.Util
     {
         #region Public Methods and Operators
 
-        public static TextBox CreateValueControl(object viewModel, string bindingPath, FieldType fieldType)
+        public static Control CreateValueControl(object viewModel, string bindingPath, FieldType fieldType)
         {
             // Create binding.
             var binding = new Binding(bindingPath);
@@ -37,9 +37,9 @@ namespace Tome.Util
             }
 
             // Create control.
-            var textBox = new TextBox();
-            textBox.SetBinding(TextBox.TextProperty, binding);
-            return textBox;
+            var control = new TextBox();
+            control.SetBinding(TextBox.TextProperty, binding);
+            return control;
         }
 
         /// <summary>
