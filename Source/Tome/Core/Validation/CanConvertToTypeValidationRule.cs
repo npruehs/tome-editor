@@ -11,6 +11,8 @@ namespace Tome.Core.Validation
     using System.Globalization;
     using System.Windows.Controls;
 
+    using Tome.Util;
+
     public class CanConvertToTypeValidationRule : ValidationRule
     {
         #region Constructors and Destructors
@@ -36,13 +38,9 @@ namespace Tome.Core.Validation
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            var typeConverter = TypeDescriptor.GetConverter(this.Type);
-            if (!typeConverter.IsValid(value))
-            {
-                return new ValidationResult(false, string.Format("Can't convert to type {0}.", this.Type.Name));
-            }
-
-            return ValidationResult.ValidResult;
+            return ConversionUtils.CanConvertTo(value, this.Type)
+                ? ValidationResult.ValidResult
+                : new ValidationResult(false, string.Format("Can't convert to type {0}.", this.Type.Name));
         }
 
         #endregion

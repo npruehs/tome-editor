@@ -11,6 +11,8 @@ namespace Tome.Core.Conversion
     using System.Globalization;
     using System.Windows.Data;
 
+    using Tome.Util;
+
     public class FieldValueConverter : IValueConverter
     {
         #region Constructors and Destructors
@@ -41,8 +43,7 @@ namespace Tome.Core.Conversion
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var typeConverter = TypeDescriptor.GetConverter(this.Type);
-            return typeConverter.ConvertTo(value, this.Type);
+            return ConversionUtils.Convert((string)value, this.Type);
         }
 
         #endregion

@@ -108,16 +108,14 @@ namespace Tome.Fields.Windows
             var fieldType = (FieldType)this.ComboBoxFieldType.SelectedItem;
 
             // Convert current value to string.
-            var currentDefaultValue = this.FieldDefinitionViewModel.DefaultValue.ToString();
+            var currentDefaultValue = ConversionUtils.ToString(this.FieldDefinitionViewModel.DefaultValue);
 
             // Convert default value to new type.
             switch (fieldType)
             {
                 case FieldType.Int:
-                    var typeConverter = TypeDescriptor.GetConverter(typeof(int));
-                    this.FieldDefinitionViewModel.DefaultValue = typeConverter.CanConvertFrom(typeof(string))
-                        ? typeConverter.ConvertFromString(currentDefaultValue)
-                        : 0;
+                    this.FieldDefinitionViewModel.DefaultValue =
+                        ConversionUtils.ConvertOrDefault<int>(currentDefaultValue);
                     break;
 
                 case FieldType.String:
