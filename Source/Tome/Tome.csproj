@@ -80,6 +80,7 @@
     <Compile Include="Records\Windows\EditRecordWindow.xaml.cs">
       <DependentUpon>EditRecordWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Util\ConversionUtils.cs" />
     <Compile Include="Util\StringUtils.cs" />
     <Compile Include="Util\ValidationUtils.cs" />
     <Compile Include="Util\ControlUtils.cs" />

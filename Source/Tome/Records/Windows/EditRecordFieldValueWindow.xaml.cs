@@ -76,16 +76,16 @@ namespace Tome.Records.Windows
         private void UpdateValueControl()
         {
             // Create control.
-            var textBox = ControlUtils.CreateValueControl(
+            var control = ControlUtils.CreateValueControl(
                 this.RecordFieldViewModel,
                 "FieldValue",
                 this.RecordFieldViewModel.FieldType);
-            textBox.Style = (Style)this.FindResource("ErrorLabelMargin");
-            Validation.SetErrorTemplate(textBox, (ControlTemplate)this.FindResource("ErrorLabel"));
+            control.Style = (Style)this.FindResource("ErrorLabelMargin");
+            Validation.SetErrorTemplate(control, (ControlTemplate)this.FindResource("ErrorLabel"));
 
             // Add control to window.
             this.DockPanelFieldValueUIElement.Children.Clear();
-            this.DockPanelFieldValueUIElement.Children.Add(textBox);
+            this.DockPanelFieldValueUIElement.Children.Add(control);
         }
 
         #endregion

@@ -7,6 +7,7 @@
 namespace Tome.Util
 {
     using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
     using System.Windows.Data;
 
     using Tome.Core.Conversion;
@@ -17,29 +18,45 @@ namespace Tome.Util
     {
         #region Public Methods and Operators
 
-        public static TextBox CreateValueControl(object viewModel, string bindingPath, FieldType fieldType)
+        public static Control CreateValueControl(object viewModel, string bindingPath, FieldType fieldType)
         {
+            Control control;
+
             // Create binding.
             var binding = new Binding(bindingPath);
             binding.Source = viewModel;
 
+            // Create control.
             switch (fieldType)
             {
+                case FieldType.Boolean:
+                    control = new CheckBox();
+                    control.SetBinding(ToggleButton.IsCheckedProperty, binding);
+                    return control;
+
+                case FieldType.Float:
+                    control = new TextBox();
+                    binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(float)));
+                    binding.Converter = new FieldValueConverter(typeof(float));
+                    control.SetBinding(TextBox.TextProperty, binding);
+                    return control;
+
                 case FieldType.Int:
+                    control = new TextBox();
                     binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(int)));
                     binding.Converter = new FieldValueConverter(typeof(int));
-                    break;
+                    control.SetBinding(TextBox.TextProperty, binding);
+                    return control;
 
                 case FieldType.String:
+                    control = new TextBox();
                     binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(string)));
                     binding.Converter = new FieldValueConverter(typeof(string));
-                    break;
+                    control.SetBinding(TextBox.TextProperty, binding);
+                    return control;
             }
 
-            // Create control.
-            var textBox = new TextBox();
-            textBox.SetBinding(TextBox.TextProperty, binding);
-            return textBox;
+            return null;
         }
 
         /// <summary>
