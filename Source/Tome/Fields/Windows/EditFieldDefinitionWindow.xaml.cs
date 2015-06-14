@@ -12,6 +12,7 @@ namespace Tome.Fields.Windows
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Data;
+    using System.Windows.Media;
 
     using Tome.Core.Conversion;
     using Tome.Core.Validation;
@@ -116,6 +117,11 @@ namespace Tome.Fields.Windows
                 case FieldType.Boolean:
                     this.FieldDefinitionViewModel.DefaultValue =
                         ConversionUtils.ConvertOrDefault<bool>(currentDefaultValue);
+                    break;
+
+                case FieldType.Color:
+                    this.FieldDefinitionViewModel.DefaultValue =
+                        ConversionUtils.ConvertOrDefault<Color>(currentDefaultValue);
                     break;
 
                 case FieldType.Float:

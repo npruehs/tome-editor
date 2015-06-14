@@ -12,6 +12,8 @@ namespace Tome.Model.Fields
 
         Boolean,
 
+        Color,
+
         Float,
 
         Int,
