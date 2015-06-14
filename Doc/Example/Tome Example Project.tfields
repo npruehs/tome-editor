@@ -16,4 +16,5 @@
   <Field Id="RotationSpeed" DisplayName="Rotation Speed" Type="Float" Description="Rotation speed of this entity, in degrees / second." DefaultValue="360" />
   <Field Id="SightRadius" DisplayName="Sight Radius" Type="Float" Description="Range of sight of this entity, in m." DefaultValue="25" />
   <Field Id="Sprite" DisplayName="Sprite" Type="String" Description="Name of the sprite used to visualize this entity." DefaultValue="" />
+  <Field Id="SpriteColor" DisplayName="SpriteColor" Type="Color" Description="Color to render the sprite of this entity with." DefaultValue="#FFFFFFFF" />
 </Fields>

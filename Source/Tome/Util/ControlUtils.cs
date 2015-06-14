@@ -14,6 +14,8 @@ namespace Tome.Util
     using Tome.Core.Validation;
     using Tome.Model.Fields;
 
+    using Xceed.Wpf.Toolkit;
+
     public class ControlUtils
     {
         #region Public Methods and Operators
@@ -32,6 +34,11 @@ namespace Tome.Util
                 case FieldType.Boolean:
                     control = new CheckBox();
                     control.SetBinding(ToggleButton.IsCheckedProperty, binding);
+                    return control;
+
+                case FieldType.Color:
+                    control = new ColorCanvas();
+                    control.SetBinding(ColorCanvas.SelectedColorProperty, binding);
                     return control;
 
                 case FieldType.Float:
