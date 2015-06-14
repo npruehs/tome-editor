@@ -134,6 +134,10 @@ namespace Tome.Fields.Windows
                         ConversionUtils.ConvertOrDefault<int>(currentDefaultValue);
                     break;
 
+                case FieldType.Reference:
+                    this.FieldDefinitionViewModel.DefaultValue = currentDefaultValue;
+                    break;
+
                 case FieldType.String:
                     this.FieldDefinitionViewModel.DefaultValue = currentDefaultValue;
                     break;

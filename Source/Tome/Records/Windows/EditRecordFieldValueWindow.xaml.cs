@@ -6,9 +6,11 @@
 
 namespace Tome.Records.Windows
 {
+    using System.Collections.Generic;
     using System.Windows;
     using System.Windows.Controls;
 
+    using Tome.Model.Fields;
     using Tome.Records.ViewModels;
     using Tome.Util;
 
@@ -19,6 +21,8 @@ namespace Tome.Records.Windows
     {
         #region Fields
 
+        private IEnumerable<string> existingRecordIds;
+
         private RecordFieldViewModel recordFieldViewModel;
 
         #endregion
@@ -27,7 +31,7 @@ namespace Tome.Records.Windows
 
         public EditRecordFieldValueWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         #endregion
@@ -53,6 +57,15 @@ namespace Tome.Records.Windows
 
         #endregion
 
+        #region Public Methods and Operators
+
+        public void SetExistingRecordIds(IEnumerable<string> existingRecordIds)
+        {
+            this.existingRecordIds = existingRecordIds;
+        }
+
+        #endregion
+
         #region Methods
 
         private void OnClickCancel(object sender, RoutedEventArgs e)
@@ -75,11 +88,22 @@ namespace Tome.Records.Windows
 
         private void UpdateValueControl()
         {
+            // Build additional control data, if necessary.
+            object data = null;
+
+            switch (this.RecordFieldViewModel.FieldType)
+            {
+                case FieldType.Reference:
+                    data = this.existingRecordIds;
+                    break;
+            }
+
             // Create control.
             var control = ControlUtils.CreateValueControl(
                 this.RecordFieldViewModel,
                 "FieldValue",
-                this.RecordFieldViewModel.FieldType);
+                this.RecordFieldViewModel.FieldType,
+                data);
             control.Style = (Style)this.FindResource("ErrorLabelMargin");
             Validation.SetErrorTemplate(control, (ControlTemplate)this.FindResource("ErrorLabel"));
 

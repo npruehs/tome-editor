@@ -514,6 +514,8 @@ namespace Tome.Core.Windows
                 this.OnEditRecordFieldValueWindowClosed);
 
             // Fill view model.
+            this.editRecordFieldValueWindow.SetExistingRecordIds(
+                this.RecordsViewModel.Records.Select(record => record.Id));
             this.editRecordFieldValueWindow.RecordFieldViewModel = this.SelectedRecordField;
         }
 

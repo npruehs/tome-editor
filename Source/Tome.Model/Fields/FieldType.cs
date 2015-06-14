@@ -18,6 +18,8 @@ namespace Tome.Model.Fields
 
         Int,
 
+        Reference,
+
         String
     }
 }

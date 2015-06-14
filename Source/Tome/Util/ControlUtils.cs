@@ -6,6 +6,7 @@
 
 namespace Tome.Util
 {
+    using System.Collections.Generic;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Data;
@@ -21,6 +22,11 @@ namespace Tome.Util
         #region Public Methods and Operators
 
         public static Control CreateValueControl(object viewModel, string bindingPath, FieldType fieldType)
+        {
+            return CreateValueControl(viewModel, bindingPath, fieldType, null);
+        }
+
+        public static Control CreateValueControl(object viewModel, string bindingPath, FieldType fieldType, object data)
         {
             Control control;
 
@@ -53,6 +59,23 @@ namespace Tome.Util
                     binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(int)));
                     binding.Converter = new FieldValueConverter(typeof(int));
                     control.SetBinding(TextBox.TextProperty, binding);
+                    return control;
+
+                case FieldType.Reference:
+                    control = new ComboBox();
+                    control.SetBinding(Selector.SelectedItemProperty, binding);
+
+                    if (data != null)
+                    {
+                        var comboBox = (ComboBox)control;
+                        var options = (IEnumerable<string>)data;
+
+                        foreach (var option in options)
+                        {
+                            comboBox.Items.Add(option);
+                        }
+                    }
+
                     return control;
 
                 case FieldType.String:
