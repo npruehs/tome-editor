@@ -13,5 +13,7 @@
         Tome is released under the <Hyperlink NavigateUri="https://github.com/npruehs/tome-editor/blob/master/LICENSE" RequestNavigate="HyperlinkRequestNavigate">MIT License</Hyperlink>.<LineBreak />
         <LineBreak />
         Visual Studio 2013 Image Library is released under the <Hyperlink NavigateUri="http://download.microsoft.com/download/0/6/0/0607D8EA-9BB7-440B-A36A-A24EB8C9C67E/Visual%20Studio%202013%20Image%20Library%20EULA.docx" RequestNavigate="HyperlinkRequestNavigate">Visual Studio 2013 Image Library EULA</Hyperlink>.<LineBreak />
+        <LineBreak />
+        Extended WPF Toolkit™ Community Edition is released under the <Hyperlink NavigateUri="http://wpftoolkit.codeplex.com/license" RequestNavigate="HyperlinkRequestNavigate">Microsoft Public License (Ms-PL)</Hyperlink>.<LineBreak />
     </TextBlock>
 </Window>
