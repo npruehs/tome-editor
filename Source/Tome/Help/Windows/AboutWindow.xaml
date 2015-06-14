@@ -6,21 +6,12 @@
         xmlns:local="clr-namespace:Tome"
         mc:Ignorable="d"
         Title="About Tome" Height="300" Width="300">
-	<Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        
-        <StackPanel Grid.Row="0">
-            <TextBlock Height="Auto">Tome Game Data Editor</TextBlock>
-            <TextBlock Height="Auto" Name="VersionTextBlock"/>
-            <TextBlock Height="Auto">Copyright 2015 <Hyperlink NavigateUri="https://github.com/npruehs/tome-editor" RequestNavigate="HyperlinkRequestNavigate">Tome</Hyperlink>.</TextBlock>
-			<TextBlock Height="Auto">All rights reserved.</TextBlock>
-        </StackPanel>
-
-        <TextBlock Grid.Row="1">
-			Tome is released under the <Hyperlink NavigateUri="https://github.com/npruehs/tome-editor/blob/master/LICENSE" RequestNavigate="HyperlinkRequestNavigate">MIT License</Hyperlink>.
-        </TextBlock>
-    </Grid>
+    <TextBlock TextWrapping="Wrap">
+        Tome Game Data Editor<LineBreak />
+        <TextBlock Height="Auto" TextWrapping="Wrap" Name="VersionTextBlock"/><LineBreak />
+        <LineBreak />
+        Tome is released under the <Hyperlink NavigateUri="https://github.com/npruehs/tome-editor/blob/master/LICENSE" RequestNavigate="HyperlinkRequestNavigate">MIT License</Hyperlink>.<LineBreak />
+        <LineBreak />
+        Visual Studio 2013 Image Library is released under the <Hyperlink NavigateUri="http://download.microsoft.com/download/0/6/0/0607D8EA-9BB7-440B-A36A-A24EB8C9C67E/Visual%20Studio%202013%20Image%20Library%20EULA.docx" RequestNavigate="HyperlinkRequestNavigate">Visual Studio 2013 Image Library EULA</Hyperlink>.<LineBreak />
+    </TextBlock>
 </Window>
