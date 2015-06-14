@@ -135,7 +135,7 @@ namespace Tome.Fields.Windows
                     break;
 
                 case FieldType.Reference:
-                    this.FieldDefinitionViewModel.DefaultValue = currentDefaultValue;
+                    this.FieldDefinitionViewModel.DefaultValue = string.Empty;
                     break;
 
                 case FieldType.String:

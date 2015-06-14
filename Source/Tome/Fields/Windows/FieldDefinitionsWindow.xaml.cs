@@ -159,8 +159,8 @@ namespace Tome.Fields.Windows
 
             // Fill view model.
             var viewModel = this.editFieldDefinitionWindow.FieldDefinitionViewModel;
-            viewModel.DefaultValue = 0;
-            viewModel.FieldType = FieldType.Int;
+            viewModel.DefaultValue = string.Empty;
+            viewModel.FieldType = FieldType.String;
             viewModel.File = this.FieldDefinitionsViewModel.FieldDefinitionFiles[0];
 
             // Set available field definition files.
