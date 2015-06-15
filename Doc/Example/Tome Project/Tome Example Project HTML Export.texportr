@@ -1,0 +1,6 @@
+    <tr>
+      <td>
+        $RECORD_ID$
+      </td>
+$RECORD_FIELDS$
+    </tr>
