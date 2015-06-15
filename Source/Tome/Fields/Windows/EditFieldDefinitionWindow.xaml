@@ -7,7 +7,7 @@
         xmlns:viewModels="clr-namespace:Tome.Fields.ViewModels"
         xmlns:coreValidation="clr-namespace:Tome.Core.Validation"
         mc:Ignorable="d"
-        Title="Field Definition" Height="300" Width="300"
+        Title="Field Definition" Height="480" Width="640"
         d:DataContext="{d:DesignInstance viewModels:FieldDefinitionViewModel}">
 	<Grid>
 		<Grid.RowDefinitions>
