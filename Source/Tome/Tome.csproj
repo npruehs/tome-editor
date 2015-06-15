@@ -69,6 +69,7 @@
     <Compile Include="Core\Validation\StringNotEmptyValidationRule.cs" />
     <Compile Include="Fields\Commands\FieldDefinitionWindowCommands.cs" />
     <Compile Include="Core\Validation\UniqueIdValidationRule.cs" />
+    <Compile Include="Fields\Controls\ControlFactory.cs" />
     <Compile Include="Fields\Controls\Vector3FControl.xaml.cs">
       <DependentUpon>Vector3FControl.xaml</DependentUpon>
     </Compile>

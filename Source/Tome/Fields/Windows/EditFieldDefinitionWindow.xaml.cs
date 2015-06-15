@@ -152,7 +152,7 @@ namespace Tome.Fields.Windows
             }
 
             // Create control.
-            var control = ControlUtils.CreateValueControl(this.FieldDefinitionViewModel, "DefaultValue", fieldType);
+            var control = ControlFactory.CreateControl(this.FieldDefinitionViewModel, "DefaultValue", fieldType);
             control.Style = (Style)this.FindResource("ErrorLabelMargin");
             Validation.SetErrorTemplate(control, (ControlTemplate)this.FindResource("ErrorLabel"));
 

@@ -10,6 +10,7 @@ namespace Tome.Records.Windows
     using System.Windows;
     using System.Windows.Controls;
 
+    using Tome.Fields.Controls;
     using Tome.Model.Fields;
     using Tome.Records.ViewModels;
     using Tome.Util;
@@ -99,7 +100,7 @@ namespace Tome.Records.Windows
             }
 
             // Create control.
-            var control = ControlUtils.CreateValueControl(
+            var control = ControlFactory.CreateControl(
                 this.RecordFieldViewModel,
                 "FieldValue",
                 this.RecordFieldViewModel.FieldType,
