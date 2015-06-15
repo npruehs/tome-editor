@@ -97,7 +97,9 @@ namespace Tome.Model.Fields
                             xmlWriter.WriteAttributeString(AttributeDisplayName, field.DisplayName);
                             xmlWriter.WriteAttributeString(AttributeType, field.FieldType.ToString());
                             xmlWriter.WriteAttributeString(AttributeDescription, field.Description);
-                            xmlWriter.WriteAttributeString(AttributeDefaultValue, field.DefaultValue.ToString());
+                            xmlWriter.WriteAttributeString(
+                                AttributeDefaultValue,
+                                field.DefaultValue != null ? field.DefaultValue.ToString() : string.Empty);
                             xmlWriter.WriteEndElement();
                         }
                     }
