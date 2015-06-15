@@ -110,47 +110,10 @@ namespace Tome.Fields.Windows
         {
             var fieldType = (FieldType)this.ComboBoxFieldType.SelectedItem;
 
-            // Convert current value to string.
-            var currentDefaultValue = ConversionUtils.ToString(this.FieldDefinitionViewModel.DefaultValue);
-
             // Convert default value to new type.
-            switch (fieldType)
-            {
-                case FieldType.Boolean:
-                    this.FieldDefinitionViewModel.DefaultValue =
-                        ConversionUtils.ConvertOrDefault<bool>(currentDefaultValue);
-                    break;
-
-                case FieldType.Color:
-                    this.FieldDefinitionViewModel.DefaultValue =
-                        ConversionUtils.ConvertOrDefault<Color>(currentDefaultValue);
-                    break;
-
-                case FieldType.Float:
-                    this.FieldDefinitionViewModel.DefaultValue =
-                        ConversionUtils.ConvertOrDefault<float>(currentDefaultValue);
-                    break;
-
-                case FieldType.Int:
-                    this.FieldDefinitionViewModel.DefaultValue =
-                        ConversionUtils.ConvertOrDefault<int>(currentDefaultValue);
-                    break;
-
-                case FieldType.Reference:
-                    this.FieldDefinitionViewModel.DefaultValue = string.Empty;
-                    break;
-
-                case FieldType.String:
-                    this.FieldDefinitionViewModel.DefaultValue = currentDefaultValue;
-                    break;
-
-                case FieldType.Vector3F:
-                    this.FieldDefinitionViewModel.DefaultValue = ConversionUtils.ConvertOrDefault(
-                        currentDefaultValue,
-                        Vector3F.Zero);
-                    break;
-            }
-
+            this.FieldDefinitionViewModel.DefaultValue =
+                ConversionUtils.Convert(this.FieldDefinitionViewModel.DefaultValue, fieldType);
+            
             // Create control.
             var control = ControlFactory.CreateControl(this.FieldDefinitionViewModel, "DefaultValue", fieldType);
             control.Style = (Style)this.FindResource("ErrorLabelMargin");
