@@ -6,7 +6,7 @@
         xmlns:viewModels="clr-namespace:Tome.Records.ViewModels"
         xmlns:coreValidation="clr-namespace:Tome.Core.Validation"
         mc:Ignorable="d"
-        Title="Record" Height="300" Width="300"
+        Title="Record" Height="640" Width="480"
         d:DataContext="{d:DesignInstance viewModels:RecordViewModel}">
     <Grid>
         <Grid.RowDefinitions>
