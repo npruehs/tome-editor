@@ -70,6 +70,9 @@
     <Compile Include="Core\Validation\StringNotEmptyValidationRule.cs" />
     <Compile Include="Fields\Commands\FieldDefinitionWindowCommands.cs" />
     <Compile Include="Core\Validation\UniqueIdValidationRule.cs" />
+    <Compile Include="Fields\Controls\Vector3FControl.xaml.cs">
+      <DependentUpon>Vector3FControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Fields\ViewModels\FieldDefinitionFileViewModel.cs" />
     <Compile Include="Fields\ViewModels\FieldDefinitionViewModel.cs" />
     <Compile Include="Records\Records\RecordCommands.cs" />
@@ -89,6 +92,10 @@
     <Compile Include="Util\ControlUtils.cs" />
     <Compile Include="Util\AssemblyUtils.cs" />
     <Compile Include="Util\WindowUtils.cs" />
+    <Page Include="Fields\Controls\Vector3FControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Fields\Windows\EditFieldDefinitionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

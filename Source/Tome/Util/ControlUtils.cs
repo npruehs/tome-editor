@@ -13,6 +13,8 @@ namespace Tome.Util
 
     using Tome.Core.Conversion;
     using Tome.Core.Validation;
+    using Tome.Fields.Controls;
+    using Tome.Model.Data;
     using Tome.Model.Fields;
 
     using Xceed.Wpf.Toolkit;
@@ -83,6 +85,11 @@ namespace Tome.Util
                     binding.ValidationRules.Add(new CanConvertToTypeValidationRule(typeof(string)));
                     binding.Converter = new FieldValueConverter(typeof(string));
                     control.SetBinding(TextBox.TextProperty, binding);
+                    return control;
+
+                case FieldType.Vector3F:
+                    control = new Vector3FControl();
+                    control.SetBinding(Vector3FControl.VectorProperty, binding);
                     return control;
             }
 

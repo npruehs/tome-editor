@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="Tome.Fields.Controls.Vector3FControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Tome.Fields.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="30" d:DesignWidth="300">
+    <Grid Name="LayoutRoot" d:DataContext="{d:DesignInstance local:Vector3FControl}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Column="0">X</Label>
+        <TextBox Name="XTextBox" Grid.Column="1" TextChanged="OnXChanged"
+                 Text="{Binding Vector.X}" />
+        <Label Grid.Column="2">Y</Label>
+        <TextBox Name="YTextBox" Grid.Column="3" TextChanged="OnYChanged"
+                 Text="{Binding Vector.Y}" />
+        <Label Grid.Column="4">Z</Label>
+        <TextBox Name="ZTextBox" Grid.Column="5" TextChanged="OnZChanged"
+                 Text="{Binding Vector.Z}" />
+    </Grid>
+</UserControl>

@@ -16,7 +16,9 @@ namespace Tome.Fields.Windows
 
     using Tome.Core.Conversion;
     using Tome.Core.Validation;
+    using Tome.Fields.Controls;
     using Tome.Fields.ViewModels;
+    using Tome.Model.Data;
     using Tome.Model.Fields;
     using Tome.Util;
 
@@ -140,6 +142,12 @@ namespace Tome.Fields.Windows
 
                 case FieldType.String:
                     this.FieldDefinitionViewModel.DefaultValue = currentDefaultValue;
+                    break;
+
+                case FieldType.Vector3F:
+                    this.FieldDefinitionViewModel.DefaultValue = ConversionUtils.ConvertOrDefault(
+                        currentDefaultValue,
+                        Vector3F.Zero);
                     break;
             }
 

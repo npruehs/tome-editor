@@ -30,14 +30,19 @@ namespace Tome.Util
             return o is string ? typeConverter.ConvertFrom(o) : typeConverter.ConvertTo(o, type);
         }
 
-        public static object Convert<T>(object o)
+        public static T Convert<T>(object o)
         {
-            return Convert(o, typeof(T));
+            return (T)Convert(o, typeof(T));
         }
 
-        public static object ConvertOrDefault<T>(object o)
+        public static T ConvertOrDefault<T>(object o)
         {
-            return CanConvertTo<T>(o) ? Convert<T>(o) : default(T);
+            return ConvertOrDefault<T>(o, default(T));
+        }
+
+        public static T ConvertOrDefault<T>(object o, T defaultValue)
+        {
+            return (T)ConvertOrDefault(o, typeof(T), defaultValue);
         }
 
         public static object ConvertOrDefault(object o, Type type, object defaultValue)

@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Vector3F.cs" />
+    <Compile Include="Data\Vector3FConverter.cs" />
     <Compile Include="Export\RecordExporter.cs" />
     <Compile Include="Export\RecordExportTemplate.cs" />
     <Compile Include="Export\RecordExportTemplateFile.cs" />

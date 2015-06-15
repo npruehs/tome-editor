@@ -103,9 +103,13 @@ namespace Tome.Fields.Windows
             var viewModel = this.editFieldDefinitionWindow.FieldDefinitionViewModel;
             viewModel.DisplayName = field.DisplayName;
             viewModel.Id = field.Id;
-            viewModel.FieldType = field.FieldType;
-            viewModel.DefaultValue = field.DefaultValue;
             viewModel.Description = field.Description;
+
+            // Order actually matters here. We need to assign the default value before setting the field type,
+            // so the value can be correctly converted to the respective type.
+            viewModel.DefaultValue = field.DefaultValue;
+            viewModel.FieldType = field.FieldType;
+
             viewModel.File =
                 this.FieldDefinitionsViewModel.FieldDefinitionFiles.FirstOrDefault(
                     file => file.FieldDefinitions.Contains(field));

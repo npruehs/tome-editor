@@ -20,6 +20,8 @@ namespace Tome.Model.Fields
 
         Reference,
 
-        String
+        String,
+
+        Vector3F
     }
 }
