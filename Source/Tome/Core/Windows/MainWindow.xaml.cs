@@ -13,6 +13,7 @@ namespace Tome.Core.Windows
     using System.IO;
     using System.Linq;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Forms;
     using System.Windows.Input;
 
@@ -395,6 +396,18 @@ namespace Tome.Core.Windows
             this.RecordsViewModel = new RecordsViewModel(this.currentProject.Project.RecordFiles);
             this.RecordsTreeView.ItemsSource = this.RecordsViewModel.RecordFiles;
 
+            // Expand tree view.
+            if (this.RecordsTreeView.Items.Count > 0)
+            {
+                var firstItem = this.RecordsTreeView.Items[0];
+                var firstItemNode = this.RecordsTreeView.ItemContainerGenerator.ContainerFromItem(firstItem) as TreeViewItem;
+
+                if (firstItemNode != null)
+                {
+                    firstItemNode.IsExpanded = true;
+                }
+            }
+            
             // Setup export templates.
             this.ExportMenu.Items.Clear();
 
