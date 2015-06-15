@@ -66,7 +66,7 @@
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="0" Click="OnClickOk">OK</Button>
-            <Button Grid.Column="1" Click="OnClickCancel">Cancel</Button>
+            <Button Grid.Column="1" Click="OnClickCancel" IsCancel="True">Cancel</Button>
         </Grid>
     </Grid>
 </Window>
