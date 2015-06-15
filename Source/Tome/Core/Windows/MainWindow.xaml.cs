@@ -198,9 +198,11 @@ namespace Tome.Core.Windows
             foreach (
                 var field in this.currentProject.Project.FieldDefinitionFiles.SelectMany(file => file.FieldDefinitions))
             {
-                var fieldViewModel = new RecordFieldViewModel();
-                fieldViewModel.FieldId = field.Id;
-                fieldViewModel.Enabled = this.SelectedRecord.FieldValues.ContainsKey(field.Id);
+                var fieldViewModel = new RecordFieldViewModel
+                {
+                    FieldId = field.Id,
+                    Enabled = this.SelectedRecord.FieldValues.ContainsKey(field.Id)
+                };
                 viewModel.RecordFields.Add(fieldViewModel);
             }
 
@@ -230,8 +232,7 @@ namespace Tome.Core.Windows
             foreach (
                 var field in this.currentProject.Project.FieldDefinitionFiles.SelectMany(file => file.FieldDefinitions))
             {
-                var fieldViewModel = new RecordFieldViewModel();
-                fieldViewModel.FieldId = field.Id;
+                var fieldViewModel = new RecordFieldViewModel { FieldId = field.Id, Enabled = true };
                 viewModel.RecordFields.Add(fieldViewModel);
             }
 
