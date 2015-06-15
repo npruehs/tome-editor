@@ -70,6 +70,10 @@ namespace Tome.Fields.Controls
                         var comboBox = (ComboBox)control;
                         var options = (IEnumerable<string>)data;
 
+                        // Allow resetting field value.
+                        comboBox.Items.Add(string.Empty);
+
+                        // Add all options.
                         foreach (var option in options)
                         {
                             comboBox.Items.Add(option);
