@@ -111,6 +111,15 @@ namespace Tome.Records.Windows
             // Add control to window.
             this.DockPanelFieldValueUIElement.Children.Clear();
             this.DockPanelFieldValueUIElement.Children.Add(control);
+
+            // Focus textbox, if any.
+            var textBox = control as TextBox;
+
+            if (textBox != null)
+            {
+                textBox.Focus();
+                textBox.SelectAll();
+            }
         }
 
         #endregion
