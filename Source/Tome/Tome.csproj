@@ -41,7 +41,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -70,6 +69,7 @@
     <Compile Include="Core\Validation\StringNotEmptyValidationRule.cs" />
     <Compile Include="Fields\Commands\FieldDefinitionWindowCommands.cs" />
     <Compile Include="Core\Validation\UniqueIdValidationRule.cs" />
+    <Compile Include="Fields\Controls\ControlFactory.cs" />
     <Compile Include="Fields\Controls\Vector3FControl.xaml.cs">
       <DependentUpon>Vector3FControl.xaml</DependentUpon>
     </Compile>

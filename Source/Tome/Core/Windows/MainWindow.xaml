@@ -114,6 +114,16 @@
                     <DataGridTextColumn Header="Field" Binding="{Binding FieldId}" Width="*" />
                     <DataGridTextColumn Header="Value" Binding="{Binding FieldValue}" Width="2*" />
                 </DataGrid.Columns>
+
+                <DataGrid.Resources>
+                    <Style TargetType="{x:Type DataGridCell}">
+                        <Setter Property="ToolTip">
+                            <Setter.Value>
+                                <ToolTip Content="{Binding Description}"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.Resources>
             </DataGrid>
         </Grid>
         

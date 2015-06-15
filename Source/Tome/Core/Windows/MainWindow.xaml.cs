@@ -13,6 +13,7 @@ namespace Tome.Core.Windows
     using System.IO;
     using System.Linq;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Forms;
     using System.Windows.Input;
 
@@ -197,9 +198,11 @@ namespace Tome.Core.Windows
             foreach (
                 var field in this.currentProject.Project.FieldDefinitionFiles.SelectMany(file => file.FieldDefinitions))
             {
-                var fieldViewModel = new RecordFieldViewModel();
-                fieldViewModel.FieldId = field.Id;
-                fieldViewModel.Enabled = this.SelectedRecord.FieldValues.ContainsKey(field.Id);
+                var fieldViewModel = new RecordFieldViewModel
+                {
+                    FieldId = field.Id,
+                    Enabled = this.SelectedRecord.FieldValues.ContainsKey(field.Id)
+                };
                 viewModel.RecordFields.Add(fieldViewModel);
             }
 
@@ -229,8 +232,7 @@ namespace Tome.Core.Windows
             foreach (
                 var field in this.currentProject.Project.FieldDefinitionFiles.SelectMany(file => file.FieldDefinitions))
             {
-                var fieldViewModel = new RecordFieldViewModel();
-                fieldViewModel.FieldId = field.Id;
+                var fieldViewModel = new RecordFieldViewModel { FieldId = field.Id, Enabled = true };
                 viewModel.RecordFields.Add(fieldViewModel);
             }
 
@@ -395,6 +397,18 @@ namespace Tome.Core.Windows
             this.RecordsViewModel = new RecordsViewModel(this.currentProject.Project.RecordFiles);
             this.RecordsTreeView.ItemsSource = this.RecordsViewModel.RecordFiles;
 
+            // Expand tree view.
+            if (this.RecordsTreeView.Items.Count > 0)
+            {
+                var firstItem = this.RecordsTreeView.Items[0];
+                var firstItemNode = this.RecordsTreeView.ItemContainerGenerator.ContainerFromItem(firstItem) as TreeViewItem;
+
+                if (firstItemNode != null)
+                {
+                    firstItemNode.IsExpanded = true;
+                }
+            }
+            
             // Setup export templates.
             this.ExportMenu.Items.Clear();
 
@@ -468,6 +482,8 @@ namespace Tome.Core.Windows
                 }
 
                 viewModel.File.Records.Add(record);
+                viewModel.File.Records.Sort(
+                    (r1, r2) => string.Compare(r1.DisplayName, r2.DisplayName, StringComparison.Ordinal));
             }
             else
 

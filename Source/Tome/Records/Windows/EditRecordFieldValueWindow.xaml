@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Tome.Records.Windows"
         xmlns:viewModels="clr-namespace:Tome.Records.ViewModels"
         mc:Ignorable="d"
-        Title="Edit Field Value" Height="300" Width="300"
+        Title="Edit Field Value" Height="480" Width="640"
         d:DataContext="{d:DesignInstance viewModels:RecordFieldViewModel}">
     <Grid>
         <Grid.RowDefinitions>
@@ -39,8 +39,8 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Click="OnClickOk">OK</Button>
-            <Button Grid.Column="1" Click="OnClickCancel">Cancel</Button>
+            <Button Grid.Column="0" Click="OnClickOk" IsDefault="True">OK</Button>
+            <Button Grid.Column="1" Click="OnClickCancel" IsCancel="True">Cancel</Button>
         </Grid>
     </Grid>
 </Window>

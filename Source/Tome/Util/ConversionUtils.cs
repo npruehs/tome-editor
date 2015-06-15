@@ -8,6 +8,10 @@ namespace Tome.Util
 {
     using System;
     using System.ComponentModel;
+    using System.Windows.Media;
+
+    using Tome.Model.Data;
+    using Tome.Model.Fields;
 
     public static class ConversionUtils
     {
@@ -22,6 +26,39 @@ namespace Tome.Util
         public static bool CanConvertTo<T>(object o)
         {
             return CanConvertTo(o, typeof(T));
+        }
+
+        public static object Convert(object o, FieldType type)
+        {
+            // Convert current value to string.
+            var currentDefaultValue = ToString(o);
+
+            // Convert default value to new type.
+            switch (type)
+            {
+                case FieldType.Boolean:
+                    return ConvertOrDefault<bool>(currentDefaultValue);
+
+                case FieldType.Color:
+                    return ConvertOrDefault<Color>(currentDefaultValue);
+
+                case FieldType.Float:
+                    return ConvertOrDefault<float>(currentDefaultValue);
+
+                case FieldType.Int:
+                    return ConvertOrDefault<int>(currentDefaultValue);
+
+                case FieldType.Reference:
+                    return ConvertOrDefault<string>(currentDefaultValue, string.Empty);
+
+                case FieldType.String:
+                    return currentDefaultValue;
+
+                case FieldType.Vector3F:
+                    return ConvertOrDefault(currentDefaultValue, Vector3F.Zero);
+            }
+
+            return null;
         }
 
         public static object Convert(object o, Type type)

@@ -232,8 +232,8 @@ namespace Tome.Model.Project
                                         ElementRecordTemplate,
                                         recordExportTemplateFile.RecordTemplatePath);
                                     xmlWriter.WriteElementString(
-                                       ElementRecordDelimiter,
-                                       recordExportTemplateFile.RecordDelimiterPath);
+                                        ElementRecordDelimiter,
+                                        recordExportTemplateFile.RecordDelimiterPath);
                                     xmlWriter.WriteElementString(
                                         ElementFieldValueTemplate,
                                         recordExportTemplateFile.FieldValueTemplatePath);

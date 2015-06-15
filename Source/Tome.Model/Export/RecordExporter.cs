@@ -52,11 +52,15 @@ namespace Tome.Model.Export
                         var field = fieldValues[fieldIndex];
 
                         // Apply field value template.
+                        var fieldDefinition =
+                            project.FieldDefinitionFiles.SelectMany(file => file.FieldDefinitions)
+                                .FirstOrDefault(definition => Equals(definition.Id, field.Key));
+
                         var fieldValueString = template.FieldValueTemplate;
                         fieldValueString = fieldValueString.Replace(FieldIdPlaceholder, field.Key);
                         fieldValueString = fieldValueString.Replace(
                             FieldTypePlaceholder,
-                            field.Value.GetType().ToString());
+                            fieldDefinition.FieldType.ToString());
                         fieldValueString = fieldValueString.Replace(FieldValuePlaceholder, field.Value.ToString());
 
                         fieldValuesStringBuilder.Append(fieldValueString);

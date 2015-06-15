@@ -106,8 +106,13 @@ namespace Tome.Model.Fields
 
                         if (fieldDefaultIndex >= 0)
                         {
-                            currentField.DefaultValue = line.Substring(fieldDefaultIndex + FieldDefaultTag.Length + 1);
-                            continue;
+                            var fieldDefaultValueIndex = fieldDefaultIndex + FieldDefaultTag.Length + 1;
+
+                            if (line.Length > fieldDefaultValueIndex)
+                            {
+                                currentField.DefaultValue = line.Substring(fieldDefaultValueIndex);
+                                continue;
+                            }
                         }
 
                         // Check for description tag.

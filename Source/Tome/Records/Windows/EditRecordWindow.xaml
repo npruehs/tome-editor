@@ -6,7 +6,7 @@
         xmlns:viewModels="clr-namespace:Tome.Records.ViewModels"
         xmlns:coreValidation="clr-namespace:Tome.Core.Validation"
         mc:Ignorable="d"
-        Title="Record" Height="300" Width="300"
+        Title="Record" Height="480" Width="640"
         d:DataContext="{d:DesignInstance viewModels:RecordViewModel}">
     <Grid>
         <Grid.RowDefinitions>
@@ -66,7 +66,7 @@
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="0" Click="OnClickOk">OK</Button>
-            <Button Grid.Column="1" Click="OnClickCancel">Cancel</Button>
+            <Button Grid.Column="1" Click="OnClickCancel" IsCancel="True">Cancel</Button>
         </Grid>
     </Grid>
 </Window>

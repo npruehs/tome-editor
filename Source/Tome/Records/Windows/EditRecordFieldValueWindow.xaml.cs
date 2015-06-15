@@ -9,7 +9,10 @@ namespace Tome.Records.Windows
     using System.Collections.Generic;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Media;
 
+    using Tome.Fields.Controls;
+    using Tome.Model.Data;
     using Tome.Model.Fields;
     using Tome.Records.ViewModels;
     using Tome.Util;
@@ -98,8 +101,13 @@ namespace Tome.Records.Windows
                     break;
             }
 
+            // Convert field value to correct type.
+            this.RecordFieldViewModel.FieldValue = ConversionUtils.Convert(
+                this.RecordFieldViewModel.FieldValue,
+                this.RecordFieldViewModel.FieldType);
+
             // Create control.
-            var control = ControlUtils.CreateValueControl(
+            var control = ControlFactory.CreateControl(
                 this.RecordFieldViewModel,
                 "FieldValue",
                 this.RecordFieldViewModel.FieldType,
@@ -110,6 +118,15 @@ namespace Tome.Records.Windows
             // Add control to window.
             this.DockPanelFieldValueUIElement.Children.Clear();
             this.DockPanelFieldValueUIElement.Children.Add(control);
+
+            // Focus textbox, if any.
+            var textBox = control as TextBox;
+
+            if (textBox != null)
+            {
+                textBox.Focus();
+                textBox.SelectAll();
+            }
         }
 
         #endregion
