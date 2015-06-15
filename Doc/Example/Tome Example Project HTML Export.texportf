@@ -14,8 +14,21 @@
 		<th>Attack Range</th>
 		<th>Cooldown</th>
 		<th>Damage Type</th>
+		<th>Health</th>
+		<th>Health Regeneration</th>
+		<th>Invulnerable</th>
+		<th>Mana</th>
+		<th>Mana Regeneration</th>
+		<th>Mass</th>
+		<th>Movement Speed</th>
+		<th>Name</th>
+		<th>Projectile</th>
+		<th>Projectile Base</th>
+		<th>Rotation Speed</th>
+		<th>Sight Radius</th>
+		<th>Sprite</th>
+		<th>Sprite Color</th>
 	  </tr>
-
 $RECORDS$
 	</table>
   </body>
