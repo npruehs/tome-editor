@@ -482,6 +482,8 @@ namespace Tome.Core.Windows
                 }
 
                 viewModel.File.Records.Add(record);
+                viewModel.File.Records.Sort(
+                    (r1, r2) => string.Compare(r1.DisplayName, r2.DisplayName, StringComparison.Ordinal));
             }
             else
 
