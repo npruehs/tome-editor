@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "aboutwindow.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -16,10 +18,12 @@ public:
     ~MainWindow();
 
 private slots:
+    void on_actionAbout_triggered();
     void on_actionExit_triggered();
 
 private:
     Ui::MainWindow *ui;
+    AboutWindow *aboutWindow;
 };
 
 #endif // MAINWINDOW_H
