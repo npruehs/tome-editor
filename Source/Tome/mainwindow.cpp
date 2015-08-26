@@ -4,7 +4,8 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    aboutWindow(0)
+    aboutWindow(0),
+    newProjectWindow(0)
 {
     ui->setupUi(this);
 }
@@ -12,6 +13,18 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::on_actionNew_Project_triggered()
+{
+    if (!this->newProjectWindow)
+    {
+        this->newProjectWindow = new NewProjectWindow(this);
+    }
+
+    this->newProjectWindow->show();
+    this->newProjectWindow->raise();
+    this->newProjectWindow->activateWindow();
 }
 
 void MainWindow::on_actionAbout_triggered()
