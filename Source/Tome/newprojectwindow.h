@@ -15,6 +15,9 @@ public:
     explicit NewProjectWindow(QWidget *parent = 0);
     ~NewProjectWindow();
 
+private slots:
+    void on_pushButtonBrowse_clicked();
+
 private:
     Ui::NewProjectWindow *ui;
 };
