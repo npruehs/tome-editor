@@ -18,6 +18,8 @@ public:
 private slots:
     void on_pushButtonBrowse_clicked();
 
+    void on_buttonBox_accepted();
+
 private:
     Ui::NewProjectWindow *ui;
 };

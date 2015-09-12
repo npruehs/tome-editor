@@ -4,8 +4,9 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    aboutWindow(0),
-    newProjectWindow(0)
+    newProjectWindow(0),
+    aboutWindow(0)
+
 {
     ui->setupUi(this);
 }
