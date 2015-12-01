@@ -10,11 +10,13 @@ namespace Tome
     class FieldDefinition
     {
     public:
-        virtual const FieldType::FieldType getFieldType() const = 0;
+        FieldDefinition();
 
+        FieldType::FieldType fieldType;
         QString description;
         QString displayName;
         QString id;
+        QString defaultValue;
     };
 }
 

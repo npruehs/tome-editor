@@ -33,7 +33,7 @@ NewProjectWindow::~NewProjectWindow()
 
 void NewProjectWindow::on_pushButtonBrowse_clicked()
 {
-    // Open folde browser dialog.
+    // Open folder browser dialog.
     QString newFolder = QFileDialog::getExistingDirectory(this,
                                                     tr("Open Directory"),
                                                     ui->lineEditLocation->text(),

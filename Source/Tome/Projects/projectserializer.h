@@ -18,7 +18,7 @@ namespace Tome
          * @param device Device to write the project to.
          * @param project Project to write.
          */
-        serialize(QSharedPointer<QIODevice> device, QSharedPointer<Project> project);
+        void serialize(QSharedPointer<QIODevice> device, QSharedPointer<Project> project);
     };
 }
 
