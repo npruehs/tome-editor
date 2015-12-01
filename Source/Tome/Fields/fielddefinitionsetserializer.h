@@ -16,7 +16,7 @@ namespace Tome
         /**
          * @brief serialize Writes the passed field definition set to the specified device.
          * @param device Device to write the field definition set to.
-         * @param project Field definition set to write.
+         * @param fieldDefinitionSet Field definition set to write.
          */
         void serialize(QSharedPointer<QIODevice> device, QSharedPointer<FieldDefinitionSet> fieldDefinitionSet);
     };

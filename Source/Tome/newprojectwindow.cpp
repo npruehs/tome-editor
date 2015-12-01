@@ -10,6 +10,7 @@
 #include "project.h"
 #include "Projects/projectserializer.h"
 #include "Fields/fielddefinitionsetserializer.h"
+#include "Records/recordsetserializer.h"
 
 NewProjectWindow::NewProjectWindow(QWidget *parent) :
     QDialog(parent),
@@ -49,13 +50,17 @@ void NewProjectWindow::on_pushButtonBrowse_clicked()
 
 void NewProjectWindow::on_buttonBox_accepted()
 {
-    // Build project file name.
+    // Build file names.
     const QString projectName = ui->lineEditName->text();
     const QString projectPath = ui->lineEditLocation->text();
+
     const QString projectFileName = projectName + ".tproj";
     const QString fieldDefinitionSetName = projectName + ".tfields";
+    const QString recordSetName = projectName + ".tdata";
+
     const QString fullProjectPath = projectPath + "/" + projectFileName;
     const QString fullFieldDefinitionSetPath = projectPath + "/" + fieldDefinitionSetName;
+    const QString fullRecordSetPath = projectPath + "/" + recordSetName;
 
     // Create new project.
     QSharedPointer<Tome::Project> project =
@@ -67,6 +72,12 @@ void NewProjectWindow::on_buttonBox_accepted()
             QSharedPointer<Tome::FieldDefinitionSet>::create();
     fieldDefinitionSet->name = fieldDefinitionSetName;
     project->fieldDefinitionSets.push_back(fieldDefinitionSet);
+
+    // Create record set.
+    QSharedPointer<Tome::RecordSet> recordSet =
+            QSharedPointer<Tome::RecordSet>::create();
+    recordSet->name = recordSetName;
+    project->recordSets.push_back(recordSet);
 
     // Write project file.
     QSharedPointer<QFile> projectFile = QSharedPointer<QFile>::create(fullProjectPath);
@@ -106,5 +117,15 @@ void NewProjectWindow::on_buttonBox_accepted()
                     QMessageBox::Close,
                     QMessageBox::Close);
 
+    }
+
+    // Write record set.
+    QSharedPointer<QFile> recordSetFile = QSharedPointer<QFile>::create(fullRecordSetPath);
+
+    if (recordSetFile->open(QIODevice::ReadWrite))
+    {
+        QSharedPointer<Tome::RecordSetSerializer> recordSetSerializer =
+                QSharedPointer<Tome::RecordSetSerializer>::create();
+        recordSetSerializer->serialize(recordSetFile, recordSet);
     }
 }

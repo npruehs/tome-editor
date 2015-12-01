@@ -7,6 +7,7 @@
 #include <QString>
 
 #include "Fields/fielddefinitionset.h"
+#include "Records/recordset.h"
 
 namespace Tome
 {
@@ -17,6 +18,7 @@ namespace Tome
 
         QString name;
         std::list< QSharedPointer<FieldDefinitionSet> > fieldDefinitionSets;
+        std::list< QSharedPointer<RecordSet> > recordSets;
     };
 }
 

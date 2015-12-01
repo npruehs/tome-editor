@@ -25,7 +25,10 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Fields/fielddefinitionset.cpp \
     ../Source/Tome/Fields/fielddefinitionsetserializer.cpp \
     ../Source/Tome/Projects/projectserializer.cpp \
-    ../Source/Tome/project.cpp
+    ../Source/Tome/project.cpp \
+    ../Source/Tome/Records/record.cpp \
+    ../Source/Tome/Records/recordset.cpp \
+    ../Source/Tome/Records/recordsetserializer.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/aboutwindow.h \
@@ -36,7 +39,10 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/fielddefinitionset.h \
     ../Source/Tome/Fields/fielddefinitionsetserializer.h \
     ../Source/Tome/Projects/projectserializer.h \
-    ../Source/Tome/project.h
+    ../Source/Tome/project.h \
+    ../Source/Tome/Records/record.h \
+    ../Source/Tome/Records/recordset.h \
+    ../Source/Tome/Records/recordsetserializer.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/aboutwindow.ui \
