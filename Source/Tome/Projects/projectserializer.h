@@ -1,25 +1,25 @@
-#ifndef TOMEPROJECTSERIALIZER_H
-#define TOMEPROJECTSERIALIZER_H
+#ifndef PROJECTSERIALIZER_H
+#define PROJECTSERIALIZER_H
 
 #include <QIODevice>
 #include <QSharedPointer>
 
-#include "../tomeproject.h"
+#include "../project.h"
 
 namespace Tome
 {
-    class TomeProjectSerializer
+    class ProjectSerializer
     {
     public:
-        TomeProjectSerializer();
+        ProjectSerializer();
 
         /**
          * @brief serialize Writes the passed project to the specified device.
          * @param device Device to write the project to.
          * @param project Project to write.
          */
-        serialize(QSharedPointer<QIODevice> device, QSharedPointer<TomeProject> project);
+        serialize(QSharedPointer<QIODevice> device, QSharedPointer<Project> project);
     };
 }
 
-#endif // TOMEPROJECTSERIALIZER_H
+#endif // PROJECTSERIALIZER_H

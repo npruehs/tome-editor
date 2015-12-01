@@ -1,15 +1,15 @@
-#include "fielddefinitionfileserializer.h"
+#include "fielddefinitionsetserializer.h"
 
 #include <QXmlStreamWriter>
 
 using namespace Tome;
 
-FieldDefinitionFileSerializer::FieldDefinitionFileSerializer()
+FieldDefinitionSetSerializer::FieldDefinitionSetSerializer()
 {
 
 }
 
-void FieldDefinitionFileSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointer<FieldDefinitionFile> fieldDefinitionFile)
+void FieldDefinitionSetSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointer<FieldDefinitionSet> fieldDefinitionSet)
 {
     // Open device stream.
     QXmlStreamWriter stream(device.data());

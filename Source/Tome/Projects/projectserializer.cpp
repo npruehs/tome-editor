@@ -1,14 +1,14 @@
-#include "tomeprojectserializer.h"
+#include "projectserializer.h"
 
 #include <QXmlStreamWriter>
 
 using namespace Tome;
 
-TomeProjectSerializer::TomeProjectSerializer()
+ProjectSerializer::ProjectSerializer()
 {
 }
 
-TomeProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointer<TomeProject> project)
+ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointer<Project> project)
 {
     // Open device stream.
     QXmlStreamWriter stream(device.data());
@@ -25,12 +25,12 @@ TomeProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointe
 
             // Write field definition file paths.
             stream.writeStartElement("FieldDefinitions");
-                for (std::list<QSharedPointer<Tome::FieldDefinitionFile> >::iterator it = project->fieldDefinitionFiles.begin();
-                     it != project->fieldDefinitionFiles.end();
+                for (std::list<QSharedPointer<Tome::FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
+                     it != project->fieldDefinitionSets.end();
                      ++it)
                 {
-                    Tome::FieldDefinitionFile* itFile = it->data();
-                    stream.writeTextElement("Path", itFile->path);
+                    Tome::FieldDefinitionSet* itSet = it->data();
+                    stream.writeTextElement("Path", itSet->name);
                 }
             stream.writeEndElement();
 
