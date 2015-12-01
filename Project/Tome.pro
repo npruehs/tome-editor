@@ -24,7 +24,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Fields/fielddefinitionfile.cpp \
     ../Source/Tome/tomeproject.cpp \
     ../Source/Tome/Fields/intfielddefinition.cpp \
-    ../Source/Tome/Projects/tomeprojectserializer.cpp
+    ../Source/Tome/Projects/tomeprojectserializer.cpp \
+    ../Source/Tome/Fields/fielddefinitionfileserializer.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/aboutwindow.h \
@@ -34,7 +35,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/fielddefinitionfile.h \
     ../Source/Tome/tomeproject.h \
     ../Source/Tome/Fields/intfielddefinition.h \
-    ../Source/Tome/Projects/tomeprojectserializer.h
+    ../Source/Tome/Projects/tomeprojectserializer.h \
+    ../Source/Tome/Fields/fielddefinitionfileserializer.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/aboutwindow.ui \

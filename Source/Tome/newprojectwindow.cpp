@@ -9,6 +9,7 @@
 
 #include "tomeproject.h"
 #include "Projects/tomeprojectserializer.h"
+#include "Fields/fielddefinitionfileserializer.h"
 
 NewProjectWindow::NewProjectWindow(QWidget *parent) :
     QDialog(parent),
@@ -54,29 +55,29 @@ void NewProjectWindow::on_buttonBox_accepted()
     const QString projectFileName = projectName + ".tproj";
     const QString fieldDefinitionFileName = projectName + ".tfields";
     const QString fullProjectPath = projectPath + "/" + projectFileName;
+    const QString fullFieldDefinitionFilePath = projectPath + "/" + fieldDefinitionFileName;
 
-    // Create project file.
-    QSharedPointer<QFile> file = QSharedPointer<QFile>::create(fullProjectPath);
+    // Create new project.
+    QSharedPointer<Tome::TomeProject> project =
+            QSharedPointer<Tome::TomeProject>::create();
+    project->name = projectName;
 
-    if (file->open(QIODevice::ReadWrite))
+    // Create field definition file.
+    QSharedPointer<Tome::FieldDefinitionFile> fieldDefinitionFileData =
+            QSharedPointer<Tome::FieldDefinitionFile>::create();
+    fieldDefinitionFileData->path = fieldDefinitionFileName;
+
+    // Add field definition file to project.
+    project->fieldDefinitionFiles.push_back(fieldDefinitionFileData);
+
+    // Write project file.
+    QSharedPointer<QFile> projectFile = QSharedPointer<QFile>::create(fullProjectPath);
+
+    if (projectFile->open(QIODevice::ReadWrite))
     {
-        // Create new project.
-        QSharedPointer<Tome::TomeProject> project =
-                QSharedPointer<Tome::TomeProject>::create();
-        project->name = projectName;
-
-        // Create field definition file.
-        QSharedPointer<Tome::FieldDefinitionFile> fieldDefinitionFile =
-                QSharedPointer<Tome::FieldDefinitionFile>::create();
-        fieldDefinitionFile->path = fieldDefinitionFileName;
-
-        // Add field definition file to project.
-        project->fieldDefinitionFiles.push_back(fieldDefinitionFile);
-
-        // Write project file.
-        QSharedPointer<Tome::TomeProjectSerializer> serializer =
+        QSharedPointer<Tome::TomeProjectSerializer> projectSerializer =
                 QSharedPointer<Tome::TomeProjectSerializer>::create();
-        serializer->serialize(file, project);
+        projectSerializer->serialize(projectFile, project);
     }
     else
     {
@@ -84,6 +85,26 @@ void NewProjectWindow::on_buttonBox_accepted()
                     this,
                     tr("Unable to create project"),
                     tr("Destination file could not be written:\r\n") + fullProjectPath,
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+
+    }
+
+    // Write field definition file.
+    QSharedPointer<QFile> fieldDefinitionFile = QSharedPointer<QFile>::create(fullFieldDefinitionFilePath);
+
+    if (fieldDefinitionFile->open(QIODevice::ReadWrite))
+    {
+        QSharedPointer<Tome::FieldDefinitionFileSerializer> fieldDefinitionFileSerializer =
+                QSharedPointer<Tome::FieldDefinitionFileSerializer>::create();
+        fieldDefinitionFileSerializer->serialize(fieldDefinitionFile, fieldDefinitionFileData);
+    }
+    else
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to create project"),
+                    tr("Destination file could not be written:\r\n") + fullFieldDefinitionFilePath,
                     QMessageBox::Close,
                     QMessageBox::Close);
 
