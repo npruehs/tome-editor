@@ -34,11 +34,11 @@ void FieldDefinitionSetSerializer::serialize(QSharedPointer<QIODevice> device, Q
             FieldDefinition* fieldDefinition = it->data();
 
             stream.writeStartElement("Field");
-            stream.writeTextElement("Id", fieldDefinition->id);
-            stream.writeTextElement("DisplayName", fieldDefinition->displayName);
-            stream.writeTextElement("Description", fieldDefinition->description);
-            stream.writeTextElement("DefaultValue", fieldDefinition->defaultValue);
-            stream.writeTextElement("Type", valueConverter->FieldTypeToString(fieldDefinition->fieldType));
+            stream.writeAttribute("Id", fieldDefinition->id);
+            stream.writeAttribute("DisplayName", fieldDefinition->displayName);
+            stream.writeAttribute("Description", fieldDefinition->description);
+            stream.writeAttribute("DefaultValue", fieldDefinition->defaultValue);
+            stream.writeAttribute("Type", valueConverter->FieldTypeToString(fieldDefinition->fieldType));
             stream.writeEndElement();
         }
 
