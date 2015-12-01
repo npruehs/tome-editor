@@ -2,6 +2,7 @@
 #define NEWPROJECTWINDOW_H
 
 #include <QDialog>
+#include <QString>
 
 namespace Ui {
 class NewProjectWindow;
@@ -15,10 +16,11 @@ public:
     explicit NewProjectWindow(QWidget *parent = 0);
     ~NewProjectWindow();
 
+    QString getProjectName();
+    QString getProjectPath();
+
 private slots:
     void on_pushButtonBrowse_clicked();
-
-    void on_buttonBox_accepted();
 
 private:
     Ui::NewProjectWindow *ui;
