@@ -8,9 +8,9 @@
 #include <QXmlStreamWriter>
 
 #include "project.h"
-#include "Projects/projectserializer.h"
-#include "Fields/fielddefinitionsetserializer.h"
-#include "Records/recordsetserializer.h"
+#include "../Projects/projectserializer.h"
+#include "../Fields/fielddefinitionsetserializer.h"
+#include "../Records/recordsetserializer.h"
 
 NewProjectWindow::NewProjectWindow(QWidget *parent) :
     QDialog(parent),

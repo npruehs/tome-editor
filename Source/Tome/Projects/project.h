@@ -6,8 +6,8 @@
 #include <QSharedPointer>
 #include <QString>
 
-#include "Fields/fielddefinitionset.h"
-#include "Records/recordset.h"
+#include "../Fields/fielddefinitionset.h"
+#include "../Records/recordset.h"
 
 namespace Tome
 {

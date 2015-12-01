@@ -4,7 +4,7 @@
 #include <QIODevice>
 #include <QSharedPointer>
 
-#include "../project.h"
+#include "project.h"
 
 namespace Tome
 {

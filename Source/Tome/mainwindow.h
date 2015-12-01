@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 
-#include "newprojectwindow.h"
-#include "aboutwindow.h"
+#include "Projects/newprojectwindow.h"
+#include "Help/aboutwindow.h"
 
 namespace Ui {
 class MainWindow;
