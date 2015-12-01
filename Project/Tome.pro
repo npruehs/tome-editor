@@ -43,7 +43,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Records/record.h \
     ../Source/Tome/Records/recordset.h \
     ../Source/Tome/Records/recordsetserializer.h \
-    ../Source/Tome/Values/valueconverter.h
+    ../Source/Tome/Values/valueconverter.h \
+    ../Source/Tome/Util/pathutils.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \

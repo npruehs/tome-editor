@@ -10,6 +10,7 @@
 #include "Projects/project.h"
 #include "Projects/projectserializer.h"
 #include "Records/recordsetserializer.h"
+#include "Util/pathutils.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -68,9 +69,9 @@ void MainWindow::createNewProject(QString projectName, QString projectPath)
     const QString fieldDefinitionSetName = projectName + ".tfields";
     const QString recordSetName = projectName + ".tdata";
 
-    const QString fullProjectPath = projectPath + "/" + projectFileName;
-    const QString fullFieldDefinitionSetPath = projectPath + "/" + fieldDefinitionSetName;
-    const QString fullRecordSetPath = projectPath + "/" + recordSetName;
+    const QString fullProjectPath = Tome::combinePaths(projectPath, projectFileName);
+    const QString fullFieldDefinitionSetPath = Tome::combinePaths(projectPath, fieldDefinitionSetName);
+    const QString fullRecordSetPath = Tome::combinePaths(projectPath, recordSetName);
 
     // Create new project.
     QSharedPointer<Tome::Project> newProject = QSharedPointer<Tome::Project>::create();
