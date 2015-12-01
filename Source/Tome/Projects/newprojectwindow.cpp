@@ -24,6 +24,9 @@ NewProjectWindow::NewProjectWindow(QWidget *parent) :
     // Set initial project folder.
     const QString documentsFolder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
     ui->lineEditLocation->setText(documentsFolder);
+
+    // Focus project name box.
+    ui->lineEditName->setFocus();
 }
 
 NewProjectWindow::~NewProjectWindow()
