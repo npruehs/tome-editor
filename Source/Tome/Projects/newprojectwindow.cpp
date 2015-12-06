@@ -44,12 +44,12 @@ void NewProjectWindow::on_pushButtonBrowse_clicked()
     ui->lineEditLocation->setText(newFolder);
 }
 
-QString NewProjectWindow::getProjectName()
+QString NewProjectWindow::getProjectName() const
 {
     return ui->lineEditName->text();
 }
 
-QString NewProjectWindow::getProjectPath()
+QString NewProjectWindow::getProjectPath() const
 {
     return ui->lineEditLocation->text();
 }

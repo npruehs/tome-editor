@@ -62,7 +62,7 @@ void MainWindow::on_actionExit_triggered()
     this->close();
 }
 
-void MainWindow::createNewProject(QString projectName, QString projectPath)
+void MainWindow::createNewProject(const QString &projectName, const QString &projectPath)
 {
     // Build file names.
     const QString projectFileName = projectName + ".tproj";

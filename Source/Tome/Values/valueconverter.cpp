@@ -7,7 +7,7 @@ ValueConverter::ValueConverter()
 
 }
 
-QString ValueConverter::FieldTypeToString(FieldType::FieldType fieldType)
+QString ValueConverter::FieldTypeToString(const FieldType::FieldType& fieldType) const
 {
     switch (fieldType)
     {

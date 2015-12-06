@@ -33,7 +33,7 @@ private:
     NewProjectWindow *newProjectWindow;
     AboutWindow *aboutWindow;
 
-    void createNewProject(QString name, QString path);
+    void createNewProject(const QString& name, const QString& path);
 };
 
 #endif // MAINWINDOW_H

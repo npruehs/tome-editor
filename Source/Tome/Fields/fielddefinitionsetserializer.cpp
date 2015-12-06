@@ -11,7 +11,7 @@ FieldDefinitionSetSerializer::FieldDefinitionSetSerializer()
 
 }
 
-void FieldDefinitionSetSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointer<FieldDefinitionSet> fieldDefinitionSet)
+void FieldDefinitionSetSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointer<FieldDefinitionSet> fieldDefinitionSet) const
 {
     // Setup value conversion.
     QSharedPointer<ValueConverter> valueConverter = QSharedPointer<ValueConverter>::create();

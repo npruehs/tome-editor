@@ -18,7 +18,7 @@ namespace Tome
          * @param device Device to write the record set to.
          * @param recordSet Record set to write.
          */
-        void serialize(QSharedPointer<QIODevice> device, QSharedPointer<RecordSet> recordSet);
+        void serialize(QSharedPointer<QIODevice> device, QSharedPointer<RecordSet> recordSet) const;
     };
 }
 

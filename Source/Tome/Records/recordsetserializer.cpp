@@ -9,7 +9,7 @@ RecordSetSerializer::RecordSetSerializer()
 
 }
 
-void RecordSetSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointer<RecordSet> recordSet)
+void RecordSetSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointer<RecordSet> recordSet) const
 {
     // Open device stream.
     QXmlStreamWriter stream(device.data());

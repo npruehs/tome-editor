@@ -16,8 +16,8 @@ public:
     explicit NewProjectWindow(QWidget *parent = 0);
     ~NewProjectWindow();
 
-    QString getProjectName();
-    QString getProjectPath();
+    QString getProjectName() const;
+    QString getProjectPath() const;
 
 private slots:
     void on_pushButtonBrowse_clicked();

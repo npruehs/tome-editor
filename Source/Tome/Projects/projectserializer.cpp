@@ -8,7 +8,7 @@ ProjectSerializer::ProjectSerializer()
 {
 }
 
-void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointer<Project> project)
+void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointer<Project> project) const
 {
     // Open device stream.
     QXmlStreamWriter stream(device.data());

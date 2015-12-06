@@ -12,7 +12,7 @@ namespace Tome
     public:
         ValueConverter();
 
-        QString FieldTypeToString(FieldType::FieldType fieldType);
+        QString FieldTypeToString(const FieldType::FieldType& fieldType) const;
     };
 }
 
