@@ -10,15 +10,15 @@ namespace Tome
 {
     class RecordSetSerializer
     {
-    public:
-        RecordSetSerializer();
+        public:
+            RecordSetSerializer();
 
-        /**
-         * @brief serialize Writes the passed record set to the specified device.
-         * @param device Device to write the record set to.
-         * @param recordSet Record set to write.
-         */
-        void serialize(QSharedPointer<QIODevice> device, QSharedPointer<RecordSet> recordSet) const;
+            /**
+             * @brief serialize Writes the passed record set to the specified device.
+             * @param device Device to write the record set to.
+             * @param recordSet Record set to write.
+             */
+            void serialize(QSharedPointer<QIODevice> device, QSharedPointer<RecordSet> recordSet) const;
     };
 }
 

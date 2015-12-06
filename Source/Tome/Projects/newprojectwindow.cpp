@@ -31,9 +31,9 @@ void NewProjectWindow::on_pushButtonBrowse_clicked()
 {
     // Open folder browser dialog.
     QString newFolder = QFileDialog::getExistingDirectory(this,
-                                                    tr("Open Directory"),
-                                                    ui->lineEditLocation->text(),
-                                                    QFileDialog::ShowDirsOnly);
+                                                          tr("Open Directory"),
+                                                          ui->lineEditLocation->text(),
+                                                          QFileDialog::ShowDirsOnly);
 
     if (newFolder.count() <= 0)
     {

@@ -10,15 +10,15 @@ namespace Tome
 {
     class ProjectSerializer
     {
-    public:
-        ProjectSerializer();
+        public:
+            ProjectSerializer();
 
-        /**
-         * @brief serialize Writes the passed project to the specified device.
-         * @param device Device to write the project to.
-         * @param project Project to write.
-         */
-        void serialize(QSharedPointer<QIODevice> device, QSharedPointer<Project> project) const;
+            /**
+             * @brief serialize Writes the passed project to the specified device.
+             * @param device Device to write the project to.
+             * @param project Project to write.
+             */
+            void serialize(QSharedPointer<QIODevice> device, QSharedPointer<Project> project) const;
     };
 }
 

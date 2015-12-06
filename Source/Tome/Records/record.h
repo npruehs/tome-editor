@@ -8,11 +8,11 @@ namespace Tome
 {
     class Record
     {
-    public:
-        Record();
+        public:
+            Record();
 
-        QString id;
-        std::map<QString, QString> fieldValues;
+            QString id;
+            std::map<QString, QString> fieldValues;
     };
 }
 

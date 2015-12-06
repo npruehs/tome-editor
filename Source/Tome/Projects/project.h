@@ -13,12 +13,12 @@ namespace Tome
 {
     class Project
     {
-    public:
-        Project();
+        public:
+            Project();
 
-        QString name;
-        std::list< QSharedPointer<FieldDefinitionSet> > fieldDefinitionSets;
-        std::list< QSharedPointer<RecordSet> > recordSets;
+            QString name;
+            std::list< QSharedPointer<FieldDefinitionSet> > fieldDefinitionSets;
+            std::list< QSharedPointer<RecordSet> > recordSets;
     };
 }
 

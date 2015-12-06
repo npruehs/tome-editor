@@ -10,11 +10,11 @@ namespace Tome
 {
     class RecordSet
     {
-    public:
-        RecordSet();
+        public:
+            RecordSet();
 
-        QString name;
-        std::list< QSharedPointer<Record> > records;
+            QString name;
+            std::list< QSharedPointer<Record> > records;
     };
 }
 

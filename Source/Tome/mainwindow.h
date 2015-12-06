@@ -9,31 +9,31 @@
 #include "Help/aboutwindow.h"
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    public:
+        explicit MainWindow(QWidget *parent = 0);
+        ~MainWindow();
 
-private slots:
-    void on_actionNew_Project_triggered();
-    void on_actionAbout_triggered();
-    void on_actionExit_triggered();
+    private slots:
+        void on_actionNew_Project_triggered();
+        void on_actionAbout_triggered();
+        void on_actionExit_triggered();
 
-private:
-    Ui::MainWindow *ui;
+    private:
+        Ui::MainWindow *ui;
 
-    QSharedPointer<Tome::Project> project;
+        QSharedPointer<Tome::Project> project;
 
-    NewProjectWindow *newProjectWindow;
-    AboutWindow *aboutWindow;
+        NewProjectWindow *newProjectWindow;
+        AboutWindow *aboutWindow;
 
-    void createNewProject(const QString& name, const QString& path);
+        void createNewProject(const QString& name, const QString& path);
 };
 
 #endif // MAINWINDOW_H

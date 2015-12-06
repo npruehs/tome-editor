@@ -16,15 +16,16 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
 
     // Begin document.
     stream.writeStartDocument();
-
+    {
         // Begin project.
         stream.writeStartElement("TomeProject");
-
+        {
             // Write project name.
             stream.writeTextElement("Name", project->name);
 
             // Write field definition set paths.
             stream.writeStartElement("FieldDefinitions");
+            {
                 for (std::list<QSharedPointer<Tome::FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
                      it != project->fieldDefinitionSets.end();
                      ++it)
@@ -32,10 +33,12 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
                     Tome::FieldDefinitionSet* itSet = it->data();
                     stream.writeTextElement("Path", itSet->name);
                 }
+            }
             stream.writeEndElement();
 
             // Write record set paths.
             stream.writeStartElement("Records");
+            {
                 for (std::list<QSharedPointer<Tome::RecordSet> >::iterator it = project->recordSets.begin();
                      it != project->recordSets.end();
                      ++it)
@@ -43,11 +46,12 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
                     Tome::RecordSet* itSet = it->data();
                     stream.writeTextElement("Path", itSet->name);
                 }
+            }
             stream.writeEndElement();
-
+        }
         // End project.
         stream.writeEndElement();
-
+    }
     // End document.
     stream.writeEndDocument();
 }

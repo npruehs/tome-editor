@@ -10,11 +10,11 @@ namespace Tome
 {
     class FieldDefinitionSet
     {
-    public:
-        FieldDefinitionSet();
+        public:
+            FieldDefinitionSet();
 
-        QString name;
-        std::list< QSharedPointer<FieldDefinition> > fieldDefinitions;
+            QString name;
+            std::list< QSharedPointer<FieldDefinition> > fieldDefinitions;
     };
 }
 

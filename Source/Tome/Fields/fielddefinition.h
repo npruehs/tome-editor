@@ -9,14 +9,14 @@ namespace Tome
 {
     class FieldDefinition
     {
-    public:
-        FieldDefinition();
+        public:
+            FieldDefinition();
 
-        FieldType::FieldType fieldType;
-        QString description;
-        QString displayName;
-        QString id;
-        QString defaultValue;
+            FieldType::FieldType fieldType;
+            QString description;
+            QString displayName;
+            QString id;
+            QString defaultValue;
     };
 }
 

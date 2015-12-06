@@ -9,10 +9,10 @@ namespace Tome
 {
     class ValueConverter
     {
-    public:
-        ValueConverter();
+        public:
+            ValueConverter();
 
-        QString FieldTypeToString(const FieldType::FieldType& fieldType) const;
+            QString FieldTypeToString(const FieldType::FieldType& fieldType) const;
     };
 }
 
