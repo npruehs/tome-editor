@@ -12,6 +12,8 @@
 #include "Records/recordsetserializer.h"
 #include "Util/pathutils.h"
 
+using namespace Tome;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -20,11 +22,31 @@ MainWindow::MainWindow(QWidget *parent) :
 
 {
     ui->setupUi(this);
+
+    // Can't save project until created or loaded.
+    this->ui->actionSave_Project->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    if (!this->aboutWindow)
+    {
+        this->aboutWindow = new AboutWindow(this);
+    }
+
+    this->aboutWindow->show();
+    this->aboutWindow->raise();
+    this->aboutWindow->activateWindow();
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+    this->close();
 }
 
 void MainWindow::on_actionNew_Project_triggered()
@@ -45,73 +67,70 @@ void MainWindow::on_actionNew_Project_triggered()
     }
 }
 
-void MainWindow::on_actionAbout_triggered()
+void MainWindow::on_actionSave_Project_triggered()
 {
-    if (!this->aboutWindow)
-    {
-        this->aboutWindow = new AboutWindow(this);
-    }
-
-    this->aboutWindow->show();
-    this->aboutWindow->raise();
-    this->aboutWindow->activateWindow();
-}
-
-void MainWindow::on_actionExit_triggered()
-{
-    this->close();
+    this->saveProject(this->project);
 }
 
 void MainWindow::createNewProject(const QString &projectName, const QString &projectPath)
 {
-    // Build file names.
-    const QString projectFileName = projectName + ".tproj";
-    const QString fieldDefinitionSetName = projectName + ".tfields";
-    const QString recordSetName = projectName + ".tdata";
-
-    const QString fullProjectPath = Tome::combinePaths(projectPath, projectFileName);
-    const QString fullFieldDefinitionSetPath = Tome::combinePaths(projectPath, fieldDefinitionSetName);
-    const QString fullRecordSetPath = Tome::combinePaths(projectPath, recordSetName);
-
     // Create new project.
-    QSharedPointer<Tome::Project> newProject = QSharedPointer<Tome::Project>::create();
+    QSharedPointer<Project> newProject = QSharedPointer<Project>::create();
     newProject->name = projectName;
+    newProject->path = projectPath;
 
     // Create field definition set.
-    QSharedPointer<Tome::FieldDefinitionSet> fieldDefinitionSet =
-            QSharedPointer<Tome::FieldDefinitionSet>::create();
-    fieldDefinitionSet->name = fieldDefinitionSetName;
+    QSharedPointer<FieldDefinitionSet> fieldDefinitionSet =
+            QSharedPointer<FieldDefinitionSet>::create();
+    fieldDefinitionSet->name = projectName;
     newProject->fieldDefinitionSets.push_back(fieldDefinitionSet);
 
     // Create record set.
-    QSharedPointer<Tome::RecordSet> recordSet =
-            QSharedPointer<Tome::RecordSet>::create();
-    recordSet->name = recordSetName;
+    QSharedPointer<RecordSet> recordSet =
+            QSharedPointer<RecordSet>::create();
+    recordSet->name = projectName;
     newProject->recordSets.push_back(recordSet);
 
     // Add dummy data.
-    QSharedPointer<Tome::FieldDefinition> fieldDefinition =
-            QSharedPointer<Tome::FieldDefinition>::create();
+    QSharedPointer<FieldDefinition> fieldDefinition =
+            QSharedPointer<FieldDefinition>::create();
     fieldDefinition->defaultValue = "123";
     fieldDefinition->description = "Maximum health value of the entity.";
     fieldDefinition->displayName = "Maximum Health";
-    fieldDefinition->fieldType = Tome::FieldType::Int;
+    fieldDefinition->fieldType = FieldType::Int;
     fieldDefinition->id = "MaximumHealth";
     fieldDefinitionSet->fieldDefinitions.push_back(fieldDefinition);
 
-    QSharedPointer<Tome::Record> record = QSharedPointer<Tome::Record>::create();
+    QSharedPointer<Record> record = QSharedPointer<Record>::create();
     record->id = "Knight";
     record->fieldValues["MaximumHealth"] = "70";
     recordSet->records.push_back(record);
+
+    // Write project files.
+    this->saveProject(newProject);
+
+    // Set project reference.
+    this->setProject(newProject);
+}
+
+void MainWindow::saveProject(QSharedPointer<Project> project)
+{
+    QString& projectName = project->name;
+    QString& projectPath = project->path;
+
+    QSharedPointer<ProjectSerializer> projectSerializer =
+            QSharedPointer<ProjectSerializer>::create();
+
+    // Build file name.
+    const QString projectFileName = projectName + ProjectFileExtension;
+    const QString fullProjectPath = combinePaths(projectPath, projectFileName);
 
     // Write project file.
     QSharedPointer<QFile> projectFile = QSharedPointer<QFile>::create(fullProjectPath);
 
     if (projectFile->open(QIODevice::ReadWrite))
     {
-        QSharedPointer<Tome::ProjectSerializer> projectSerializer =
-                QSharedPointer<Tome::ProjectSerializer>::create();
-        projectSerializer->serialize(projectFile, newProject);
+        projectSerializer->serialize(projectFile, project);
     }
     else
     {
@@ -124,36 +143,68 @@ void MainWindow::createNewProject(const QString &projectName, const QString &pro
         return;
     }
 
-    // Write field definition set.
-    QSharedPointer<QFile> fieldDefinitionSetFile = QSharedPointer<QFile>::create(fullFieldDefinitionSetPath);
+    // Write field definition sets.
+    QSharedPointer<FieldDefinitionSetSerializer> fieldDefinitionSetSerializer =
+            QSharedPointer<FieldDefinitionSetSerializer>::create();
 
-    if (fieldDefinitionSetFile->open(QIODevice::ReadWrite))
+    for (std::list<QSharedPointer<FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
+         it != project->fieldDefinitionSets.end();
+         ++it)
     {
-        QSharedPointer<Tome::FieldDefinitionSetSerializer> fieldDefinitionSetSerializer =
-                QSharedPointer<Tome::FieldDefinitionSetSerializer>::create();
-        fieldDefinitionSetSerializer->serialize(fieldDefinitionSetFile, fieldDefinitionSet);
+        QSharedPointer<FieldDefinitionSet> fieldDefinitionSet = *it;
+
+        // Build file name.
+        const QString fieldDefinitionSetFileName = fieldDefinitionSet->name + FieldDefinitionFileExtension;
+        const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSetFileName);
+
+        // Write file.
+        QSharedPointer<QFile> fieldDefinitionSetFile = QSharedPointer<QFile>::create(fullFieldDefinitionSetPath);
+
+        if (fieldDefinitionSetFile->open(QIODevice::ReadWrite))
+        {
+            fieldDefinitionSetSerializer->serialize(fieldDefinitionSetFile, fieldDefinitionSet);
+        }
+        else
+        {
+            QMessageBox::critical(
+                        this,
+                        tr("Unable to create project"),
+                        tr("Destination file could not be written:\r\n") + fullFieldDefinitionSetPath,
+                        QMessageBox::Close,
+                        QMessageBox::Close);
+            return;
+        }
     }
-    else
+
+
+    // Write record sets.
+    QSharedPointer<Tome::RecordSetSerializer> recordSetSerializer =
+            QSharedPointer<Tome::RecordSetSerializer>::create();
+
+    for (std::list<QSharedPointer<RecordSet> >::iterator it = project->recordSets.begin();
+         it != project->recordSets.end();
+         ++it)
     {
-        QMessageBox::critical(
-                    this,
-                    tr("Unable to create project"),
-                    tr("Destination file could not be written:\r\n") + fullFieldDefinitionSetPath,
-                    QMessageBox::Close,
-                    QMessageBox::Close);
-        return;
+        QSharedPointer<RecordSet> recordSet = *it;
+
+        // Build file name.
+        const QString recordSetFileName = recordSet->name + RecordFileExtension;
+        const QString fullRecordSetPath = Tome::combinePaths(projectPath, recordSetFileName);
+
+        // Write file.
+        QSharedPointer<QFile> recordSetFile = QSharedPointer<QFile>::create(fullRecordSetPath);
+
+        if (recordSetFile->open(QIODevice::ReadWrite))
+        {
+            recordSetSerializer->serialize(recordSetFile, recordSet);
+        }
     }
+}
 
-    // Write record set.
-    QSharedPointer<QFile> recordSetFile = QSharedPointer<QFile>::create(fullRecordSetPath);
+void MainWindow::setProject(QSharedPointer<Project> project)
+{
+    this->project = project;
 
-    if (recordSetFile->open(QIODevice::ReadWrite))
-    {
-        QSharedPointer<Tome::RecordSetSerializer> recordSetSerializer =
-                QSharedPointer<Tome::RecordSetSerializer>::create();
-        recordSetSerializer->serialize(recordSetFile, recordSet);
-    }
-
-    // Set project reference.
-    this->project = newProject;
+    // Enable save button.
+    this->ui->actionSave_Project->setEnabled(true);
 }

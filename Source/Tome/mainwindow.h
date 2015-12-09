@@ -21,9 +21,10 @@ class MainWindow : public QMainWindow
         ~MainWindow();
 
     private slots:
-        void on_actionNew_Project_triggered();
         void on_actionAbout_triggered();
         void on_actionExit_triggered();
+        void on_actionNew_Project_triggered();
+        void on_actionSave_Project_triggered();
 
     private:
         Ui::MainWindow *ui;
@@ -34,6 +35,8 @@ class MainWindow : public QMainWindow
         AboutWindow *aboutWindow;
 
         void createNewProject(const QString& name, const QString& path);
+        void saveProject(QSharedPointer<Tome::Project> project);
+        void setProject(QSharedPointer<Tome::Project> project);
 };
 
 #endif // MAINWINDOW_H

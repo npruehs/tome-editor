@@ -17,6 +17,7 @@ namespace Tome
             Project();
 
             QString name;
+            QString path;
             std::list< QSharedPointer<FieldDefinitionSet> > fieldDefinitionSets;
             std::list< QSharedPointer<RecordSet> > recordSets;
     };
