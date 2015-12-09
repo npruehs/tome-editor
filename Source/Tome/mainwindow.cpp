@@ -1,8 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <stdexcept>
+
 #include <QFile>
+#include <QFileDialog>
 #include <QMessageBox>
+#include <QStandardPaths>
 #include <QTextStream>
 #include <QXmlStreamWriter>
 
@@ -64,6 +68,60 @@ void MainWindow::on_actionNew_Project_triggered()
         const QString projectPath = this->newProjectWindow->getProjectPath();
 
         this->createNewProject(projectName, projectPath);
+    }
+}
+
+void MainWindow::on_actionOpen_Project_triggered()
+{
+    // Open file browser dialog.
+    const QString projectFileName = QFileDialog::getOpenFileName(this,
+                                                          tr("Open Project"),
+                                                          QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+                                                          "Tome Project Files (*.tproj)");
+
+    if (projectFileName.count() <= 0)
+    {
+        return;
+    }
+
+    // Open project file.
+    QSharedPointer<QFile> projectFile = QSharedPointer<QFile>::create(projectFileName);
+
+    if (projectFile->open(QIODevice::ReadOnly))
+    {
+        // Load project from file.
+        QSharedPointer<ProjectSerializer> projectSerializer =
+                QSharedPointer<ProjectSerializer>::create();
+        QSharedPointer<Project> project = QSharedPointer<Project>::create();
+        project->path = projectFileName;
+
+        try
+        {
+             projectSerializer->deserialize(projectFile, project);
+        }
+        catch (const std::runtime_error& e)
+        {
+            QMessageBox::critical(
+                        this,
+                        tr("Unable to open project"),
+                        tr("File could not be read:\r\n") + e.what(),
+                        QMessageBox::Close,
+                        QMessageBox::Close);
+            return;
+        }
+
+        // Set project reference.
+        this->setProject(project);
+    }
+    else
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to open project"),
+                    tr("File could not be read:\r\n") + projectFileName,
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return;
     }
 }
 

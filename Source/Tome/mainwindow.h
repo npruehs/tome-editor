@@ -24,6 +24,7 @@ class MainWindow : public QMainWindow
         void on_actionAbout_triggered();
         void on_actionExit_triggered();
         void on_actionNew_Project_triggered();
+        void on_actionOpen_Project_triggered();
         void on_actionSave_Project_triggered();
 
     private:
