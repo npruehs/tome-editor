@@ -29,7 +29,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Records/recordset.cpp \
     ../Source/Tome/Records/recordsetserializer.cpp \
     ../Source/Tome/Fields/fielddefinition.cpp \
-    ../Source/Tome/Values/valueconverter.cpp
+    ../Source/Tome/Values/valueconverter.cpp \
+    ../Source/Tome/IO/xmlreader.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/fieldtype.h \
@@ -44,7 +45,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Records/recordset.h \
     ../Source/Tome/Records/recordsetserializer.h \
     ../Source/Tome/Values/valueconverter.h \
-    ../Source/Tome/Util/pathutils.h
+    ../Source/Tome/Util/pathutils.h \
+    ../Source/Tome/IO/xmlreader.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \
