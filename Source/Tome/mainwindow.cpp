@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include <QFile>
+#include <QFileInfo>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QStandardPaths>
@@ -90,6 +91,8 @@ void MainWindow::on_actionOpen_Project_triggered()
 
     // Open project file.
     QSharedPointer<QFile> projectFile = QSharedPointer<QFile>::create(projectFileName);
+    QSharedPointer<QFileInfo> projectFileInfo = QSharedPointer<QFileInfo>::create(projectFileName);
+    const QString projectPath = projectFileInfo->path();
 
     if (projectFile->open(QIODevice::ReadOnly))
     {
@@ -112,6 +115,49 @@ void MainWindow::on_actionOpen_Project_triggered()
                         QMessageBox::Close,
                         QMessageBox::Close);
             return;
+        }
+
+        // Load field definition files.
+        QSharedPointer<FieldDefinitionSetSerializer> fieldDefinitionSerializer =
+                QSharedPointer<FieldDefinitionSetSerializer>::create();
+
+        for (std::list<QSharedPointer<FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
+             it != project->fieldDefinitionSets.end();
+             ++it)
+        {
+            QSharedPointer<FieldDefinitionSet> fieldDefinitionSet = *it;
+
+            // Open field definition file.
+            const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSet->name + FieldDefinitionFileExtension);
+            QSharedPointer<QFile> fieldDefinitionFile = QSharedPointer<QFile>::create(fullFieldDefinitionSetPath);
+
+            if (fieldDefinitionFile->open(QIODevice::ReadOnly))
+            {
+                try
+                {
+                     fieldDefinitionSerializer->deserialize(fieldDefinitionFile, fieldDefinitionSet);
+                }
+                catch (const std::runtime_error& e)
+                {
+                    QMessageBox::critical(
+                                this,
+                                tr("Unable to open project"),
+                                tr("File could not be read:\r\n") + e.what(),
+                                QMessageBox::Close,
+                                QMessageBox::Close);
+                    return;
+                }
+            }
+            else
+            {
+                QMessageBox::critical(
+                            this,
+                            tr("Unable to open project"),
+                            tr("File could not be read:\r\n") + fullFieldDefinitionSetPath,
+                            QMessageBox::Close,
+                            QMessageBox::Close);
+                return;
+            }
         }
 
         // Set project reference.

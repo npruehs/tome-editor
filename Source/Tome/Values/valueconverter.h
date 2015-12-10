@@ -13,6 +13,8 @@ namespace Tome
             ValueConverter();
 
             QString FieldTypeToString(const FieldType::FieldType& fieldType) const;
+
+            FieldType::FieldType StringToFieldType(const QString& s) const;
     };
 }
 
