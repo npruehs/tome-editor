@@ -18,6 +18,10 @@
 
 using namespace Tome;
 
+const QString MainWindow::FieldDefinitionFileExtension = ".tfields";
+const QString MainWindow::ProjectFileExtension = ".tproj";
+const QString MainWindow::RecordFileExtension = ".tdata";
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),

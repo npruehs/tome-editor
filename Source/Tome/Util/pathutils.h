@@ -6,10 +6,6 @@
 
 namespace Tome
 {
-    const QString FieldDefinitionFileExtension = ".tfields";
-    const QString ProjectFileExtension = ".tproj";
-    const QString RecordFileExtension = ".tdata";
-
     /**
      * @brief combinePaths Combines the paths specified by the two passes strings.
      * @param first First path to combine.

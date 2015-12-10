@@ -28,6 +28,10 @@ class MainWindow : public QMainWindow
         void on_actionSave_Project_triggered();
 
     private:
+        static const QString FieldDefinitionFileExtension;
+        static const QString ProjectFileExtension;
+        static const QString RecordFileExtension;
+
         Ui::MainWindow *ui;
 
         QSharedPointer<Tome::Project> project;

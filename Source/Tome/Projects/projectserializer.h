@@ -26,6 +26,13 @@ namespace Tome
              * @param project Project to fill with read data.
              */
             void deserialize(QSharedPointer<QIODevice> device, QSharedPointer<Project> project) const;
+
+        private:
+            static const QString ElementFieldDefinitions;
+            static const QString ElementName;
+            static const QString ElementPath;
+            static const QString ElementRecords;
+            static const QString ElementTomeProject;
     };
 }
 
