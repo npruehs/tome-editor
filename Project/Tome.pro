@@ -46,7 +46,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Records/recordsetserializer.h \
     ../Source/Tome/Values/valueconverter.h \
     ../Source/Tome/Util/pathutils.h \
-    ../Source/Tome/IO/xmlreader.h
+    ../Source/Tome/IO/xmlreader.h \
+    ../Source/Tome/Util/stringutils.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \

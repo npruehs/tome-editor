@@ -12,7 +12,7 @@ namespace Tome
      * @param second Second path to combine.
      * @return Both paths, combined with the platform-specific path seperator.
      */
-    QString combinePaths(const QString& first, const QString& second)
+    inline QString combinePaths(const QString& first, const QString& second)
     {
         return QDir::cleanPath(first + QDir::separator() + second);
     }

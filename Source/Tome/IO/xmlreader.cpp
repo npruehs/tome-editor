@@ -17,7 +17,7 @@ QString XmlReader::getElementName()
 
 bool XmlReader::isAtElement(const QString& elementName)
 {
-    return this->getElementName().compare(elementName) == 0;
+    return equals(this->getElementName(), elementName);
 }
 
 void XmlReader::readEndDocument()
