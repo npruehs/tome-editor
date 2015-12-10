@@ -2,6 +2,10 @@
 
 #include <stdexcept>
 
+#include "../Util/stringutils.h"
+
+using namespace Tome;
+
 
 XmlReader::XmlReader(QSharedPointer<QXmlStreamReader> reader)
 {
@@ -10,14 +14,25 @@ XmlReader::XmlReader(QSharedPointer<QXmlStreamReader> reader)
 }
 
 
-QString XmlReader::getElementName()
+QString XmlReader::getElementName() const
 {
     return this->reader->name().toString();
 }
 
-bool XmlReader::isAtElement(const QString& elementName)
+bool XmlReader::isAtElement(const QString& elementName) const
 {
     return equals(this->getElementName(), elementName);
+}
+
+QString XmlReader::readAttribute(const QString& attributeName)
+{
+    return this->reader->attributes().value(attributeName).toString();
+}
+
+void XmlReader::readEmptyElement(const QString& expectedElementName)
+{
+    this->readStartElement(expectedElementName);
+    this->readEndElement();
 }
 
 void XmlReader::readEndDocument()
@@ -101,12 +116,12 @@ void XmlReader::readToken(const QXmlStreamReader::TokenType& expectedTokenType)
     this->moveToNextToken();
 }
 
-void XmlReader::throwTokenError(const qint64& line, const qint64& column)
+void XmlReader::throwTokenError(const qint64& line, const qint64& column) const
 {
     throwTokenError(line, column, "");
 }
 
-void XmlReader::throwTokenError(const qint64& line, const qint64& column, const QString& detailMessage)
+void XmlReader::throwTokenError(const qint64& line, const qint64& column, const QString& detailMessage) const
 {
     QString errorMessage = "Invalid token at line " + QString::number(line) +
             ", column " + QString::number(column) + ".";
