@@ -160,6 +160,49 @@ void MainWindow::on_actionOpen_Project_triggered()
             }
         }
 
+        // Load record files.
+        QSharedPointer<RecordSetSerializer> recordSetSerializer =
+                QSharedPointer<RecordSetSerializer>::create();
+
+        for (std::list<QSharedPointer<RecordSet> >::iterator it = project->recordSets.begin();
+             it != project->recordSets.end();
+             ++it)
+        {
+            QSharedPointer<RecordSet> recordSet = *it;
+
+            // Open record file.
+            const QString fullRecordSetPath = combinePaths(projectPath, recordSet->name + RecordFileExtension);
+            QSharedPointer<QFile> recordFile = QSharedPointer<QFile>::create(fullRecordSetPath);
+
+            if (recordFile->open(QIODevice::ReadOnly))
+            {
+                try
+                {
+                     recordSetSerializer->deserialize(recordFile, recordSet);
+                }
+                catch (const std::runtime_error& e)
+                {
+                    QMessageBox::critical(
+                                this,
+                                tr("Unable to open project"),
+                                tr("File could not be read:\r\n") + e.what(),
+                                QMessageBox::Close,
+                                QMessageBox::Close);
+                    return;
+                }
+            }
+            else
+            {
+                QMessageBox::critical(
+                            this,
+                            tr("Unable to open project"),
+                            tr("File could not be read:\r\n") + fullRecordSetPath,
+                            QMessageBox::Close,
+                            QMessageBox::Close);
+                return;
+            }
+        }
+
         // Set project reference.
         this->setProject(project);
     }

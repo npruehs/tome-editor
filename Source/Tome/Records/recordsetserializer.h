@@ -19,6 +19,19 @@ namespace Tome
              * @param recordSet Record set to write.
              */
             void serialize(QSharedPointer<QIODevice> device, QSharedPointer<RecordSet> recordSet) const;
+
+            /**
+             * @brief serialize Reads the passed record set from the specified device.
+             * @param device Device to read the record set from.
+             * @param recordSet Record set to fill.
+             */
+            void deserialize(QSharedPointer<QIODevice> device, QSharedPointer<RecordSet> recordSet) const;
+
+        private:
+            static const QString ElementId;
+            static const QString ElementRecord;
+            static const QString ElementRecords;
+            static const QString ElementValue;
     };
 }
 
