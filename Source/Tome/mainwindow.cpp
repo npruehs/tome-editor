@@ -32,6 +32,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Maximize window.
+    this->showMaximized();
+
     // Can't save project until created or loaded.
     this->ui->actionSave_Project->setEnabled(false);
 }
