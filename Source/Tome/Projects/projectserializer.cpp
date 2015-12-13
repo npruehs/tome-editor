@@ -35,7 +35,7 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
             // Write field definition set paths.
             writer.writeStartElement(ElementFieldDefinitions);
             {
-                for (std::list<QSharedPointer<Tome::FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
+                for (QVector<QSharedPointer<Tome::FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
                      it != project->fieldDefinitionSets.end();
                      ++it)
                 {
@@ -48,7 +48,7 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
             // Write record set paths.
             writer.writeStartElement(ElementRecords);
             {
-                for (std::list<QSharedPointer<Tome::RecordSet> >::iterator it = project->recordSets.begin();
+                for (QVector<QSharedPointer<Tome::RecordSet> >::iterator it = project->recordSets.begin();
                      it != project->recordSets.end();
                      ++it)
                 {

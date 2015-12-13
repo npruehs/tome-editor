@@ -26,17 +26,18 @@ const QString MainWindow::RecordFileExtension = ".tdata";
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    newProjectWindow(0),
-    aboutWindow(0)
-
+    aboutWindow(0),
+    fieldDefinitionsWindow(0),
+    newProjectWindow(0)
 {
     ui->setupUi(this);
 
     // Maximize window.
     this->showMaximized();
 
-    // Can't save project until created or loaded.
+    // Can't access some functionality until project created or loaded.
     this->ui->actionSave_Project->setEnabled(false);
+    this->ui->actionField_Definions->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -51,14 +52,22 @@ void MainWindow::on_actionAbout_triggered()
         this->aboutWindow = new AboutWindow(this);
     }
 
-    this->aboutWindow->show();
-    this->aboutWindow->raise();
-    this->aboutWindow->activateWindow();
+    this->showWindow(this->aboutWindow);
 }
 
 void MainWindow::on_actionExit_triggered()
 {
     this->close();
+}
+
+void MainWindow::on_actionField_Definions_triggered()
+{
+    if (!this->fieldDefinitionsWindow)
+    {
+        this->fieldDefinitionsWindow = new FieldDefinitionsWindow(this->project, this);
+    }
+
+    this->showWindow(this->fieldDefinitionsWindow);
 }
 
 void MainWindow::on_actionNew_Project_triggered()
@@ -124,7 +133,7 @@ void MainWindow::on_actionOpen_Project_triggered()
         QSharedPointer<FieldDefinitionSetSerializer> fieldDefinitionSerializer =
                 QSharedPointer<FieldDefinitionSetSerializer>::create();
 
-        for (std::list<QSharedPointer<FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
+        for (QVector<QSharedPointer<FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
              it != project->fieldDefinitionSets.end();
              ++it)
         {
@@ -167,7 +176,7 @@ void MainWindow::on_actionOpen_Project_triggered()
         QSharedPointer<RecordSetSerializer> recordSetSerializer =
                 QSharedPointer<RecordSetSerializer>::create();
 
-        for (std::list<QSharedPointer<RecordSet> >::iterator it = project->recordSets.begin();
+        for (QVector<QSharedPointer<RecordSet> >::iterator it = project->recordSets.begin();
              it != project->recordSets.end();
              ++it)
         {
@@ -301,7 +310,7 @@ void MainWindow::saveProject(QSharedPointer<Project> project)
     QSharedPointer<FieldDefinitionSetSerializer> fieldDefinitionSetSerializer =
             QSharedPointer<FieldDefinitionSetSerializer>::create();
 
-    for (std::list<QSharedPointer<FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
+    for (QVector<QSharedPointer<FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
          it != project->fieldDefinitionSets.end();
          ++it)
     {
@@ -335,7 +344,7 @@ void MainWindow::saveProject(QSharedPointer<Project> project)
     QSharedPointer<Tome::RecordSetSerializer> recordSetSerializer =
             QSharedPointer<Tome::RecordSetSerializer>::create();
 
-    for (std::list<QSharedPointer<RecordSet> >::iterator it = project->recordSets.begin();
+    for (QVector<QSharedPointer<RecordSet> >::iterator it = project->recordSets.begin();
          it != project->recordSets.end();
          ++it)
     {
@@ -359,6 +368,14 @@ void MainWindow::setProject(QSharedPointer<Project> project)
 {
     this->project = project;
 
-    // Enable save button.
+    // Enable project-specific buttons.
     this->ui->actionSave_Project->setEnabled(true);
+    this->ui->actionField_Definions->setEnabled(true);
+}
+
+void MainWindow::showWindow(QWidget* widget)
+{
+    widget->show();
+    widget->raise();
+    widget->activateWindow();
 }

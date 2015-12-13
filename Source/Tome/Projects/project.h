@@ -1,10 +1,9 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
-#include <list>
-
 #include <QSharedPointer>
 #include <QString>
+#include <QVector>
 
 #include "../Fields/fielddefinitionset.h"
 #include "../Records/recordset.h"
@@ -18,8 +17,8 @@ namespace Tome
 
             QString name;
             QString path;
-            std::list< QSharedPointer<FieldDefinitionSet> > fieldDefinitionSets;
-            std::list< QSharedPointer<RecordSet> > recordSets;
+            QVector< QSharedPointer<FieldDefinitionSet> > fieldDefinitionSets;
+            QVector< QSharedPointer<RecordSet> > recordSets;
     };
 }
 

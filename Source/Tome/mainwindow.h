@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSharedPointer>
 
+#include "Fields/fielddefinitionswindow.h"
 #include "Projects/newprojectwindow.h"
 #include "Projects/project.h"
 #include "Help/aboutwindow.h"
@@ -23,6 +24,7 @@ class MainWindow : public QMainWindow
     private slots:
         void on_actionAbout_triggered();
         void on_actionExit_triggered();
+        void on_actionField_Definions_triggered();
         void on_actionNew_Project_triggered();
         void on_actionOpen_Project_triggered();
         void on_actionSave_Project_triggered();
@@ -36,12 +38,14 @@ class MainWindow : public QMainWindow
 
         QSharedPointer<Tome::Project> project;
 
-        NewProjectWindow *newProjectWindow;
         AboutWindow *aboutWindow;
+        FieldDefinitionsWindow* fieldDefinitionsWindow;
+        NewProjectWindow *newProjectWindow;
 
         void createNewProject(const QString& name, const QString& path);
         void saveProject(QSharedPointer<Tome::Project> project);
         void setProject(QSharedPointer<Tome::Project> project);
+        void showWindow(QWidget* widget);
 };
 
 #endif // MAINWINDOW_H

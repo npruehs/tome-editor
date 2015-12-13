@@ -37,7 +37,7 @@ void FieldDefinitionSetSerializer::serialize(QSharedPointer<QIODevice> device, Q
         stream.writeStartElement(ElementFields);
         {
             // Write fields.
-            for (std::list<QSharedPointer<FieldDefinition> >::iterator it = fieldDefinitionSet->fieldDefinitions.begin();
+            for (QVector<QSharedPointer<FieldDefinition> >::iterator it = fieldDefinitionSet->fieldDefinitions.begin();
                  it != fieldDefinitionSet->fieldDefinitions.end();
                  ++it)
             {

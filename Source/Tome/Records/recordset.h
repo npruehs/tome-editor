@@ -1,8 +1,8 @@
 #ifndef RECORDSET_H
 #define RECORDSET_H
 
-#include <list>
 #include <QSharedPointer>
+#include <QVector>
 
 #include "record.h"
 
@@ -14,7 +14,7 @@ namespace Tome
             RecordSet();
 
             QString name;
-            std::list< QSharedPointer<Record> > records;
+            QVector< QSharedPointer<Record> > records;
     };
 }
 

@@ -31,7 +31,7 @@ void RecordSetSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoi
         stream.writeStartElement(ElementRecords);
         {
             // Write records.
-            for (std::list<QSharedPointer<Record> >::iterator it = recordSet->records.begin();
+            for (QVector<QSharedPointer<Record> >::iterator it = recordSet->records.begin();
                  it != recordSet->records.end();
                  ++it)
             {

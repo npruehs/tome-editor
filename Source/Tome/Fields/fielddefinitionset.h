@@ -1,8 +1,8 @@
 #ifndef FIELDDEFINITIONSET_H
 #define FIELDDEFINITIONSET_H
 
-#include <list>
 #include <QSharedPointer>
+#include <QVector>
 
 #include "fielddefinition.h"
 
@@ -14,7 +14,7 @@ namespace Tome
             FieldDefinitionSet();
 
             QString name;
-            std::list< QSharedPointer<FieldDefinition> > fieldDefinitions;
+            QVector< QSharedPointer<FieldDefinition> > fieldDefinitions;
     };
 }
 
