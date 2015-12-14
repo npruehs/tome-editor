@@ -1,30 +1,37 @@
-#ifndef FIELDDEFINITIONWINDOW_H
-#define FIELDDEFINITIONWINDOW_H
+#ifndef FIELDDEFINITIONSWINDOW_H
+#define FIELDDEFINITIONSWINDOW_H
 
-#include <QDialog>
+#include <QMainWindow>
 #include <QSharedPointer>
 
 #include "../Projects/project.h"
 
+#include "fielddefinitionwindow.h"
 #include "fielddefinitionstablemodel.h"
+
 
 namespace Ui {
     class FieldDefinitionsWindow;
 }
 
-class FieldDefinitionsWindow : public QDialog
+class FieldDefinitionsWindow : public QMainWindow
 {
         Q_OBJECT
 
     public:
-        FieldDefinitionsWindow(QSharedPointer<Tome::Project> project, QWidget *parent = 0);
+        explicit FieldDefinitionsWindow(QSharedPointer<Tome::Project> project, QWidget *parent = 0);
         ~FieldDefinitionsWindow();
+
+    private slots:
+        void on_actionNew_Field_triggered();
 
     private:
         Ui::FieldDefinitionsWindow *ui;
+
+        FieldDefinitionWindow* fieldDefinitionWindow;
 
         QSharedPointer<Tome::Project> project;
         QSharedPointer<Tome::FieldDefinitionsTableModel> viewModel;
 };
 
-#endif // FIELDDEFINITIONWINDOW_H
+#endif // FIELDDEFINITIONSWINDOW_H
