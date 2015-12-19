@@ -253,21 +253,6 @@ void MainWindow::createNewProject(const QString &projectName, const QString &pro
     recordSet->name = projectName;
     newProject->recordSets.push_back(recordSet);
 
-    // Add dummy data.
-    QSharedPointer<FieldDefinition> fieldDefinition =
-            QSharedPointer<FieldDefinition>::create();
-    fieldDefinition->defaultValue = "123";
-    fieldDefinition->description = "Maximum health value of the entity.";
-    fieldDefinition->displayName = "Maximum Health";
-    fieldDefinition->fieldType = FieldType::Int;
-    fieldDefinition->id = "MaximumHealth";
-    fieldDefinitionSet->fieldDefinitions.push_back(fieldDefinition);
-
-    QSharedPointer<Record> record = QSharedPointer<Record>::create();
-    record->id = "Knight";
-    record->fieldValues["MaximumHealth"] = "70";
-    recordSet->records.push_back(record);
-
     // Write project files.
     this->saveProject(newProject);
 
