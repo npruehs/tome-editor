@@ -112,7 +112,7 @@ void MainWindow::on_actionOpen_Project_triggered()
         QSharedPointer<ProjectSerializer> projectSerializer =
                 QSharedPointer<ProjectSerializer>::create();
         QSharedPointer<Project> project = QSharedPointer<Project>::create();
-        project->path = projectFileName;
+        project->path = projectPath;
 
         try
         {
