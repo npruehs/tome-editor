@@ -291,7 +291,7 @@ void MainWindow::saveProject(QSharedPointer<Project> project)
     // Write project file.
     QSharedPointer<QFile> projectFile = QSharedPointer<QFile>::create(fullProjectPath);
 
-    if (projectFile->open(QIODevice::ReadWrite))
+    if (projectFile->open(QIODevice::ReadWrite | QIODevice::Truncate))
     {
         projectSerializer->serialize(projectFile, project);
     }
@@ -323,7 +323,7 @@ void MainWindow::saveProject(QSharedPointer<Project> project)
         // Write file.
         QSharedPointer<QFile> fieldDefinitionSetFile = QSharedPointer<QFile>::create(fullFieldDefinitionSetPath);
 
-        if (fieldDefinitionSetFile->open(QIODevice::ReadWrite))
+        if (fieldDefinitionSetFile->open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
             fieldDefinitionSetSerializer->serialize(fieldDefinitionSetFile, fieldDefinitionSet);
         }
@@ -357,7 +357,7 @@ void MainWindow::saveProject(QSharedPointer<Project> project)
         // Write file.
         QSharedPointer<QFile> recordSetFile = QSharedPointer<QFile>::create(fullRecordSetPath);
 
-        if (recordSetFile->open(QIODevice::ReadWrite))
+        if (recordSetFile->open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
             recordSetSerializer->serialize(recordSetFile, recordSet);
         }
