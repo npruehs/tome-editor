@@ -24,6 +24,11 @@ class FieldDefinitionWindow : public QDialog
         QString getFieldId() const;
         Tome::FieldType::FieldType getFieldType() const;
 
+        void setFieldDescription(const QString& description);
+        void setFieldDisplayName(const QString& displayName);
+        void setFieldId(const QString& fieldId);
+        void setFieldType(const Tome::FieldType::FieldType& fieldType) const;
+
     public slots:
         void accept();
 

@@ -25,6 +25,7 @@ namespace Tome
             bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
 
             void addFieldDefinition(const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& description);
+            void updateFieldDefinition(const int index, const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& description);
 
         private:
             QSharedPointer<Tome::Project> project;

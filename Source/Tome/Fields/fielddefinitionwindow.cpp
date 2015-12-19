@@ -51,9 +51,31 @@ QString FieldDefinitionWindow::getFieldId() const
 
 FieldType::FieldType FieldDefinitionWindow::getFieldType() const
 {
-    QString fieldType = this->ui->comboBoxType->currentText();
-    QSharedPointer<ValueConverter> valueConverter = QSharedPointer<ValueConverter>::create();
-    return valueConverter->StringToFieldType(fieldType);
+    const QString fieldType = this->ui->comboBoxType->currentText();
+    ValueConverter valueConverter;
+    return valueConverter.StringToFieldType(fieldType);
+}
+
+void FieldDefinitionWindow::setFieldDescription(const QString& description)
+{
+    this->ui->plainTextEditDescription->setPlainText(description);
+}
+
+void FieldDefinitionWindow::setFieldDisplayName(const QString& displayName)
+{
+    this->ui->lineEditDisplayName->setText(displayName);
+}
+
+void FieldDefinitionWindow::setFieldId(const QString& fieldId)
+{
+    this->ui->lineEditId->setText(fieldId);
+}
+
+void FieldDefinitionWindow::setFieldType(const FieldType::FieldType& fieldType) const
+{
+    ValueConverter valueConverter;
+    const QString fieldTypeName = valueConverter.FieldTypeToString(fieldType);
+    this->ui->comboBoxType->setCurrentText(fieldTypeName);
 }
 
 void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &fieldType)

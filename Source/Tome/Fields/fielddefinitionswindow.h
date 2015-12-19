@@ -24,6 +24,9 @@ class FieldDefinitionsWindow : public QMainWindow
 
     private slots:
         void on_actionNew_Field_triggered();
+        void on_actionEdit_Field_triggered();
+
+        void on_tableView_doubleClicked(const QModelIndex &index);
 
     private:
         Ui::FieldDefinitionsWindow *ui;

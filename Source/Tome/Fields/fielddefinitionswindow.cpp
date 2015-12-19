@@ -45,3 +45,51 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
                  this->fieldDefinitionWindow->getFieldDescription());
     }
 }
+
+void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
+{
+    // Get selected row.
+    QModelIndexList selectedIndices = this->ui->tableView->selectionModel()->selectedRows();
+
+    if (selectedIndices.size() == 0)
+    {
+        return;
+    }
+
+    int row = selectedIndices.first().row();
+
+    // Get selected field definition.
+    QSharedPointer<FieldDefinition> fieldDefinition =
+            this->project->fieldDefinitionSets[0]->fieldDefinitions[row];
+
+    // Show window.
+    if (!this->fieldDefinitionWindow)
+    {
+        this->fieldDefinitionWindow = new FieldDefinitionWindow(this);
+    }
+
+    // Update view.
+    this->fieldDefinitionWindow->setFieldId(fieldDefinition->id);
+    this->fieldDefinitionWindow->setFieldDisplayName(fieldDefinition->displayName);
+    this->fieldDefinitionWindow->setFieldType(fieldDefinition->fieldType);
+    this->fieldDefinitionWindow->setFieldDescription(fieldDefinition->description);
+
+    int result = this->fieldDefinitionWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        // Update field.
+        this->viewModel->updateFieldDefinition
+                (row,
+                 this->fieldDefinitionWindow->getFieldId(),
+                 this->fieldDefinitionWindow->getFieldDisplayName(),
+                 this->fieldDefinitionWindow->getFieldType(),
+                 this->fieldDefinitionWindow->getFieldDescription());
+    }
+}
+
+void FieldDefinitionsWindow::on_tableView_doubleClicked(const QModelIndex &index)
+{
+    Q_UNUSED(index);
+    this->on_actionEdit_Field_triggered();
+}

@@ -126,9 +126,15 @@ void FieldDefinitionsTableModel::addFieldDefinition(const QString& id, const QSt
     // Insert row at the end.
     this->insertRows(count, 1, QModelIndex());
 
-    // Get new field definition.
+    // Update field definition.
+    this->updateFieldDefinition(count, id, displayName, fieldType, description);
+}
+
+void FieldDefinitionsTableModel::updateFieldDefinition(const int index, const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& description)
+{
+    // Get field definition.
     QSharedPointer<Tome::FieldDefinition> fieldDefinition =
-            this->project->fieldDefinitionSets[0]->fieldDefinitions.last();
+            this->project->fieldDefinitionSets[0]->fieldDefinitions[index];
 
     // Set data.
     fieldDefinition->id = id;
@@ -137,8 +143,8 @@ void FieldDefinitionsTableModel::addFieldDefinition(const QString& id, const QSt
     fieldDefinition->description = description;
 
     // Update view.
-    QModelIndex first = this->index(count, 0, QModelIndex());
-    QModelIndex last = this->index(count, 4, QModelIndex());
+    QModelIndex first = this->index(index, 0, QModelIndex());
+    QModelIndex last = this->index(index, 4, QModelIndex());
 
     emit(dataChanged(first, last));
 }
