@@ -54,6 +54,9 @@ QString FieldDefinitionWindow::getDefaultValue() const
     switch (this->getFieldType())
     {
         case FieldType::Int:
+            return this->ui->spinBoxDefaultValue->text();
+            break;
+
         case FieldType::String:
             return this->ui->lineEditDefaultValue->text();
             break;
@@ -89,8 +92,16 @@ void FieldDefinitionWindow::setDefaultValue(const QString& defaultValue)
     switch (this->getFieldType())
     {
         case FieldType::Int:
+            {
+                int value = defaultValue.toInt();
+                this->ui->spinBoxDefaultValue->setValue(value);
+            }
+            break;
+
         case FieldType::String:
-            this->ui->lineEditDefaultValue->setText(defaultValue);
+            {
+                this->ui->lineEditDefaultValue->setText(defaultValue);
+            }
             break;
     }
 }
@@ -110,12 +121,18 @@ void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &f
     switch (newType)
     {
         case FieldType::Int:
+            this->ui->lineEditDefaultValue->hide();
+            this->ui->spinBoxDefaultValue->show();
+            break;
+
         case FieldType::String:
-            this->ui->lineEditDefaultValue->setVisible(true);
+            this->ui->lineEditDefaultValue->show();
+            this->ui->spinBoxDefaultValue->hide();
             break;
 
         default:
-            this->ui->lineEditDefaultValue->setVisible(false);
+            this->ui->lineEditDefaultValue->hide();
+            this->ui->spinBoxDefaultValue->hide();
             break;
     }
 }
