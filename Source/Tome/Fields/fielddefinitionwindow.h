@@ -22,11 +22,13 @@ class FieldDefinitionWindow : public QDialog
         QString getFieldDescription() const;
         QString getFieldDisplayName() const;
         QString getFieldId() const;
+        QString getDefaultValue() const;
         Tome::FieldType::FieldType getFieldType() const;
 
         void setFieldDescription(const QString& description);
         void setFieldDisplayName(const QString& displayName);
         void setFieldId(const QString& fieldId);
+        void setDefaultValue(const QString& defaultValue);
         void setFieldType(const Tome::FieldType::FieldType& fieldType) const;
 
     public slots:

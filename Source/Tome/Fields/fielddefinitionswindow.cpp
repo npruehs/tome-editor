@@ -51,6 +51,7 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
                 (this->fieldDefinitionWindow->getFieldId(),
                  this->fieldDefinitionWindow->getFieldDisplayName(),
                  this->fieldDefinitionWindow->getFieldType(),
+                 this->fieldDefinitionWindow->getDefaultValue(),
                  this->fieldDefinitionWindow->getFieldDescription());
     }
 }
@@ -78,6 +79,7 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
     this->fieldDefinitionWindow->setFieldId(fieldDefinition->id);
     this->fieldDefinitionWindow->setFieldDisplayName(fieldDefinition->displayName);
     this->fieldDefinitionWindow->setFieldType(fieldDefinition->fieldType);
+    this->fieldDefinitionWindow->setDefaultValue(fieldDefinition->defaultValue);
     this->fieldDefinitionWindow->setFieldDescription(fieldDefinition->description);
 
     int result = this->fieldDefinitionWindow->exec();
@@ -90,6 +92,7 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
                  this->fieldDefinitionWindow->getFieldId(),
                  this->fieldDefinitionWindow->getFieldDisplayName(),
                  this->fieldDefinitionWindow->getFieldType(),
+                 this->fieldDefinitionWindow->getDefaultValue(),
                  this->fieldDefinitionWindow->getFieldDescription());
     }
 }

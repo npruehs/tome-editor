@@ -49,6 +49,19 @@ QString FieldDefinitionWindow::getFieldId() const
     return this->ui->lineEditId->text();
 }
 
+QString FieldDefinitionWindow::getDefaultValue() const
+{
+    switch (this->getFieldType())
+    {
+        case FieldType::Int:
+        case FieldType::String:
+            return this->ui->lineEditDefaultValue->text();
+            break;
+    }
+
+    return QString();
+}
+
 FieldType::FieldType FieldDefinitionWindow::getFieldType() const
 {
     const QString fieldType = this->ui->comboBoxType->currentText();
@@ -71,6 +84,17 @@ void FieldDefinitionWindow::setFieldId(const QString& fieldId)
     this->ui->lineEditId->setText(fieldId);
 }
 
+void FieldDefinitionWindow::setDefaultValue(const QString& defaultValue)
+{
+    switch (this->getFieldType())
+    {
+        case FieldType::Int:
+        case FieldType::String:
+            this->ui->lineEditDefaultValue->setText(defaultValue);
+            break;
+    }
+}
+
 void FieldDefinitionWindow::setFieldType(const FieldType::FieldType& fieldType) const
 {
     ValueConverter valueConverter;
@@ -80,11 +104,19 @@ void FieldDefinitionWindow::setFieldType(const FieldType::FieldType& fieldType) 
 
 void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &fieldType)
 {
-    FieldType::FieldType newType = this->getFieldType();
+    ValueConverter valueConverter;
+    FieldType::FieldType newType = valueConverter.StringToFieldType(fieldType);
 
     switch (newType)
     {
-        // TODO: Show new control with new default value.
+        case FieldType::Int:
+        case FieldType::String:
+            this->ui->lineEditDefaultValue->setVisible(true);
+            break;
+
+        default:
+            this->ui->lineEditDefaultValue->setVisible(false);
+            break;
     }
 }
 

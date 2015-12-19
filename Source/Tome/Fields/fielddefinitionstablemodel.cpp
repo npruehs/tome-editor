@@ -119,7 +119,7 @@ bool FieldDefinitionsTableModel::removeRows(int position, int rows, const QModel
     return true;
 }
 
-void FieldDefinitionsTableModel::addFieldDefinition(const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& description)
+void FieldDefinitionsTableModel::addFieldDefinition(const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& defaultValue, const QString& description)
 {
     int index = this->rowCount();
 
@@ -127,10 +127,10 @@ void FieldDefinitionsTableModel::addFieldDefinition(const QString& id, const QSt
     this->insertRows(index, 1, QModelIndex());
 
     // Update field definition.
-    this->updateFieldDefinition(index, id, displayName, fieldType, description);
+    this->updateFieldDefinition(index, id, displayName, fieldType, defaultValue, description);
 }
 
-void FieldDefinitionsTableModel::updateFieldDefinition(const int index, const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& description)
+void FieldDefinitionsTableModel::updateFieldDefinition(const int index, const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& defaultValue, const QString& description)
 {
     // Get field definition.
     QSharedPointer<Tome::FieldDefinition> fieldDefinition =
@@ -140,6 +140,7 @@ void FieldDefinitionsTableModel::updateFieldDefinition(const int index, const QS
     fieldDefinition->id = id;
     fieldDefinition->displayName = displayName;
     fieldDefinition->fieldType = fieldType;
+    fieldDefinition->defaultValue = defaultValue;
     fieldDefinition->description = description;
 
     // Update view.
