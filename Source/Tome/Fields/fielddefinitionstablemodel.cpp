@@ -5,6 +5,12 @@
 using namespace Tome;
 
 
+bool lessThanFieldDefinitions(const QSharedPointer<FieldDefinition> e1, const QSharedPointer<FieldDefinition> e2)
+{
+    return e1->displayName.toLower() < e2->displayName.toLower();
+}
+
+
 FieldDefinitionsTableModel::FieldDefinitionsTableModel(QObject *parent, QSharedPointer<Tome::Project> project)
     : QAbstractTableModel(parent),
       project(project)
@@ -133,8 +139,8 @@ void FieldDefinitionsTableModel::addFieldDefinition(const QString& id, const QSt
 void FieldDefinitionsTableModel::updateFieldDefinition(const int index, const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& defaultValue, const QString& description)
 {
     // Get field definition.
-    QSharedPointer<Tome::FieldDefinition> fieldDefinition =
-            this->project->fieldDefinitionSets[0]->fieldDefinitions[index];
+    QVector<QSharedPointer<FieldDefinition> >& fieldDefinitions = this->project->fieldDefinitionSets[0]->fieldDefinitions;
+    QSharedPointer<FieldDefinition> fieldDefinition = fieldDefinitions[index];
 
     // Set data.
     fieldDefinition->id = id;
@@ -143,9 +149,12 @@ void FieldDefinitionsTableModel::updateFieldDefinition(const int index, const QS
     fieldDefinition->defaultValue = defaultValue;
     fieldDefinition->description = description;
 
+    // Sort by display name.
+    std::sort(fieldDefinitions.begin(), fieldDefinitions.end(), lessThanFieldDefinitions);
+
     // Update view.
-    QModelIndex first = this->index(index, 0, QModelIndex());
-    QModelIndex last = this->index(index, 4, QModelIndex());
+    QModelIndex first = this->index(0, 0, QModelIndex());
+    QModelIndex last = this->index(fieldDefinitions.size() - 1, 4, QModelIndex());
 
     emit(dataChanged(first, last));
 }
