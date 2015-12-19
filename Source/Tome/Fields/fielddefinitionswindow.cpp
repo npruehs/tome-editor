@@ -18,6 +18,15 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(QSharedPointer<Tome::Project> pro
     this->viewModel = QSharedPointer<FieldDefinitionsTableModel>(model);
 
     this->ui->tableView->setModel(model);
+
+    // Listen for selection changes.
+    connect(
+      this->ui->tableView->selectionModel(),
+      SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+      SLOT(on_tableView_selectionChanged(const QItemSelection &, const QItemSelection &))
+     );
+
+    this->updateMenus();
 }
 
 FieldDefinitionsWindow::~FieldDefinitionsWindow()
@@ -48,7 +57,7 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
 
 void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
 {
-    int index = selectedFieldIndex();
+    int index = getSelectedFieldIndex();
 
     if (index < 0)
     {
@@ -87,7 +96,7 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
 
 void FieldDefinitionsWindow::on_actionDelete_Field_triggered()
 {
-    int index = selectedFieldIndex();
+    int index = getSelectedFieldIndex();
 
     if (index < 0)
     {
@@ -103,9 +112,23 @@ void FieldDefinitionsWindow::on_tableView_doubleClicked(const QModelIndex &index
     this->on_actionEdit_Field_triggered();
 }
 
-int FieldDefinitionsWindow::selectedFieldIndex() const
+void FieldDefinitionsWindow::on_tableView_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
+{
+    Q_UNUSED(selected);
+    Q_UNUSED(deselected);
+    this->updateMenus();
+}
+
+int FieldDefinitionsWindow::getSelectedFieldIndex() const
 {
     QModelIndexList selectedIndices = this->ui->tableView->selectionModel()->selectedRows();
     return selectedIndices.count() > 0 ? selectedIndices.first().row() : -1;
 }
 
+void FieldDefinitionsWindow::updateMenus()
+{
+    bool hasSelection = getSelectedFieldIndex() >= 0;
+
+    this->ui->actionEdit_Field->setEnabled(hasSelection);
+    this->ui->actionDelete_Field->setEnabled(hasSelection);
+}

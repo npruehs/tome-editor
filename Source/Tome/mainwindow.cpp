@@ -36,8 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->showMaximized();
 
     // Can't access some functionality until project created or loaded.
-    this->ui->actionSave_Project->setEnabled(false);
-    this->ui->actionField_Definions->setEnabled(false);
+    this->updateMenus();
 }
 
 MainWindow::~MainWindow()
@@ -369,8 +368,7 @@ void MainWindow::setProject(QSharedPointer<Project> project)
     this->project = project;
 
     // Enable project-specific buttons.
-    this->ui->actionSave_Project->setEnabled(true);
-    this->ui->actionField_Definions->setEnabled(true);
+    this->updateMenus();
 }
 
 void MainWindow::showWindow(QWidget* widget)
@@ -378,4 +376,12 @@ void MainWindow::showWindow(QWidget* widget)
     widget->show();
     widget->raise();
     widget->activateWindow();
+}
+
+void MainWindow::updateMenus()
+{
+    bool projectLoaded = this->project != 0;
+
+    this->ui->actionSave_Project->setEnabled(projectLoaded);
+    this->ui->actionField_Definions->setEnabled(projectLoaded);
 }

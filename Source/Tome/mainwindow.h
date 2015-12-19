@@ -46,6 +46,7 @@ class MainWindow : public QMainWindow
         void saveProject(QSharedPointer<Tome::Project> project);
         void setProject(QSharedPointer<Tome::Project> project);
         void showWindow(QWidget* widget);
+        void updateMenus();
 };
 
 #endif // MAINWINDOW_H
