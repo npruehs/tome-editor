@@ -80,14 +80,14 @@ void RecordSetSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedP
             // Read records.
             while (reader.isAtElement(ElementRecord))
             {
-                reader.readStartElement(ElementRecord);
-
                 // Add new record.
                 QSharedPointer<Record> record = QSharedPointer<Record>::create();
                 recordSet->records.push_back(record);
 
                 // Read record.
                 record->id = reader.readAttribute(ElementId);
+
+                reader.readStartElement(ElementRecord);
 
                 while (!reader.isAtElement(ElementRecord))
                 {
