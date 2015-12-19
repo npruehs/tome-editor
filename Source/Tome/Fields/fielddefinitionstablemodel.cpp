@@ -121,13 +121,13 @@ bool FieldDefinitionsTableModel::removeRows(int position, int rows, const QModel
 
 void FieldDefinitionsTableModel::addFieldDefinition(const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& description)
 {
-    int count = this->rowCount();
+    int index = this->rowCount();
 
     // Insert row at the end.
-    this->insertRows(count, 1, QModelIndex());
+    this->insertRows(index, 1, QModelIndex());
 
     // Update field definition.
-    this->updateFieldDefinition(count, id, displayName, fieldType, description);
+    this->updateFieldDefinition(index, id, displayName, fieldType, description);
 }
 
 void FieldDefinitionsTableModel::updateFieldDefinition(const int index, const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& description)
@@ -147,4 +147,10 @@ void FieldDefinitionsTableModel::updateFieldDefinition(const int index, const QS
     QModelIndex last = this->index(index, 4, QModelIndex());
 
     emit(dataChanged(first, last));
+}
+
+void FieldDefinitionsTableModel::removeFieldDefinition(const int index)
+{
+    // Remove row.
+    this->removeRows(index, 1, QModelIndex());
 }

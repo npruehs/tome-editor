@@ -26,6 +26,7 @@ namespace Tome
 
             void addFieldDefinition(const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& description);
             void updateFieldDefinition(const int index, const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& description);
+            void removeFieldDefinition(const int index);
 
         private:
             QSharedPointer<Tome::Project> project;

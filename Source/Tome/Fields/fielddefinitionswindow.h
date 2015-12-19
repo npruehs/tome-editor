@@ -25,6 +25,7 @@ class FieldDefinitionsWindow : public QMainWindow
     private slots:
         void on_actionNew_Field_triggered();
         void on_actionEdit_Field_triggered();
+        void on_actionDelete_Field_triggered();
 
         void on_tableView_doubleClicked(const QModelIndex &index);
 
@@ -35,6 +36,8 @@ class FieldDefinitionsWindow : public QMainWindow
 
         QSharedPointer<Tome::Project> project;
         QSharedPointer<Tome::FieldDefinitionsTableModel> viewModel;
+
+        int selectedFieldIndex() const;
 };
 
 #endif // FIELDDEFINITIONSWINDOW_H

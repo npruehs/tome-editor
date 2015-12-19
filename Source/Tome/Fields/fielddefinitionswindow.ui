@@ -63,6 +63,7 @@
     </property>
     <addaction name="actionNew_Field"/>
     <addaction name="actionEdit_Field"/>
+    <addaction name="actionDelete_Field"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
    </widget>
@@ -82,6 +83,11 @@
   <action name="actionEdit_Field">
    <property name="text">
     <string>Edit Field...</string>
+   </property>
+  </action>
+  <action name="actionDelete_Field">
+   <property name="text">
+    <string>Delete Field</string>
    </property>
   </action>
  </widget>

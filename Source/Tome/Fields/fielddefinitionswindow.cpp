@@ -48,19 +48,16 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
 
 void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
 {
-    // Get selected row.
-    QModelIndexList selectedIndices = this->ui->tableView->selectionModel()->selectedRows();
+    int index = selectedFieldIndex();
 
-    if (selectedIndices.size() == 0)
+    if (index < 0)
     {
         return;
     }
 
-    int row = selectedIndices.first().row();
-
     // Get selected field definition.
     QSharedPointer<FieldDefinition> fieldDefinition =
-            this->project->fieldDefinitionSets[0]->fieldDefinitions[row];
+            this->project->fieldDefinitionSets[0]->fieldDefinitions[index];
 
     // Show window.
     if (!this->fieldDefinitionWindow)
@@ -80,7 +77,7 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
     {
         // Update field.
         this->viewModel->updateFieldDefinition
-                (row,
+                (index,
                  this->fieldDefinitionWindow->getFieldId(),
                  this->fieldDefinitionWindow->getFieldDisplayName(),
                  this->fieldDefinitionWindow->getFieldType(),
@@ -88,8 +85,27 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
     }
 }
 
+void FieldDefinitionsWindow::on_actionDelete_Field_triggered()
+{
+    int index = selectedFieldIndex();
+
+    if (index < 0)
+    {
+        return;
+    }
+
+    this->viewModel->removeFieldDefinition(index);
+}
+
 void FieldDefinitionsWindow::on_tableView_doubleClicked(const QModelIndex &index)
 {
     Q_UNUSED(index);
     this->on_actionEdit_Field_triggered();
 }
+
+int FieldDefinitionsWindow::selectedFieldIndex() const
+{
+    QModelIndexList selectedIndices = this->ui->tableView->selectionModel()->selectedRows();
+    return selectedIndices.count() > 0 ? selectedIndices.first().row() : -1;
+}
+
