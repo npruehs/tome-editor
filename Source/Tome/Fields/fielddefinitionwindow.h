@@ -27,9 +27,6 @@ class FieldDefinitionWindow : public QDialog
     public slots:
         void accept();
 
-    protected:
-        void closeEvent(QCloseEvent *event);
-
     private slots:
         void on_comboBoxType_currentIndexChanged(const QString &arg1);
         void on_lineEditDisplayName_textEdited(const QString &arg1);

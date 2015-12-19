@@ -10,12 +10,14 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(QSharedPointer<Tome::Project> pro
     QMainWindow(parent),
     ui(new Ui::FieldDefinitionsWindow),
     fieldDefinitionWindow(0),
-    project(project),
-    viewModel(QSharedPointer<FieldDefinitionsTableModel>::create(project))
+    project(project)
 {
     ui->setupUi(this);
 
-    this->ui->tableView->setModel(this->viewModel.data());
+    FieldDefinitionsTableModel* model = new FieldDefinitionsTableModel(this, project);
+    this->viewModel = QSharedPointer<FieldDefinitionsTableModel>(model);
+
+    this->ui->tableView->setModel(model);
 }
 
 FieldDefinitionsWindow::~FieldDefinitionsWindow()
@@ -36,12 +38,10 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
     if (result == QDialog::Accepted)
     {
         // Add new field.
-        QSharedPointer<Tome::FieldDefinition> fieldDefinition = QSharedPointer<Tome::FieldDefinition>::create();
-        fieldDefinition->id = this->fieldDefinitionWindow->getFieldId();
-        fieldDefinition->displayName = this->fieldDefinitionWindow->getFieldDisplayName();
-        fieldDefinition->fieldType = this->fieldDefinitionWindow->getFieldType();
-        fieldDefinition->description = this->fieldDefinitionWindow->getFieldDescription();
-
-        this->project->fieldDefinitionSets[0]->fieldDefinitions.push_back(fieldDefinition);
+        this->viewModel->addFieldDefinition
+                (this->fieldDefinitionWindow->getFieldId(),
+                 this->fieldDefinitionWindow->getFieldDisplayName(),
+                 this->fieldDefinitionWindow->getFieldType(),
+                 this->fieldDefinitionWindow->getFieldDescription());
     }
 }

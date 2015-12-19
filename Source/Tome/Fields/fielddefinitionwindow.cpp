@@ -34,22 +34,9 @@ void FieldDefinitionWindow::accept()
     }
 }
 
-void FieldDefinitionWindow::closeEvent(QCloseEvent *event)
-{
-    // Validate data.
-    if (this->validate())
-    {
-        event->accept();
-    }
-    else
-    {
-        event->ignore();
-    }
-}
-
 QString FieldDefinitionWindow::getFieldDescription() const
 {
-    return this->ui->textEditDescription->toHtml();
+    return this->ui->plainTextEditDescription->toPlainText();
 }
 
 QString FieldDefinitionWindow::getFieldDisplayName() const
