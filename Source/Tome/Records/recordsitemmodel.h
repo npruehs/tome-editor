@@ -14,12 +14,14 @@ namespace Tome
 
             void addRecord(const QString& id, const QString& displayName);
             void updateRecord(const QString& displayName, const QString& newId, const QString& newDisplayName);
+            void removeRecord(const QString& displayName);
 
         private:
             QSharedPointer<Tome::Project> project;
 
             void insertItem(const QString& text);
             void updateItem(const QString& oldText, const QString& newText);
+            void removeItem(const QString& text);
     };
 }
 #endif // RECORDSITEMMODEL_H

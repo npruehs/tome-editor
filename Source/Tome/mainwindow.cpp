@@ -292,6 +292,18 @@ void MainWindow::on_actionEdit_Record_triggered()
     }
 }
 
+void MainWindow::on_actionRemove_Record_triggered()
+{
+    const QString& displayName = getSelectedRecordDisplayName();
+
+    if (displayName.isEmpty())
+    {
+        return;
+    }
+
+    this->recordsViewModel->removeRecord(displayName);
+}
+
 void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
 {
     this->on_actionEdit_Record_triggered();

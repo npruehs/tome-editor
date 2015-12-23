@@ -71,6 +71,7 @@
     </property>
     <addaction name="actionNew_Record"/>
     <addaction name="actionEdit_Record"/>
+    <addaction name="actionRemove_Record"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuRecords"/>
@@ -124,6 +125,11 @@
   <action name="actionEdit_Record">
    <property name="text">
     <string>Edit Record...</string>
+   </property>
+  </action>
+  <action name="actionRemove_Record">
+   <property name="text">
+    <string>Remove Record</string>
    </property>
   </action>
  </widget>

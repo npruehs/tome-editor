@@ -62,6 +62,22 @@ void RecordsItemModel::updateRecord(const QString& displayName, const QString& n
     this->updateItem(displayName, newDisplayName);
 }
 
+void RecordsItemModel::removeRecord(const QString& displayName)
+{
+    // Remove record.
+    QSharedPointer<Record> record = this->project->getRecordByDisplayName(displayName);
+
+    if (record == 0)
+    {
+        return;
+    }
+
+    this->project->recordSets[0]->records.removeOne(record);
+
+    // Update tree view.
+    this->removeItem(displayName);
+}
+
 void RecordsItemModel::insertItem(const QString& text)
 {
     QStandardItem* rootItem = this->invisibleRootItem();
@@ -79,5 +95,21 @@ void RecordsItemModel::updateItem(const QString& oldText, const QString& newText
     {
         QStandardItem* item = *it;
         item->setText(newText);
+        return;
+    }
+}
+
+void RecordsItemModel::removeItem(const QString& text)
+{
+    QList<QStandardItem*> items = this->findItems(text);
+
+    for (QList<QStandardItem*>::iterator it = items.begin();
+         it != items.end();
+         ++it)
+    {
+        QStandardItem* item = *it;
+        QModelIndex index = this->indexFromItem(item);
+        this->removeRow(index.row());
+        return;
     }
 }

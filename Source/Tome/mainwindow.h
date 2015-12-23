@@ -34,6 +34,7 @@ class MainWindow : public QMainWindow
 
         void on_actionNew_Record_triggered();
         void on_actionEdit_Record_triggered();
+        void on_actionRemove_Record_triggered();
 
         void on_treeView_doubleClicked(const QModelIndex &index);
 
