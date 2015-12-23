@@ -26,7 +26,6 @@ class RecordWindow : public QDialog
 
     private slots:
         void on_lineEditDisplayName_textEdited(const QString &arg1);
-        void on_buttonBox_accepted();
 
     private:
         Ui::RecordWindow *ui;

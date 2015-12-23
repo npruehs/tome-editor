@@ -306,6 +306,7 @@ void MainWindow::on_actionRemove_Record_triggered()
 
 void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
 {
+    Q_UNUSED(index);
     this->on_actionEdit_Record_triggered();
 }
 
