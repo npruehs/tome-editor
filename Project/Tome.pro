@@ -52,7 +52,6 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Values/valueconverter.h \
     ../Source/Tome/Util/pathutils.h \
     ../Source/Tome/IO/xmlreader.h \
-    ../Source/Tome/Util/stringutils.h \
     ../Source/Tome/Fields/fielddefinitionstablemodel.h \
     ../Source/Tome/Fields/fielddefinitionwindow.h \
     ../Source/Tome/Fields/fielddefinitionswindow.h \

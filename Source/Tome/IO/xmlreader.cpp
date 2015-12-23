@@ -2,10 +2,6 @@
 
 #include <stdexcept>
 
-#include "../Util/stringutils.h"
-
-using namespace Tome;
-
 
 XmlReader::XmlReader(QSharedPointer<QXmlStreamReader> reader)
 {
@@ -21,7 +17,7 @@ QString XmlReader::getElementName() const
 
 bool XmlReader::isAtElement(const QString& elementName) const
 {
-    return equals(this->getElementName(), elementName);
+    return this->getElementName() == elementName;
 }
 
 QString XmlReader::readAttribute(const QString& attributeName)

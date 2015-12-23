@@ -1,7 +1,5 @@
 #include "valueconverter.h"
 
-#include "../Util/stringutils.h"
-
 using namespace Tome;
 
 
@@ -43,31 +41,31 @@ QString ValueConverter::FieldTypeToString(const FieldType::FieldType& fieldType)
 
 FieldType::FieldType ValueConverter::StringToFieldType(const QString& s) const
 {
-    if (equals(s, "Boolean"))
+    if (s == "Boolean")
     {
         return FieldType::Boolean;
     }
-    if (equals(s, "Color"))
+    if (s == "Color")
     {
         return FieldType::Color;
     }
-    if (equals(s, "Float"))
+    if (s == "Float")
     {
         return FieldType::Float;
     }
-    if (equals(s, "Int"))
+    if (s == "Int")
     {
         return FieldType::Int;
     }
-    if (equals(s, "Reference"))
+    if (s == "Reference")
     {
         return FieldType::Reference;
     }
-    if (equals(s, "String"))
+    if (s == "String")
     {
         return FieldType::String;
     }
-    if (equals(s, "Vector3F"))
+    if (s == "Vector3F")
     {
         return FieldType::Vector3F;
     }
