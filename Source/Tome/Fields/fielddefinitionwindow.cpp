@@ -139,7 +139,7 @@ void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &f
 
 void FieldDefinitionWindow::on_lineEditDisplayName_textEdited(const QString &displayName)
 {
-    this->ui->lineEditId->setText(displayName);
+    this->setFieldId(displayName);
 }
 
 bool FieldDefinitionWindow::validate()

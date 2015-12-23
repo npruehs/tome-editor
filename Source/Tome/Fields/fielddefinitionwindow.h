@@ -35,8 +35,8 @@ class FieldDefinitionWindow : public QDialog
         void accept();
 
     private slots:
-        void on_comboBoxType_currentIndexChanged(const QString &arg1);
-        void on_lineEditDisplayName_textEdited(const QString &arg1);
+        void on_comboBoxType_currentIndexChanged(const QString &fieldType);
+        void on_lineEditDisplayName_textEdited(const QString &displayName);
 
     private:
         Ui::FieldDefinitionWindow *ui;

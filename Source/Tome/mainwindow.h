@@ -8,6 +8,7 @@
 #include "Projects/newprojectwindow.h"
 #include "Projects/project.h"
 #include "Records/recordsitemmodel.h"
+#include "Records/recordwindow.h"
 #include "Help/aboutwindow.h"
 
 namespace Ui {
@@ -26,9 +27,12 @@ class MainWindow : public QMainWindow
         void on_actionAbout_triggered();
         void on_actionExit_triggered();
         void on_actionField_Definions_triggered();
+
         void on_actionNew_Project_triggered();
         void on_actionOpen_Project_triggered();
         void on_actionSave_Project_triggered();
+
+        void on_actionNew_Record_triggered();
 
     private:
         static const QString FieldDefinitionFileExtension;
@@ -42,6 +46,7 @@ class MainWindow : public QMainWindow
         AboutWindow *aboutWindow;
         FieldDefinitionsWindow* fieldDefinitionsWindow;
         NewProjectWindow *newProjectWindow;
+        RecordWindow* recordWindow;
 
         QSharedPointer<Tome::RecordsItemModel> recordsViewModel;
 

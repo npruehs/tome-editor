@@ -28,7 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     aboutWindow(0),
     fieldDefinitionsWindow(0),
-    newProjectWindow(0)
+    newProjectWindow(0),
+    recordWindow(0)
 {
     ui->setupUi(this);
 
@@ -80,8 +81,8 @@ void MainWindow::on_actionNew_Project_triggered()
 
     if (result == QDialog::Accepted)
     {
-        const QString projectName = this->newProjectWindow->getProjectName();
-        const QString projectPath = this->newProjectWindow->getProjectPath();
+        const QString& projectName = this->newProjectWindow->getProjectName();
+        const QString& projectPath = this->newProjectWindow->getProjectPath();
 
         this->createNewProject(projectName, projectPath);
     }
@@ -90,7 +91,7 @@ void MainWindow::on_actionNew_Project_triggered()
 void MainWindow::on_actionOpen_Project_triggered()
 {
     // Open file browser dialog.
-    const QString projectFileName = QFileDialog::getOpenFileName(this,
+    const QString& projectFileName = QFileDialog::getOpenFileName(this,
                                                           tr("Open Project"),
                                                           QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
                                                           "Tome Project Files (*.tproj)");
@@ -232,6 +233,24 @@ void MainWindow::on_actionOpen_Project_triggered()
 void MainWindow::on_actionSave_Project_triggered()
 {
     this->saveProject(this->project);
+}
+
+void MainWindow::on_actionNew_Record_triggered()
+{
+    if (!this->recordWindow)
+    {
+        this->recordWindow = new RecordWindow(this);
+    }
+
+    int result = this->recordWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        // Add new record.
+        this->recordsViewModel->addRecord(
+                this->recordWindow->getRecordId(),
+                this->recordWindow->getRecordDisplayName());
+    }
 }
 
 void MainWindow::createNewProject(const QString &projectName, const QString &projectPath)
@@ -376,4 +395,5 @@ void MainWindow::updateMenus()
 
     this->ui->actionSave_Project->setEnabled(projectLoaded);
     this->ui->actionField_Definions->setEnabled(projectLoaded);
+    this->ui->actionNew_Record->setEnabled(projectLoaded);
 }

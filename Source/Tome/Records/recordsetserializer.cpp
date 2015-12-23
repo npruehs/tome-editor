@@ -7,6 +7,7 @@
 using namespace Tome;
 
 
+const QString RecordSetSerializer::ElementDisplayName = "DisplayName";
 const QString RecordSetSerializer::ElementId = "Id";
 const QString RecordSetSerializer::ElementRecord = "Record";
 const QString RecordSetSerializer::ElementRecords = "Records";
@@ -42,6 +43,7 @@ void RecordSetSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoi
                 {
                     // Write record.
                     stream.writeAttribute(ElementId, record->id);
+                    stream.writeAttribute(ElementDisplayName, record->displayName);
 
                     for (std::map<QString, QString>::iterator it = record->fieldValues.begin();
                          it != record->fieldValues.end();
@@ -86,6 +88,7 @@ void RecordSetSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedP
 
                 // Read record.
                 record->id = reader.readAttribute(ElementId);
+                record->displayName = reader.readAttribute(ElementDisplayName);
 
                 reader.readStartElement(ElementRecord);
 

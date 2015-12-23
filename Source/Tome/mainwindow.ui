@@ -62,7 +62,14 @@
     </property>
     <addaction name="actionField_Definions"/>
    </widget>
+   <widget class="QMenu" name="menuRecords">
+    <property name="title">
+     <string>Records</string>
+    </property>
+    <addaction name="actionNew_Record"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuRecords"/>
    <addaction name="menuFields"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -103,6 +110,11 @@
   <action name="actionField_Definions">
    <property name="text">
     <string>Field Definions...</string>
+   </property>
+  </action>
+  <action name="actionNew_Record">
+   <property name="text">
+    <string>New Record...</string>
    </property>
   </action>
  </widget>

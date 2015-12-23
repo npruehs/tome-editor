@@ -28,6 +28,7 @@ namespace Tome
             void deserialize(QSharedPointer<QIODevice> device, QSharedPointer<RecordSet> recordSet) const;
 
         private:
+            static const QString ElementDisplayName;
             static const QString ElementId;
             static const QString ElementRecord;
             static const QString ElementRecords;

@@ -11,6 +11,7 @@ namespace Tome
         public:
             Record();
 
+            QString displayName;
             QString id;
             std::map<QString, QString> fieldValues;
     };

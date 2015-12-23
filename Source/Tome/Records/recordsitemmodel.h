@@ -12,10 +12,12 @@ namespace Tome
         public:
             RecordsItemModel(QSharedPointer<Tome::Project> project);
 
-            void addRecord(const QString& id);
+            void addRecord(const QString& id, const QString& displayName);
 
         private:
             QSharedPointer<Tome::Project> project;
+
+            void insertItem(const QString& text);
     };
 }
 #endif // RECORDSITEMMODEL_H

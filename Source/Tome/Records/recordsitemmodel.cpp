@@ -2,6 +2,13 @@
 
 using namespace Tome;
 
+
+bool lessThanRecords(const QSharedPointer<Record> e1, const QSharedPointer<Record> e2)
+{
+    return e1->displayName.toLower() < e2->displayName.toLower();
+}
+
+
 RecordsItemModel::RecordsItemModel(QSharedPointer<Tome::Project> project)
     : QStandardItemModel(),
       project(project)
@@ -13,13 +20,30 @@ RecordsItemModel::RecordsItemModel(QSharedPointer<Tome::Project> project)
          ++it)
     {
         QSharedPointer<Record> record = *it;
-        this->addRecord(record->id);
+        this->insertItem(record->displayName);
     }
 }
 
-void RecordsItemModel::addRecord(const QString& id)
+void RecordsItemModel::addRecord(const QString& id, const QString& displayName)
 {
-    // Insert item at the end.
+    // Add record.
+    QSharedPointer<Record> record = QSharedPointer<Record>::create();
+    record->id = id;
+    record->displayName = displayName;
+
+    QVector<QSharedPointer<Record> >& records = this->project->recordSets[0]->records;
+    records.push_back(record);
+
+    // Sort by display name.
+    std::sort(records.begin(), records.end(), lessThanRecords);
+
+    // Insert tree view item.
+    this->insertItem(displayName);
+}
+
+void RecordsItemModel::insertItem(const QString& text)
+{
     QStandardItem* rootItem = this->invisibleRootItem();
-    rootItem->appendRow(new QStandardItem(id));
+    rootItem->appendRow(new QStandardItem(text));
+    rootItem->sortChildren(0);
 }
