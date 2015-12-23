@@ -124,8 +124,8 @@ void FieldDefinitionsWindow::on_tableView_selectionChanged(const QItemSelection&
 
 int FieldDefinitionsWindow::getSelectedFieldIndex() const
 {
-    QModelIndexList selectedIndices = this->ui->tableView->selectionModel()->selectedRows();
-    return selectedIndices.count() > 0 ? selectedIndices.first().row() : -1;
+    QModelIndexList selectedIndexes = this->ui->tableView->selectionModel()->selectedRows();
+    return selectedIndexes.count() > 0 ? selectedIndexes.first().row() : -1;
 }
 
 void FieldDefinitionsWindow::updateMenus()

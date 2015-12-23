@@ -253,6 +253,50 @@ void MainWindow::on_actionNew_Record_triggered()
     }
 }
 
+void MainWindow::on_actionEdit_Record_triggered()
+{
+    const QString& displayName = getSelectedRecordDisplayName();
+
+    if (displayName.isEmpty())
+    {
+        return;
+    }
+
+    // Get selected record.
+    QSharedPointer<Record> record = this->project->getRecordByDisplayName(displayName);
+
+    if (record == 0)
+    {
+        return;
+    }
+
+    // Show window.
+    if (!this->recordWindow)
+    {
+        this->recordWindow = new RecordWindow(this);
+    }
+
+    // Update view.
+    this->recordWindow->setRecordId(record->id);
+    this->recordWindow->setRecordDisplayName(record->displayName);
+
+    int result = this->recordWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        // Update record.
+        this->recordsViewModel->updateRecord
+                (displayName,
+                 this->recordWindow->getRecordId(),
+                 this->recordWindow->getRecordDisplayName());
+    }
+}
+
+void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
+{
+    this->on_actionEdit_Record_triggered();
+}
+
 void MainWindow::createNewProject(const QString &projectName, const QString &projectPath)
 {
     // Create new project.
@@ -277,6 +321,18 @@ void MainWindow::createNewProject(const QString &projectName, const QString &pro
 
     // Set project reference.
     this->setProject(newProject);
+}
+
+QString MainWindow::getSelectedRecordDisplayName() const
+{
+    QModelIndex currentIndex = this->ui->treeView->selectionModel()->currentIndex();
+
+    if (!currentIndex.isValid())
+    {
+        return QString();
+    }
+
+    return currentIndex.data(Qt::DisplayRole).toString();
 }
 
 void MainWindow::saveProject(QSharedPointer<Project> project)
@@ -396,4 +452,5 @@ void MainWindow::updateMenus()
     this->ui->actionSave_Project->setEnabled(projectLoaded);
     this->ui->actionField_Definions->setEnabled(projectLoaded);
     this->ui->actionNew_Record->setEnabled(projectLoaded);
+    this->ui->actionEdit_Record->setEnabled(projectLoaded);
 }

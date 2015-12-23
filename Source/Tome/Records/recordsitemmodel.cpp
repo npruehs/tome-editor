@@ -41,9 +41,43 @@ void RecordsItemModel::addRecord(const QString& id, const QString& displayName)
     this->insertItem(displayName);
 }
 
+void RecordsItemModel::updateRecord(const QString& displayName, const QString& newId, const QString& newDisplayName)
+{
+    // Update record.
+    QSharedPointer<Record> record = this->project->getRecordByDisplayName(displayName);
+
+    if (record == 0)
+    {
+        return;
+    }
+
+    record->id = newId;
+    record->displayName = newDisplayName;
+
+    // Sort by display name.
+    QVector<QSharedPointer<Record> >& records = this->project->recordSets[0]->records;
+    std::sort(records.begin(), records.end(), lessThanRecords);
+
+    // Update tree view.
+    this->updateItem(displayName, newDisplayName);
+}
+
 void RecordsItemModel::insertItem(const QString& text)
 {
     QStandardItem* rootItem = this->invisibleRootItem();
     rootItem->appendRow(new QStandardItem(text));
     rootItem->sortChildren(0);
+}
+
+void RecordsItemModel::updateItem(const QString& oldText, const QString& newText)
+{
+    QList<QStandardItem*> items = this->findItems(oldText);
+
+    for (QList<QStandardItem*>::iterator it = items.begin();
+         it != items.end();
+         ++it)
+    {
+        QStandardItem* item = *it;
+        item->setText(newText);
+    }
 }

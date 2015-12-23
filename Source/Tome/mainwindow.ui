@@ -21,6 +21,9 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="QTreeView" name="treeView">
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
        <property name="headerHidden">
         <bool>true</bool>
        </property>
@@ -67,6 +70,7 @@
      <string>Records</string>
     </property>
     <addaction name="actionNew_Record"/>
+    <addaction name="actionEdit_Record"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuRecords"/>
@@ -115,6 +119,11 @@
   <action name="actionNew_Record">
    <property name="text">
     <string>New Record...</string>
+   </property>
+  </action>
+  <action name="actionEdit_Record">
+   <property name="text">
+    <string>Edit Record...</string>
    </property>
   </action>
  </widget>

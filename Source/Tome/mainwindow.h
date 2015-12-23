@@ -33,6 +33,9 @@ class MainWindow : public QMainWindow
         void on_actionSave_Project_triggered();
 
         void on_actionNew_Record_triggered();
+        void on_actionEdit_Record_triggered();
+
+        void on_treeView_doubleClicked(const QModelIndex &index);
 
     private:
         static const QString FieldDefinitionFileExtension;
@@ -51,6 +54,7 @@ class MainWindow : public QMainWindow
         QSharedPointer<Tome::RecordsItemModel> recordsViewModel;
 
         void createNewProject(const QString& name, const QString& path);
+        QString getSelectedRecordDisplayName() const;
         void saveProject(QSharedPointer<Tome::Project> project);
         void setProject(QSharedPointer<Tome::Project> project);
         void showWindow(QWidget* widget);
