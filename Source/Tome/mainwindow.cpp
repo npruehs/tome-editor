@@ -354,6 +354,13 @@ void MainWindow::setProject(QSharedPointer<Project> project)
 
     // Enable project-specific buttons.
     this->updateMenus();
+
+    // Setup tree view.
+    RecordsItemModel* recordsViewModel = new RecordsItemModel(project);
+    this->recordsViewModel = QSharedPointer<RecordsItemModel>(recordsViewModel);
+
+    this->ui->treeView->setModel(recordsViewModel);
+    this->ui->treeView->expandAll();
 }
 
 void MainWindow::showWindow(QWidget* widget)

@@ -7,6 +7,7 @@
 #include "Fields/fielddefinitionswindow.h"
 #include "Projects/newprojectwindow.h"
 #include "Projects/project.h"
+#include "Records/recordsitemmodel.h"
 #include "Help/aboutwindow.h"
 
 namespace Ui {
@@ -41,6 +42,8 @@ class MainWindow : public QMainWindow
         AboutWindow *aboutWindow;
         FieldDefinitionsWindow* fieldDefinitionsWindow;
         NewProjectWindow *newProjectWindow;
+
+        QSharedPointer<Tome::RecordsItemModel> recordsViewModel;
 
         void createNewProject(const QString& name, const QString& path);
         void saveProject(QSharedPointer<Tome::Project> project);

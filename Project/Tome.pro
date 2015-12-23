@@ -33,7 +33,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/IO/xmlreader.cpp \
     ../Source/Tome/Fields/fielddefinitionstablemodel.cpp \
     ../Source/Tome/Fields/fielddefinitionwindow.cpp \
-    ../Source/Tome/Fields/fielddefinitionswindow.cpp
+    ../Source/Tome/Fields/fielddefinitionswindow.cpp \
+    ../Source/Tome/Records/recordsitemmodel.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/fieldtype.h \
@@ -53,7 +54,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Util/stringutils.h \
     ../Source/Tome/Fields/fielddefinitionstablemodel.h \
     ../Source/Tome/Fields/fielddefinitionwindow.h \
-    ../Source/Tome/Fields/fielddefinitionswindow.h
+    ../Source/Tome/Fields/fielddefinitionswindow.h \
+    ../Source/Tome/Records/recordsitemmodel.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \
