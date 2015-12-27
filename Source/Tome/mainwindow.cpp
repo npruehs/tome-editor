@@ -242,14 +242,52 @@ void MainWindow::on_actionNew_Record_triggered()
         this->recordWindow = new RecordWindow(this);
     }
 
+    // Add fields.
+    this->recordWindow->clearRecordFields();
+
+    for (QVector<QSharedPointer<FieldDefinitionSet> >::iterator itFieldDefinitionSet = this->project->fieldDefinitionSets.begin();
+         itFieldDefinitionSet != this->project->fieldDefinitionSets.end();
+         ++itFieldDefinitionSet)
+    {
+        QSharedPointer<FieldDefinitionSet> fieldDefinitionSet = *itFieldDefinitionSet;
+
+        for (QVector<QSharedPointer<FieldDefinition> >::iterator itFieldDefinition = fieldDefinitionSet->fieldDefinitions.begin();
+             itFieldDefinition != fieldDefinitionSet->fieldDefinitions.end();
+             ++itFieldDefinition)
+        {
+            QSharedPointer<FieldDefinition> fieldDefinition = *itFieldDefinition;
+            this->recordWindow->setRecordField(fieldDefinition->id, false);
+        }
+    }
+
     int result = this->recordWindow->exec();
 
     if (result == QDialog::Accepted)
     {
         // Add new record.
+        const QString& recordId = this->recordWindow->getRecordId();
+        const QString& recordDisplayName = this->recordWindow->getRecordDisplayName();
+
         this->recordsViewModel->addRecord(
-                this->recordWindow->getRecordId(),
-                this->recordWindow->getRecordDisplayName());
+                recordId,
+                recordDisplayName);
+
+        // Add record fields.
+        const QMap<QString, bool> recordFields = this->recordWindow->getRecordFields();
+
+        for (QMap<QString, bool>::const_iterator it = recordFields.begin();
+             it != recordFields.end();
+             ++it)
+        {
+            const QString& fieldId = it.key();
+            const bool fieldEnabled = it.value();
+
+            if (fieldEnabled)
+            {
+                QSharedPointer<FieldDefinition> field = this->project->getFieldDefinition(fieldId);
+                this->recordsViewModel->addRecordField(recordId, fieldId, field->defaultValue);
+            }
+        }
     }
 }
 
@@ -280,15 +318,63 @@ void MainWindow::on_actionEdit_Record_triggered()
     this->recordWindow->setRecordId(record->id);
     this->recordWindow->setRecordDisplayName(record->displayName);
 
+    this->recordWindow->clearRecordFields();
+
+    for (QVector<QSharedPointer<FieldDefinitionSet> >::iterator itFieldDefinitionSet = this->project->fieldDefinitionSets.begin();
+         itFieldDefinitionSet != this->project->fieldDefinitionSets.end();
+         ++itFieldDefinitionSet)
+    {
+        QSharedPointer<FieldDefinitionSet> fieldDefinitionSet = *itFieldDefinitionSet;
+
+        for (QVector<QSharedPointer<FieldDefinition> >::iterator itFieldDefinition = fieldDefinitionSet->fieldDefinitions.begin();
+             itFieldDefinition != fieldDefinitionSet->fieldDefinitions.end();
+             ++itFieldDefinition)
+        {
+            QSharedPointer<FieldDefinition> fieldDefinition = *itFieldDefinition;
+
+            // Check if record contains field.
+            bool fieldEnabled = record->fieldValues.contains(fieldDefinition->id);
+
+            // Add to view.
+            this->recordWindow->setRecordField(fieldDefinition->id, fieldEnabled);
+        }
+    }
+
     int result = this->recordWindow->exec();
 
     if (result == QDialog::Accepted)
     {
+        const QString recordId = this->recordWindow->getRecordId();
+        const QString recordDisplayName = this->recordWindow->getRecordDisplayName();
+
         // Update record.
         this->recordsViewModel->updateRecord
-                (displayName,
-                 this->recordWindow->getRecordId(),
-                 this->recordWindow->getRecordDisplayName());
+                (record->id,
+                 recordId,
+                 recordDisplayName);
+
+        // Update record fields.
+        const QMap<QString, bool> recordFields = this->recordWindow->getRecordFields();
+
+        for (QMap<QString, bool>::const_iterator it = recordFields.begin();
+             it != recordFields.end();
+             ++it)
+        {
+            const QString& fieldId = it.key();
+
+            const bool fieldWasEnabled = record->fieldValues.contains(fieldId);
+            const bool fieldIsEnabled = it.value();
+
+            if (fieldIsEnabled && !fieldWasEnabled)
+            {
+                QSharedPointer<FieldDefinition> field = this->project->getFieldDefinition(fieldId);
+                this->recordsViewModel->addRecordField(recordId, fieldId, field->defaultValue);
+            }
+            else if (fieldWasEnabled && !fieldIsEnabled)
+            {
+                this->recordsViewModel->removeRecordField(recordId, fieldId);
+            }
+        }
     }
 }
 
@@ -466,4 +552,5 @@ void MainWindow::updateMenus()
     this->ui->actionField_Definions->setEnabled(projectLoaded);
     this->ui->actionNew_Record->setEnabled(projectLoaded);
     this->ui->actionEdit_Record->setEnabled(projectLoaded);
+    this->ui->actionRemove_Record->setEnabled(projectLoaded);
 }

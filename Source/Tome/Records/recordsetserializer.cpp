@@ -45,12 +45,12 @@ void RecordSetSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoi
                     stream.writeAttribute(ElementId, record->id);
                     stream.writeAttribute(ElementDisplayName, record->displayName);
 
-                    for (std::map<QString, QString>::iterator it = record->fieldValues.begin();
+                    for (QMap<QString, QString>::iterator it = record->fieldValues.begin();
                          it != record->fieldValues.end();
                          ++it)
                     {
-                        stream.writeStartElement(it->first);
-                        stream.writeAttribute(ElementValue, it->second);
+                        stream.writeStartElement(it.key());
+                        stream.writeAttribute(ElementValue, it.value());
                         stream.writeEndElement();
                     }
                 }

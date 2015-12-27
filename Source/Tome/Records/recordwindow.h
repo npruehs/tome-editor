@@ -17,9 +17,13 @@ class RecordWindow : public QDialog
 
         QString getRecordDisplayName() const;
         QString getRecordId() const;
+        QMap<QString, bool> getRecordFields() const;
+
+        void clearRecordFields();
 
         void setRecordDisplayName(const QString& displayName);
         void setRecordId(const QString& id);
+        void setRecordField(const QString& fieldId, const bool enabled);
 
     public slots:
         void accept();

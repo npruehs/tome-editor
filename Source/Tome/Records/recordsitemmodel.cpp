@@ -78,6 +78,30 @@ void RecordsItemModel::removeRecord(const QString& displayName)
     this->removeItem(displayName);
 }
 
+void RecordsItemModel::addRecordField(const QString& recordId, const QString& id, const QString& value)
+{
+    QSharedPointer<Record> record = this->project->getRecord(recordId);
+
+    if (record == 0)
+    {
+        return;
+    }
+
+    record->fieldValues.insert(id, value);
+}
+
+void RecordsItemModel::removeRecordField(const QString& recordId, const QString& id)
+{
+    QSharedPointer<Record> record = this->project->getRecord(recordId);
+
+    if (record == 0)
+    {
+        return;
+    }
+
+    record->fieldValues.remove(id);
+}
+
 void RecordsItemModel::insertItem(const QString& text)
 {
     QStandardItem* rootItem = this->invisibleRootItem();

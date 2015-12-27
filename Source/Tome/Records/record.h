@@ -1,8 +1,9 @@
 #ifndef RECORD_H
 #define RECORD_H
 
+#include <QMap>
 #include <QString>
-#include <map>
+
 
 namespace Tome
 {
@@ -13,7 +14,7 @@ namespace Tome
 
             QString displayName;
             QString id;
-            std::map<QString, QString> fieldValues;
+            QMap<QString, QString> fieldValues;
     };
 }
 
