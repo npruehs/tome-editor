@@ -19,7 +19,7 @@ FieldDefinitionsTableModel::FieldDefinitionsTableModel(QObject *parent, QSharedP
 
 int FieldDefinitionsTableModel::rowCount(const QModelIndex& parent) const
 {
-    Q_UNUSED(parent);
+   Q_UNUSED(parent);
    return this->project->fieldDefinitionSets[0]->fieldDefinitions.size();
 }
 
@@ -37,7 +37,7 @@ QVariant FieldDefinitionsTableModel::data(const QModelIndex& index, int role) co
         return QVariant();
     }
 
-    if (index.row() >= this->project->fieldDefinitionSets[0]->fieldDefinitions.size())
+    if (index.row() >= this->rowCount())
     {
         return QVariant();
     }

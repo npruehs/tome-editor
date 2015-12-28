@@ -35,7 +35,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Fields/fielddefinitionwindow.cpp \
     ../Source/Tome/Fields/fielddefinitionswindow.cpp \
     ../Source/Tome/Records/recordsitemmodel.cpp \
-    ../Source/Tome/Records/recordwindow.cpp
+    ../Source/Tome/Records/recordwindow.cpp \
+    ../Source/Tome/Records/recordtablemodel.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/fieldtype.h \
@@ -56,7 +57,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/fielddefinitionwindow.h \
     ../Source/Tome/Fields/fielddefinitionswindow.h \
     ../Source/Tome/Records/recordsitemmodel.h \
-    ../Source/Tome/Records/recordwindow.h
+    ../Source/Tome/Records/recordwindow.h \
+    ../Source/Tome/Records/recordtablemodel.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \

@@ -16,8 +16,7 @@ namespace Tome
             void updateRecord(const QString& displayName, const QString& newId, const QString& newDisplayName);
             void removeRecord(const QString& displayName);
 
-            void addRecordField(const QString& recordId, const QString& id, const QString& value);
-            void removeRecordField(const QString& recordId, const QString& id);
+            QStandardItem* findItem(const QString& text);
 
         private:
             QSharedPointer<Tome::Project> project;

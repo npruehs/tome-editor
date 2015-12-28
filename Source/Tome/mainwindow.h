@@ -8,6 +8,7 @@
 #include "Projects/newprojectwindow.h"
 #include "Projects/project.h"
 #include "Records/recordsitemmodel.h"
+#include "Records/recordtablemodel.h"
 #include "Records/recordwindow.h"
 #include "Help/aboutwindow.h"
 
@@ -37,6 +38,7 @@ class MainWindow : public QMainWindow
         void on_actionRemove_Record_triggered();
 
         void on_treeView_doubleClicked(const QModelIndex &index);
+        void on_treeView_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
     private:
         static const QString FieldDefinitionFileExtension;
@@ -53,6 +55,7 @@ class MainWindow : public QMainWindow
         RecordWindow* recordWindow;
 
         QSharedPointer<Tome::RecordsItemModel> recordsViewModel;
+        QSharedPointer<Tome::RecordTableModel> recordViewModel;
 
         void createNewProject(const QString& name, const QString& path);
         QString getSelectedRecordDisplayName() const;

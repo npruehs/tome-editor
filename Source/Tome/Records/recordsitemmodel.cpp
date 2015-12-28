@@ -78,28 +78,10 @@ void RecordsItemModel::removeRecord(const QString& displayName)
     this->removeItem(displayName);
 }
 
-void RecordsItemModel::addRecordField(const QString& recordId, const QString& id, const QString& value)
+QStandardItem* RecordsItemModel::findItem(const QString& text)
 {
-    QSharedPointer<Record> record = this->project->getRecord(recordId);
-
-    if (record == 0)
-    {
-        return;
-    }
-
-    record->fieldValues.insert(id, value);
-}
-
-void RecordsItemModel::removeRecordField(const QString& recordId, const QString& id)
-{
-    QSharedPointer<Record> record = this->project->getRecord(recordId);
-
-    if (record == 0)
-    {
-        return;
-    }
-
-    record->fieldValues.remove(id);
+    QList<QStandardItem*> items = this->findItems(text);
+    return items.first();
 }
 
 void RecordsItemModel::insertItem(const QString& text)
@@ -111,29 +93,13 @@ void RecordsItemModel::insertItem(const QString& text)
 
 void RecordsItemModel::updateItem(const QString& oldText, const QString& newText)
 {
-    QList<QStandardItem*> items = this->findItems(oldText);
-
-    for (QList<QStandardItem*>::iterator it = items.begin();
-         it != items.end();
-         ++it)
-    {
-        QStandardItem* item = *it;
-        item->setText(newText);
-        return;
-    }
+    QStandardItem* item = this->findItem(oldText);
+    item->setText(newText);
 }
 
 void RecordsItemModel::removeItem(const QString& text)
 {
-    QList<QStandardItem*> items = this->findItems(text);
-
-    for (QList<QStandardItem*>::iterator it = items.begin();
-         it != items.end();
-         ++it)
-    {
-        QStandardItem* item = *it;
-        QModelIndex index = this->indexFromItem(item);
-        this->removeRow(index.row());
-        return;
-    }
+    QStandardItem* item = this->findItem(text);
+    QModelIndex index = this->indexFromItem(item);
+    this->removeRow(index.row());
 }

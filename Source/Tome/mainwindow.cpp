@@ -38,6 +38,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Can't access some functionality until project created or loaded.
     this->updateMenus();
+
+    // Setup record field table model.
+    RecordTableModel* model = new RecordTableModel(this);
+    this->recordViewModel = QSharedPointer<RecordTableModel>(model);
+    this->ui->tableView->setModel(model);
 }
 
 MainWindow::~MainWindow()
@@ -272,6 +277,11 @@ void MainWindow::on_actionNew_Record_triggered()
                 recordId,
                 recordDisplayName);
 
+        // Select new record.
+        const QStandardItem* recordItem = this->recordsViewModel->findItem(recordDisplayName);
+        const QModelIndex index = this->recordsViewModel->indexFromItem(recordItem);
+        this->ui->treeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
+
         // Add record fields.
         const QMap<QString, bool> recordFields = this->recordWindow->getRecordFields();
 
@@ -285,7 +295,7 @@ void MainWindow::on_actionNew_Record_triggered()
             if (fieldEnabled)
             {
                 QSharedPointer<FieldDefinition> field = this->project->getFieldDefinition(fieldId);
-                this->recordsViewModel->addRecordField(recordId, fieldId, field->defaultValue);
+                this->recordViewModel->addRecordField(fieldId, field->defaultValue);
             }
         }
     }
@@ -368,11 +378,11 @@ void MainWindow::on_actionEdit_Record_triggered()
             if (fieldIsEnabled && !fieldWasEnabled)
             {
                 QSharedPointer<FieldDefinition> field = this->project->getFieldDefinition(fieldId);
-                this->recordsViewModel->addRecordField(recordId, fieldId, field->defaultValue);
+                this->recordViewModel->addRecordField(fieldId, field->defaultValue);
             }
             else if (fieldWasEnabled && !fieldIsEnabled)
             {
-                this->recordsViewModel->removeRecordField(recordId, fieldId);
+                this->recordViewModel->removeRecordField(fieldId);
             }
         }
     }
@@ -394,6 +404,36 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
 {
     Q_UNUSED(index);
     this->on_actionEdit_Record_triggered();
+}
+
+void MainWindow::on_treeView_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
+{
+    Q_UNUSED(deselected);
+
+    QModelIndex selectedIndex = selected.first().indexes().first();
+
+    if (!selectedIndex.isValid())
+    {
+        return;
+    }
+
+    const QString& displayName = selectedIndex.data(Qt::DisplayRole).toString();
+
+    if (displayName.isEmpty())
+    {
+        return;
+    }
+
+    // Get selected record.
+    QSharedPointer<Record> record = this->project->getRecordByDisplayName(displayName);
+
+    if (record == 0)
+    {
+        return;
+    }
+
+    // Update field table.
+    this->recordViewModel->setRecord(record);
 }
 
 void MainWindow::createNewProject(const QString &projectName, const QString &projectPath)
@@ -535,6 +575,13 @@ void MainWindow::setProject(QSharedPointer<Project> project)
 
     this->ui->treeView->setModel(recordsViewModel);
     this->ui->treeView->expandAll();
+
+    // Listen for selection changes.
+    connect(
+      this->ui->treeView->selectionModel(),
+      SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+      SLOT(on_treeView_selectionChanged(const QItemSelection &, const QItemSelection &))
+     );
 }
 
 void MainWindow::showWindow(QWidget* widget)
