@@ -23,7 +23,7 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(QSharedPointer<Tome::Project> pro
     connect(
       this->ui->tableView->selectionModel(),
       SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-      SLOT(on_tableView_selectionChanged(const QItemSelection &, const QItemSelection &))
+      SLOT(tableViewSelectionChanged(const QItemSelection &, const QItemSelection &))
      );
 
     this->updateMenus();
@@ -115,7 +115,7 @@ void FieldDefinitionsWindow::on_tableView_doubleClicked(const QModelIndex &index
     this->on_actionEdit_Field_triggered();
 }
 
-void FieldDefinitionsWindow::on_tableView_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
+void FieldDefinitionsWindow::tableViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
 {
     Q_UNUSED(selected);
     Q_UNUSED(deselected);

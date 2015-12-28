@@ -29,9 +29,12 @@ namespace Tome
 
         private:
             static const QString ElementFieldDefinitions;
+            static const QString ElementFileExtension;
             static const QString ElementName;
             static const QString ElementPath;
             static const QString ElementRecords;
+            static const QString ElementRecordExportTemplates;
+            static const QString ElementTemplate;
             static const QString ElementTomeProject;
     };
 }

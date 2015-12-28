@@ -38,7 +38,9 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Records/recordwindow.cpp \
     ../Source/Tome/Records/recordtablemodel.cpp \
     ../Source/Tome/Fields/fieldvaluewindow.cpp \
-    ../Source/Tome/Fields/fieldvaluewidget.cpp
+    ../Source/Tome/Fields/fieldvaluewidget.cpp \
+    ../Source/Tome/Export/recordexporttemplate.cpp \
+    ../Source/Tome/Export/recordexporter.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/fieldtype.h \
@@ -62,7 +64,9 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Records/recordwindow.h \
     ../Source/Tome/Records/recordtablemodel.h \
     ../Source/Tome/Fields/fieldvaluewindow.h \
-    ../Source/Tome/Fields/fieldvaluewidget.h
+    ../Source/Tome/Fields/fieldvaluewidget.h \
+    ../Source/Tome/Export/recordexporttemplate.h \
+    ../Source/Tome/Export/recordexporter.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \

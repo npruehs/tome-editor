@@ -29,7 +29,8 @@ class FieldDefinitionsWindow : public QMainWindow
         void on_actionDelete_Field_triggered();
 
         void on_tableView_doubleClicked(const QModelIndex &index);
-        void on_tableView_selectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
+
+        void tableViewSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
 
     private:
         Ui::FieldDefinitionsWindow *ui;

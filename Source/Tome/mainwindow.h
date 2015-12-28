@@ -41,11 +41,17 @@ class MainWindow : public QMainWindow
         void on_treeView_doubleClicked(const QModelIndex &index);
         void on_tableView_doubleClicked(const QModelIndex &index);
 
+        void exportRecords(QAction* exportAction);
         void treeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
     private:
         static const QString FieldDefinitionFileExtension;
         static const QString ProjectFileExtension;
+        static const QString RecordExportRecordFileTemplateExtension;
+        static const QString RecordExportRecordTemplateExtension;
+        static const QString RecordExportRecordDelimiterExtension;
+        static const QString RecordExportFieldValueTemplateExtension;
+        static const QString RecordExportFieldValueDelimiterExtension;
         static const QString RecordFileExtension;
 
         Ui::MainWindow *ui;
@@ -63,6 +69,7 @@ class MainWindow : public QMainWindow
 
         void createNewProject(const QString& name, const QString& path);
         QString getSelectedRecordDisplayName() const;
+        QString readProjectFile(QString projectPath, QString fileName);
         void saveProject(QSharedPointer<Tome::Project> project);
         void setProject(QSharedPointer<Tome::Project> project);
         void showWindow(QWidget* widget);

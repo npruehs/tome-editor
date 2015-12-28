@@ -86,9 +86,15 @@
     <addaction name="actionEdit_Record"/>
     <addaction name="actionRemove_Record"/>
    </widget>
+   <widget class="QMenu" name="menuExport">
+    <property name="title">
+     <string>Export</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuRecords"/>
    <addaction name="menuFields"/>
+   <addaction name="menuExport"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">

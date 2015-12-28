@@ -8,9 +8,12 @@ using namespace Tome;
 
 
 const QString ProjectSerializer::ElementFieldDefinitions = "FieldDefinitions";
+const QString ProjectSerializer::ElementFileExtension = "FileExtension";
 const QString ProjectSerializer::ElementName = "Name";
 const QString ProjectSerializer::ElementPath = "Path";
 const QString ProjectSerializer::ElementRecords = "Records";
+const QString ProjectSerializer::ElementRecordExportTemplates = "RecordExportTemplates";
+const QString ProjectSerializer::ElementTemplate = "Template";
 const QString ProjectSerializer::ElementTomeProject = "TomeProject";
 
 ProjectSerializer::ProjectSerializer()
@@ -54,6 +57,21 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
                 {
                     Tome::RecordSet* itSet = it->data();
                     writer.writeTextElement(ElementPath, itSet->name);
+                }
+            }
+            writer.writeEndElement();
+
+            // Write record export templates.
+            writer.writeStartElement(ElementRecordExportTemplates);
+            {
+                for (QMap<QString, QSharedPointer<RecordExportTemplate> >::iterator it = project->recordExportTemplates.begin();
+                     it != project->recordExportTemplates.end();
+                     ++it)
+                {
+                    QSharedPointer<RecordExportTemplate> exportTemplate = it.value();
+
+                    writer.writeTextElement(ElementName, exportTemplate->name);
+                    writer.writeTextElement(ElementFileExtension, exportTemplate->fileExtension);
                 }
             }
             writer.writeEndElement();
@@ -105,6 +123,26 @@ void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPoi
                             QSharedPointer<RecordSet>::create();
                     recordSet->name = name;
                     project->recordSets.push_back(recordSet);
+                }
+            }
+            reader.readEndElement();
+
+            // Read record export templates.
+            reader.readStartElement(ElementRecordExportTemplates);
+            {
+                while (reader.isAtElement(ElementTemplate))
+                {
+                    reader.readStartElement(ElementTemplate);
+                    {
+                        QSharedPointer<RecordExportTemplate> exportTemplate =
+                                QSharedPointer<RecordExportTemplate>::create();
+
+                        exportTemplate->name = reader.readTextElement(ElementName);
+                        exportTemplate->fileExtension = reader.readTextElement(ElementFileExtension);
+
+                        project->recordExportTemplates.insert(exportTemplate->name, exportTemplate);
+                    }
+                    reader.readEndElement();
                 }
             }
             reader.readEndElement();

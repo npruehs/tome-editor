@@ -11,6 +11,7 @@
 #include <QTextStream>
 #include <QXmlStreamWriter>
 
+#include "Export/recordexporter.h"
 #include "Fields/fielddefinitionsetserializer.h"
 #include "Projects/project.h"
 #include "Projects/projectserializer.h"
@@ -22,6 +23,11 @@ using namespace Tome;
 const QString MainWindow::FieldDefinitionFileExtension = ".tfields";
 const QString MainWindow::ProjectFileExtension = ".tproj";
 const QString MainWindow::RecordFileExtension = ".tdata";
+const QString MainWindow::RecordExportRecordFileTemplateExtension = ".texportf";
+const QString MainWindow::RecordExportRecordTemplateExtension = ".texportr";
+const QString MainWindow::RecordExportRecordDelimiterExtension = ".texportrd";
+const QString MainWindow::RecordExportFieldValueTemplateExtension = ".texportv";
+const QString MainWindow::RecordExportFieldValueDelimiterExtension = ".texportvd";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -33,6 +39,12 @@ MainWindow::MainWindow(QWidget *parent) :
     recordWindow(0)
 {
     ui->setupUi(this);
+
+    connect(
+      this->ui->menuExport,
+      SIGNAL(triggered(QAction*)),
+      SLOT(exportRecords(QAction*))
+     );
 
     // Maximize window.
     this->showMaximized();
@@ -215,6 +227,38 @@ void MainWindow::on_actionOpen_Project_triggered()
                             this,
                             tr("Unable to open project"),
                             tr("File could not be read:\r\n") + fullRecordSetPath,
+                            QMessageBox::Close,
+                            QMessageBox::Close);
+                return;
+            }
+        }
+
+        // Load record export template files.
+        for (QMap<QString, QSharedPointer<RecordExportTemplate> >::iterator it = project->recordExportTemplates.begin();
+             it != project->recordExportTemplates.end();
+             ++it)
+        {
+            QSharedPointer<RecordExportTemplate> exportTemplate = it.value();
+
+            try
+            {
+                exportTemplate->fieldValueDelimiter =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportFieldValueDelimiterExtension);
+                exportTemplate->fieldValueTemplate =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportFieldValueTemplateExtension);
+                exportTemplate->recordDelimiter =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordDelimiterExtension);
+                exportTemplate->recordFileTemplate =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordFileTemplateExtension);
+                exportTemplate->recordTemplate =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordTemplateExtension);
+            }
+            catch (const std::runtime_error& e)
+            {
+                QMessageBox::critical(
+                            this,
+                            tr("Unable to open project"),
+                            tr("File could not be read:\r\n") + e.what(),
                             QMessageBox::Close,
                             QMessageBox::Close);
                 return;
@@ -439,6 +483,47 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
     }
 }
 
+void MainWindow::exportRecords(QAction* exportAction)
+{
+    // Get export template.
+    QString exportTemplateName = exportAction->text();
+    QSharedPointer<RecordExportTemplate> exportTemplate =
+            this->project->recordExportTemplates[exportTemplateName];
+
+    // Build export file name suggestion.
+    const QString suggestedFileName = this->project->name + exportTemplate->fileExtension;
+    const QString suggestedFilePath = combinePaths(this->project->path, suggestedFileName);
+
+    // Show file dialog.
+    QString filePath = QFileDialog::getSaveFileName(this,
+                                                      tr("Export Records"),
+                                                      suggestedFilePath);
+
+    if (filePath.isEmpty())
+    {
+        return;
+    }
+
+    // Export records.
+    QSharedPointer<QFile> file = QSharedPointer<QFile>::create(filePath);
+
+    if (file->open(QIODevice::ReadWrite | QIODevice::Truncate))
+    {
+        RecordExporter exporter;
+        exporter.exportRecords(file, this->project, exportTemplate);
+    }
+    else
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to export records"),
+                    tr("Destination file could not be written:\r\n") + filePath,
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return;
+    }
+}
+
 void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
 {
     Q_UNUSED(deselected);
@@ -505,6 +590,23 @@ QString MainWindow::getSelectedRecordDisplayName() const
     }
 
     return currentIndex.data(Qt::DisplayRole).toString();
+}
+
+QString MainWindow::readProjectFile(QString projectPath, QString fileName)
+{
+    // Open export template file.
+    const QString fullPath = combinePaths(projectPath, fileName);
+    QSharedPointer<QFile> file = QSharedPointer<QFile>::create(fullPath);
+
+    if (file->open(QIODevice::ReadOnly))
+    {
+        QTextStream textStream(file.data());
+        return textStream.readAll();
+    }
+    else
+    {
+        throw std::runtime_error(fullPath.toStdString());
+    }
 }
 
 void MainWindow::saveProject(QSharedPointer<Project> project)
@@ -615,6 +717,17 @@ void MainWindow::setProject(QSharedPointer<Project> project)
       SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
       SLOT(treeViewSelectionChanged(const QItemSelection &, const QItemSelection &))
      );
+
+    // Setup record exports.
+    this->ui->menuExport->clear();
+
+    for (QMap<QString, QSharedPointer<RecordExportTemplate> >::iterator it = this->project->recordExportTemplates.begin();
+         it != this->project->recordExportTemplates.end();
+         ++it)
+    {
+        QAction* exportAction = new QAction(it.key(), this);
+        this->ui->menuExport->addAction(exportAction);
+    }
 }
 
 void MainWindow::showWindow(QWidget* widget)
