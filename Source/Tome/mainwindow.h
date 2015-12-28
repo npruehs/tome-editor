@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 
 #include "Fields/fielddefinitionswindow.h"
+#include "Fields/fieldvaluewindow.h"
 #include "Projects/newprojectwindow.h"
 #include "Projects/project.h"
 #include "Records/recordsitemmodel.h"
@@ -38,7 +39,9 @@ class MainWindow : public QMainWindow
         void on_actionRemove_Record_triggered();
 
         void on_treeView_doubleClicked(const QModelIndex &index);
-        void on_treeView_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+        void on_tableView_doubleClicked(const QModelIndex &index);
+
+        void treeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
     private:
         static const QString FieldDefinitionFileExtension;
@@ -51,6 +54,7 @@ class MainWindow : public QMainWindow
 
         AboutWindow *aboutWindow;
         FieldDefinitionsWindow* fieldDefinitionsWindow;
+        FieldValueWindow* fieldValueWindow;
         NewProjectWindow *newProjectWindow;
         RecordWindow* recordWindow;
 

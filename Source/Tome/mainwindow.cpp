@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     aboutWindow(0),
     fieldDefinitionsWindow(0),
+    fieldValueWindow(0),
     newProjectWindow(0),
     recordWindow(0)
 {
@@ -406,7 +407,39 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
     this->on_actionEdit_Record_triggered();
 }
 
-void MainWindow::on_treeView_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
+void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
+{
+    // Get current field data.
+    const QString& fieldId = this->recordViewModel->getFieldId(index);
+    const QString& fieldValue = this->recordViewModel->getFieldValue(index);
+
+    QSharedPointer<FieldDefinition> fieldDefinition =
+            this->project->getFieldDefinition(fieldId);
+
+    // Show window.
+    if (!this->fieldValueWindow)
+    {
+        this->fieldValueWindow = new FieldValueWindow(this);
+    }
+
+    // Update view.
+    this->fieldValueWindow->setFieldDisplayName(fieldDefinition->displayName);
+    this->fieldValueWindow->setFieldType(fieldDefinition->fieldType);
+    this->fieldValueWindow->setFieldValue(fieldValue);
+    this->fieldValueWindow->setFieldDescription(fieldDefinition->description);
+
+    int result = this->fieldValueWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        // Update field.
+        this->recordViewModel->setFieldValue(
+                    fieldId,
+                    this->fieldValueWindow->getFieldValue());
+    }
+}
+
+void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
 {
     Q_UNUSED(deselected);
 
@@ -580,7 +613,7 @@ void MainWindow::setProject(QSharedPointer<Project> project)
     connect(
       this->ui->treeView->selectionModel(),
       SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-      SLOT(on_treeView_selectionChanged(const QItemSelection &, const QItemSelection &))
+      SLOT(treeViewSelectionChanged(const QItemSelection &, const QItemSelection &))
      );
 }
 

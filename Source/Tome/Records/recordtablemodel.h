@@ -27,7 +27,12 @@ namespace Tome
             void addRecordField(const QString& id, const QString& value);
             void removeRecordField(const QString& id);
 
+            QString getFieldId(const QModelIndex &index) const;
+            QString getFieldValue(const QModelIndex &index) const;
+
+            void setFieldValue(const QString& fieldId, const QString& fieldValue);
             void setRecord(QSharedPointer<Tome::Record> record);
+
         private:
             QSharedPointer<Record> record;
     };

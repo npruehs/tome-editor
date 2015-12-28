@@ -38,9 +38,9 @@ QVariant RecordTableModel::data(const QModelIndex& index, int role) const
         switch (index.column())
         {
             case 0:
-                return this->record->fieldValues.keys()[index.row()];
+                return this->getFieldId(index);
             case 1:
-                return this->record->fieldValues.values()[index.row()];
+                return this->getFieldValue(index);
         }
 
         return QVariant();
@@ -110,6 +110,28 @@ void RecordTableModel::removeRecordField(const QString& id)
 
     // Update model.
     this->record->fieldValues.remove(id);
+}
+
+QString RecordTableModel::getFieldId(const QModelIndex& index) const
+{
+    return this->record->fieldValues.keys()[index.row()];
+}
+
+QString RecordTableModel::getFieldValue(const QModelIndex& index) const
+{
+    return this->record->fieldValues.values()[index.row()];
+}
+
+void RecordTableModel::setFieldValue(const QString& fieldId, const QString& fieldValue)
+{
+    // Update model.
+    this->record->fieldValues[fieldId] = fieldValue;
+
+    // Update view.
+    int row = this->record->fieldValues.keys().indexOf(fieldId);
+    QModelIndex cell = this->index(row, 1, QModelIndex());
+
+    emit(dataChanged(cell, cell));
 }
 
 void RecordTableModel::setRecord(QSharedPointer<Record> record)

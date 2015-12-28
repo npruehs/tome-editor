@@ -4,6 +4,7 @@
 #include <QCloseEvent>
 #include <QDialog>
 
+#include "../Fields/fieldvaluewidget.h"
 #include "../Fields/fieldtype.h"
 
 
@@ -40,6 +41,7 @@ class FieldDefinitionWindow : public QDialog
 
     private:
         Ui::FieldDefinitionWindow *ui;
+        Tome::FieldValueWidget* fieldValueWidget;
 
         bool validate();
 };

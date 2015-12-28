@@ -15,6 +15,11 @@ FieldDefinitionWindow::FieldDefinitionWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Add widget for specifying the default field value.
+    this->fieldValueWidget = new FieldValueWidget(this);
+    QFormLayout* layout = static_cast<QFormLayout*>(this->layout());
+    layout->insertRow(2, tr("Default Value:"), this->fieldValueWidget);
+
     // Add supported field types.
     this->ui->comboBoxType->addItem("Int");
     this->ui->comboBoxType->addItem("String");
@@ -51,25 +56,12 @@ QString FieldDefinitionWindow::getFieldId() const
 
 QString FieldDefinitionWindow::getDefaultValue() const
 {
-    switch (this->getFieldType())
-    {
-        case FieldType::Int:
-            return this->ui->spinBoxDefaultValue->text();
-            break;
-
-        case FieldType::String:
-            return this->ui->lineEditDefaultValue->text();
-            break;
-    }
-
-    return QString();
+    return this->fieldValueWidget->getFieldValue();
 }
 
 FieldType::FieldType FieldDefinitionWindow::getFieldType() const
 {
-    const QString fieldType = this->ui->comboBoxType->currentText();
-    ValueConverter valueConverter;
-    return valueConverter.StringToFieldType(fieldType);
+    return this->fieldValueWidget->getFieldType();
 }
 
 void FieldDefinitionWindow::setFieldDescription(const QString& description)
@@ -89,21 +81,7 @@ void FieldDefinitionWindow::setFieldId(const QString& fieldId)
 
 void FieldDefinitionWindow::setDefaultValue(const QString& defaultValue)
 {
-    switch (this->getFieldType())
-    {
-        case FieldType::Int:
-            {
-                int value = defaultValue.toInt();
-                this->ui->spinBoxDefaultValue->setValue(value);
-            }
-            break;
-
-        case FieldType::String:
-            {
-                this->ui->lineEditDefaultValue->setText(defaultValue);
-            }
-            break;
-    }
+    this->fieldValueWidget->setFieldValue(defaultValue);
 }
 
 void FieldDefinitionWindow::setFieldType(const FieldType::FieldType& fieldType) const
@@ -117,24 +95,7 @@ void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &f
 {
     ValueConverter valueConverter;
     FieldType::FieldType newType = valueConverter.StringToFieldType(fieldType);
-
-    switch (newType)
-    {
-        case FieldType::Int:
-            this->ui->lineEditDefaultValue->hide();
-            this->ui->spinBoxDefaultValue->show();
-            break;
-
-        case FieldType::String:
-            this->ui->lineEditDefaultValue->show();
-            this->ui->spinBoxDefaultValue->hide();
-            break;
-
-        default:
-            this->ui->lineEditDefaultValue->hide();
-            this->ui->spinBoxDefaultValue->hide();
-            break;
-    }
+    this->fieldValueWidget->setFieldType(newType);
 }
 
 void FieldDefinitionWindow::on_lineEditDisplayName_textEdited(const QString &displayName)
