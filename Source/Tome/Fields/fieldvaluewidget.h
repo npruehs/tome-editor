@@ -35,6 +35,7 @@ namespace Tome
             void setRecordNames(const QStringList& recordNames);
 
         private:
+            QWidget* currentWidget;
             FieldType::FieldType fieldType;
 
             QCheckBox* checkBox;
@@ -44,6 +45,9 @@ namespace Tome
             QLineEdit* lineEdit;
             QComboBox* referenceComboBox;
             QSpinBox* spinBox;
+
+            void addWidget(QWidget* widget);
+            void setCurrentWidget(QWidget* widget);
     };
 }
 

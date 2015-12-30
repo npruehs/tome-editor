@@ -9,38 +9,41 @@ using namespace Tome;
 
 FieldValueWidget::FieldValueWidget(QWidget *parent) :
     QWidget(parent),
-    fieldType(FieldType::String)
+    currentWidget(0)
 {
     // Create layout.
     this->layout = new QVBoxLayout();
 
     // Add field value widgets.
     this->lineEdit = new QLineEdit();
-    this->layout->addWidget(this->lineEdit);
+    this->addWidget(this->lineEdit);
 
     this->spinBox = new QSpinBox();
     this->spinBox->setMinimum(std::numeric_limits<int>::min());
     this->spinBox->setMaximum(std::numeric_limits<int>::max());
-    this->layout->addWidget(this->spinBox);
+    this->addWidget(this->spinBox);
 
     this->doubleSpinBox = new QDoubleSpinBox();
     this->doubleSpinBox->setMinimum(std::numeric_limits<float>::min());
     this->doubleSpinBox->setMaximum(std::numeric_limits<float>::max());
     this->doubleSpinBox->setDecimals(3);
-    this->layout->addWidget(this->doubleSpinBox);
+    this->addWidget(this->doubleSpinBox);
 
     this->checkBox = new QCheckBox("Value");
-    this->layout->addWidget(this->checkBox);
+    this->addWidget(this->checkBox);
 
     this->colorDialog = new QColorDialog();
     this->colorDialog->setOptions(QColorDialog::ShowAlphaChannel | QColorDialog::NoButtons);
-    this->layout->addWidget(this->colorDialog);
+    this->addWidget(this->colorDialog);
 
     this->referenceComboBox = new QComboBox();
-    this->layout->addWidget(this->referenceComboBox);
+    this->addWidget(this->referenceComboBox);
 
     this->setLayout(this->layout);
     this->layout->setContentsMargins(0, 0, 0, 0);
+
+    // Pre-select type.
+    this->setFieldType(FieldType::Integer);
 }
 
 FieldValueWidget::~FieldValueWidget()
@@ -90,66 +93,31 @@ void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
     switch (fieldType)
     {
         case FieldType::Color:
-            this->checkBox->hide();
-            this->colorDialog->show();
-            this->doubleSpinBox->hide();
-            this->lineEdit->hide();
-            this->referenceComboBox->hide();
-            this->spinBox->hide();
+            this->setCurrentWidget(this->colorDialog);
             break;
 
         case FieldType::Boolean:
-            this->checkBox->show();
-            this->colorDialog->hide();
-            this->doubleSpinBox->hide();
-            this->lineEdit->hide();
-            this->referenceComboBox->hide();
-            this->spinBox->hide();
+            this->setCurrentWidget(this->checkBox);
             break;
 
         case FieldType::Integer:
-            this->checkBox->hide();
-            this->colorDialog->hide();
-            this->doubleSpinBox->hide();
-            this->lineEdit->hide();
-            this->referenceComboBox->hide();
-            this->spinBox->show();
+            this->setCurrentWidget(this->spinBox);
             break;
 
         case FieldType::Real:
-            this->checkBox->hide();
-            this->colorDialog->hide();
-            this->doubleSpinBox->show();
-            this->lineEdit->hide();
-            this->referenceComboBox->hide();
-            this->spinBox->hide();
+            this->setCurrentWidget(this->doubleSpinBox);
             break;
 
         case FieldType::Reference:
-            this->checkBox->hide();
-            this->colorDialog->hide();
-            this->doubleSpinBox->hide();
-            this->lineEdit->hide();
-            this->referenceComboBox->show();
-            this->spinBox->hide();
+            this->setCurrentWidget(this->referenceComboBox);
             break;
 
         case FieldType::String:
-            this->checkBox->hide();
-            this->colorDialog->hide();
-            this->doubleSpinBox->hide();
-            this->lineEdit->show();
-            this->referenceComboBox->hide();
-            this->spinBox->hide();
+            this->setCurrentWidget(this->lineEdit);
             break;
 
         default:
-            this->checkBox->hide();
-            this->colorDialog->hide();
-            this->doubleSpinBox->hide();
-            this->lineEdit->hide();
-            this->referenceComboBox->hide();
-            this->spinBox->hide();
+            this->setCurrentWidget(0);
             break;
     }
 }
@@ -209,4 +177,28 @@ void FieldValueWidget::setRecordNames(const QStringList& recordNames)
 {
     this->referenceComboBox->clear();
     this->referenceComboBox->addItems(recordNames);
+}
+
+void FieldValueWidget::addWidget(QWidget* widget)
+{
+    if (widget != 0)
+    {
+        widget->hide();
+         this->layout->addWidget(widget);
+    }
+}
+
+void FieldValueWidget::setCurrentWidget(QWidget* widget)
+{
+    if (this->currentWidget != 0)
+    {
+        this->currentWidget->hide();
+    }
+
+    this->currentWidget = widget;
+
+    if (this->currentWidget != 0)
+    {
+        this->currentWidget->show();
+    }
 }
