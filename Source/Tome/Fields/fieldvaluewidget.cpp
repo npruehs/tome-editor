@@ -176,6 +176,11 @@ void FieldValueWidget::setFieldValue(const QString& fieldValue)
 void FieldValueWidget::setRecordNames(const QStringList& recordNames)
 {
     this->referenceComboBox->clear();
+
+    // Allow clearing the field.
+    this->referenceComboBox->addItem(QString());
+
+    // Add all available records.
     this->referenceComboBox->addItems(recordNames);
 }
 
