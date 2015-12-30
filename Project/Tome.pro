@@ -75,3 +75,6 @@ FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Fields/fielddefinitionswindow.ui \
     ../Source/Tome/Records/recordwindow.ui \
     ../Source/Tome/Fields/fieldvaluewindow.ui
+
+RESOURCES += \
+    tome.qrc

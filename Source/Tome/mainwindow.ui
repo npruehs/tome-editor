@@ -104,31 +104,64 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionNew_Project"/>
+   <addaction name="actionOpen_Project"/>
+   <addaction name="actionSave_Project"/>
+   <addaction name="separator"/>
+   <addaction name="actionNew_Record"/>
+   <addaction name="actionRemove_Record"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
   </action>
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
    </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
   </action>
   <action name="actionNew_Project">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/NewFile_6276.png</normalon>
+    </iconset>
+   </property>
    <property name="text">
     <string>New Project...</string>
    </property>
   </action>
   <action name="actionSave_Project">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/Saveall_6518.png</normalon>
+    </iconset>
+   </property>
    <property name="text">
     <string>Save Project</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="actionOpen_Project">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/Open_6529.png</normalon>
+    </iconset>
+   </property>
    <property name="text">
     <string>Open Project...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionField_Definions">
@@ -137,18 +170,37 @@
    </property>
   </action>
   <action name="actionNew_Record">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/AddUsingNamespace_6782.png</normalon>
+    </iconset>
+   </property>
    <property name="text">
     <string>New Record...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
   <action name="actionEdit_Record">
    <property name="text">
     <string>Edit Record...</string>
    </property>
+   <property name="shortcut">
+    <string>Return</string>
+   </property>
   </action>
   <action name="actionRemove_Record">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/RemoveUsingNamespace_10480.png</normalon>
+    </iconset>
+   </property>
    <property name="text">
     <string>Remove Record</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
    </property>
   </action>
  </widget>

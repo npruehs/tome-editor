@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>640</width>
     <height>300</height>
    </rect>
   </property>
@@ -29,13 +29,13 @@
     <set>QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>40</x>
      <y>10</y>
      <width>991</width>
-     <height>72</height>
+     <height>129</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -82,6 +82,16 @@
       </property>
       <property name="wordWrap">
        <bool>true</bool>
+      </property>
+      <property name="openExternalLinks">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="labelVS2013ImageLibrary">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Visual Studio 2013 Image Library is released under the &lt;a href=&quot;http://download.microsoft.com/download/0/6/0/0607D8EA-9BB7-440B-A36A-A24EB8C9C67E/Visual%20Studio%202013%20Image%20Library%20EULA.docx&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Visual Studio 2013 Image Library EULA&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="openExternalLinks">
        <bool>true</bool>
