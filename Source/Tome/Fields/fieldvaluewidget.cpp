@@ -184,12 +184,20 @@ void FieldValueWidget::setRecordNames(const QStringList& recordNames)
     this->referenceComboBox->addItems(recordNames);
 }
 
+void FieldValueWidget::focusInEvent(QFocusEvent* event)
+{
+    if (this->currentWidget != 0)
+    {
+        this->currentWidget->setFocus();
+    }
+}
+
 void FieldValueWidget::addWidget(QWidget* widget)
 {
     if (widget != 0)
     {
         widget->hide();
-         this->layout->addWidget(widget);
+        this->layout->addWidget(widget);
     }
 }
 
@@ -205,5 +213,6 @@ void FieldValueWidget::setCurrentWidget(QWidget* widget)
     if (this->currentWidget != 0)
     {
         this->currentWidget->show();
+        this->currentWidget->setFocus();
     }
 }

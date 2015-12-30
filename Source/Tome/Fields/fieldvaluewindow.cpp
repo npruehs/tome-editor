@@ -55,3 +55,9 @@ void FieldValueWindow::setRecordNames(const QStringList& recordNames)
 {
     this->fieldValueWidget->setRecordNames(recordNames);
 }
+
+void FieldValueWindow::showEvent(QShowEvent* event)
+{
+    QDialog::showEvent(event);
+    this->fieldValueWidget->setFocus();
+}

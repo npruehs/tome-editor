@@ -34,6 +34,9 @@ namespace Tome
             void setFieldValue(const QString& fieldValue);
             void setRecordNames(const QStringList& recordNames);
 
+        protected:
+            virtual void focusInEvent(QFocusEvent* event);
+
         private:
             QWidget* currentWidget;
             FieldType::FieldType fieldType;
