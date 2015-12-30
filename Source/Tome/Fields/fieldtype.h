@@ -8,6 +8,7 @@ namespace Tome
         enum FieldType
         {
             None,
+            Boolean,
             Integer,
             Real,
             String

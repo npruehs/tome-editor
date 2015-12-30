@@ -21,6 +21,7 @@ FieldDefinitionWindow::FieldDefinitionWindow(QWidget *parent) :
     layout->insertRow(2, tr("Default Value:"), this->fieldValueWidget);
 
     // Add supported field types.
+    this->ui->comboBoxType->addItem("Boolean");
     this->ui->comboBoxType->addItem("Integer");
     this->ui->comboBoxType->addItem("Real");
     this->ui->comboBoxType->addItem("String");
