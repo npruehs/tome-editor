@@ -1,5 +1,7 @@
 #include "fieldvaluewidget.h"
 
+#include <limits>
+
 using namespace Tome;
 
 
@@ -15,9 +17,15 @@ FieldValueWidget::FieldValueWidget(QWidget *parent) :
     this->layout->addWidget(this->lineEdit);
 
     this->spinBox = new QSpinBox();
-    this->spinBox->setMinimum(-2147483647);
-    this->spinBox->setMaximum(2147483647);
+    this->spinBox->setMinimum(std::numeric_limits<int>::min());
+    this->spinBox->setMaximum(std::numeric_limits<int>::max());
     this->layout->addWidget(this->spinBox);
+
+    this->doubleSpinBox = new QDoubleSpinBox();
+    this->doubleSpinBox->setMinimum(std::numeric_limits<float>::min());
+    this->doubleSpinBox->setMaximum(std::numeric_limits<float>::max());
+    this->doubleSpinBox->setDecimals(3);
+    this->layout->addWidget(this->doubleSpinBox);
 
     this->setLayout(this->layout);
     this->layout->setContentsMargins(0, 0, 0, 0);
@@ -36,16 +44,18 @@ QString FieldValueWidget::getFieldValue() const
 {
     switch (this->getFieldType())
     {
-        case FieldType::Int:
+        case FieldType::Integer:
             return this->spinBox->text();
-            break;
+
+        case FieldType::Real:
+            return this->doubleSpinBox->text();
 
         case FieldType::String:
             return this->lineEdit->text();
-            break;
-    }
 
-    return QString();
+        default:
+            return QString();
+    }
 }
 
 void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
@@ -56,19 +66,28 @@ void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
     // Update view.
     switch (fieldType)
     {
-        case FieldType::Int:
+        case FieldType::Integer:
             this->lineEdit->hide();
             this->spinBox->show();
+            this->doubleSpinBox->hide();
+            break;
+
+        case FieldType::Real:
+            this->lineEdit->hide();
+            this->spinBox->hide();
+            this->doubleSpinBox->show();
             break;
 
         case FieldType::String:
             this->lineEdit->show();
             this->spinBox->hide();
+            this->doubleSpinBox->hide();
             break;
 
         default:
             this->lineEdit->hide();
             this->spinBox->hide();
+            this->doubleSpinBox->hide();
             break;
     }
 }
@@ -77,10 +96,17 @@ void FieldValueWidget::setFieldValue(const QString& fieldValue)
 {
     switch (this->getFieldType())
     {
-        case FieldType::Int:
+        case FieldType::Integer:
             {
                 int value = fieldValue.toInt();
                 this->spinBox->setValue(value);
+            }
+            break;
+
+        case FieldType::Real:
+            {
+                double value = fieldValue.toDouble();
+                this->doubleSpinBox->setValue(value);
             }
             break;
 
@@ -88,6 +114,9 @@ void FieldValueWidget::setFieldValue(const QString& fieldValue)
             {
                 this->lineEdit->setText(fieldValue);
             }
+            break;
+
+        default:
             break;
     }
 }

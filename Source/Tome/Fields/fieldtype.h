@@ -8,13 +8,9 @@ namespace Tome
         enum FieldType
         {
             None,
-            Boolean,
-            Color,
-            Float,
-            Int,
-            Reference,
-            String,
-            Vector3F
+            Integer,
+            Real,
+            String
         };
     }
 }

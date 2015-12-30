@@ -1,10 +1,11 @@
 #ifndef FIELDVALUEWIDGET_H
 #define FIELDVALUEWIDGET_H
 
-#include <QVBoxLayout>
+#include <QDoubleSpinBox>
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QString>
+#include <QVBoxLayout>
 #include <QWidget>
 
 #include "../Fields/fieldtype.h"
@@ -31,6 +32,7 @@ namespace Tome
         private:
             FieldType::FieldType fieldType;
 
+            QDoubleSpinBox* doubleSpinBox;
             QVBoxLayout* layout;
             QLineEdit* lineEdit;
             QSpinBox* spinBox;

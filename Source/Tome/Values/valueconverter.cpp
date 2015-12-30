@@ -11,29 +11,17 @@ QString ValueConverter::FieldTypeToString(const FieldType::FieldType& fieldType)
 {
     switch (fieldType)
     {
-        case FieldType::Boolean:
-            return "Boolean";
-
-        case FieldType::Color:
-            return "Color";
-
-        case FieldType::Float:
-            return "Float";
-
-        case FieldType::Int:
-            return "Int";
-
         case FieldType::None:
             return "None";
 
-        case FieldType::Reference:
-            return "Reference";
+        case FieldType::Integer:
+            return "Integer";
+
+        case FieldType::Real:
+            return "Real";
 
         case FieldType::String:
             return "String";
-
-        case FieldType::Vector3F:
-            return "Vector3F";
     }
 
     return "Invalid";
@@ -41,33 +29,17 @@ QString ValueConverter::FieldTypeToString(const FieldType::FieldType& fieldType)
 
 FieldType::FieldType ValueConverter::StringToFieldType(const QString& s) const
 {
-    if (s == "Boolean")
+    if (s == "Integer")
     {
-        return FieldType::Boolean;
+        return FieldType::Integer;
     }
-    if (s == "Color")
+    if (s == "Real")
     {
-        return FieldType::Color;
-    }
-    if (s == "Float")
-    {
-        return FieldType::Float;
-    }
-    if (s == "Int")
-    {
-        return FieldType::Int;
-    }
-    if (s == "Reference")
-    {
-        return FieldType::Reference;
+        return FieldType::Real;
     }
     if (s == "String")
     {
         return FieldType::String;
-    }
-    if (s == "Vector3F")
-    {
-        return FieldType::Vector3F;
     }
 
     return FieldType::None;
