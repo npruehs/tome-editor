@@ -557,6 +557,7 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
     }
 
     // Update field table.
+    this->recordViewModel->setProject(this->project);
     this->recordViewModel->setRecord(record);
 }
 

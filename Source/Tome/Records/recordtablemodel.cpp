@@ -45,6 +45,12 @@ QVariant RecordTableModel::data(const QModelIndex& index, int role) const
 
         return QVariant();
     }
+    else if (role == Qt::ToolTipRole)
+    {
+        QString fieldId = this->getFieldId(index);
+        QSharedPointer<FieldDefinition> fieldDefinition = this->project->getFieldDefinition(fieldId);
+        return fieldDefinition->description;
+    }
 
     return QVariant();
 }
@@ -132,6 +138,11 @@ void RecordTableModel::setFieldValue(const QString& fieldId, const QString& fiel
     QModelIndex cell = this->index(row, 1, QModelIndex());
 
     emit(dataChanged(cell, cell));
+}
+
+void RecordTableModel::setProject(QSharedPointer<Project> project)
+{
+    this->project = project;
 }
 
 void RecordTableModel::setRecord(QSharedPointer<Record> record)
