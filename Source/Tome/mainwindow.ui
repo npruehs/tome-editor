@@ -166,7 +166,7 @@
   </action>
   <action name="actionField_Definions">
    <property name="text">
-    <string>Field Definions...</string>
+    <string>Field Definitions...</string>
    </property>
   </action>
   <action name="actionNew_Record">
