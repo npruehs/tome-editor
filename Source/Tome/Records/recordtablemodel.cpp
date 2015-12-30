@@ -1,6 +1,9 @@
 #include "recordtablemodel.h"
 
+#include <QColor>
+
 using namespace Tome;
+
 
 RecordTableModel::RecordTableModel(QObject* parent)
     : QAbstractTableModel(parent),
@@ -47,9 +50,23 @@ QVariant RecordTableModel::data(const QModelIndex& index, int role) const
     }
     else if (role == Qt::ToolTipRole)
     {
+        // Show field description as tooltip.
         QString fieldId = this->getFieldId(index);
         QSharedPointer<FieldDefinition> fieldDefinition = this->project->getFieldDefinition(fieldId);
         return fieldDefinition->description;
+    }
+    else if (role == Qt::DecorationRole && index.column() == 1)
+    {
+        QString fieldId = this->getFieldId(index);
+        QSharedPointer<FieldDefinition> fieldDefinition = this->project->getFieldDefinition(fieldId);
+
+        if (fieldDefinition->fieldType == FieldType::Color)
+        {
+            // Show color preview.
+            QColor color;
+            color.setNamedColor(this->getFieldValue(index));
+            return color;
+        }
     }
 
     return QVariant();

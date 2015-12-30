@@ -1,5 +1,7 @@
 #include "fielddefinitionstablemodel.h"
 
+#include <QColor>
+
 #include "../Values/valueconverter.h"
 
 using namespace Tome;
@@ -42,12 +44,12 @@ QVariant FieldDefinitionsTableModel::data(const QModelIndex& index, int role) co
         return QVariant();
     }
 
+    // Select field definition.
+    QSharedPointer<FieldDefinitionSet> fieldDefinitionSet = this->project->fieldDefinitionSets[0];
+    QSharedPointer<FieldDefinition> fieldDefinition = fieldDefinitionSet->fieldDefinitions[index.row()];
+
     if (role == Qt::DisplayRole)
     {
-        // Select field definition.
-        QSharedPointer<FieldDefinitionSet> fieldDefinitionSet = this->project->fieldDefinitionSets[0];
-        QSharedPointer<FieldDefinition> fieldDefinition = fieldDefinitionSet->fieldDefinitions[index.row()];
-
         // Show data.
         QSharedPointer<ValueConverter> valueConverter = QSharedPointer<ValueConverter>::create();
 
@@ -66,6 +68,13 @@ QVariant FieldDefinitionsTableModel::data(const QModelIndex& index, int role) co
         }
 
         return QVariant();
+    }
+    else if (role == Qt::DecorationRole && index.column() == 3 && fieldDefinition->fieldType == FieldType::Color)
+    {
+        // Show color preview.
+        QColor color;
+        color.setNamedColor(fieldDefinition->defaultValue);
+        return color;
     }
 
     return QVariant();
