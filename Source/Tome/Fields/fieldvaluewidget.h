@@ -2,6 +2,7 @@
 #define FIELDVALUEWIDGET_H
 
 #include <QCheckBox>
+#include <QColorDialog>
 #include <QDoubleSpinBox>
 #include <QLineEdit>
 #include <QSpinBox>
@@ -34,6 +35,7 @@ namespace Tome
             FieldType::FieldType fieldType;
 
             QCheckBox* checkBox;
+            QColorDialog* colorDialog;
             QDoubleSpinBox* doubleSpinBox;
             QVBoxLayout* layout;
             QLineEdit* lineEdit;

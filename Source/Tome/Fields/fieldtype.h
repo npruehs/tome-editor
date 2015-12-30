@@ -9,6 +9,7 @@ namespace Tome
         {
             None,
             Boolean,
+            Color,
             Integer,
             Real,
             String

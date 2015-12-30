@@ -22,6 +22,9 @@ QString ValueConverter::FieldTypeToString(const FieldType::FieldType& fieldType)
         case FieldType::Boolean:
             return "Boolean";
 
+        case FieldType::Color:
+            return "Color";
+
         case FieldType::Integer:
             return "Integer";
 
@@ -45,6 +48,10 @@ FieldType::FieldType ValueConverter::StringToFieldType(const QString& s) const
     if (s == "Boolean")
     {
         return FieldType::Boolean;
+    }
+    if (s == "Color")
+    {
+        return FieldType::Color;
     }
     if (s == "Integer")
     {

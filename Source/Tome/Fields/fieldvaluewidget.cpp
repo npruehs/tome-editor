@@ -32,6 +32,10 @@ FieldValueWidget::FieldValueWidget(QWidget *parent) :
     this->checkBox = new QCheckBox("Value");
     this->layout->addWidget(this->checkBox);
 
+    this->colorDialog = new QColorDialog();
+    this->colorDialog->setOptions(QColorDialog::ShowAlphaChannel | QColorDialog::NoButtons);
+    this->layout->addWidget(this->colorDialog);
+
     this->setLayout(this->layout);
     this->layout->setContentsMargins(0, 0, 0, 0);
 }
@@ -53,6 +57,9 @@ QString FieldValueWidget::getFieldValue() const
     {
         case FieldType::Boolean:
             return valueConverter.BoolToString(this->checkBox->isChecked());
+
+        case FieldType::Color:
+            return this->colorDialog->currentColor().name(QColor::HexArgb);
 
         case FieldType::Integer:
             return this->spinBox->text();
@@ -76,8 +83,17 @@ void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
     // Update view.
     switch (fieldType)
     {
+        case FieldType::Color:
+            this->checkBox->hide();
+            this->colorDialog->show();
+            this->doubleSpinBox->hide();
+            this->lineEdit->hide();
+            this->spinBox->hide();
+            break;
+
         case FieldType::Boolean:
             this->checkBox->show();
+            this->colorDialog->hide();
             this->doubleSpinBox->hide();
             this->lineEdit->hide();
             this->spinBox->hide();
@@ -85,6 +101,7 @@ void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
 
         case FieldType::Integer:
             this->checkBox->hide();
+            this->colorDialog->hide();
             this->doubleSpinBox->hide();
             this->lineEdit->hide();
             this->spinBox->show();
@@ -92,6 +109,7 @@ void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
 
         case FieldType::Real:
             this->checkBox->hide();
+            this->colorDialog->hide();
             this->doubleSpinBox->show();
             this->lineEdit->hide();
             this->spinBox->hide();
@@ -99,6 +117,7 @@ void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
 
         case FieldType::String:
             this->checkBox->hide();
+            this->colorDialog->hide();
             this->doubleSpinBox->hide();
             this->lineEdit->show();
             this->spinBox->hide();
@@ -106,6 +125,7 @@ void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
 
         default:
             this->checkBox->hide();
+            this->colorDialog->hide();
             this->doubleSpinBox->hide();
             this->lineEdit->hide();
             this->spinBox->hide();
@@ -127,6 +147,12 @@ void FieldValueWidget::setFieldValue(const QString& fieldValue)
             }
             break;
 
+        case FieldType::Color:
+        {
+            QColor color;
+            color.setNamedColor(fieldValue);
+            this->colorDialog->setCurrentColor(color);
+        }
         case FieldType::Integer:
             {
                 int value = fieldValue.toInt();
