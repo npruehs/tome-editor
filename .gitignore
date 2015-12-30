@@ -33,3 +33,5 @@ Makefile*
 *.qmlproject.user
 *.qmlproject.user.*
 Bin/
+
+Obj/
