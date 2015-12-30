@@ -49,6 +49,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // Maximize window.
     this->showMaximized();
 
+    // Set window title.
+    this->updateWindowTitle();
+
     // Can't access some functionality until project created or loaded.
     this->updateMenus();
 
@@ -580,6 +583,16 @@ void MainWindow::createNewProject(const QString &projectName, const QString &pro
     this->setProject(newProject);
 }
 
+QString MainWindow::getFullProjectPath() const
+{
+    if (this->project == 0)
+    {
+        return QString();
+    }
+
+    return combinePaths(this->project->path, this->project->name + ProjectFileExtension);
+}
+
 QString MainWindow::getSelectedRecordDisplayName() const
 {
     QModelIndex currentIndex = this->ui->treeView->selectionModel()->currentIndex();
@@ -611,15 +624,13 @@ QString MainWindow::readProjectFile(QString projectPath, QString fileName)
 
 void MainWindow::saveProject(QSharedPointer<Project> project)
 {
-    QString& projectName = project->name;
     QString& projectPath = project->path;
 
     QSharedPointer<ProjectSerializer> projectSerializer =
             QSharedPointer<ProjectSerializer>::create();
 
     // Build file name.
-    const QString projectFileName = projectName + ProjectFileExtension;
-    const QString fullProjectPath = combinePaths(projectPath, projectFileName);
+    const QString fullProjectPath = this->getFullProjectPath();
 
     // Write project file.
     QSharedPointer<QFile> projectFile = QSharedPointer<QFile>::create(fullProjectPath);
@@ -728,6 +739,9 @@ void MainWindow::setProject(QSharedPointer<Project> project)
         QAction* exportAction = new QAction(it.key(), this);
         this->ui->menuExport->addAction(exportAction);
     }
+
+    // Update title.
+    this->updateWindowTitle();
 }
 
 void MainWindow::showWindow(QWidget* widget)
@@ -746,4 +760,18 @@ void MainWindow::updateMenus()
     this->ui->actionNew_Record->setEnabled(projectLoaded);
     this->ui->actionEdit_Record->setEnabled(projectLoaded);
     this->ui->actionRemove_Record->setEnabled(projectLoaded);
+}
+
+void MainWindow::updateWindowTitle()
+{
+    // Get application version.
+    QString windowTitle = "Tome " + QApplication::instance()->applicationVersion();
+
+    if (this->project != 0)
+    {
+        // Add project name.
+        windowTitle += " - " + this->getFullProjectPath();
+    }
+
+    this->setWindowTitle(windowTitle);
 }

@@ -68,12 +68,14 @@ class MainWindow : public QMainWindow
         QSharedPointer<Tome::RecordTableModel> recordViewModel;
 
         void createNewProject(const QString& name, const QString& path);
+        QString getFullProjectPath() const;
         QString getSelectedRecordDisplayName() const;
         QString readProjectFile(QString projectPath, QString fileName);
         void saveProject(QSharedPointer<Tome::Project> project);
         void setProject(QSharedPointer<Tome::Project> project);
         void showWindow(QWidget* widget);
         void updateMenus();
+        void updateWindowTitle();
 };
 
 #endif // MAINWINDOW_H
