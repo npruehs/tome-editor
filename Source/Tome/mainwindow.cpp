@@ -469,6 +469,9 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
         this->fieldValueWindow = new FieldValueWindow(this);
     }
 
+    // Update available record references.
+    this->fieldValueWindow->setRecordNames(this->project->getRecordNames());
+
     // Update view.
     this->fieldValueWindow->setFieldDisplayName(fieldDefinition->displayName);
     this->fieldValueWindow->setFieldType(fieldDefinition->fieldType);

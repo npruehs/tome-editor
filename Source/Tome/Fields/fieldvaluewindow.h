@@ -25,6 +25,7 @@ class FieldValueWindow : public QDialog
         void setFieldDisplayName(const QString& displayName);
         void setFieldValue(const QString& fieldValue);
         void setFieldType(const Tome::FieldType::FieldType& fieldType) const;
+        void setRecordNames(const QStringList& recordNames);
 
     private:
         Ui::FieldValueWindow *ui;

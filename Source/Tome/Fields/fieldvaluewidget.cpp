@@ -36,6 +36,9 @@ FieldValueWidget::FieldValueWidget(QWidget *parent) :
     this->colorDialog->setOptions(QColorDialog::ShowAlphaChannel | QColorDialog::NoButtons);
     this->layout->addWidget(this->colorDialog);
 
+    this->referenceComboBox = new QComboBox();
+    this->layout->addWidget(this->referenceComboBox);
+
     this->setLayout(this->layout);
     this->layout->setContentsMargins(0, 0, 0, 0);
 }
@@ -67,6 +70,9 @@ QString FieldValueWidget::getFieldValue() const
         case FieldType::Real:
             return this->doubleSpinBox->text();
 
+        case FieldType::Reference:
+            return this->referenceComboBox->currentText();
+
         case FieldType::String:
             return this->lineEdit->text();
 
@@ -88,6 +94,7 @@ void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
             this->colorDialog->show();
             this->doubleSpinBox->hide();
             this->lineEdit->hide();
+            this->referenceComboBox->hide();
             this->spinBox->hide();
             break;
 
@@ -96,6 +103,7 @@ void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
             this->colorDialog->hide();
             this->doubleSpinBox->hide();
             this->lineEdit->hide();
+            this->referenceComboBox->hide();
             this->spinBox->hide();
             break;
 
@@ -104,6 +112,7 @@ void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
             this->colorDialog->hide();
             this->doubleSpinBox->hide();
             this->lineEdit->hide();
+            this->referenceComboBox->hide();
             this->spinBox->show();
             break;
 
@@ -112,6 +121,16 @@ void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
             this->colorDialog->hide();
             this->doubleSpinBox->show();
             this->lineEdit->hide();
+            this->referenceComboBox->hide();
+            this->spinBox->hide();
+            break;
+
+        case FieldType::Reference:
+            this->checkBox->hide();
+            this->colorDialog->hide();
+            this->doubleSpinBox->hide();
+            this->lineEdit->hide();
+            this->referenceComboBox->show();
             this->spinBox->hide();
             break;
 
@@ -120,6 +139,7 @@ void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
             this->colorDialog->hide();
             this->doubleSpinBox->hide();
             this->lineEdit->show();
+            this->referenceComboBox->hide();
             this->spinBox->hide();
             break;
 
@@ -128,6 +148,7 @@ void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
             this->colorDialog->hide();
             this->doubleSpinBox->hide();
             this->lineEdit->hide();
+            this->referenceComboBox->hide();
             this->spinBox->hide();
             break;
     }
@@ -167,6 +188,12 @@ void FieldValueWidget::setFieldValue(const QString& fieldValue)
             }
             break;
 
+        case FieldType::Reference:
+            {
+                this->referenceComboBox->setCurrentText(fieldValue);
+            }
+            break;
+
         case FieldType::String:
             {
                 this->lineEdit->setText(fieldValue);
@@ -176,4 +203,10 @@ void FieldValueWidget::setFieldValue(const QString& fieldValue)
         default:
             break;
     }
+}
+
+void FieldValueWidget::setRecordNames(const QStringList& recordNames)
+{
+    this->referenceComboBox->clear();
+    this->referenceComboBox->addItems(recordNames);
 }

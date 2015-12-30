@@ -3,6 +3,7 @@
 
 #include <QSharedPointer>
 #include <QString>
+#include <QStringList>
 #include <QVector>
 
 #include "../Export/recordexporttemplate.h"
@@ -42,6 +43,12 @@ namespace Tome
              * @return Record with the specified display name, or a null pointer if that record could not be found.
              */
             QSharedPointer<Record> getRecordByDisplayName(const QString& displayName) const;
+
+            /**
+             * @brief getRecordNames Returns a list containing the names of all records of this project.
+             * @return List containing the names of all records of this project.
+             */
+            QStringList getRecordNames() const;
     };
 }
 

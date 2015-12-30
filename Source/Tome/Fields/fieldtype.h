@@ -12,10 +12,10 @@ namespace Tome
             Color,
             Integer,
             Real,
+            Reference,
             String
         };
     }
 }
 
 #endif // FIELDTYPE
-

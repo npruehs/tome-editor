@@ -31,6 +31,9 @@ QString ValueConverter::FieldTypeToString(const FieldType::FieldType& fieldType)
         case FieldType::Real:
             return "Real";
 
+        case FieldType::Reference:
+            return "Reference";
+
         case FieldType::String:
             return "String";
     }
@@ -60,6 +63,10 @@ FieldType::FieldType ValueConverter::StringToFieldType(const QString& s) const
     if (s == "Real")
     {
         return FieldType::Real;
+    }
+    if (s == "Reference")
+    {
+        return FieldType::Reference;
     }
     if (s == "String")
     {

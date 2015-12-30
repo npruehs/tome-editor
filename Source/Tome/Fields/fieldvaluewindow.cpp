@@ -50,3 +50,8 @@ void FieldValueWindow::setFieldType(const Tome::FieldType::FieldType& fieldType)
     this->ui->labelTypeValue->setText(fieldTypeName);
     this->fieldValueWidget->setFieldType(fieldType);
 }
+
+void FieldValueWindow::setRecordNames(const QStringList& recordNames)
+{
+    this->fieldValueWidget->setRecordNames(recordNames);
+}

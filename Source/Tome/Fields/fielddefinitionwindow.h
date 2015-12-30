@@ -31,6 +31,7 @@ class FieldDefinitionWindow : public QDialog
         void setFieldId(const QString& fieldId);
         void setDefaultValue(const QString& defaultValue);
         void setFieldType(const Tome::FieldType::FieldType& fieldType) const;
+        void setRecordNames(const QStringList& recordNames);
 
     public slots:
         void accept();

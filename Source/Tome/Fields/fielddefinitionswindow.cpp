@@ -42,6 +42,9 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
         this->fieldDefinitionWindow = new FieldDefinitionWindow(this);
     }
 
+    // Update available record references.
+    this->fieldDefinitionWindow->setRecordNames(this->project->getRecordNames());
+
     int result = this->fieldDefinitionWindow->exec();
 
     if (result == QDialog::Accepted)
@@ -74,6 +77,9 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
     {
         this->fieldDefinitionWindow = new FieldDefinitionWindow(this);
     }
+
+    // Update available record references.
+    this->fieldDefinitionWindow->setRecordNames(this->project->getRecordNames());
 
     // Update view.
     this->fieldDefinitionWindow->setFieldId(fieldDefinition->id);

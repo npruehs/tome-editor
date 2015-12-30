@@ -77,3 +77,25 @@ QSharedPointer<Record> Project::getRecordByDisplayName(const QString& displayNam
 
     return QSharedPointer<Record>(0);
 }
+
+QStringList Project::getRecordNames() const
+{
+    QStringList names;
+
+    for (QVector<QSharedPointer<RecordSet> >::const_iterator itRecordSets = this->recordSets.begin();
+         itRecordSets != this->recordSets.end();
+         ++itRecordSets)
+    {
+        QSharedPointer<RecordSet> recordSet = *itRecordSets;
+
+        for (QVector<QSharedPointer<Record> >::const_iterator itRecords = recordSet->records.begin();
+             itRecords != recordSet->records.end();
+             ++itRecords)
+        {
+            QSharedPointer<Record> record = *itRecords;
+            names << record->displayName;
+        }
+    }
+
+    return names;
+}

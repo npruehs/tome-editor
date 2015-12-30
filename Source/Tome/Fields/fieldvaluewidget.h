@@ -3,11 +3,13 @@
 
 #include <QCheckBox>
 #include <QColorDialog>
+#include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QString>
 #include <QVBoxLayout>
+#include <QVector>
 #include <QWidget>
 
 #include "../Fields/fieldtype.h"
@@ -30,6 +32,7 @@ namespace Tome
 
             void setFieldType(const FieldType::FieldType& fieldType);
             void setFieldValue(const QString& fieldValue);
+            void setRecordNames(const QStringList& recordNames);
 
         private:
             FieldType::FieldType fieldType;
@@ -39,6 +42,7 @@ namespace Tome
             QDoubleSpinBox* doubleSpinBox;
             QVBoxLayout* layout;
             QLineEdit* lineEdit;
+            QComboBox* referenceComboBox;
             QSpinBox* spinBox;
     };
 }

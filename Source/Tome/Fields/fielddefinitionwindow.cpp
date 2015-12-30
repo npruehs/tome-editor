@@ -25,6 +25,7 @@ FieldDefinitionWindow::FieldDefinitionWindow(QWidget *parent) :
     this->ui->comboBoxType->addItem("Color");
     this->ui->comboBoxType->addItem("Integer");
     this->ui->comboBoxType->addItem("Real");
+    this->ui->comboBoxType->addItem("Reference");
     this->ui->comboBoxType->addItem("String");
 }
 
@@ -92,6 +93,11 @@ void FieldDefinitionWindow::setFieldType(const FieldType::FieldType& fieldType) 
     ValueConverter valueConverter;
     const QString fieldTypeName = valueConverter.FieldTypeToString(fieldType);
     this->ui->comboBoxType->setCurrentText(fieldTypeName);
+}
+
+void FieldDefinitionWindow::setRecordNames(const QStringList& recordNames)
+{
+    this->fieldValueWidget->setRecordNames(recordNames);
 }
 
 void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &fieldType)
