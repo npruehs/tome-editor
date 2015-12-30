@@ -68,10 +68,13 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
                      it != project->recordExportTemplates.end();
                      ++it)
                 {
-                    QSharedPointer<RecordExportTemplate> exportTemplate = it.value();
+                    writer.writeStartElement(ElementTemplate);
+                    {
+                        QSharedPointer<RecordExportTemplate> exportTemplate = it.value();
 
-                    writer.writeTextElement(ElementName, exportTemplate->name);
-                    writer.writeTextElement(ElementFileExtension, exportTemplate->fileExtension);
+                        writer.writeTextElement(ElementName, exportTemplate->name);
+                        writer.writeTextElement(ElementFileExtension, exportTemplate->fileExtension);
+                    }
                 }
             }
             writer.writeEndElement();
