@@ -197,7 +197,10 @@
     </iconset>
    </property>
    <property name="text">
-    <string>Remove Record</string>
+    <string>Delete Record</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete Record</string>
    </property>
    <property name="shortcut">
     <string>Del</string>
