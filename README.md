@@ -10,10 +10,14 @@ The tool is pretty self-explanatory. However, to give you a headstart, feel free
 
 ## Features
 
-* Import of arbitrary data field definitions including constraints
+* Creating data field definitions including constraints
+* Editing record values conveniently with tooltips and validation
 * Arbitrary output data formats through templates
-* Hierarchical record structure
 * Splitting data up into multiple files for improved collaboration
+
+### In Development (subject to change)
+
+* Hierarchical record structure
 * Data import from various sources such as Microsoft Excel
 * Export and import of localization tables as CSV and TMX
 * Command-line support for easy integration into CI and other tool chains
@@ -55,7 +59,7 @@ Tome is developed using the [GitFlow branching model](http://nvie.com/posts/a-su
 
 ### Step 3: Implement your feature or bugfix
 
-Tome is based on [Qt 5.4](http://www.qt.io/).
+Tome is based on [Qt 5.5](http://www.qt.io/).
 
 You might also take a look at our [development wiki](https://github.com/npruehs/game-data-editor/wiki) in order to get a better understanding of how everything's tied together.
 
