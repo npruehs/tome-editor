@@ -611,7 +611,14 @@ QString MainWindow::getFullProjectPath(QSharedPointer<Project> project) const
 
 QString MainWindow::getSelectedRecordDisplayName() const
 {
-    QModelIndex currentIndex = this->ui->treeView->selectionModel()->currentIndex();
+    QModelIndexList selectedIndexes = this->ui->treeView->selectionModel()->selectedIndexes();
+
+    if (selectedIndexes.empty())
+    {
+        return QString();
+    }
+
+    QModelIndex currentIndex = selectedIndexes.first();
 
     if (!currentIndex.isValid())
     {
