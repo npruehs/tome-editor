@@ -144,7 +144,7 @@ void MainWindow::on_actionOpen_Project_triggered()
             QMessageBox::critical(
                         this,
                         tr("Unable to open project"),
-                        tr("File could not be read:\r\n") + e.what(),
+                        tr("File could not be read: ") + projectFileName + "\r\n" + e.what(),
                         QMessageBox::Close,
                         QMessageBox::Close);
             return;
@@ -175,7 +175,7 @@ void MainWindow::on_actionOpen_Project_triggered()
                     QMessageBox::critical(
                                 this,
                                 tr("Unable to open project"),
-                                tr("File could not be read:\r\n") + e.what(),
+                                tr("File could not be read: ") + fullFieldDefinitionSetPath + "\r\n" + e.what(),
                                 QMessageBox::Close,
                                 QMessageBox::Close);
                     return;
@@ -218,7 +218,7 @@ void MainWindow::on_actionOpen_Project_triggered()
                     QMessageBox::critical(
                                 this,
                                 tr("Unable to open project"),
-                                tr("File could not be read:\r\n") + e.what(),
+                                tr("File could not be read: ") + fullRecordSetPath + "\r\n" + e.what(),
                                 QMessageBox::Close,
                                 QMessageBox::Close);
                     return;
