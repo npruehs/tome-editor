@@ -41,7 +41,7 @@ void RecordsItemModel::addRecord(const QString& id, const QString& displayName)
     this->insertItem(displayName);
 }
 
-void RecordsItemModel::updateRecord(const QString& displayName, const QString& newId, const QString& newDisplayName)
+void RecordsItemModel::updateRecord(const QString displayName, const QString& newId, const QString& newDisplayName)
 {
     // Update record.
     QSharedPointer<Record> record = this->project->getRecordByDisplayName(displayName);
