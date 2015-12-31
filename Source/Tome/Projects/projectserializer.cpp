@@ -75,6 +75,7 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
                         writer.writeTextElement(ElementName, exportTemplate->name);
                         writer.writeTextElement(ElementFileExtension, exportTemplate->fileExtension);
                     }
+                    writer.writeEndElement();
                 }
             }
             writer.writeEndElement();
