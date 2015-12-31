@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Fields>
+    <Field Id="Acceleration" DisplayName="Acceleration" Description="Acceleration of this entity, in m/s²." DefaultValue="4.500" Type="Real"/>
+    <Field Id="ArmorType" DisplayName="Armor Type" Description="Type of the armor of this entity. Affects actual damage taken by enemy attacks, depending on the attacker's damage type." DefaultValue="Cloth" Type="String"/>
+    <Field Id="AttackDamage" DisplayName="Attack Damage" Description="Damage dealt by every attack of this entity. Affected by its damage type and the defender's armor type." DefaultValue="12" Type="Integer"/>
+    <Field Id="AttackRange" DisplayName="Attack Range" Description="Range of attack of this entity, in m." DefaultValue="18.250" Type="Real"/>
+    <Field Id="Cooldown" DisplayName="Cooldown" Description="Time between two attacks of this entity, in seconds." DefaultValue="1.200" Type="Real"/>
+    <Field Id="DamageType" DisplayName="Damage Type" Description="Type of the damage dealt by this entity. Affects actual damage dealt by its attacks, depending on the target's armor type." DefaultValue="Light" Type="String"/>
+    <Field Id="Health" DisplayName="Health" Description="Maximum health of this entity. If reduced to zero, it dies." DefaultValue="200" Type="Integer"/>
+    <Field Id="HealthRegeneration" DisplayName="Health Regeneration" Description="Health regeneration rate of this entity, in health / second." DefaultValue="0" Type="Integer"/>
+    <Field Id="Invulnerable" DisplayName="Invulnerable" Description="Whether this entity can take damage and be targeted, or not." DefaultValue="False" Type="Boolean"/>
+    <Field Id="Mana" DisplayName="Mana" Description="Maximum mana of this entity. Regenerates automatically. Required for most spells." DefaultValue="100" Type="Integer"/>
+    <Field Id="MP5" DisplayName="Mana Regeneration" Description="Mana regeneration rate of this entity, in mana / 5 seconds." DefaultValue="3" Type="Integer"/>
+    <Field Id="Mass" DisplayName="Mass" Description="Mass of this entity, in kg. Affects physics and collision separation." DefaultValue="1.000" Type="Real"/>
+    <Field Id="MovementSpeed" DisplayName="Movement Speed" Description="Speed of this entity, in m/s." DefaultValue="12.750" Type="Real"/>
+    <Field Id="Name" DisplayName="Name" Description="Name of this entity." DefaultValue="" Type="String"/>
+    <Field Id="Projectile" DisplayName="Projectile" Description="Type of the projectile fired by this entity when attacking." DefaultValue="" Type="Reference"/>
+    <Field Id="RotationSpeed" DisplayName="Rotation Speed" Description="Rotation speed of this entity, in degrees / second." DefaultValue="360.000" Type="Real"/>
+    <Field Id="SightRadius" DisplayName="Sight Radius" Description="Range of sight of this entity, in m." DefaultValue="25.000" Type="Real"/>
+    <Field Id="Sprite" DisplayName="Sprite" Description="Name of the sprite used to visualize this entity." DefaultValue="" Type="String"/>
+    <Field Id="SpriteColor" DisplayName="SpriteColor" Description="Color to render the sprite of this entity with." DefaultValue="#ffffffff" Type="Color"/>
+</Fields>
