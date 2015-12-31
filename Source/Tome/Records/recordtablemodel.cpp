@@ -145,6 +145,11 @@ QString RecordTableModel::getFieldValue(const QModelIndex& index) const
     return this->record->fieldValues.values()[index.row()];
 }
 
+void RecordTableModel::clearRecord()
+{
+    this->setRecord(QSharedPointer<Record>(0));
+}
+
 void RecordTableModel::setFieldValue(const QString& fieldId, const QString& fieldValue)
 {
     // Update model.

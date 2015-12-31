@@ -534,6 +534,12 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
 {
     Q_UNUSED(deselected);
 
+    if (selected.empty())
+    {
+        this->recordViewModel->clearRecord();
+        return;
+    }
+
     QModelIndex selectedIndex = selected.first().indexes().first();
 
     if (!selectedIndex.isValid())

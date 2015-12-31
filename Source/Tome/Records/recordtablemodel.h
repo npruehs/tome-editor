@@ -30,6 +30,7 @@ namespace Tome
             QString getFieldId(const QModelIndex &index) const;
             QString getFieldValue(const QModelIndex &index) const;
 
+            void clearRecord();
             void setFieldValue(const QString& fieldId, const QString& fieldValue);
             void setProject(QSharedPointer<Tome::Project> project);
             void setRecord(QSharedPointer<Tome::Record> record);
