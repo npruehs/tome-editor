@@ -69,6 +69,7 @@ class MainWindow : public QMainWindow
 
         void createNewProject(const QString& name, const QString& path);
         QString getFullProjectPath() const;
+        QString getFullProjectPath(QSharedPointer<Tome::Project> project) const;
         QString getSelectedRecordDisplayName() const;
         QString readProjectFile(QString projectPath, QString fileName);
         bool saveProject(QSharedPointer<Tome::Project> project);

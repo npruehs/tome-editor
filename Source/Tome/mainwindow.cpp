@@ -590,12 +590,17 @@ void MainWindow::createNewProject(const QString &projectName, const QString &pro
 
 QString MainWindow::getFullProjectPath() const
 {
-    if (this->project == 0)
+    return this->getFullProjectPath(this->project);
+}
+
+QString MainWindow::getFullProjectPath(QSharedPointer<Project> project) const
+{
+    if (project == 0)
     {
         return QString();
     }
 
-    return combinePaths(this->project->path, this->project->name + ProjectFileExtension);
+    return combinePaths(project->path, project->name + ProjectFileExtension);
 }
 
 QString MainWindow::getSelectedRecordDisplayName() const
@@ -635,7 +640,7 @@ bool MainWindow::saveProject(QSharedPointer<Project> project)
             QSharedPointer<ProjectSerializer>::create();
 
     // Build file name.
-    const QString fullProjectPath = this->getFullProjectPath();
+    const QString fullProjectPath = this->getFullProjectPath(project);
 
     // Write project file.
     QSharedPointer<QFile> projectFile = QSharedPointer<QFile>::create(fullProjectPath);
