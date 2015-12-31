@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TomeProject>
+    <Name>Tome Example Project</Name>
+    <FieldDefinitions>
+        <Path>Tome Example Project</Path>
+    </FieldDefinitions>
+    <Records>
+        <Path>Tome Example Project</Path>
+    </Records>
+    <RecordExportTemplates>
+        <Template>
+            <Name>HTML</Name>
+            <FileExtension>.html</FileExtension>
+        </Template>
+        <Template>
+            <Name>JSON</Name>
+            <FileExtension>.json</FileExtension>
+        </Template>
+        <Template>
+            <Name>Slash XML</Name>
+            <FileExtension>.blueprints.xml</FileExtension>
+        </Template>
+        <Template>
+            <Name>StarCraft II XML</Name>
+            <FileExtension>.xml</FileExtension>
+        </Template>
+    </RecordExportTemplates>
+</TomeProject>

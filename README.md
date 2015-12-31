@@ -1,6 +1,6 @@
 # Tome
 
-Tome is a generic .NET data editor for games supporting arbitrary input and output formats.
+Tome is a generic data editor for games supporting arbitrary input and output formats.
 
 Developing games is all about data. With game systems for modifying data and user interfaces for presenting it, finding a sophisticated data model is key to creating successful games. Even more, being able to change this data and iterate on a day-to-day basis is mandatory in today's production cycles.
 
@@ -10,10 +10,14 @@ The tool is pretty self-explanatory. However, to give you a headstart, feel free
 
 ## Features
 
-* Import of arbitrary data field definitions including constraints
+* Creating data field definitions including constraints
+* Editing record values conveniently with tooltips and validation
 * Arbitrary output data formats through templates
-* Hierarchical record structure
 * Splitting data up into multiple files for improved collaboration
+
+### In Development (subject to change)
+
+* Hierarchical record structure
 * Data import from various sources such as Microsoft Excel
 * Export and import of localization tables as CSV and TMX
 * Command-line support for easy integration into CI and other tool chains
@@ -23,7 +27,7 @@ The tool is pretty self-explanatory. However, to give you a headstart, feel free
 We know that using a tool like Tome in production requires you to be completely sure about stability and compatibility. Thus, new releases of Tome are created using [Semantic Versioning](http://semver.org/). In short:
 
 * Version numbers are specified as MAJOR.MINOR.PATCH.
-* MAJOR version increases indicate incompatible changes with respect to Tome [data types](https://github.com/npruehs/game-data-editor/wiki/Data-Types) and/or [files](https://github.com/npruehs/game-data-editor/wiki/Project-Structure).
+* MAJOR version increases indicate incompatible changes with respect to Tome [data types and/or files](https://github.com/npruehs/game-data-editor/wiki/Project-Structure).
 * MINOR version increases indicate new functionality that are backwards-compatible.
 * PATCH version increases indicate backwards-compatible bug fixes.
 
@@ -41,7 +45,7 @@ After being able to reproduce the issue, we'll look into fixing it immediately.
 
 You'd like to help make Tome even more awesome? Seems like today's our lucky day! In order to maintain stability of the tool and its code base, please adhere to the following steps, and we'll be pleased to include your additions in our next release.
 
-Note that Tome is distributed under the [MIT License](https://github.com/npruehs/game-data-editor/blob/master/LICENSE). So will your code.
+Note that Tome is distributed under the [GNU Lesser General Public License 3.0](https://github.com/npruehs/game-data-editor/blob/master/LICENSE). So will be your code.
 
 ### Step 1: Choose what to do
 
@@ -55,7 +59,7 @@ Tome is developed using the [GitFlow branching model](http://nvie.com/posts/a-su
 
 ### Step 3: Implement your feature or bugfix
 
-Tome is based on Microsoft's [Windows Presentation Foundation](https://msdn.microsoft.com/en-us/library/ms754130(v=vs.110).aspx) and the .NET Framework. We recommend using [Visual Studio](https://www.visualstudio.com/en-us/downloads/visual-studio-2015-downloads-vs.aspx) for developing, and [StyleCop](http://stylecop.codeplex.com/) for verifying your code against our [coding guidelines](https://msdn.microsoft.com/en-us/library/ff926074.aspx).
+Tome is based on [Qt 5.5](http://www.qt.io/).
 
 You might also take a look at our [development wiki](https://github.com/npruehs/game-data-editor/wiki) in order to get a better understanding of how everything's tied together.
 
@@ -65,4 +69,4 @@ Finally, [open a pull request](https://help.github.com/articles/using-pull-reque
 
 ## License
 
-Tome is released under the [MIT license](https://github.com/npruehs/game-data-editor/blob/master/LICENSE).
+Tome is released under the [GNU Lesser General Public License 3.0](https://github.com/npruehs/game-data-editor/blob/master/LICENSE).
