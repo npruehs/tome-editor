@@ -581,10 +581,11 @@ void MainWindow::createNewProject(const QString &projectName, const QString &pro
     newProject->recordSets.push_back(recordSet);
 
     // Write project files.
-    this->saveProject(newProject);
-
-    // Set project reference.
-    this->setProject(newProject);
+    if (this->saveProject(newProject))
+    {
+        // Set project reference.
+        this->setProject(newProject);
+    }
 }
 
 QString MainWindow::getFullProjectPath() const
@@ -626,7 +627,7 @@ QString MainWindow::readProjectFile(QString projectPath, QString fileName)
     }
 }
 
-void MainWindow::saveProject(QSharedPointer<Project> project)
+bool MainWindow::saveProject(QSharedPointer<Project> project)
 {
     QString& projectPath = project->path;
 
@@ -651,7 +652,7 @@ void MainWindow::saveProject(QSharedPointer<Project> project)
                     tr("Destination file could not be written:\r\n") + fullProjectPath,
                     QMessageBox::Close,
                     QMessageBox::Close);
-        return;
+        return false;
     }
 
     // Write field definition sets.
@@ -683,7 +684,7 @@ void MainWindow::saveProject(QSharedPointer<Project> project)
                         tr("Destination file could not be written:\r\n") + fullFieldDefinitionSetPath,
                         QMessageBox::Close,
                         QMessageBox::Close);
-            return;
+            return false;
         }
     }
 
@@ -709,7 +710,19 @@ void MainWindow::saveProject(QSharedPointer<Project> project)
         {
             recordSetSerializer->serialize(recordSetFile, recordSet);
         }
+        else
+        {
+            QMessageBox::critical(
+                        this,
+                        tr("Unable to create project"),
+                        tr("Destination file could not be written:\r\n") + fullRecordSetPath,
+                        QMessageBox::Close,
+                        QMessageBox::Close);
+            return false;
+        }
     }
+
+    return true;
 }
 
 void MainWindow::setProject(QSharedPointer<Project> project)

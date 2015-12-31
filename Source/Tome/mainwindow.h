@@ -71,7 +71,7 @@ class MainWindow : public QMainWindow
         QString getFullProjectPath() const;
         QString getSelectedRecordDisplayName() const;
         QString readProjectFile(QString projectPath, QString fileName);
-        void saveProject(QSharedPointer<Tome::Project> project);
+        bool saveProject(QSharedPointer<Tome::Project> project);
         void setProject(QSharedPointer<Tome::Project> project);
         void showWindow(QWidget* widget);
         void updateMenus();
