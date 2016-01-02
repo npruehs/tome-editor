@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TomeProject>
     <Name>Tome Example Project</Name>
+    <Components>
+        <Name>ArmorComponent</Name>
+        <Name>AttackComponent</Name>
+        <Name>InvulnerabilityComponent</Name>
+        <Name>ManaComponent</Name>
+        <Name>MovementComponent</Name>
+        <Name>NameComponent</Name>
+        <Name>PhysicsComponent</Name>
+        <Name>RangeComponent</Name>
+        <Name>SightComponent</Name>
+        <Name>VisualizationComponent</Name>
+    </Components>
     <FieldDefinitions>
         <Path>Tome Example Project</Path>
     </FieldDefinitions>

@@ -8,13 +8,15 @@
 using namespace Tome;
 
 
-const QString FieldDefinitionSetSerializer::ElementDefaultValue = "DefaultValue";
-const QString FieldDefinitionSetSerializer::ElementDescription = "Description";
-const QString FieldDefinitionSetSerializer::ElementDisplayName = "DisplayName";
+const QString FieldDefinitionSetSerializer::AttributeComponent = "Component";
+const QString FieldDefinitionSetSerializer::AttributeDefaultValue = "DefaultValue";
+const QString FieldDefinitionSetSerializer::AttributeDescription = "Description";
+const QString FieldDefinitionSetSerializer::AttributeDisplayName = "DisplayName";
+const QString FieldDefinitionSetSerializer::AttributeId = "Id";
+const QString FieldDefinitionSetSerializer::AttributeType = "Type";
 const QString FieldDefinitionSetSerializer::ElementField = "Field";
 const QString FieldDefinitionSetSerializer::ElementFields = "Fields";
-const QString FieldDefinitionSetSerializer::ElementId = "Id";
-const QString FieldDefinitionSetSerializer::ElementType = "Type";
+
 
 FieldDefinitionSetSerializer::FieldDefinitionSetSerializer()
 {
@@ -44,11 +46,17 @@ void FieldDefinitionSetSerializer::serialize(QSharedPointer<QIODevice> device, Q
                 FieldDefinition* fieldDefinition = it->data();
 
                 stream.writeStartElement(ElementField);
-                stream.writeAttribute(ElementId, fieldDefinition->id);
-                stream.writeAttribute(ElementDisplayName, fieldDefinition->displayName);
-                stream.writeAttribute(ElementDescription, fieldDefinition->description);
-                stream.writeAttribute(ElementDefaultValue, fieldDefinition->defaultValue);
-                stream.writeAttribute(ElementType, valueConverter->FieldTypeToString(fieldDefinition->fieldType));
+                stream.writeAttribute(AttributeId, fieldDefinition->id);
+                stream.writeAttribute(AttributeDisplayName, fieldDefinition->displayName);
+                stream.writeAttribute(AttributeDescription, fieldDefinition->description);
+                stream.writeAttribute(AttributeDefaultValue, fieldDefinition->defaultValue);
+                stream.writeAttribute(AttributeType, valueConverter->FieldTypeToString(fieldDefinition->fieldType));
+
+                if (!fieldDefinition->component.isEmpty())
+                {
+                    stream.writeAttribute(AttributeComponent, fieldDefinition->component);
+                }
+
                 stream.writeEndElement();
             }
         }
@@ -85,11 +93,18 @@ void FieldDefinitionSetSerializer::deserialize(QSharedPointer<QIODevice> device,
                 fieldDefinitionSet->fieldDefinitions.push_back(fieldDefinition);
 
                  // Read attribute values.
-                fieldDefinition->id = reader.readAttribute(ElementId);
-                fieldDefinition->displayName = reader.readAttribute(ElementDisplayName);
-                fieldDefinition->description = reader.readAttribute(ElementDescription);
-                fieldDefinition->defaultValue = reader.readAttribute(ElementDefaultValue);
-                fieldDefinition->fieldType = valueConverter->StringToFieldType(reader.readAttribute(ElementType));
+                fieldDefinition->id = reader.readAttribute(AttributeId);
+                fieldDefinition->displayName = reader.readAttribute(AttributeDisplayName);
+                fieldDefinition->description = reader.readAttribute(AttributeDescription);
+                fieldDefinition->defaultValue = reader.readAttribute(AttributeDefaultValue);
+                fieldDefinition->fieldType = valueConverter->StringToFieldType(reader.readAttribute(AttributeType));
+
+                QString component = reader.readAttribute(AttributeComponent);
+
+                if (!component.isEmpty())
+                {
+                    fieldDefinition->component = component;
+                }
 
                 // Advance reader.
                 reader.readEmptyElement(ElementField);

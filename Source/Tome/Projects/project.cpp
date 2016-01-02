@@ -6,6 +6,21 @@ Project::Project()
 {
 }
 
+QStringList Project::getComponentNames() const
+{
+    QStringList components;
+
+    for (QVector<QString>::const_iterator itComponents = this->components.begin();
+         itComponents != this->components.end();
+         ++itComponents)
+    {
+        const QString& component = *itComponents;
+        components << component;
+    }
+
+    return components;
+}
+
 QSharedPointer<FieldDefinition> Project::getFieldDefinition(const QString& id) const
 {
     for (QVector<QSharedPointer<FieldDefinitionSet> >::const_iterator itFieldDefinitionSets = this->fieldDefinitionSets.begin();

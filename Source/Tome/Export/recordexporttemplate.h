@@ -10,6 +10,8 @@ namespace Tome
         public:
             RecordExportTemplate();
 
+            QString componentDelimiter;
+            QString componentTemplate;
             QString fieldValueDelimiter;
             QString fieldValueTemplate;
             QString fileExtension;

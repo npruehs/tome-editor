@@ -28,7 +28,7 @@ int FieldDefinitionsTableModel::rowCount(const QModelIndex& parent) const
 int FieldDefinitionsTableModel::columnCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    return 5;
+    return 6;
 }
 
 QVariant FieldDefinitionsTableModel::data(const QModelIndex& index, int role) const
@@ -64,6 +64,8 @@ QVariant FieldDefinitionsTableModel::data(const QModelIndex& index, int role) co
             case 3:
                 return fieldDefinition->defaultValue;
             case 4:
+                return fieldDefinition->component;
+            case 5:
                 return fieldDefinition->description;
         }
 
@@ -96,6 +98,8 @@ QVariant FieldDefinitionsTableModel::headerData(int section, Qt::Orientation ori
             case 3:
                 return QString("Default Value");
             case 4:
+                return QString("Component");
+            case 5:
                 return QString("Description");
             }
         }
@@ -134,7 +138,7 @@ bool FieldDefinitionsTableModel::removeRows(int position, int rows, const QModel
     return true;
 }
 
-void FieldDefinitionsTableModel::addFieldDefinition(const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& defaultValue, const QString& description)
+void FieldDefinitionsTableModel::addFieldDefinition(const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& defaultValue, const QString& description, const QString& component)
 {
     int index = this->rowCount();
 
@@ -142,10 +146,10 @@ void FieldDefinitionsTableModel::addFieldDefinition(const QString& id, const QSt
     this->insertRows(index, 1, QModelIndex());
 
     // Update field definition.
-    this->updateFieldDefinition(index, id, displayName, fieldType, defaultValue, description);
+    this->updateFieldDefinition(index, id, displayName, fieldType, defaultValue, description, component);
 }
 
-void FieldDefinitionsTableModel::updateFieldDefinition(const int index, const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& defaultValue, const QString& description)
+void FieldDefinitionsTableModel::updateFieldDefinition(const int index, const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& defaultValue, const QString& description, const QString& component)
 {
     // Get field definition.
     QVector<QSharedPointer<FieldDefinition> >& fieldDefinitions = this->project->fieldDefinitionSets[0]->fieldDefinitions;
@@ -157,13 +161,14 @@ void FieldDefinitionsTableModel::updateFieldDefinition(const int index, const QS
     fieldDefinition->fieldType = fieldType;
     fieldDefinition->defaultValue = defaultValue;
     fieldDefinition->description = description;
+    fieldDefinition->component = component;
 
     // Sort by display name.
     std::sort(fieldDefinitions.begin(), fieldDefinitions.end(), lessThanFieldDefinitions);
 
     // Update view.
     QModelIndex first = this->index(0, 0, QModelIndex());
-    QModelIndex last = this->index(fieldDefinitions.size() - 1, 4, QModelIndex());
+    QModelIndex last = this->index(fieldDefinitions.size() - 1, 5, QModelIndex());
 
     emit(dataChanged(first, last));
 }

@@ -23,6 +23,8 @@ using namespace Tome;
 const QString MainWindow::FieldDefinitionFileExtension = ".tfields";
 const QString MainWindow::ProjectFileExtension = ".tproj";
 const QString MainWindow::RecordFileExtension = ".tdata";
+const QString MainWindow::RecordExportComponentTemplateExtension = ".texportc";
+const QString MainWindow::RecordExportComponentDelimiterExtension = ".texportcd";
 const QString MainWindow::RecordExportRecordFileTemplateExtension = ".texportf";
 const QString MainWindow::RecordExportRecordTemplateExtension = ".texportr";
 const QString MainWindow::RecordExportRecordDelimiterExtension = ".texportrd";
@@ -33,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     aboutWindow(0),
+    componentsWindow(0),
     fieldDefinitionsWindow(0),
     fieldValueWindow(0),
     newProjectWindow(0),
@@ -89,6 +92,17 @@ void MainWindow::on_actionField_Definions_triggered()
     }
 
     this->showWindow(this->fieldDefinitionsWindow);
+}
+
+
+void MainWindow::on_actionManage_Components_triggered()
+{
+    if (!this->componentsWindow)
+    {
+        this->componentsWindow = new ComponentsWindow(this->project, this);
+    }
+
+    this->showWindow(this->componentsWindow);
 }
 
 void MainWindow::on_actionNew_Project_triggered()
@@ -255,6 +269,10 @@ void MainWindow::on_actionOpen_Project_triggered()
                         this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordFileTemplateExtension);
                 exportTemplate->recordTemplate =
                         this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordTemplateExtension);
+                exportTemplate->componentDelimiter =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportComponentDelimiterExtension);
+                exportTemplate->componentTemplate =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportComponentTemplateExtension);
             }
             catch (const std::runtime_error& e)
             {
@@ -309,7 +327,7 @@ void MainWindow::on_actionNew_Record_triggered()
              ++itFieldDefinition)
         {
             QSharedPointer<FieldDefinition> fieldDefinition = *itFieldDefinition;
-            this->recordWindow->setRecordField(fieldDefinition->id, false);
+            this->recordWindow->setRecordField(fieldDefinition->id, fieldDefinition->component, false);
         }
     }
 
@@ -394,7 +412,7 @@ void MainWindow::on_actionEdit_Record_triggered()
             bool fieldEnabled = record->fieldValues.contains(fieldDefinition->id);
 
             // Add to view.
-            this->recordWindow->setRecordField(fieldDefinition->id, fieldEnabled);
+            this->recordWindow->setRecordField(fieldDefinition->id, fieldDefinition->component, fieldEnabled);
         }
     }
 

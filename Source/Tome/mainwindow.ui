@@ -76,6 +76,7 @@
     <property name="title">
      <string>Fields</string>
     </property>
+    <addaction name="actionManage_Components"/>
     <addaction name="actionField_Definions"/>
    </widget>
    <widget class="QMenu" name="menuRecords">
@@ -166,7 +167,7 @@
   </action>
   <action name="actionField_Definions">
    <property name="text">
-    <string>Field Definitions...</string>
+    <string>Manage Field Definitions...</string>
    </property>
   </action>
   <action name="actionNew_Record">
@@ -204,6 +205,11 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="actionManage_Components">
+   <property name="text">
+    <string>Manage Components...</string>
    </property>
   </action>
  </widget>

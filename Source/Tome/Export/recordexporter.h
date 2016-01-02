@@ -20,6 +20,8 @@ namespace Tome
             void exportRecords(QSharedPointer<QIODevice> device, QSharedPointer<Project> project, QSharedPointer<RecordExportTemplate> exportTemplate);
 
         private:
+            static const QString PlaceholderComponents;
+            static const QString PlaceholderComponentName;
             static const QString PlaceholderFieldId;
             static const QString PlaceholderFieldType;
             static const QString PlaceholderFieldValue;

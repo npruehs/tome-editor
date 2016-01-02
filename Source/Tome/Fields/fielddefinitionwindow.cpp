@@ -43,6 +43,11 @@ void FieldDefinitionWindow::accept()
     }
 }
 
+QString FieldDefinitionWindow::getFieldComponent() const
+{
+    return this->ui->comboBoxComponent->currentText();
+}
+
 QString FieldDefinitionWindow::getFieldDescription() const
 {
     return this->ui->plainTextEditDescription->toPlainText();
@@ -66,6 +71,22 @@ QString FieldDefinitionWindow::getDefaultValue() const
 FieldType::FieldType FieldDefinitionWindow::getFieldType() const
 {
     return this->fieldValueWidget->getFieldType();
+}
+
+void FieldDefinitionWindow::setComponentNames(const QStringList& componentNames)
+{
+    this->ui->comboBoxComponent->clear();
+
+    // Allow clearing the field.
+    this->ui->comboBoxComponent->addItem(QString());
+
+    // Add all available components.
+    this->ui->comboBoxComponent->addItems(componentNames);
+}
+
+void FieldDefinitionWindow::setFieldComponent(const QString& component) const
+{
+    this->ui->comboBoxComponent->setCurrentText(component);
 }
 
 void FieldDefinitionWindow::setFieldDescription(const QString& description)
@@ -115,7 +136,7 @@ void FieldDefinitionWindow::on_lineEditDisplayName_textEdited(const QString &dis
 bool FieldDefinitionWindow::validate()
 {
     // Id must not be empty.
-    if (this->getFieldId().size() == 0)
+    if (this->getFieldId().isEmpty())
     {
         QMessageBox::information(
                     this,
@@ -127,7 +148,7 @@ bool FieldDefinitionWindow::validate()
     }
 
     // Display name must not be empty.
-    if (this->getFieldDisplayName().size() == 0)
+    if (this->getFieldDisplayName().isEmpty())
     {
         QMessageBox::information(
                     this,
