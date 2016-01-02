@@ -1,4 +1,9 @@
     {
       "id": "$RECORD_ID$",
+      "attributes": {
 $RECORD_FIELDS$
+      },
+      "components": [
+$RECORD_COMPONENTS$
+      ]
     }

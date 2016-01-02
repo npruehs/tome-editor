@@ -4,5 +4,8 @@
       <AttributeTable>
 $RECORD_FIELDS$
       </AttributeTable>
+      <ComponentTypes>
+$RECORD_COMPONENTS$
+      </ComponentTypes>
     </Blueprint>
   </Entry>
