@@ -3,7 +3,6 @@
 
 #include <QMessageBox>
 
-#include "../Fields/fieldtype.h"
 #include "../Values/valueconverter.h"
 
 using namespace Tome;

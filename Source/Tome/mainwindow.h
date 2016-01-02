@@ -4,16 +4,17 @@
 #include <QMainWindow>
 #include <QSharedPointer>
 
-#include "Fields/componentswindow.h"
-#include "Fields/customtypeswindow.h"
+#include "Components/componentswindow.h"
 #include "Fields/fielddefinitionswindow.h"
 #include "Fields/fieldvaluewindow.h"
+#include "Help/aboutwindow.h"
 #include "Projects/newprojectwindow.h"
 #include "Projects/project.h"
 #include "Records/recordsitemmodel.h"
 #include "Records/recordtablemodel.h"
 #include "Records/recordwindow.h"
-#include "Help/aboutwindow.h"
+#include "Types/customtypeswindow.h"
+
 
 namespace Ui {
     class MainWindow;

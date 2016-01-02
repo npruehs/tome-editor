@@ -6,7 +6,7 @@
 
 namespace Tome
 {
-    namespace FieldType
+    namespace BuiltInType
     {
         const QString None = "None";
         const QString Boolean = "Boolean";

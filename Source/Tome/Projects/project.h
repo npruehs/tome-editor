@@ -7,9 +7,10 @@
 #include <QVector>
 
 #include "../Export/recordexporttemplate.h"
-#include "../Fields/customtype.h"
 #include "../Fields/fielddefinitionset.h"
 #include "../Records/recordset.h"
+#include "../Types/customtype.h"
+
 
 namespace Tome
 {

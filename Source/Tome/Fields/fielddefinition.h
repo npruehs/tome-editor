@@ -3,8 +3,6 @@
 
 #include <QString>
 
-#include "fieldtype.h"
-
 namespace Tome
 {
     class FieldDefinition

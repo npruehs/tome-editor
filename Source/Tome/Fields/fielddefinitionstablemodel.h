@@ -3,7 +3,6 @@
 
 #include <QAbstractTableModel>
 
-#include "../Fields/fieldtype.h"
 #include "../Projects/project.h"
 
 

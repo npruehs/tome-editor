@@ -2,6 +2,7 @@
 
 #include <QColor>
 
+#include "../Types/builtintype.h"
 #include "../Values/valueconverter.h"
 
 using namespace Tome;
@@ -71,7 +72,7 @@ QVariant FieldDefinitionsTableModel::data(const QModelIndex& index, int role) co
 
         return QVariant();
     }
-    else if (role == Qt::DecorationRole && index.column() == 3 && fieldDefinition->fieldType == FieldType::Color)
+    else if (role == Qt::DecorationRole && index.column() == 3 && fieldDefinition->fieldType == BuiltInType::Color)
     {
         // Show color preview.
         QColor color;

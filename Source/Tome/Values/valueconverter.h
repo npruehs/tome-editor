@@ -3,8 +3,6 @@
 
 #include <QString>
 
-#include "../Fields/fieldtype.h"
-
 namespace Tome
 {
     class ValueConverter

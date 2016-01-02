@@ -12,8 +12,6 @@
 #include <QVector>
 #include <QWidget>
 
-#include "../Fields/fieldtype.h"
-
 namespace Tome
 {
     /**

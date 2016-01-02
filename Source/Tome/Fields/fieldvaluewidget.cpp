@@ -2,6 +2,7 @@
 
 #include <limits>
 
+#include "../Types/builtintype.h"
 #include "../Values/valueconverter.h"
 
 using namespace Tome;
@@ -43,7 +44,7 @@ FieldValueWidget::FieldValueWidget(QWidget *parent) :
     this->layout->setContentsMargins(0, 0, 0, 0);
 
     // Pre-select type.
-    this->setFieldType(FieldType::Integer);
+    this->setFieldType(BuiltInType::Integer);
 }
 
 FieldValueWidget::~FieldValueWidget()
@@ -60,32 +61,32 @@ QString FieldValueWidget::getFieldValue() const
     ValueConverter valueConverter;
     QString fieldType = this->getFieldType();
 
-    if (fieldType == FieldType::Boolean)
+    if (fieldType == BuiltInType::Boolean)
     {
         return valueConverter.BoolToString(this->checkBox->isChecked());
     }
 
-    if (fieldType == FieldType::Color)
+    if (fieldType == BuiltInType::Color)
     {
         return this->colorDialog->currentColor().name(QColor::HexArgb);
     }
 
-    if (fieldType == FieldType::Integer)
+    if (fieldType == BuiltInType::Integer)
     {
          return this->spinBox->text();
     }
 
-    if (fieldType == FieldType::Real)
+    if (fieldType == BuiltInType::Real)
     {
         return this->doubleSpinBox->text();
     }
 
-    if (fieldType == FieldType::Reference)
+    if (fieldType == BuiltInType::Reference)
     {
         return this->referenceComboBox->currentText();
     }
 
-    if (fieldType == FieldType::String)
+    if (fieldType == BuiltInType::String)
     {
         return this->lineEdit->text();
     }
@@ -99,37 +100,37 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
     this->fieldType = fieldType;
 
     // Update view.
-    if (fieldType == FieldType::Boolean)
+    if (fieldType == BuiltInType::Boolean)
     {
         this->setCurrentWidget(this->checkBox);
         return;
     }
 
-    if (fieldType == FieldType::Color)
+    if (fieldType == BuiltInType::Color)
     {
         this->setCurrentWidget(this->colorDialog);
         return;
     }
 
-    if (fieldType == FieldType::Integer)
+    if (fieldType == BuiltInType::Integer)
     {
         this->setCurrentWidget(this->spinBox);
         return;
     }
 
-    if (fieldType == FieldType::Real)
+    if (fieldType == BuiltInType::Real)
     {
         this->setCurrentWidget(this->doubleSpinBox);
         return;
     }
 
-    if (fieldType == FieldType::Reference)
+    if (fieldType == BuiltInType::Reference)
     {
         this->setCurrentWidget(this->referenceComboBox);
         return;
     }
 
-    if (fieldType == FieldType::String)
+    if (fieldType == BuiltInType::String)
     {
         this->setCurrentWidget(this->lineEdit);
         return;
@@ -142,14 +143,14 @@ void FieldValueWidget::setFieldValue(const QString& fieldValue)
 {
     ValueConverter valueConverter;
 
-    if (fieldType == FieldType::Boolean)
+    if (fieldType == BuiltInType::Boolean)
     {
         bool value = valueConverter.StringToBool(fieldValue);
         this->checkBox->setChecked(value);
         return;
     }
 
-    if (fieldType == FieldType::Color)
+    if (fieldType == BuiltInType::Color)
     {
         QColor color;
         color.setNamedColor(fieldValue);
@@ -157,27 +158,27 @@ void FieldValueWidget::setFieldValue(const QString& fieldValue)
         return;
     }
 
-    if (fieldType == FieldType::Integer)
+    if (fieldType == BuiltInType::Integer)
     {
         int value = fieldValue.toInt();
         this->spinBox->setValue(value);
         return;
     }
 
-    if (fieldType == FieldType::Real)
+    if (fieldType == BuiltInType::Real)
     {
         double value = fieldValue.toDouble();
         this->doubleSpinBox->setValue(value);
         return;
     }
 
-    if (fieldType == FieldType::Reference)
+    if (fieldType == BuiltInType::Reference)
     {
         this->referenceComboBox->setCurrentText(fieldValue);
         return;
     }
 
-    if (fieldType == FieldType::String)
+    if (fieldType == BuiltInType::String)
     {
         this->lineEdit->setText(fieldValue);
         return;

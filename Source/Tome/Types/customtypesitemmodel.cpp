@@ -1,5 +1,7 @@
 #include "customtypesitemmodel.h"
 
+#include "../Types/builtintype.h"
+
 using namespace Tome;
 
 
@@ -29,7 +31,7 @@ void CustomTypesItemModel::addCustomType(const QString& name, const QStringList&
     // Add type.
     QSharedPointer<CustomType> newType = QSharedPointer<CustomType>::create();
     newType->name = name;
-    newType->baseType = FieldType::String;
+    newType->baseType = BuiltInType::String;
     newType->setEnumeration(enumeration);
 
     this->project->types.push_back(newType);

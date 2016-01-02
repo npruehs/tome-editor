@@ -4,7 +4,6 @@
 #include <QDialog>
 
 #include "../Fields/fieldvaluewidget.h"
-#include "../Fields/fieldtype.h"
 
 
 namespace Ui {
