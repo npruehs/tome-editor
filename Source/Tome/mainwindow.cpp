@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     aboutWindow(0),
+    componentsWindow(0),
     fieldDefinitionsWindow(0),
     fieldValueWindow(0),
     newProjectWindow(0),
@@ -89,6 +90,17 @@ void MainWindow::on_actionField_Definions_triggered()
     }
 
     this->showWindow(this->fieldDefinitionsWindow);
+}
+
+
+void MainWindow::on_actionManage_Components_triggered()
+{
+    if (!this->componentsWindow)
+    {
+        this->componentsWindow = new ComponentsWindow(this->project, this);
+    }
+
+    this->showWindow(this->componentsWindow);
 }
 
 void MainWindow::on_actionNew_Project_triggered()

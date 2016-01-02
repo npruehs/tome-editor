@@ -1,7 +1,6 @@
 #ifndef FIELDDEFINITIONWINDOW_H
 #define FIELDDEFINITIONWINDOW_H
 
-#include <QCloseEvent>
 #include <QDialog>
 
 #include "../Fields/fieldvaluewidget.h"

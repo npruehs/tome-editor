@@ -45,7 +45,10 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Fields/fieldvaluewindow.cpp \
     ../Source/Tome/Fields/fieldvaluewidget.cpp \
     ../Source/Tome/Export/recordexporttemplate.cpp \
-    ../Source/Tome/Export/recordexporter.cpp
+    ../Source/Tome/Export/recordexporter.cpp \
+    ../Source/Tome/Fields/componentswindow.cpp \
+    ../Source/Tome/Fields/componentsitemmodel.cpp \
+    ../Source/Tome/Fields/componentwindow.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/fieldtype.h \
@@ -71,7 +74,10 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/fieldvaluewindow.h \
     ../Source/Tome/Fields/fieldvaluewidget.h \
     ../Source/Tome/Export/recordexporttemplate.h \
-    ../Source/Tome/Export/recordexporter.h
+    ../Source/Tome/Export/recordexporter.h \
+    ../Source/Tome/Fields/componentswindow.h \
+    ../Source/Tome/Fields/componentsitemmodel.h \
+    ../Source/Tome/Fields/componentwindow.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \
@@ -79,7 +85,9 @@ FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Fields/fielddefinitionwindow.ui \
     ../Source/Tome/Fields/fielddefinitionswindow.ui \
     ../Source/Tome/Records/recordwindow.ui \
-    ../Source/Tome/Fields/fieldvaluewindow.ui
+    ../Source/Tome/Fields/fieldvaluewindow.ui \
+    ../Source/Tome/Fields/componentswindow.ui \
+    ../Source/Tome/Fields/componentwindow.ui
 
 RESOURCES += \
     tome.qrc

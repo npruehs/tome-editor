@@ -7,6 +7,7 @@
 using namespace Tome;
 
 
+const QString ProjectSerializer::ElementComponents = "Components";
 const QString ProjectSerializer::ElementFieldDefinitions = "FieldDefinitions";
 const QString ProjectSerializer::ElementFileExtension = "FileExtension";
 const QString ProjectSerializer::ElementName = "Name";
@@ -35,6 +36,19 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
             // Write project name.
             writer.writeTextElement(ElementName, project->name);
 
+            // Write components.
+            writer.writeStartElement(ElementComponents);
+            {
+                for (QVector<QString>::iterator it = project->components.begin();
+                     it != project->components.end();
+                     ++it)
+                {
+                    QString component = *it;
+                    writer.writeTextElement(ElementName, component);
+                }
+            }
+            writer.writeEndElement();
+
             // Write field definition set paths.
             writer.writeStartElement(ElementFieldDefinitions);
             {
@@ -42,8 +56,8 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
                      it != project->fieldDefinitionSets.end();
                      ++it)
                 {
-                    Tome::FieldDefinitionSet* itSet = it->data();
-                    writer.writeTextElement(ElementPath, itSet->name);
+                    Tome::FieldDefinitionSet* fieldDefinitionSet = it->data();
+                    writer.writeTextElement(ElementPath, fieldDefinitionSet->name);
                 }
             }
             writer.writeEndElement();
@@ -55,8 +69,8 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
                      it != project->recordSets.end();
                      ++it)
                 {
-                    Tome::RecordSet* itSet = it->data();
-                    writer.writeTextElement(ElementPath, itSet->name);
+                    Tome::RecordSet* recordSet = it->data();
+                    writer.writeTextElement(ElementPath, recordSet->name);
                 }
             }
             writer.writeEndElement();
@@ -102,6 +116,17 @@ void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPoi
         {
             // Read project name.
             project->name = reader.readTextElement(ElementName);
+
+            // Read components.
+            reader.readStartElement(ElementComponents);
+            {
+                while (reader.isAtElement(ElementName))
+                {
+                    const QString component = reader.readTextElement(ElementName);
+                    project->components.push_back(component);
+                }
+            }
+            reader.readEndElement();
 
             // Read field definition set paths.
             reader.readStartElement(ElementFieldDefinitions);

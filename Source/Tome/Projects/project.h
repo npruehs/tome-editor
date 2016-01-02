@@ -19,6 +19,8 @@ namespace Tome
 
             QString name;
             QString path;
+
+            QVector<QString> components;
             QVector< QSharedPointer<FieldDefinitionSet> > fieldDefinitionSets;
             QMap<QString, QSharedPointer<RecordExportTemplate> > recordExportTemplates;
             QVector< QSharedPointer<RecordSet> > recordSets;

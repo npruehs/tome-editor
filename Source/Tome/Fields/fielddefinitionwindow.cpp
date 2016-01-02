@@ -115,7 +115,7 @@ void FieldDefinitionWindow::on_lineEditDisplayName_textEdited(const QString &dis
 bool FieldDefinitionWindow::validate()
 {
     // Id must not be empty.
-    if (this->getFieldId().size() == 0)
+    if (this->getFieldId().isEmpty())
     {
         QMessageBox::information(
                     this,
@@ -127,7 +127,7 @@ bool FieldDefinitionWindow::validate()
     }
 
     // Display name must not be empty.
-    if (this->getFieldDisplayName().size() == 0)
+    if (this->getFieldDisplayName().isEmpty())
     {
         QMessageBox::information(
                     this,
