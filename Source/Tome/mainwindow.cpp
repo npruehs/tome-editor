@@ -604,6 +604,14 @@ void MainWindow::createNewProject(const QString &projectName, const QString &pro
     recordSet->name = projectName;
     newProject->recordSets.push_back(recordSet);
 
+    // Add built-in types.
+    newProject->addBaseType(FieldType::Boolean);
+    newProject->addBaseType(FieldType::Color);
+    newProject->addBaseType(FieldType::Integer);
+    newProject->addBaseType(FieldType::Real);
+    newProject->addBaseType(FieldType::Reference);
+    newProject->addBaseType(FieldType::String);
+
     // Write project files.
     if (this->saveProject(newProject))
     {

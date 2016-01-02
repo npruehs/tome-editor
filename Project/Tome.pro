@@ -48,7 +48,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Export/recordexporter.cpp \
     ../Source/Tome/Fields/componentswindow.cpp \
     ../Source/Tome/Fields/componentsitemmodel.cpp \
-    ../Source/Tome/Fields/componentwindow.cpp
+    ../Source/Tome/Fields/componentwindow.cpp \
+    ../Source/Tome/Fields/customfieldtype.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/fieldtype.h \
@@ -77,7 +78,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Export/recordexporter.h \
     ../Source/Tome/Fields/componentswindow.h \
     ../Source/Tome/Fields/componentsitemmodel.h \
-    ../Source/Tome/Fields/componentwindow.h
+    ../Source/Tome/Fields/componentwindow.h \
+    ../Source/Tome/Fields/customfieldtype.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \
