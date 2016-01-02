@@ -49,6 +49,8 @@ class MainWindow : public QMainWindow
     private:
         static const QString FieldDefinitionFileExtension;
         static const QString ProjectFileExtension;
+        static const QString RecordExportComponentDelimiterExtension;
+        static const QString RecordExportComponentTemplateExtension;
         static const QString RecordExportRecordFileTemplateExtension;
         static const QString RecordExportRecordTemplateExtension;
         static const QString RecordExportRecordDelimiterExtension;

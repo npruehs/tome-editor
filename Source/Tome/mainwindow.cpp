@@ -23,6 +23,8 @@ using namespace Tome;
 const QString MainWindow::FieldDefinitionFileExtension = ".tfields";
 const QString MainWindow::ProjectFileExtension = ".tproj";
 const QString MainWindow::RecordFileExtension = ".tdata";
+const QString MainWindow::RecordExportComponentTemplateExtension = ".texportc";
+const QString MainWindow::RecordExportComponentDelimiterExtension = ".texportcd";
 const QString MainWindow::RecordExportRecordFileTemplateExtension = ".texportf";
 const QString MainWindow::RecordExportRecordTemplateExtension = ".texportr";
 const QString MainWindow::RecordExportRecordDelimiterExtension = ".texportrd";
@@ -267,6 +269,10 @@ void MainWindow::on_actionOpen_Project_triggered()
                         this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordFileTemplateExtension);
                 exportTemplate->recordTemplate =
                         this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordTemplateExtension);
+                exportTemplate->componentDelimiter =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportComponentDelimiterExtension);
+                exportTemplate->componentTemplate =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportComponentTemplateExtension);
             }
             catch (const std::runtime_error& e)
             {

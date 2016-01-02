@@ -8,6 +8,8 @@ using namespace Tome;
 #include "../Values/valueconverter.h"
 
 
+const QString RecordExporter::PlaceholderComponents = "$RECORD_COMPONENTS$";
+const QString RecordExporter::PlaceholderComponentName = "$COMPONENT_NAME$";
 const QString RecordExporter::PlaceholderFieldId = "$FIELD_ID$";
 const QString RecordExporter::PlaceholderFieldType = "$FIELD_TYPE$";
 const QString RecordExporter::PlaceholderFieldValue = "$FIELD_VALUE$";
@@ -65,10 +67,49 @@ void RecordExporter::exportRecords(QSharedPointer<QIODevice> device, QSharedPoin
                 }
             }
 
+            // Collect components.
+            QStringList components;
+
+            for (QMap<QString, QString>::iterator itFields = record->fieldValues.begin();
+                 itFields != record->fieldValues.end();
+                 ++itFields)
+            {
+                QString fieldId = itFields.key();
+                QSharedPointer<FieldDefinition> fieldDefinition = project->getFieldDefinition(fieldId);
+
+                if (!fieldDefinition->component.isEmpty() && !components.contains(fieldDefinition->component))
+                {
+                    components.append(fieldDefinition->component);
+                }
+            }
+
+            // Build components string.
+            QString componentsString;
+
+            for (QStringList::iterator itComponents = components.begin();
+                 itComponents != components.end();
+                 ++itComponents)
+            {
+                QString& component = *itComponents;
+
+                // Apply component template.
+                QString componentString = exportTemplate->componentTemplate;
+                componentString = componentString.replace(PlaceholderComponentName, component);
+
+                componentsString.append(componentString);
+
+                // Add delimiter, if necessary.
+                if (itComponents != components.end() - 1)
+                {
+                    componentsString.append(exportTemplate->componentDelimiter);
+                }
+            }
+
             // Apply record template.
             QString recordString = exportTemplate->recordTemplate;
             recordString = recordString.replace(PlaceholderRecordId, record->id);
             recordString = recordString.replace(PlaceholderRecordFields, fieldValuesString);
+            recordString = recordString.replace(PlaceholderComponents, componentsString);
 
             recordsString.append(recordString);
 
