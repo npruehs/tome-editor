@@ -42,7 +42,8 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
         this->fieldDefinitionWindow = new FieldDefinitionWindow(this);
     }
 
-    // Update available record references.
+    // Update available ids.
+    this->fieldDefinitionWindow->setComponentNames(this->project->getComponentNames());
     this->fieldDefinitionWindow->setRecordNames(this->project->getRecordNames());
 
     int result = this->fieldDefinitionWindow->exec();
@@ -55,7 +56,8 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
                  this->fieldDefinitionWindow->getFieldDisplayName(),
                  this->fieldDefinitionWindow->getFieldType(),
                  this->fieldDefinitionWindow->getDefaultValue(),
-                 this->fieldDefinitionWindow->getFieldDescription());
+                 this->fieldDefinitionWindow->getFieldDescription(),
+                 this->fieldDefinitionWindow->getFieldComponent());
     }
 }
 
@@ -78,7 +80,8 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
         this->fieldDefinitionWindow = new FieldDefinitionWindow(this);
     }
 
-    // Update available record references.
+    // Update available ids.
+    this->fieldDefinitionWindow->setComponentNames(this->project->getComponentNames());
     this->fieldDefinitionWindow->setRecordNames(this->project->getRecordNames());
 
     // Update view.
@@ -87,6 +90,7 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
     this->fieldDefinitionWindow->setFieldType(fieldDefinition->fieldType);
     this->fieldDefinitionWindow->setDefaultValue(fieldDefinition->defaultValue);
     this->fieldDefinitionWindow->setFieldDescription(fieldDefinition->description);
+    this->fieldDefinitionWindow->setFieldComponent(fieldDefinition->component);
 
     int result = this->fieldDefinitionWindow->exec();
 
@@ -99,7 +103,8 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
                  this->fieldDefinitionWindow->getFieldDisplayName(),
                  this->fieldDefinitionWindow->getFieldType(),
                  this->fieldDefinitionWindow->getDefaultValue(),
-                 this->fieldDefinitionWindow->getFieldDescription());
+                 this->fieldDefinitionWindow->getFieldDescription(),
+                 this->fieldDefinitionWindow->getFieldComponent());
     }
 }
 

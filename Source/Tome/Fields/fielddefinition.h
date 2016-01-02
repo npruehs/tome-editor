@@ -12,11 +12,13 @@ namespace Tome
         public:
             FieldDefinition();
 
-            FieldType::FieldType fieldType;
+            QString component;
+            QString defaultValue;
             QString description;
             QString displayName;
+            FieldType::FieldType fieldType;
             QString id;
-            QString defaultValue;
+
     };
 }
 

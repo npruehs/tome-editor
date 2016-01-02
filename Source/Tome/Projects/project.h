@@ -26,6 +26,12 @@ namespace Tome
             QVector< QSharedPointer<RecordSet> > recordSets;
 
             /**
+             * @brief getComponentNames Returns the list of the names of all components of this project.
+             * @return List containing the names of all components of this project.
+             */
+            QStringList getComponentNames() const;
+
+            /**
              * @brief getFieldDefinition Returns the field definition with the specified id, or a null pointer if that field could not be found.
              * @param id Id of the field definition to get.
              * @return Field definition with the specified id, or a null pointer if that field could not be found.
@@ -47,7 +53,7 @@ namespace Tome
             QSharedPointer<Record> getRecordByDisplayName(const QString& displayName) const;
 
             /**
-             * @brief getRecordNames Returns a list containing the names of all records of this project.
+             * @brief getRecordNames Returns the list of the names of all records of this project.
              * @return List containing the names of all records of this project.
              */
             QStringList getRecordNames() const;

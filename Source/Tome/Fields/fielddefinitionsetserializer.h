@@ -28,13 +28,16 @@ namespace Tome
             void deserialize(QSharedPointer<QIODevice> device, QSharedPointer<FieldDefinitionSet> fieldDefinitionSet) const;
 
         private:
-            static const QString ElementDefaultValue;
-            static const QString ElementDescription;
-            static const QString ElementDisplayName;
+            static const QString AttributeComponent;
+            static const QString AttributeDefaultValue;
+            static const QString AttributeDescription;
+            static const QString AttributeDisplayName;
+            static const QString AttributeId;
+            static const QString AttributeType;
+
             static const QString ElementField;
             static const QString ElementFields;
-            static const QString ElementId;
-            static const QString ElementType;
+
     };
 }
 

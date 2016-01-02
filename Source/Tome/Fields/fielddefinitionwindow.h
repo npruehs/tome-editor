@@ -19,12 +19,15 @@ class FieldDefinitionWindow : public QDialog
         explicit FieldDefinitionWindow(QWidget *parent = 0);
         ~FieldDefinitionWindow();
 
+        QString getFieldComponent() const;
         QString getFieldDescription() const;
         QString getFieldDisplayName() const;
         QString getFieldId() const;
         QString getDefaultValue() const;
         Tome::FieldType::FieldType getFieldType() const;
 
+        void setComponentNames(const QStringList& componentNames);
+        void setFieldComponent(const QString& component) const;
         void setFieldDescription(const QString& description);
         void setFieldDisplayName(const QString& displayName);
         void setFieldId(const QString& fieldId);
