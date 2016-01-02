@@ -113,7 +113,7 @@ void RecordExporter::exportRecords(QSharedPointer<QIODevice> device, QSharedPoin
 
             recordsString.append(recordString);
 
-            if (itRecords != recordSet->records.end() - 1 && itRecordSets != project->recordSets.end() - 1)
+            if (itRecords != recordSet->records.end() - 1 || itRecordSets != project->recordSets.end() - 1)
             {
                 recordsString.append(exportTemplate->recordDelimiter);
             }
