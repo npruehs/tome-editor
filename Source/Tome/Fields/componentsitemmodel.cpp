@@ -60,7 +60,7 @@ void ComponentsItemModel::insertItem(const QString& text)
 {
     QStandardItem* rootItem = this->invisibleRootItem();
     rootItem->appendRow(new QStandardItem(text));
-    //rootItem->sortChildren(0);
+    rootItem->sortChildren(0);
 }
 
 void ComponentsItemModel::removeItem(const QString& text)
