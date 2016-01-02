@@ -7,15 +7,20 @@
 using namespace Tome;
 
 
+const QString ProjectSerializer::AttributeExportedType = "ExportedType";
+const QString ProjectSerializer::AttributeTomeType = "TomeType";
 const QString ProjectSerializer::ElementComponents = "Components";
 const QString ProjectSerializer::ElementFieldDefinitions = "FieldDefinitions";
 const QString ProjectSerializer::ElementFileExtension = "FileExtension";
+const QString ProjectSerializer::ElementMapping = "Mapping";
 const QString ProjectSerializer::ElementName = "Name";
 const QString ProjectSerializer::ElementPath = "Path";
 const QString ProjectSerializer::ElementRecords = "Records";
 const QString ProjectSerializer::ElementRecordExportTemplates = "RecordExportTemplates";
 const QString ProjectSerializer::ElementTemplate = "Template";
 const QString ProjectSerializer::ElementTomeProject = "TomeProject";
+const QString ProjectSerializer::ElementTypeMap = "TypeMap";
+
 
 ProjectSerializer::ProjectSerializer()
 {
@@ -88,6 +93,21 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
 
                         writer.writeTextElement(ElementName, exportTemplate->name);
                         writer.writeTextElement(ElementFileExtension, exportTemplate->fileExtension);
+
+                        // Write export type map.
+                        writer.writeStartElement(ElementTypeMap);
+                        {
+                            for (QMap<QString, QString>::iterator itTypeMap = exportTemplate->typeMap.begin();
+                                 itTypeMap != exportTemplate->typeMap.end();
+                                 ++itTypeMap)
+                            {
+                                writer.writeStartElement(ElementMapping);
+                                writer.writeAttribute(AttributeTomeType, itTypeMap.key());
+                                writer.writeAttribute(AttributeExportedType, itTypeMap.value());
+                                writer.writeEndElement();
+                            }
+                        }
+                        writer.writeEndElement();
                     }
                     writer.writeEndElement();
                 }
@@ -168,6 +188,22 @@ void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPoi
 
                         exportTemplate->name = reader.readTextElement(ElementName);
                         exportTemplate->fileExtension = reader.readTextElement(ElementFileExtension);
+
+                        // Read export type map.
+                        reader.readStartElement(ElementTypeMap);
+                        {
+                            while (reader.isAtElement(ElementMapping))
+                            {
+                                QString typeMapKey = reader.readAttribute(AttributeTomeType);
+                                QString typeMapValue = reader.readAttribute(AttributeExportedType);
+
+                                exportTemplate->typeMap.insert(typeMapKey, typeMapValue);
+
+                                // Advance reader.
+                                reader.readEmptyElement(ElementMapping);
+                            }
+                        }
+                        reader.readEndElement();
 
                         project->recordExportTemplates.insert(exportTemplate->name, exportTemplate);
                     }

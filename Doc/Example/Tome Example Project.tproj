@@ -23,18 +23,29 @@
         <Template>
             <Name>HTML</Name>
             <FileExtension>.html</FileExtension>
+            <TypeMap/>
         </Template>
         <Template>
             <Name>JSON</Name>
             <FileExtension>.json</FileExtension>
+            <TypeMap/>
         </Template>
         <Template>
             <Name>Slash XML</Name>
             <FileExtension>.blueprints.xml</FileExtension>
+            <TypeMap>
+                <Mapping TomeType="Boolean" ExportedType="System.Boolean"/>
+                <Mapping TomeType="Color" ExportedType="System.String"/>
+                <Mapping TomeType="Integer" ExportedType="System.Int32"/>
+                <Mapping TomeType="Real" ExportedType="System.Single"/>
+                <Mapping TomeType="Reference" ExportedType="System.String"/>
+                <Mapping TomeType="String" ExportedType="System.String"/>
+            </TypeMap>
         </Template>
         <Template>
             <Name>StarCraft II XML</Name>
             <FileExtension>.xml</FileExtension>
+            <TypeMap/>
         </Template>
     </RecordExportTemplates>
 </TomeProject>

@@ -52,10 +52,18 @@ void RecordExporter::exportRecords(QSharedPointer<QIODevice> device, QSharedPoin
                 QString fieldValue = itFields.value();
                 QSharedPointer<FieldDefinition> fieldDefinition = project->getFieldDefinition(fieldId);
 
+                // Get field type name.
+                QString fieldType = valueConverter.FieldTypeToString(fieldDefinition->fieldType);
+
+                if (exportTemplate->typeMap.contains(fieldType))
+                {
+                    fieldType = exportTemplate->typeMap[fieldType];
+                }
+
                 // Apply field value template.
                 QString fieldValueString = exportTemplate->fieldValueTemplate;
                 fieldValueString = fieldValueString.replace(PlaceholderFieldId, fieldId);
-                fieldValueString = fieldValueString.replace(PlaceholderFieldType, valueConverter.FieldTypeToString(fieldDefinition->fieldType));
+                fieldValueString = fieldValueString.replace(PlaceholderFieldType, fieldType);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldValue, fieldValue);
 
                 fieldValuesString.append(fieldValueString);

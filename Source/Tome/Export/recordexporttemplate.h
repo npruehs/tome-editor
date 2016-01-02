@@ -1,6 +1,7 @@
 #ifndef RECORDEXPORTTEMPLATE_H
 #define RECORDEXPORTTEMPLATE_H
 
+#include <QMap>
 #include <QString>
 
 namespace Tome
@@ -19,6 +20,7 @@ namespace Tome
             QString recordDelimiter;
             QString recordFileTemplate;
             QString recordTemplate;
+            QMap<QString, QString> typeMap;
     };
 }
 
