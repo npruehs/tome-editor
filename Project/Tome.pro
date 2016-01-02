@@ -49,7 +49,11 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Fields/componentswindow.cpp \
     ../Source/Tome/Fields/componentsitemmodel.cpp \
     ../Source/Tome/Fields/componentwindow.cpp \
-    ../Source/Tome/Fields/customfieldtype.cpp
+    ../Source/Tome/Fields/customtypeswindow.cpp \
+    ../Source/Tome/Fields/customtypewindow.cpp \
+    ../Source/Tome/Fields/customtypememberwindow.cpp \
+    ../Source/Tome/Fields/customtype.cpp \
+    ../Source/Tome/Fields/customtypesitemmodel.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/fieldtype.h \
@@ -79,7 +83,11 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/componentswindow.h \
     ../Source/Tome/Fields/componentsitemmodel.h \
     ../Source/Tome/Fields/componentwindow.h \
-    ../Source/Tome/Fields/customfieldtype.h
+    ../Source/Tome/Fields/customtypeswindow.h \
+    ../Source/Tome/Fields/customtypewindow.h \
+    ../Source/Tome/Fields/customtypememberwindow.h \
+    ../Source/Tome/Fields/customtype.h \
+    ../Source/Tome/Fields/customtypesitemmodel.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \
@@ -89,7 +97,10 @@ FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Records/recordwindow.ui \
     ../Source/Tome/Fields/fieldvaluewindow.ui \
     ../Source/Tome/Fields/componentswindow.ui \
-    ../Source/Tome/Fields/componentwindow.ui
+    ../Source/Tome/Fields/componentwindow.ui \
+    ../Source/Tome/Fields/customtypeswindow.ui \
+    ../Source/Tome/Fields/customtypewindow.ui \
+    ../Source/Tome/Fields/customtypememberwindow.ui
 
 RESOURCES += \
     tome.qrc

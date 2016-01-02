@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     aboutWindow(0),
     componentsWindow(0),
+    customTypesWindow(0),
     fieldDefinitionsWindow(0),
     fieldValueWindow(0),
     newProjectWindow(0),
@@ -103,6 +104,16 @@ void MainWindow::on_actionManage_Components_triggered()
     }
 
     this->showWindow(this->componentsWindow);
+}
+
+void MainWindow::on_actionManage_Custom_Types_triggered()
+{
+    if (!this->customTypesWindow)
+    {
+        this->customTypesWindow = new CustomTypesWindow(this->project, this);
+    }
+
+    this->showWindow(this->customTypesWindow);
 }
 
 void MainWindow::on_actionNew_Project_triggered()
@@ -603,14 +614,6 @@ void MainWindow::createNewProject(const QString &projectName, const QString &pro
             QSharedPointer<RecordSet>::create();
     recordSet->name = projectName;
     newProject->recordSets.push_back(recordSet);
-
-    // Add built-in types.
-    newProject->addBaseType(FieldType::Boolean);
-    newProject->addBaseType(FieldType::Color);
-    newProject->addBaseType(FieldType::Integer);
-    newProject->addBaseType(FieldType::Real);
-    newProject->addBaseType(FieldType::Reference);
-    newProject->addBaseType(FieldType::String);
 
     // Write project files.
     if (this->saveProject(newProject))

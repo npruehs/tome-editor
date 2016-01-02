@@ -6,13 +6,6 @@ Project::Project()
 {
 }
 
-void Project::addBaseType(QString name)
-{
-    QSharedPointer<CustomFieldType> fieldType = QSharedPointer<CustomFieldType>::create();
-    fieldType->name = name;
-    this->types.push_back(fieldType);
-}
-
 QStringList Project::getComponentNames() const
 {
     QStringList components;

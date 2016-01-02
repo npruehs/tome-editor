@@ -7,7 +7,7 @@
 #include <QVector>
 
 #include "../Export/recordexporttemplate.h"
-#include "../Fields/customfieldtype.h"
+#include "../Fields/customtype.h"
 #include "../Fields/fielddefinitionset.h"
 #include "../Records/recordset.h"
 
@@ -25,13 +25,7 @@ namespace Tome
             QVector< QSharedPointer<FieldDefinitionSet> > fieldDefinitionSets;
             QMap<QString, QSharedPointer<RecordExportTemplate> > recordExportTemplates;
             QVector< QSharedPointer<RecordSet> > recordSets;
-            QVector<QSharedPointer<CustomFieldType> > types;
-
-            /**
-             * @brief addBaseType Adds a new type with the specified name and without base type to this project.
-             * @param name Name of the type to add.
-             */
-            void addBaseType(QString name);
+            QVector<QSharedPointer<CustomType> > types;
 
             /**
              * @brief getComponentNames Returns the list of the names of all components of this project.

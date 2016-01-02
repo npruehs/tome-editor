@@ -78,6 +78,7 @@
     </property>
     <addaction name="actionManage_Components"/>
     <addaction name="actionField_Definions"/>
+    <addaction name="actionManage_Custom_Types"/>
    </widget>
    <widget class="QMenu" name="menuRecords">
     <property name="title">
@@ -210,6 +211,11 @@
   <action name="actionManage_Components">
    <property name="text">
     <string>Manage Components...</string>
+   </property>
+  </action>
+  <action name="actionManage_Custom_Types">
+   <property name="text">
+    <string>Manage Custom Types...</string>
    </property>
   </action>
  </widget>

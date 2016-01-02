@@ -124,11 +124,11 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
             // Write types.
             writer.writeStartElement(ElementTypes);
             {
-                for (QVector<QSharedPointer<CustomFieldType> >::iterator it = project->types.begin();
+                for (QVector<QSharedPointer<CustomType> >::iterator it = project->types.begin();
                      it != project->types.end();
                      ++it)
                 {
-                    QSharedPointer<CustomFieldType> type = *it;
+                    QSharedPointer<CustomType> type = *it;
 
                     writer.writeStartElement(ElementType);
                     {
@@ -262,14 +262,14 @@ void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPoi
             {
                 while (reader.isAtElement(ElementType))
                 {
+                    QSharedPointer<CustomType> type =
+                            QSharedPointer<CustomType>::create();
+
+                    type->name = reader.readAttribute(ElementName);
+                    type->baseType = reader.readAttribute(AttributeBaseType);
+
                     reader.readStartElement(ElementType);
                     {
-                        QSharedPointer<CustomFieldType> type =
-                                QSharedPointer<CustomFieldType>::create();
-
-                        type->name = reader.readAttribute(ElementName);
-                        type->baseType = reader.readAttribute(AttributeBaseType);
-
                         // Read type restriction map.
                         reader.readStartElement(ElementRestrictions);
                         {
@@ -285,10 +285,10 @@ void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPoi
                             }
                         }
                         reader.readEndElement();
-
-                        project->types.push_back(type);
                     }
                     reader.readEndElement();
+
+                    project->types.push_back(type);
                 }
             }
             reader.readEndElement();

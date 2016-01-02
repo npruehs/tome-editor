@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 
 #include "Fields/componentswindow.h"
+#include "Fields/customtypeswindow.h"
 #include "Fields/fielddefinitionswindow.h"
 #include "Fields/fieldvaluewindow.h"
 #include "Projects/newprojectwindow.h"
@@ -31,6 +32,7 @@ class MainWindow : public QMainWindow
         void on_actionExit_triggered();
         void on_actionField_Definions_triggered();
         void on_actionManage_Components_triggered();
+        void on_actionManage_Custom_Types_triggered();
 
         void on_actionNew_Project_triggered();
         void on_actionOpen_Project_triggered();
@@ -64,6 +66,7 @@ class MainWindow : public QMainWindow
 
         AboutWindow *aboutWindow;
         ComponentsWindow* componentsWindow;
+        CustomTypesWindow* customTypesWindow;
         FieldDefinitionsWindow* fieldDefinitionsWindow;
         FieldValueWindow* fieldValueWindow;
         NewProjectWindow *newProjectWindow;
