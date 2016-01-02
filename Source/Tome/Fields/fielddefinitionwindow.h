@@ -24,7 +24,7 @@ class FieldDefinitionWindow : public QDialog
         QString getFieldDisplayName() const;
         QString getFieldId() const;
         QString getDefaultValue() const;
-        Tome::FieldType::FieldType getFieldType() const;
+        QString getFieldType() const;
 
         void setComponentNames(const QStringList& componentNames);
         void setFieldComponent(const QString& component) const;
@@ -32,7 +32,7 @@ class FieldDefinitionWindow : public QDialog
         void setFieldDisplayName(const QString& displayName);
         void setFieldId(const QString& fieldId);
         void setDefaultValue(const QString& defaultValue);
-        void setFieldType(const Tome::FieldType::FieldType& fieldType) const;
+        void setFieldType(const QString& fieldType) const;
         void setRecordNames(const QStringList& recordNames);
 
     public slots:

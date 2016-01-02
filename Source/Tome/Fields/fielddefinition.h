@@ -16,7 +16,7 @@ namespace Tome
             QString defaultValue;
             QString description;
             QString displayName;
-            FieldType::FieldType fieldType;
+            QString fieldType;
             QString id;
 
     };

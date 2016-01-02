@@ -50,7 +50,7 @@ void FieldDefinitionSetSerializer::serialize(QSharedPointer<QIODevice> device, Q
                 stream.writeAttribute(AttributeDisplayName, fieldDefinition->displayName);
                 stream.writeAttribute(AttributeDescription, fieldDefinition->description);
                 stream.writeAttribute(AttributeDefaultValue, fieldDefinition->defaultValue);
-                stream.writeAttribute(AttributeType, valueConverter->FieldTypeToString(fieldDefinition->fieldType));
+                stream.writeAttribute(AttributeType, fieldDefinition->fieldType);
 
                 if (!fieldDefinition->component.isEmpty())
                 {
@@ -97,7 +97,7 @@ void FieldDefinitionSetSerializer::deserialize(QSharedPointer<QIODevice> device,
                 fieldDefinition->displayName = reader.readAttribute(AttributeDisplayName);
                 fieldDefinition->description = reader.readAttribute(AttributeDescription);
                 fieldDefinition->defaultValue = reader.readAttribute(AttributeDefaultValue);
-                fieldDefinition->fieldType = valueConverter->StringToFieldType(reader.readAttribute(AttributeType));
+                fieldDefinition->fieldType = reader.readAttribute(AttributeType);
 
                 QString component = reader.readAttribute(AttributeComponent);
 

@@ -50,7 +50,7 @@ FieldValueWidget::~FieldValueWidget()
 {
 }
 
-FieldType::FieldType FieldValueWidget::getFieldType() const
+QString FieldValueWidget::getFieldType() const
 {
     return this->fieldType;
 }
@@ -58,118 +58,129 @@ FieldType::FieldType FieldValueWidget::getFieldType() const
 QString FieldValueWidget::getFieldValue() const
 {
     ValueConverter valueConverter;
+    QString fieldType = this->getFieldType();
 
-    switch (this->getFieldType())
+    if (fieldType == FieldType::Boolean)
     {
-        case FieldType::Boolean:
-            return valueConverter.BoolToString(this->checkBox->isChecked());
-
-        case FieldType::Color:
-            return this->colorDialog->currentColor().name(QColor::HexArgb);
-
-        case FieldType::Integer:
-            return this->spinBox->text();
-
-        case FieldType::Real:
-            return this->doubleSpinBox->text();
-
-        case FieldType::Reference:
-            return this->referenceComboBox->currentText();
-
-        case FieldType::String:
-            return this->lineEdit->text();
-
-        default:
-            return QString();
+        return valueConverter.BoolToString(this->checkBox->isChecked());
     }
+
+    if (fieldType == FieldType::Color)
+    {
+        return this->colorDialog->currentColor().name(QColor::HexArgb);
+    }
+
+    if (fieldType == FieldType::Integer)
+    {
+         return this->spinBox->text();
+    }
+
+    if (fieldType == FieldType::Real)
+    {
+        return this->doubleSpinBox->text();
+    }
+
+    if (fieldType == FieldType::Reference)
+    {
+        return this->referenceComboBox->currentText();
+    }
+
+    if (fieldType == FieldType::String)
+    {
+        return this->lineEdit->text();
+    }
+
+    return QString();
 }
 
-void FieldValueWidget::setFieldType(const FieldType::FieldType& fieldType)
+void FieldValueWidget::setFieldType(const QString& fieldType)
 {
     // Set new field type.
     this->fieldType = fieldType;
 
     // Update view.
-    switch (fieldType)
+    if (fieldType == FieldType::Boolean)
     {
-        case FieldType::Color:
-            this->setCurrentWidget(this->colorDialog);
-            break;
-
-        case FieldType::Boolean:
-            this->setCurrentWidget(this->checkBox);
-            break;
-
-        case FieldType::Integer:
-            this->setCurrentWidget(this->spinBox);
-            break;
-
-        case FieldType::Real:
-            this->setCurrentWidget(this->doubleSpinBox);
-            break;
-
-        case FieldType::Reference:
-            this->setCurrentWidget(this->referenceComboBox);
-            break;
-
-        case FieldType::String:
-            this->setCurrentWidget(this->lineEdit);
-            break;
-
-        default:
-            this->setCurrentWidget(0);
-            break;
+        this->setCurrentWidget(this->checkBox);
+        return;
     }
+
+    if (fieldType == FieldType::Color)
+    {
+        this->setCurrentWidget(this->colorDialog);
+        return;
+    }
+
+    if (fieldType == FieldType::Integer)
+    {
+        this->setCurrentWidget(this->spinBox);
+        return;
+    }
+
+    if (fieldType == FieldType::Real)
+    {
+        this->setCurrentWidget(this->doubleSpinBox);
+        return;
+    }
+
+    if (fieldType == FieldType::Reference)
+    {
+        this->setCurrentWidget(this->referenceComboBox);
+        return;
+    }
+
+    if (fieldType == FieldType::String)
+    {
+        this->setCurrentWidget(this->lineEdit);
+        return;
+    }
+
+    this->setCurrentWidget(0);
 }
 
 void FieldValueWidget::setFieldValue(const QString& fieldValue)
 {
     ValueConverter valueConverter;
 
-
-    switch (this->getFieldType())
+    if (fieldType == FieldType::Boolean)
     {
-        case FieldType::Boolean:
-            {
-                bool value = valueConverter.StringToBool(fieldValue);
-                this->checkBox->setChecked(value);
-            }
-            break;
+        bool value = valueConverter.StringToBool(fieldValue);
+        this->checkBox->setChecked(value);
+        return;
+    }
 
-        case FieldType::Color:
-        {
-            QColor color;
-            color.setNamedColor(fieldValue);
-            this->colorDialog->setCurrentColor(color);
-        }
-        case FieldType::Integer:
-            {
-                int value = fieldValue.toInt();
-                this->spinBox->setValue(value);
-            }
-            break;
+    if (fieldType == FieldType::Color)
+    {
+        QColor color;
+        color.setNamedColor(fieldValue);
+        this->colorDialog->setCurrentColor(color);
+        return;
+    }
 
-        case FieldType::Real:
-            {
-                double value = fieldValue.toDouble();
-                this->doubleSpinBox->setValue(value);
-            }
-            break;
+    if (fieldType == FieldType::Integer)
+    {
+        int value = fieldValue.toInt();
+        this->spinBox->setValue(value);
+        return;
+    }
 
-        case FieldType::Reference:
-            {
-                this->referenceComboBox->setCurrentText(fieldValue);
-            }
-            break;
+    if (fieldType == FieldType::Real)
+    {
+        double value = fieldValue.toDouble();
+        this->doubleSpinBox->setValue(value);
+        return;
+    }
 
-        case FieldType::String:
-            {
-                this->lineEdit->setText(fieldValue);
-            }
-            break;
+    if (fieldType == FieldType::Reference)
+    {
+        this->referenceComboBox->setCurrentText(fieldValue);
+        return;
+    }
 
-        default:
-            break;
+    if (fieldType == FieldType::String)
+    {
+        this->lineEdit->setText(fieldValue);
+        return;
     }
 }
 

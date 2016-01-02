@@ -43,11 +43,9 @@ void FieldValueWindow::setFieldValue(const QString& fieldValue)
     this->fieldValueWidget->setFieldValue(fieldValue);
 }
 
-void FieldValueWindow::setFieldType(const Tome::FieldType::FieldType& fieldType) const
+void FieldValueWindow::setFieldType(const QString& fieldType) const
 {
-    ValueConverter valueConverter;
-    const QString fieldTypeName = valueConverter.FieldTypeToString(fieldType);
-    this->ui->labelTypeValue->setText(fieldTypeName);
+    this->ui->labelTypeValue->setText(fieldType);
     this->fieldValueWidget->setFieldType(fieldType);
 }
 

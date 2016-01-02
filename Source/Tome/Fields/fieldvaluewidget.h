@@ -27,10 +27,10 @@ namespace Tome
             explicit FieldValueWidget(QWidget *parent = 0);
             ~FieldValueWidget();
 
-            FieldType::FieldType getFieldType() const;
+            QString getFieldType() const;
             QString getFieldValue() const;
 
-            void setFieldType(const FieldType::FieldType& fieldType);
+            void setFieldType(const QString& fieldType);
             void setFieldValue(const QString& fieldValue);
             void setRecordNames(const QStringList& recordNames);
 
@@ -39,7 +39,7 @@ namespace Tome
 
         private:
             QWidget* currentWidget;
-            FieldType::FieldType fieldType;
+            QString fieldType;
 
             QCheckBox* checkBox;
             QColorDialog* colorDialog;

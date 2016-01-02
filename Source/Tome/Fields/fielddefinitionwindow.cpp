@@ -68,7 +68,7 @@ QString FieldDefinitionWindow::getDefaultValue() const
     return this->fieldValueWidget->getFieldValue();
 }
 
-FieldType::FieldType FieldDefinitionWindow::getFieldType() const
+QString FieldDefinitionWindow::getFieldType() const
 {
     return this->fieldValueWidget->getFieldType();
 }
@@ -109,11 +109,9 @@ void FieldDefinitionWindow::setDefaultValue(const QString& defaultValue)
     this->fieldValueWidget->setFieldValue(defaultValue);
 }
 
-void FieldDefinitionWindow::setFieldType(const FieldType::FieldType& fieldType) const
+void FieldDefinitionWindow::setFieldType(const QString& fieldType) const
 {
-    ValueConverter valueConverter;
-    const QString fieldTypeName = valueConverter.FieldTypeToString(fieldType);
-    this->ui->comboBoxType->setCurrentText(fieldTypeName);
+    this->ui->comboBoxType->setCurrentText(fieldType);
 }
 
 void FieldDefinitionWindow::setRecordNames(const QStringList& recordNames)
@@ -123,9 +121,7 @@ void FieldDefinitionWindow::setRecordNames(const QStringList& recordNames)
 
 void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &fieldType)
 {
-    ValueConverter valueConverter;
-    FieldType::FieldType newType = valueConverter.StringToFieldType(fieldType);
-    this->fieldValueWidget->setFieldType(newType);
+    this->fieldValueWidget->setFieldType(fieldType);
 }
 
 void FieldDefinitionWindow::on_lineEditDisplayName_textEdited(const QString &displayName)
