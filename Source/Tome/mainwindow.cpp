@@ -321,7 +321,7 @@ void MainWindow::on_actionNew_Record_triggered()
              ++itFieldDefinition)
         {
             QSharedPointer<FieldDefinition> fieldDefinition = *itFieldDefinition;
-            this->recordWindow->setRecordField(fieldDefinition->id, false);
+            this->recordWindow->setRecordField(fieldDefinition->id, fieldDefinition->component, false);
         }
     }
 
@@ -406,7 +406,7 @@ void MainWindow::on_actionEdit_Record_triggered()
             bool fieldEnabled = record->fieldValues.contains(fieldDefinition->id);
 
             // Add to view.
-            this->recordWindow->setRecordField(fieldDefinition->id, fieldEnabled);
+            this->recordWindow->setRecordField(fieldDefinition->id, fieldDefinition->component, fieldEnabled);
         }
     }
 

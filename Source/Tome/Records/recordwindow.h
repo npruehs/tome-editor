@@ -23,7 +23,7 @@ class RecordWindow : public QDialog
 
         void setRecordDisplayName(const QString& displayName);
         void setRecordId(const QString& id);
-        void setRecordField(const QString& fieldId, const bool enabled);
+        void setRecordField(const QString& fieldId, const QString& fieldComponent, const bool enabled);
 
     public slots:
         void accept();
@@ -31,7 +31,12 @@ class RecordWindow : public QDialog
     private slots:
         void on_lineEditDisplayName_textEdited(const QString &arg1);
 
+        void onCheckBoxStateChanged(int state);
+
     private:
+        static const QString PropertyFieldComponent;
+        static const QString PropertyFieldId;
+
         Ui::RecordWindow *ui;
 
         bool validate();

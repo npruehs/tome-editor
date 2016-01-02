@@ -186,6 +186,8 @@ void FieldValueWidget::setRecordNames(const QStringList& recordNames)
 
 void FieldValueWidget::focusInEvent(QFocusEvent* event)
 {
+    Q_UNUSED(event);
+
     if (this->currentWidget != 0)
     {
         this->currentWidget->setFocus();
