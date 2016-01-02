@@ -44,5 +44,17 @@ bool CustomTypeMemberWindow::validate()
         return false;
     }
 
+    // Name must not contain member seperator.
+    if (this->getText().contains(";"))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Invalid data"),
+                    tr("Type member names must not contain any special characters."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return false;
+    }
+
     return true;
 }
