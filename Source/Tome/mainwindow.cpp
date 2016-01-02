@@ -820,7 +820,11 @@ void MainWindow::updateMenus()
     bool projectLoaded = this->project != 0;
 
     this->ui->actionSave_Project->setEnabled(projectLoaded);
+
     this->ui->actionField_Definions->setEnabled(projectLoaded);
+    this->ui->actionManage_Components->setEnabled(projectLoaded);
+    this->ui->actionManage_Custom_Types->setEnabled(projectLoaded);
+
     this->ui->actionNew_Record->setEnabled(projectLoaded);
     this->ui->actionEdit_Record->setEnabled(projectLoaded);
     this->ui->actionRemove_Record->setEnabled(projectLoaded);
