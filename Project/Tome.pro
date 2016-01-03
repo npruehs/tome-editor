@@ -46,12 +46,17 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Fields/fieldvaluewidget.cpp \
     ../Source/Tome/Export/recordexporttemplate.cpp \
     ../Source/Tome/Export/recordexporter.cpp \
-    ../Source/Tome/Fields/componentswindow.cpp \
-    ../Source/Tome/Fields/componentsitemmodel.cpp \
-    ../Source/Tome/Fields/componentwindow.cpp
+    ../Source/Tome/Components/componentswindow.cpp \
+    ../Source/Tome/Components/componentsitemmodel.cpp \
+    ../Source/Tome/Components/componentwindow.cpp \
+    ../Source/Tome/Types/customtypeswindow.cpp \
+    ../Source/Tome/Types/customtypewindow.cpp \
+    ../Source/Tome/Types/customtypememberwindow.cpp \
+    ../Source/Tome/Types/customtype.cpp \
+    ../Source/Tome/Types/customtypesitemmodel.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
-    ../Source/Tome/Fields/fieldtype.h \
+    ../Source/Tome/Types/builtintype.h \
     ../Source/Tome/Fields/fielddefinition.h \
     ../Source/Tome/Fields/fielddefinitionset.h \
     ../Source/Tome/Fields/fielddefinitionsetserializer.h \
@@ -75,9 +80,14 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/fieldvaluewidget.h \
     ../Source/Tome/Export/recordexporttemplate.h \
     ../Source/Tome/Export/recordexporter.h \
-    ../Source/Tome/Fields/componentswindow.h \
-    ../Source/Tome/Fields/componentsitemmodel.h \
-    ../Source/Tome/Fields/componentwindow.h
+    ../Source/Tome/Components/componentswindow.h \
+    ../Source/Tome/Components/componentsitemmodel.h \
+    ../Source/Tome/Components/componentwindow.h \
+    ../Source/Tome/Types/customtypeswindow.h \
+    ../Source/Tome/Types/customtypewindow.h \
+    ../Source/Tome/Types/customtypememberwindow.h \
+    ../Source/Tome/Types/customtype.h \
+    ../Source/Tome/Types/customtypesitemmodel.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \
@@ -86,8 +96,11 @@ FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Fields/fielddefinitionswindow.ui \
     ../Source/Tome/Records/recordwindow.ui \
     ../Source/Tome/Fields/fieldvaluewindow.ui \
-    ../Source/Tome/Fields/componentswindow.ui \
-    ../Source/Tome/Fields/componentwindow.ui
+    ../Source/Tome/Components/componentswindow.ui \
+    ../Source/Tome/Components/componentwindow.ui \
+    ../Source/Tome/Types/customtypeswindow.ui \
+    ../Source/Tome/Types/customtypewindow.ui \
+    ../Source/Tome/Types/customtypememberwindow.ui
 
 RESOURCES += \
     tome.qrc

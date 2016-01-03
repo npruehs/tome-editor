@@ -9,6 +9,8 @@
 #include "../Export/recordexporttemplate.h"
 #include "../Fields/fielddefinitionset.h"
 #include "../Records/recordset.h"
+#include "../Types/customtype.h"
+
 
 namespace Tome
 {
@@ -24,12 +26,20 @@ namespace Tome
             QVector< QSharedPointer<FieldDefinitionSet> > fieldDefinitionSets;
             QMap<QString, QSharedPointer<RecordExportTemplate> > recordExportTemplates;
             QVector< QSharedPointer<RecordSet> > recordSets;
+            QVector<QSharedPointer<CustomType> > types;
 
             /**
              * @brief getComponentNames Returns the list of the names of all components of this project.
              * @return List containing the names of all components of this project.
              */
             QStringList getComponentNames() const;
+
+            /**
+             * @brief getCustomType Returns the custom type with the specified name, of a null pointer if that type could not be found.
+             * @param name Name of the type to get.
+             * @return Custom type with the specified name, of a null pointer if that type could not be found.
+             */
+            QSharedPointer<CustomType> getCustomType(const QString& name) const;
 
             /**
              * @brief getFieldDefinition Returns the field definition with the specified id, or a null pointer if that field could not be found.

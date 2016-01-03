@@ -4,7 +4,6 @@
 #include <QDialog>
 
 #include "../Fields/fieldvaluewidget.h"
-#include "../Fields/fieldtype.h"
 
 
 namespace Ui {
@@ -24,8 +23,8 @@ class FieldValueWindow : public QDialog
         void setFieldDescription(const QString& description);
         void setFieldDisplayName(const QString& displayName);
         void setFieldValue(const QString& fieldValue);
-        void setFieldType(const Tome::FieldType::FieldType& fieldType) const;
-        void setRecordNames(const QStringList& recordNames);
+        void setFieldType(const QString& fieldType) const;
+        void setEnumeration(const QStringList& recordNames);
 
     protected:
         virtual void showEvent(QShowEvent* event);

@@ -4,15 +4,17 @@
 #include <QMainWindow>
 #include <QSharedPointer>
 
-#include "Fields/componentswindow.h"
+#include "Components/componentswindow.h"
 #include "Fields/fielddefinitionswindow.h"
 #include "Fields/fieldvaluewindow.h"
+#include "Help/aboutwindow.h"
 #include "Projects/newprojectwindow.h"
 #include "Projects/project.h"
 #include "Records/recordsitemmodel.h"
 #include "Records/recordtablemodel.h"
 #include "Records/recordwindow.h"
-#include "Help/aboutwindow.h"
+#include "Types/customtypeswindow.h"
+
 
 namespace Ui {
     class MainWindow;
@@ -31,6 +33,7 @@ class MainWindow : public QMainWindow
         void on_actionExit_triggered();
         void on_actionField_Definions_triggered();
         void on_actionManage_Components_triggered();
+        void on_actionManage_Custom_Types_triggered();
 
         void on_actionNew_Project_triggered();
         void on_actionOpen_Project_triggered();
@@ -64,6 +67,7 @@ class MainWindow : public QMainWindow
 
         AboutWindow *aboutWindow;
         ComponentsWindow* componentsWindow;
+        CustomTypesWindow* customTypesWindow;
         FieldDefinitionsWindow* fieldDefinitionsWindow;
         FieldValueWindow* fieldValueWindow;
         NewProjectWindow *newProjectWindow;

@@ -3,7 +3,6 @@
 
 #include <QAbstractTableModel>
 
-#include "../Fields/fieldtype.h"
 #include "../Projects/project.h"
 
 
@@ -24,8 +23,8 @@ namespace Tome
             bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
             bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
 
-            void addFieldDefinition(const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& defaultValue, const QString& description, const QString& component);
-            void updateFieldDefinition(const int index, const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& defaultValue, const QString& description, const QString& component);
+            void addFieldDefinition(const QString& id, const QString& displayName, const QString& fieldType, const QString& defaultValue, const QString& description, const QString& component);
+            void updateFieldDefinition(const int index, const QString& id, const QString& displayName, const QString& fieldType, const QString& defaultValue, const QString& description, const QString& component);
             void removeFieldDefinition(const int index);
 
         private:

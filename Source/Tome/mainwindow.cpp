@@ -16,7 +16,9 @@
 #include "Projects/project.h"
 #include "Projects/projectserializer.h"
 #include "Records/recordsetserializer.h"
+#include "Types/builtintype.h"
 #include "Util/pathutils.h"
+
 
 using namespace Tome;
 
@@ -36,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     aboutWindow(0),
     componentsWindow(0),
+    customTypesWindow(0),
     fieldDefinitionsWindow(0),
     fieldValueWindow(0),
     newProjectWindow(0),
@@ -103,6 +106,16 @@ void MainWindow::on_actionManage_Components_triggered()
     }
 
     this->showWindow(this->componentsWindow);
+}
+
+void MainWindow::on_actionManage_Custom_Types_triggered()
+{
+    if (!this->customTypesWindow)
+    {
+        this->customTypesWindow = new CustomTypesWindow(this->project, this);
+    }
+
+    this->showWindow(this->customTypesWindow);
 }
 
 void MainWindow::on_actionNew_Project_triggered()
@@ -481,21 +494,39 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
     QSharedPointer<FieldDefinition> fieldDefinition =
             this->project->getFieldDefinition(fieldId);
 
-    // Show window.
+    // Prepare window.
     if (!this->fieldValueWindow)
     {
         this->fieldValueWindow = new FieldValueWindow(this);
     }
 
-    // Update available record references.
-    this->fieldValueWindow->setRecordNames(this->project->getRecordNames());
-
     // Update view.
     this->fieldValueWindow->setFieldDisplayName(fieldDefinition->displayName);
     this->fieldValueWindow->setFieldType(fieldDefinition->fieldType);
-    this->fieldValueWindow->setFieldValue(fieldValue);
     this->fieldValueWindow->setFieldDescription(fieldDefinition->description);
 
+    if (fieldDefinition->fieldType == BuiltInType::Reference)
+    {
+        QStringList recordNames = this->project->getRecordNames();
+
+        // Allow clearing the field.
+        recordNames << QString();
+
+        this->fieldValueWindow->setEnumeration(recordNames);
+    }
+    else
+    {
+        QSharedPointer<CustomType> type = this->project->getCustomType(fieldDefinition->fieldType);
+
+        if (type != 0)
+        {
+            this->fieldValueWindow->setEnumeration(type->getEnumeration());
+        }
+    }
+
+    this->fieldValueWindow->setFieldValue(fieldValue);
+
+    // Show window.
     int result = this->fieldValueWindow->exec();
 
     if (result == QDialog::Accepted)
@@ -809,7 +840,11 @@ void MainWindow::updateMenus()
     bool projectLoaded = this->project != 0;
 
     this->ui->actionSave_Project->setEnabled(projectLoaded);
+
     this->ui->actionField_Definions->setEnabled(projectLoaded);
+    this->ui->actionManage_Components->setEnabled(projectLoaded);
+    this->ui->actionManage_Custom_Types->setEnabled(projectLoaded);
+
     this->ui->actionNew_Record->setEnabled(projectLoaded);
     this->ui->actionEdit_Record->setEnabled(projectLoaded);
     this->ui->actionRemove_Record->setEnabled(projectLoaded);

@@ -2,6 +2,7 @@
 #include "ui_fielddefinitionswindow.h"
 
 #include "fielddefinitionstablemodel.h"
+#include "../Types/builtintype.h"
 
 using namespace Tome;
 
@@ -36,16 +37,16 @@ FieldDefinitionsWindow::~FieldDefinitionsWindow()
 
 void FieldDefinitionsWindow::on_actionNew_Field_triggered()
 {
-    // Show window.
+    // Setup window.
     if (!this->fieldDefinitionWindow)
     {
         this->fieldDefinitionWindow = new FieldDefinitionWindow(this);
     }
 
-    // Update available ids.
-    this->fieldDefinitionWindow->setComponentNames(this->project->getComponentNames());
-    this->fieldDefinitionWindow->setRecordNames(this->project->getRecordNames());
+    // Update project reference.
+    this->fieldDefinitionWindow->setProject(this->project);
 
+    // Show window.
     int result = this->fieldDefinitionWindow->exec();
 
     if (result == QDialog::Accepted)
@@ -80,9 +81,8 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
         this->fieldDefinitionWindow = new FieldDefinitionWindow(this);
     }
 
-    // Update available ids.
-    this->fieldDefinitionWindow->setComponentNames(this->project->getComponentNames());
-    this->fieldDefinitionWindow->setRecordNames(this->project->getRecordNames());
+    // Update project reference.
+    this->fieldDefinitionWindow->setProject(this->project);
 
     // Update view.
     this->fieldDefinitionWindow->setFieldId(fieldDefinition->id);

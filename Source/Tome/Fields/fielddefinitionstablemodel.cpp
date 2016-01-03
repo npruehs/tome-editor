@@ -2,6 +2,7 @@
 
 #include <QColor>
 
+#include "../Types/builtintype.h"
 #include "../Values/valueconverter.h"
 
 using namespace Tome;
@@ -60,7 +61,7 @@ QVariant FieldDefinitionsTableModel::data(const QModelIndex& index, int role) co
             case 1:
                 return fieldDefinition->displayName;
             case 2:
-                return valueConverter->FieldTypeToString(fieldDefinition->fieldType);
+                return fieldDefinition->fieldType;
             case 3:
                 return fieldDefinition->defaultValue;
             case 4:
@@ -71,7 +72,7 @@ QVariant FieldDefinitionsTableModel::data(const QModelIndex& index, int role) co
 
         return QVariant();
     }
-    else if (role == Qt::DecorationRole && index.column() == 3 && fieldDefinition->fieldType == FieldType::Color)
+    else if (role == Qt::DecorationRole && index.column() == 3 && fieldDefinition->fieldType == BuiltInType::Color)
     {
         // Show color preview.
         QColor color;
@@ -138,7 +139,7 @@ bool FieldDefinitionsTableModel::removeRows(int position, int rows, const QModel
     return true;
 }
 
-void FieldDefinitionsTableModel::addFieldDefinition(const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& defaultValue, const QString& description, const QString& component)
+void FieldDefinitionsTableModel::addFieldDefinition(const QString& id, const QString& displayName, const QString& fieldType, const QString& defaultValue, const QString& description, const QString& component)
 {
     int index = this->rowCount();
 
@@ -149,7 +150,7 @@ void FieldDefinitionsTableModel::addFieldDefinition(const QString& id, const QSt
     this->updateFieldDefinition(index, id, displayName, fieldType, defaultValue, description, component);
 }
 
-void FieldDefinitionsTableModel::updateFieldDefinition(const int index, const QString& id, const QString& displayName, const FieldType::FieldType& fieldType, const QString& defaultValue, const QString& description, const QString& component)
+void FieldDefinitionsTableModel::updateFieldDefinition(const int index, const QString& id, const QString& displayName, const QString& fieldType, const QString& defaultValue, const QString& description, const QString& component)
 {
     // Get field definition.
     QVector<QSharedPointer<FieldDefinition> >& fieldDefinitions = this->project->fieldDefinitionSets[0]->fieldDefinitions;

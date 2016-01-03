@@ -21,6 +21,22 @@ QStringList Project::getComponentNames() const
     return components;
 }
 
+QSharedPointer<CustomType> Project::getCustomType(const QString& name) const
+{
+    for (QVector<QSharedPointer<CustomType> >::const_iterator it = this->types.begin();
+         it != this->types.end();
+         ++it)
+    {
+        QSharedPointer<CustomType> type = *it;
+        if (type->name == name)
+        {
+            return type;
+        }
+    }
+
+    return QSharedPointer<CustomType>(0);
+}
+
 QSharedPointer<FieldDefinition> Project::getFieldDefinition(const QString& id) const
 {
     for (QVector<QSharedPointer<FieldDefinitionSet> >::const_iterator itFieldDefinitionSets = this->fieldDefinitionSets.begin();

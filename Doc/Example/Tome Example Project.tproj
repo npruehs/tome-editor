@@ -40,6 +40,8 @@
                 <Mapping TomeType="Real" ExportedType="System.Single"/>
                 <Mapping TomeType="Reference" ExportedType="System.String"/>
                 <Mapping TomeType="String" ExportedType="System.String"/>
+                <Mapping TomeType="Armor Type" ExportedType="FantasyGame.Data.ArmorType"/>
+                <Mapping TomeType="Damage Type" ExportedType="FantasyGame.Data.DamageType"/>
             </TypeMap>
         </Template>
         <Template>
@@ -48,4 +50,16 @@
             <TypeMap/>
         </Template>
     </RecordExportTemplates>
+    <Types>
+        <Type Name="Armor Type" BaseType="String">
+            <Restrictions>
+                <Restriction Key="Enumeration" Value="Cloth;Leather;Mail"/>
+            </Restrictions>
+        </Type>
+        <Type Name="Damage Type" BaseType="String">
+            <Restrictions>
+                <Restriction Key="Enumeration" Value="Magic;Normal;Pierce"/>
+            </Restrictions>
+        </Type>
+    </Types>
 </TomeProject>

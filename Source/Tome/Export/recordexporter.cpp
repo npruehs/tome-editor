@@ -53,7 +53,7 @@ void RecordExporter::exportRecords(QSharedPointer<QIODevice> device, QSharedPoin
                 QSharedPointer<FieldDefinition> fieldDefinition = project->getFieldDefinition(fieldId);
 
                 // Get field type name.
-                QString fieldType = valueConverter.FieldTypeToString(fieldDefinition->fieldType);
+                QString fieldType = fieldDefinition->fieldType;
 
                 if (exportTemplate->typeMap.contains(fieldType))
                 {

@@ -3,8 +3,6 @@
 
 #include <QString>
 
-#include "fieldtype.h"
-
 namespace Tome
 {
     class FieldDefinition
@@ -16,7 +14,7 @@ namespace Tome
             QString defaultValue;
             QString description;
             QString displayName;
-            FieldType::FieldType fieldType;
+            QString fieldType;
             QString id;
 
     };

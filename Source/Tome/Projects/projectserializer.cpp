@@ -7,18 +7,25 @@
 using namespace Tome;
 
 
+const QString ProjectSerializer::AttributeBaseType = "BaseType";
 const QString ProjectSerializer::AttributeExportedType = "ExportedType";
+const QString ProjectSerializer::AttributeKey = "Key";
 const QString ProjectSerializer::AttributeTomeType = "TomeType";
+const QString ProjectSerializer::AttributeValue = "Value";
 const QString ProjectSerializer::ElementComponents = "Components";
 const QString ProjectSerializer::ElementFieldDefinitions = "FieldDefinitions";
 const QString ProjectSerializer::ElementFileExtension = "FileExtension";
 const QString ProjectSerializer::ElementMapping = "Mapping";
 const QString ProjectSerializer::ElementName = "Name";
 const QString ProjectSerializer::ElementPath = "Path";
+const QString ProjectSerializer::ElementRestriction = "Restriction";
+const QString ProjectSerializer::ElementRestrictions = "Restrictions";
 const QString ProjectSerializer::ElementRecords = "Records";
 const QString ProjectSerializer::ElementRecordExportTemplates = "RecordExportTemplates";
 const QString ProjectSerializer::ElementTemplate = "Template";
 const QString ProjectSerializer::ElementTomeProject = "TomeProject";
+const QString ProjectSerializer::ElementType = "Type";
+const QString ProjectSerializer::ElementTypes = "Types";
 const QString ProjectSerializer::ElementTypeMap = "TypeMap";
 
 
@@ -104,6 +111,44 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
                                 writer.writeStartElement(ElementMapping);
                                 writer.writeAttribute(AttributeTomeType, itTypeMap.key());
                                 writer.writeAttribute(AttributeExportedType, itTypeMap.value());
+                                writer.writeEndElement();
+                            }
+                        }
+                        writer.writeEndElement();
+                    }
+                    writer.writeEndElement();
+                }
+            }
+            writer.writeEndElement();
+
+            // Write types.
+            writer.writeStartElement(ElementTypes);
+            {
+                for (QVector<QSharedPointer<CustomType> >::iterator it = project->types.begin();
+                     it != project->types.end();
+                     ++it)
+                {
+                    QSharedPointer<CustomType> type = *it;
+
+                    writer.writeStartElement(ElementType);
+                    {
+                        writer.writeAttribute(ElementName, type->name);
+
+                        if (!type->baseType.isEmpty())
+                        {
+                            writer.writeAttribute(AttributeBaseType, type->baseType);
+                        }
+
+                        // Write restrictions map.
+                        writer.writeStartElement(ElementRestrictions);
+                        {
+                            for (QMap<QString, QString>::iterator itRestrictions = type->restrictions.begin();
+                                 itRestrictions != type->restrictions.end();
+                                 ++itRestrictions)
+                            {
+                                writer.writeStartElement(ElementRestriction);
+                                writer.writeAttribute(AttributeKey, itRestrictions.key());
+                                writer.writeAttribute(AttributeValue, itRestrictions.value());
                                 writer.writeEndElement();
                             }
                         }
@@ -208,6 +253,42 @@ void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPoi
                         project->recordExportTemplates.insert(exportTemplate->name, exportTemplate);
                     }
                     reader.readEndElement();
+                }
+            }
+            reader.readEndElement();
+
+            // Read types.
+            reader.readStartElement(ElementTypes);
+            {
+                while (reader.isAtElement(ElementType))
+                {
+                    QSharedPointer<CustomType> type =
+                            QSharedPointer<CustomType>::create();
+
+                    type->name = reader.readAttribute(ElementName);
+                    type->baseType = reader.readAttribute(AttributeBaseType);
+
+                    reader.readStartElement(ElementType);
+                    {
+                        // Read type restriction map.
+                        reader.readStartElement(ElementRestrictions);
+                        {
+                            while (reader.isAtElement(ElementRestriction))
+                            {
+                                QString restrictionKey = reader.readAttribute(AttributeKey);
+                                QString restrictionValue = reader.readAttribute(AttributeValue);
+
+                                type->restrictions.insert(restrictionKey, restrictionValue);
+
+                                // Advance reader.
+                                reader.readEmptyElement(ElementRestriction);
+                            }
+                        }
+                        reader.readEndElement();
+                    }
+                    reader.readEndElement();
+
+                    project->types.push_back(type);
                 }
             }
             reader.readEndElement();

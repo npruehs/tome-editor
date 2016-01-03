@@ -12,8 +12,6 @@
 #include <QVector>
 #include <QWidget>
 
-#include "../Fields/fieldtype.h"
-
 namespace Tome
 {
     /**
@@ -27,26 +25,26 @@ namespace Tome
             explicit FieldValueWidget(QWidget *parent = 0);
             ~FieldValueWidget();
 
-            FieldType::FieldType getFieldType() const;
+            QString getFieldType() const;
             QString getFieldValue() const;
 
-            void setFieldType(const FieldType::FieldType& fieldType);
+            void setFieldType(const QString& fieldType);
             void setFieldValue(const QString& fieldValue);
-            void setRecordNames(const QStringList& recordNames);
+            void setEnumeration(const QStringList& enumeration);
 
         protected:
             virtual void focusInEvent(QFocusEvent* event);
 
         private:
             QWidget* currentWidget;
-            FieldType::FieldType fieldType;
+            QString fieldType;
 
             QCheckBox* checkBox;
             QColorDialog* colorDialog;
             QDoubleSpinBox* doubleSpinBox;
             QVBoxLayout* layout;
             QLineEdit* lineEdit;
-            QComboBox* referenceComboBox;
+            QComboBox* comboBox;
             QSpinBox* spinBox;
 
             void addWidget(QWidget* widget);
