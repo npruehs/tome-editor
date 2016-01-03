@@ -49,9 +49,9 @@ void FieldValueWindow::setFieldType(const QString& fieldType) const
     this->fieldValueWidget->setFieldType(fieldType);
 }
 
-void FieldValueWindow::setRecordNames(const QStringList& recordNames)
+void FieldValueWindow::setEnumeration(const QStringList& recordNames)
 {
-    this->fieldValueWidget->setRecordNames(recordNames);
+    this->fieldValueWidget->setEnumeration(recordNames);
 }
 
 void FieldValueWindow::showEvent(QShowEvent* event)

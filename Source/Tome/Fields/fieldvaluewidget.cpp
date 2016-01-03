@@ -37,8 +37,8 @@ FieldValueWidget::FieldValueWidget(QWidget *parent) :
     this->colorDialog->setOptions(QColorDialog::ShowAlphaChannel | QColorDialog::NoButtons);
     this->addWidget(this->colorDialog);
 
-    this->referenceComboBox = new QComboBox();
-    this->addWidget(this->referenceComboBox);
+    this->comboBox = new QComboBox();
+    this->addWidget(this->comboBox);
 
     this->setLayout(this->layout);
     this->layout->setContentsMargins(0, 0, 0, 0);
@@ -81,17 +81,13 @@ QString FieldValueWidget::getFieldValue() const
         return this->doubleSpinBox->text();
     }
 
-    if (fieldType == BuiltInType::Reference)
-    {
-        return this->referenceComboBox->currentText();
-    }
-
     if (fieldType == BuiltInType::String)
     {
         return this->lineEdit->text();
     }
 
-    return QString();
+    // Custom datatype.
+    return this->comboBox->currentText();
 }
 
 void FieldValueWidget::setFieldType(const QString& fieldType)
@@ -124,19 +120,14 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
         return;
     }
 
-    if (fieldType == BuiltInType::Reference)
-    {
-        this->setCurrentWidget(this->referenceComboBox);
-        return;
-    }
-
     if (fieldType == BuiltInType::String)
     {
         this->setCurrentWidget(this->lineEdit);
         return;
     }
 
-    this->setCurrentWidget(0);
+    // Custom datatype.
+    this->setCurrentWidget(this->comboBox);
 }
 
 void FieldValueWidget::setFieldValue(const QString& fieldValue)
@@ -172,28 +163,20 @@ void FieldValueWidget::setFieldValue(const QString& fieldValue)
         return;
     }
 
-    if (fieldType == BuiltInType::Reference)
-    {
-        this->referenceComboBox->setCurrentText(fieldValue);
-        return;
-    }
-
     if (fieldType == BuiltInType::String)
     {
         this->lineEdit->setText(fieldValue);
         return;
     }
+
+    // Custom datatype.
+    this->comboBox->setCurrentText(fieldValue);
 }
 
-void FieldValueWidget::setRecordNames(const QStringList& recordNames)
+void FieldValueWidget::setEnumeration(const QStringList& enumeration)
 {
-    this->referenceComboBox->clear();
-
-    // Allow clearing the field.
-    this->referenceComboBox->addItem(QString());
-
-    // Add all available records.
-    this->referenceComboBox->addItems(recordNames);
+    this->comboBox->clear();
+    this->comboBox->addItems(enumeration);
 }
 
 void FieldValueWidget::focusInEvent(QFocusEvent* event)

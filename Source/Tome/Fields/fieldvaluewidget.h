@@ -30,7 +30,7 @@ namespace Tome
 
             void setFieldType(const QString& fieldType);
             void setFieldValue(const QString& fieldValue);
-            void setRecordNames(const QStringList& recordNames);
+            void setEnumeration(const QStringList& enumeration);
 
         protected:
             virtual void focusInEvent(QFocusEvent* event);
@@ -44,7 +44,7 @@ namespace Tome
             QDoubleSpinBox* doubleSpinBox;
             QVBoxLayout* layout;
             QLineEdit* lineEdit;
-            QComboBox* referenceComboBox;
+            QComboBox* comboBox;
             QSpinBox* spinBox;
 
             void addWidget(QWidget* widget);

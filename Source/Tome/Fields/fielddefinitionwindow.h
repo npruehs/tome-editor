@@ -3,6 +3,7 @@
 
 #include <QDialog>
 
+#include "../Projects/project.h"
 #include "../Fields/fieldvaluewidget.h"
 
 
@@ -25,14 +26,14 @@ class FieldDefinitionWindow : public QDialog
         QString getDefaultValue() const;
         QString getFieldType() const;
 
-        void setComponentNames(const QStringList& componentNames);
         void setFieldComponent(const QString& component) const;
         void setFieldDescription(const QString& description);
         void setFieldDisplayName(const QString& displayName);
         void setFieldId(const QString& fieldId);
         void setDefaultValue(const QString& defaultValue);
         void setFieldType(const QString& fieldType) const;
-        void setRecordNames(const QStringList& recordNames);
+
+        void setProject(QSharedPointer<Tome::Project> project);
 
     public slots:
         void accept();
@@ -42,6 +43,8 @@ class FieldDefinitionWindow : public QDialog
         void on_lineEditDisplayName_textEdited(const QString &displayName);
 
     private:
+        QSharedPointer<Tome::Project> project;
+
         Ui::FieldDefinitionWindow *ui;
         Tome::FieldValueWidget* fieldValueWidget;
 

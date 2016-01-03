@@ -35,6 +35,13 @@ namespace Tome
             QStringList getComponentNames() const;
 
             /**
+             * @brief getCustomType Returns the custom type with the specified name, of a null pointer if that type could not be found.
+             * @param name Name of the type to get.
+             * @return Custom type with the specified name, of a null pointer if that type could not be found.
+             */
+            QSharedPointer<CustomType> getCustomType(const QString& name) const;
+
+            /**
              * @brief getFieldDefinition Returns the field definition with the specified id, or a null pointer if that field could not be found.
              * @param id Id of the field definition to get.
              * @return Field definition with the specified id, or a null pointer if that field could not be found.

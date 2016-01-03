@@ -16,7 +16,9 @@
 #include "Projects/project.h"
 #include "Projects/projectserializer.h"
 #include "Records/recordsetserializer.h"
+#include "Types/builtintype.h"
 #include "Util/pathutils.h"
+
 
 using namespace Tome;
 
@@ -492,21 +494,39 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
     QSharedPointer<FieldDefinition> fieldDefinition =
             this->project->getFieldDefinition(fieldId);
 
-    // Show window.
+    // Prepare window.
     if (!this->fieldValueWindow)
     {
         this->fieldValueWindow = new FieldValueWindow(this);
     }
 
-    // Update available record references.
-    this->fieldValueWindow->setRecordNames(this->project->getRecordNames());
-
     // Update view.
     this->fieldValueWindow->setFieldDisplayName(fieldDefinition->displayName);
     this->fieldValueWindow->setFieldType(fieldDefinition->fieldType);
-    this->fieldValueWindow->setFieldValue(fieldValue);
     this->fieldValueWindow->setFieldDescription(fieldDefinition->description);
 
+    if (fieldDefinition->fieldType == BuiltInType::Reference)
+    {
+        QStringList recordNames = this->project->getRecordNames();
+
+        // Allow clearing the field.
+        recordNames << QString();
+
+        this->fieldValueWindow->setEnumeration(recordNames);
+    }
+    else
+    {
+        QSharedPointer<CustomType> type = this->project->getCustomType(fieldDefinition->fieldType);
+
+        if (type != 0)
+        {
+            this->fieldValueWindow->setEnumeration(type->getEnumeration());
+        }
+    }
+
+    this->fieldValueWindow->setFieldValue(fieldValue);
+
+    // Show window.
     int result = this->fieldValueWindow->exec();
 
     if (result == QDialog::Accepted)
