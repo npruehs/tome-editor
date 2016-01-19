@@ -51,3 +51,8 @@ void ComponentsWindow::on_actionDelete_Component_triggered()
     int row = selectedIndexes.first().row();
     this->viewModel->removeComponent(row);
 }
+
+void ComponentsWindow::on_listView_doubleClicked(const QModelIndex &index)
+{
+    Q_UNUSED(index);
+}
