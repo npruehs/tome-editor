@@ -29,8 +29,8 @@ class MainWindow : public QMainWindow
         ~MainWindow();
 
     private slots:
-        void on_actionAbout_triggered();
         void on_actionExit_triggered();
+
         void on_actionField_Definions_triggered();
         void on_actionManage_Components_triggered();
         void on_actionManage_Custom_Types_triggered();
@@ -42,6 +42,11 @@ class MainWindow : public QMainWindow
         void on_actionNew_Record_triggered();
         void on_actionEdit_Record_triggered();
         void on_actionRemove_Record_triggered();
+
+        void on_actionAbout_triggered();
+        void on_actionManual_triggered();
+        void on_actionReport_a_Bug_triggered();
+        void on_actionReleases_triggered();
 
         void on_treeView_doubleClicked(const QModelIndex &index);
         void on_tableView_doubleClicked(const QModelIndex &index);

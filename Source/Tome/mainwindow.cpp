@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 
+#include <QDesktopServices>
 #include <QFile>
 #include <QFileInfo>
 #include <QFileDialog>
@@ -70,16 +71,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::on_actionAbout_triggered()
-{
-    if (!this->aboutWindow)
-    {
-        this->aboutWindow = new AboutWindow(this);
-    }
-
-    this->showWindow(this->aboutWindow);
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -477,6 +468,31 @@ void MainWindow::on_actionRemove_Record_triggered()
     }
 
     this->recordsViewModel->removeRecord(displayName);
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    if (!this->aboutWindow)
+    {
+        this->aboutWindow = new AboutWindow(this);
+    }
+
+    this->showWindow(this->aboutWindow);
+}
+
+void MainWindow::on_actionManual_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/wiki/Introduction"));
+}
+
+void MainWindow::on_actionReport_a_Bug_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/issues/new"));
+}
+
+void MainWindow::on_actionReleases_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/releases"));
 }
 
 void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
