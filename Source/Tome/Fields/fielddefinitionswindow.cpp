@@ -22,10 +22,10 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(QSharedPointer<Tome::Project> pro
 
     // Listen for selection changes.
     connect(
-      this->ui->tableView->selectionModel(),
-      SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-      SLOT(tableViewSelectionChanged(const QItemSelection &, const QItemSelection &))
-     );
+                this->ui->tableView->selectionModel(),
+                SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                SLOT(tableViewSelectionChanged(const QItemSelection &, const QItemSelection &))
+                );
 
     this->updateMenus();
 }

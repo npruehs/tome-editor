@@ -23,6 +23,8 @@ class ComponentsWindow : public QMainWindow
         void on_actionNew_Component_triggered();
         void on_actionDelete_Component_triggered();
 
+        void on_listView_doubleClicked(const QModelIndex &index);
+
     private:
         Ui::ComponentsWindow *ui;
 

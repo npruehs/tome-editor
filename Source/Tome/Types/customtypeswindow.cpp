@@ -35,7 +35,7 @@ void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
 
     if (result == QDialog::Accepted)
     {
-         // Add new type.
+        // Add new type.
         this->viewModel->addCustomType(
                     this->customTypeWindow->getCustomTypeName(),
                     this->customTypeWindow->getCustomTypeEnumeration());

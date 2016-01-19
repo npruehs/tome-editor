@@ -73,7 +73,7 @@ QString FieldValueWidget::getFieldValue() const
 
     if (fieldType == BuiltInType::Integer)
     {
-         return this->spinBox->text();
+        return this->spinBox->text();
     }
 
     if (fieldType == BuiltInType::Real)

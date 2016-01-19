@@ -71,6 +71,12 @@
      <string>Help</string>
     </property>
     <addaction name="actionAbout"/>
+    <addaction name="separator"/>
+    <addaction name="actionManual"/>
+    <addaction name="separator"/>
+    <addaction name="actionReport_a_Bug"/>
+    <addaction name="separator"/>
+    <addaction name="actionReleases"/>
    </widget>
    <widget class="QMenu" name="menuFields">
     <property name="title">
@@ -124,10 +130,7 @@
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About</string>
-   </property>
-   <property name="shortcut">
-    <string>F1</string>
+    <string>About...</string>
    </property>
   </action>
   <action name="actionNew_Project">
@@ -216,6 +219,24 @@
   <action name="actionManage_Custom_Types">
    <property name="text">
     <string>Manage Custom Types...</string>
+   </property>
+  </action>
+  <action name="actionManual">
+   <property name="text">
+    <string>Manual</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+  </action>
+  <action name="actionReport_a_Bug">
+   <property name="text">
+    <string>Report a Bug</string>
+   </property>
+  </action>
+  <action name="actionReleases">
+   <property name="text">
+    <string>Releases</string>
    </property>
   </action>
  </widget>
