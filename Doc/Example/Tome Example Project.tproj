@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TomeProject>
+    <Name>Tome Example Project</Name>
+    <Components>
+        <Name>ArmorComponent</Name>
+        <Name>AttackComponent</Name>
+        <Name>InvulnerabilityComponent</Name>
+        <Name>ManaComponent</Name>
+        <Name>MovementComponent</Name>
+        <Name>NameComponent</Name>
+        <Name>PhysicsComponent</Name>
+        <Name>RangeComponent</Name>
+        <Name>SightComponent</Name>
+        <Name>VisualizationComponent</Name>
+    </Components>
+    <FieldDefinitions>
+        <Path>Tome Example Project</Path>
+    </FieldDefinitions>
+    <Records>
+        <Path>Tome Example Project</Path>
+    </Records>
+    <RecordExportTemplates>
+        <Template>
+            <Name>HTML</Name>
+            <FileExtension>.html</FileExtension>
+            <TypeMap/>
+        </Template>
+        <Template>
+            <Name>JSON</Name>
+            <FileExtension>.json</FileExtension>
+            <TypeMap/>
+        </Template>
+        <Template>
+            <Name>Slash XML</Name>
+            <FileExtension>.blueprints.xml</FileExtension>
+            <TypeMap>
+                <Mapping TomeType="Boolean" ExportedType="System.Boolean"/>
+                <Mapping TomeType="Color" ExportedType="System.String"/>
+                <Mapping TomeType="Integer" ExportedType="System.Int32"/>
+                <Mapping TomeType="Real" ExportedType="System.Single"/>
+                <Mapping TomeType="Reference" ExportedType="System.String"/>
+                <Mapping TomeType="String" ExportedType="System.String"/>
+                <Mapping TomeType="Armor Type" ExportedType="FantasyGame.Data.ArmorType"/>
+                <Mapping TomeType="Damage Type" ExportedType="FantasyGame.Data.DamageType"/>
+            </TypeMap>
+        </Template>
+        <Template>
+            <Name>StarCraft II XML</Name>
+            <FileExtension>.xml</FileExtension>
+            <TypeMap/>
+        </Template>
+    </RecordExportTemplates>
+    <Types>
+        <Type Name="Armor Type" BaseType="String">
+            <Restrictions>
+                <Restriction Key="Enumeration" Value="Cloth;Leather;Mail"/>
+            </Restrictions>
+        </Type>
+        <Type Name="Damage Type" BaseType="String">
+            <Restrictions>
+                <Restriction Key="Enumeration" Value="Magic;Normal;Pierce"/>
+            </Restrictions>
+        </Type>
+    </Types>
+</TomeProject>

@@ -1,0 +1,9 @@
+<RCC>
+  <qresource>
+    <file>../Media/Icons/AddUsingNamespace_6782.png</file>
+    <file>../Media/Icons/NewFile_6276.png</file>
+    <file>../Media/Icons/Open_6529.png</file>
+    <file>../Media/Icons/RemoveUsingNamespace_10480.png</file>
+    <file>../Media/Icons/Saveall_6518.png</file>
+  </qresource>
+</RCC>
