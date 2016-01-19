@@ -92,7 +92,7 @@ void FieldDefinitionSetSerializer::deserialize(QSharedPointer<QIODevice> device,
 
                 fieldDefinitionSet->fieldDefinitions.push_back(fieldDefinition);
 
-                 // Read attribute values.
+                // Read attribute values.
                 fieldDefinition->id = reader.readAttribute(AttributeId);
                 fieldDefinition->displayName = reader.readAttribute(AttributeDisplayName);
                 fieldDefinition->description = reader.readAttribute(AttributeDescription);

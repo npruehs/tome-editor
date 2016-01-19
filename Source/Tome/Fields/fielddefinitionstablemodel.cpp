@@ -22,8 +22,8 @@ FieldDefinitionsTableModel::FieldDefinitionsTableModel(QObject *parent, QSharedP
 
 int FieldDefinitionsTableModel::rowCount(const QModelIndex& parent) const
 {
-   Q_UNUSED(parent);
-   return this->project->fieldDefinitionSets[0]->fieldDefinitions.size();
+    Q_UNUSED(parent);
+    return this->project->fieldDefinitionSets[0]->fieldDefinitions.size();
 }
 
 int FieldDefinitionsTableModel::columnCount(const QModelIndex& parent) const
@@ -90,18 +90,18 @@ QVariant FieldDefinitionsTableModel::headerData(int section, Qt::Orientation ori
         if (orientation == Qt::Horizontal) {
             switch (section)
             {
-            case 0:
-                return QString("Id");
-            case 1:
-                return QString("Display Name");
-            case 2:
-                return QString("Type");
-            case 3:
-                return QString("Default Value");
-            case 4:
-                return QString("Component");
-            case 5:
-                return QString("Description");
+                case 0:
+                    return QString("Id");
+                case 1:
+                    return QString("Display Name");
+                case 2:
+                    return QString("Type");
+                case 3:
+                    return QString("Default Value");
+                case 4:
+                    return QString("Component");
+                case 5:
+                    return QString("Description");
             }
         }
     }

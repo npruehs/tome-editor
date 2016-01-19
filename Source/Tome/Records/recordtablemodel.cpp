@@ -81,10 +81,10 @@ QVariant RecordTableModel::headerData(int section, Qt::Orientation orientation, 
         if (orientation == Qt::Horizontal) {
             switch (section)
             {
-            case 0:
-                return QString("Field");
-            case 1:
-                return QString("Value");
+                case 0:
+                    return QString("Field");
+                case 1:
+                    return QString("Value");
             }
         }
     }

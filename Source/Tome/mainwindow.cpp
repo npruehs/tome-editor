@@ -47,10 +47,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     connect(
-      this->ui->menuExport,
-      SIGNAL(triggered(QAction*)),
-      SLOT(exportRecords(QAction*))
-     );
+                this->ui->menuExport,
+                SIGNAL(triggered(QAction*)),
+                SLOT(exportRecords(QAction*))
+                );
 
     // Maximize window.
     this->showMaximized();
@@ -140,9 +140,9 @@ void MainWindow::on_actionOpen_Project_triggered()
 {
     // Open file browser dialog.
     const QString& projectFileName = QFileDialog::getOpenFileName(this,
-                                                          tr("Open Project"),
-                                                          QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
-                                                          "Tome Project Files (*.tproj)");
+                                                                  tr("Open Project"),
+                                                                  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+                                                                  "Tome Project Files (*.tproj)");
 
     if (projectFileName.count() <= 0)
     {
@@ -164,7 +164,7 @@ void MainWindow::on_actionOpen_Project_triggered()
 
         try
         {
-             projectSerializer->deserialize(projectFile, project);
+            projectSerializer->deserialize(projectFile, project);
         }
         catch (const std::runtime_error& e)
         {
@@ -195,7 +195,7 @@ void MainWindow::on_actionOpen_Project_triggered()
             {
                 try
                 {
-                     fieldDefinitionSerializer->deserialize(fieldDefinitionFile, fieldDefinitionSet);
+                    fieldDefinitionSerializer->deserialize(fieldDefinitionFile, fieldDefinitionSet);
                 }
                 catch (const std::runtime_error& e)
                 {
@@ -238,7 +238,7 @@ void MainWindow::on_actionOpen_Project_triggered()
             {
                 try
                 {
-                     recordSetSerializer->deserialize(recordFile, recordSet);
+                    recordSetSerializer->deserialize(recordFile, recordSet);
                 }
                 catch (const std::runtime_error& e)
                 {
@@ -353,8 +353,8 @@ void MainWindow::on_actionNew_Record_triggered()
         const QString& recordDisplayName = this->recordWindow->getRecordDisplayName();
 
         this->recordsViewModel->addRecord(
-                recordId,
-                recordDisplayName);
+                    recordId,
+                    recordDisplayName);
 
         // Select new record.
         const QStandardItem* recordItem = this->recordsViewModel->findItem(recordDisplayName);
@@ -551,8 +551,8 @@ void MainWindow::exportRecords(QAction* exportAction)
 
     // Show file dialog.
     QString filePath = QFileDialog::getSaveFileName(this,
-                                                      tr("Export Records"),
-                                                      suggestedFilePath);
+                                                    tr("Export Records"),
+                                                    suggestedFilePath);
 
     if (filePath.isEmpty())
     {
@@ -808,10 +808,10 @@ void MainWindow::setProject(QSharedPointer<Project> project)
 
     // Listen for selection changes.
     connect(
-      this->ui->treeView->selectionModel(),
-      SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-      SLOT(treeViewSelectionChanged(const QItemSelection &, const QItemSelection &))
-     );
+                this->ui->treeView->selectionModel(),
+                SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                SLOT(treeViewSelectionChanged(const QItemSelection &, const QItemSelection &))
+                );
 
     // Setup record exports.
     this->ui->menuExport->clear();
