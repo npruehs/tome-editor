@@ -62,7 +62,7 @@ QVariant RecordTableModel::data(const QModelIndex& index, int role) const
         QString fieldId = this->getFieldId(index);
         QSharedPointer<FieldDefinition> fieldDefinition = this->project->getFieldDefinition(fieldId);
 
-        if (fieldDefinition->fieldType == BuiltInType::Color)
+        if (fieldDefinition != 0 && fieldDefinition->fieldType == BuiltInType::Color)
         {
             // Show color preview.
             QColor color;
