@@ -52,6 +52,7 @@ class MainWindow : public QMainWindow
         void on_tableView_doubleClicked(const QModelIndex &index);
 
         void exportRecords(QAction* exportAction);
+        void openRecentProject(QAction* recentProjectAction);
         void treeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
     private:
@@ -85,11 +86,13 @@ class MainWindow : public QMainWindow
         QString getFullProjectPath() const;
         QString getFullProjectPath(QSharedPointer<Tome::Project> project) const;
         QString getSelectedRecordDisplayName() const;
+        void openProject(QString path);
         QString readProjectFile(QString projectPath, QString fileName);
         bool saveProject(QSharedPointer<Tome::Project> project);
         void setProject(QSharedPointer<Tome::Project> project);
         void showWindow(QWidget* widget);
         void updateMenus();
+        void updateRecentProjects();
         void updateWindowTitle();
 };
 

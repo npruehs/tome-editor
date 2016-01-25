@@ -17,6 +17,7 @@
 #include "Projects/project.h"
 #include "Projects/projectserializer.h"
 #include "Records/recordsetserializer.h"
+#include "Settings/tomesettings.h"
 #include "Types/builtintype.h"
 #include "Util/pathutils.h"
 
@@ -53,6 +54,12 @@ MainWindow::MainWindow(QWidget *parent) :
                 SLOT(exportRecords(QAction*))
                 );
 
+    connect(
+                this->ui->menuRecent_Projects,
+                SIGNAL(triggered(QAction*)),
+                SLOT(openRecentProject(QAction*))
+                );
+
     // Maximize window.
     this->showMaximized();
 
@@ -61,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Can't access some functionality until project created or loaded.
     this->updateMenus();
+    this->updateRecentProjects();
 
     // Setup record field table model.
     RecordTableModel* model = new RecordTableModel(this);
@@ -135,174 +143,7 @@ void MainWindow::on_actionOpen_Project_triggered()
                                                                   QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
                                                                   "Tome Project Files (*.tproj)");
 
-    if (projectFileName.count() <= 0)
-    {
-        return;
-    }
-
-    // Open project file.
-    QSharedPointer<QFile> projectFile = QSharedPointer<QFile>::create(projectFileName);
-    QSharedPointer<QFileInfo> projectFileInfo = QSharedPointer<QFileInfo>::create(projectFileName);
-    const QString projectPath = projectFileInfo->path();
-
-    if (projectFile->open(QIODevice::ReadOnly))
-    {
-        // Load project from file.
-        QSharedPointer<ProjectSerializer> projectSerializer =
-                QSharedPointer<ProjectSerializer>::create();
-        QSharedPointer<Project> project = QSharedPointer<Project>::create();
-        project->path = projectPath;
-
-        try
-        {
-            projectSerializer->deserialize(projectFile, project);
-        }
-        catch (const std::runtime_error& e)
-        {
-            QMessageBox::critical(
-                        this,
-                        tr("Unable to open project"),
-                        tr("File could not be read: ") + projectFileName + "\r\n" + e.what(),
-                        QMessageBox::Close,
-                        QMessageBox::Close);
-            return;
-        }
-
-        // Load field definition files.
-        QSharedPointer<FieldDefinitionSetSerializer> fieldDefinitionSerializer =
-                QSharedPointer<FieldDefinitionSetSerializer>::create();
-
-        for (QVector<QSharedPointer<FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
-             it != project->fieldDefinitionSets.end();
-             ++it)
-        {
-            QSharedPointer<FieldDefinitionSet> fieldDefinitionSet = *it;
-
-            // Open field definition file.
-            const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSet->name + FieldDefinitionFileExtension);
-            QSharedPointer<QFile> fieldDefinitionFile = QSharedPointer<QFile>::create(fullFieldDefinitionSetPath);
-
-            if (fieldDefinitionFile->open(QIODevice::ReadOnly))
-            {
-                try
-                {
-                    fieldDefinitionSerializer->deserialize(fieldDefinitionFile, fieldDefinitionSet);
-                }
-                catch (const std::runtime_error& e)
-                {
-                    QMessageBox::critical(
-                                this,
-                                tr("Unable to open project"),
-                                tr("File could not be read: ") + fullFieldDefinitionSetPath + "\r\n" + e.what(),
-                                QMessageBox::Close,
-                                QMessageBox::Close);
-                    return;
-                }
-            }
-            else
-            {
-                QMessageBox::critical(
-                            this,
-                            tr("Unable to open project"),
-                            tr("File could not be read:\r\n") + fullFieldDefinitionSetPath,
-                            QMessageBox::Close,
-                            QMessageBox::Close);
-                return;
-            }
-        }
-
-        // Load record files.
-        QSharedPointer<RecordSetSerializer> recordSetSerializer =
-                QSharedPointer<RecordSetSerializer>::create();
-
-        for (QVector<QSharedPointer<RecordSet> >::iterator it = project->recordSets.begin();
-             it != project->recordSets.end();
-             ++it)
-        {
-            QSharedPointer<RecordSet> recordSet = *it;
-
-            // Open record file.
-            const QString fullRecordSetPath = combinePaths(projectPath, recordSet->name + RecordFileExtension);
-            QSharedPointer<QFile> recordFile = QSharedPointer<QFile>::create(fullRecordSetPath);
-
-            if (recordFile->open(QIODevice::ReadOnly))
-            {
-                try
-                {
-                    recordSetSerializer->deserialize(recordFile, recordSet);
-                }
-                catch (const std::runtime_error& e)
-                {
-                    QMessageBox::critical(
-                                this,
-                                tr("Unable to open project"),
-                                tr("File could not be read: ") + fullRecordSetPath + "\r\n" + e.what(),
-                                QMessageBox::Close,
-                                QMessageBox::Close);
-                    return;
-                }
-            }
-            else
-            {
-                QMessageBox::critical(
-                            this,
-                            tr("Unable to open project"),
-                            tr("File could not be read:\r\n") + fullRecordSetPath,
-                            QMessageBox::Close,
-                            QMessageBox::Close);
-                return;
-            }
-        }
-
-        // Load record export template files.
-        for (QMap<QString, QSharedPointer<RecordExportTemplate> >::iterator it = project->recordExportTemplates.begin();
-             it != project->recordExportTemplates.end();
-             ++it)
-        {
-            QSharedPointer<RecordExportTemplate> exportTemplate = it.value();
-
-            try
-            {
-                exportTemplate->fieldValueDelimiter =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportFieldValueDelimiterExtension);
-                exportTemplate->fieldValueTemplate =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportFieldValueTemplateExtension);
-                exportTemplate->recordDelimiter =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordDelimiterExtension);
-                exportTemplate->recordFileTemplate =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordFileTemplateExtension);
-                exportTemplate->recordTemplate =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordTemplateExtension);
-                exportTemplate->componentDelimiter =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportComponentDelimiterExtension);
-                exportTemplate->componentTemplate =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportComponentTemplateExtension);
-            }
-            catch (const std::runtime_error& e)
-            {
-                QMessageBox::critical(
-                            this,
-                            tr("Unable to open project"),
-                            tr("File could not be read:\r\n") + e.what(),
-                            QMessageBox::Close,
-                            QMessageBox::Close);
-                return;
-            }
-        }
-
-        // Set project reference.
-        this->setProject(project);
-    }
-    else
-    {
-        QMessageBox::critical(
-                    this,
-                    tr("Unable to open project"),
-                    tr("File could not be read:\r\n") + projectFileName,
-                    QMessageBox::Close,
-                    QMessageBox::Close);
-        return;
-    }
+    this->openProject(projectFileName);
 }
 
 void MainWindow::on_actionSave_Project_triggered()
@@ -595,6 +436,12 @@ void MainWindow::exportRecords(QAction* exportAction)
     }
 }
 
+void MainWindow::openRecentProject(QAction* recentProjectAction)
+{
+    QString path = recentProjectAction->text();
+    this->openProject(path);
+}
+
 void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
 {
     Q_UNUSED(deselected);
@@ -691,6 +538,188 @@ QString MainWindow::getSelectedRecordDisplayName() const
     }
 
     return currentIndex.data(Qt::DisplayRole).toString();
+}
+
+void MainWindow::openProject(QString projectFileName)
+{
+    if (projectFileName.count() <= 0)
+    {
+        return;
+    }
+
+    // Open project file.
+    QSharedPointer<QFile> projectFile = QSharedPointer<QFile>::create(projectFileName);
+    QSharedPointer<QFileInfo> projectFileInfo = QSharedPointer<QFileInfo>::create(projectFileName);
+    const QString projectPath = projectFileInfo->path();
+
+    if (projectFile->open(QIODevice::ReadOnly))
+    {
+        // Load project from file.
+        QSharedPointer<ProjectSerializer> projectSerializer =
+                QSharedPointer<ProjectSerializer>::create();
+        QSharedPointer<Project> project = QSharedPointer<Project>::create();
+        project->path = projectPath;
+
+        try
+        {
+            projectSerializer->deserialize(projectFile, project);
+        }
+        catch (const std::runtime_error& e)
+        {
+            QMessageBox::critical(
+                        this,
+                        tr("Unable to open project"),
+                        tr("File could not be read: ") + projectFileName + "\r\n" + e.what(),
+                        QMessageBox::Close,
+                        QMessageBox::Close);
+            return;
+        }
+
+        // Load field definition files.
+        QSharedPointer<FieldDefinitionSetSerializer> fieldDefinitionSerializer =
+                QSharedPointer<FieldDefinitionSetSerializer>::create();
+
+        for (QVector<QSharedPointer<FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
+             it != project->fieldDefinitionSets.end();
+             ++it)
+        {
+            QSharedPointer<FieldDefinitionSet> fieldDefinitionSet = *it;
+
+            // Open field definition file.
+            const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSet->name + FieldDefinitionFileExtension);
+            QSharedPointer<QFile> fieldDefinitionFile = QSharedPointer<QFile>::create(fullFieldDefinitionSetPath);
+
+            if (fieldDefinitionFile->open(QIODevice::ReadOnly))
+            {
+                try
+                {
+                    fieldDefinitionSerializer->deserialize(fieldDefinitionFile, fieldDefinitionSet);
+                }
+                catch (const std::runtime_error& e)
+                {
+                    QMessageBox::critical(
+                                this,
+                                tr("Unable to open project"),
+                                tr("File could not be read: ") + fullFieldDefinitionSetPath + "\r\n" + e.what(),
+                                QMessageBox::Close,
+                                QMessageBox::Close);
+                    return;
+                }
+            }
+            else
+            {
+                QMessageBox::critical(
+                            this,
+                            tr("Unable to open project"),
+                            tr("File could not be read:\r\n") + fullFieldDefinitionSetPath,
+                            QMessageBox::Close,
+                            QMessageBox::Close);
+                return;
+            }
+        }
+
+        // Load record files.
+        QSharedPointer<RecordSetSerializer> recordSetSerializer =
+                QSharedPointer<RecordSetSerializer>::create();
+
+        for (QVector<QSharedPointer<RecordSet> >::iterator it = project->recordSets.begin();
+             it != project->recordSets.end();
+             ++it)
+        {
+            QSharedPointer<RecordSet> recordSet = *it;
+
+            // Open record file.
+            const QString fullRecordSetPath = combinePaths(projectPath, recordSet->name + RecordFileExtension);
+            QSharedPointer<QFile> recordFile = QSharedPointer<QFile>::create(fullRecordSetPath);
+
+            if (recordFile->open(QIODevice::ReadOnly))
+            {
+                try
+                {
+                    recordSetSerializer->deserialize(recordFile, recordSet);
+                }
+                catch (const std::runtime_error& e)
+                {
+                    QMessageBox::critical(
+                                this,
+                                tr("Unable to open project"),
+                                tr("File could not be read: ") + fullRecordSetPath + "\r\n" + e.what(),
+                                QMessageBox::Close,
+                                QMessageBox::Close);
+                    return;
+                }
+            }
+            else
+            {
+                QMessageBox::critical(
+                            this,
+                            tr("Unable to open project"),
+                            tr("File could not be read:\r\n") + fullRecordSetPath,
+                            QMessageBox::Close,
+                            QMessageBox::Close);
+                return;
+            }
+        }
+
+        // Load record export template files.
+        for (QMap<QString, QSharedPointer<RecordExportTemplate> >::iterator it = project->recordExportTemplates.begin();
+             it != project->recordExportTemplates.end();
+             ++it)
+        {
+            QSharedPointer<RecordExportTemplate> exportTemplate = it.value();
+
+            try
+            {
+                exportTemplate->fieldValueDelimiter =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportFieldValueDelimiterExtension);
+                exportTemplate->fieldValueTemplate =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportFieldValueTemplateExtension);
+                exportTemplate->recordDelimiter =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordDelimiterExtension);
+                exportTemplate->recordFileTemplate =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordFileTemplateExtension);
+                exportTemplate->recordTemplate =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordTemplateExtension);
+                exportTemplate->componentDelimiter =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportComponentDelimiterExtension);
+                exportTemplate->componentTemplate =
+                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportComponentTemplateExtension);
+            }
+            catch (const std::runtime_error& e)
+            {
+                QMessageBox::critical(
+                            this,
+                            tr("Unable to open project"),
+                            tr("File could not be read:\r\n") + e.what(),
+                            QMessageBox::Close,
+                            QMessageBox::Close);
+                return;
+            }
+        }
+
+        // Add to recent projects.
+        TomeSettings settings;
+        settings.addRecentProject(projectFileName);
+        this->updateRecentProjects();
+
+        // Set project reference.
+        this->setProject(project);
+    }
+    else
+    {
+        // Remove from recent projects.
+        TomeSettings settings;
+        settings.removeRecentProject(projectFileName);
+        this->updateRecentProjects();
+
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to open project"),
+                    tr("File could not be read:\r\n") + projectFileName,
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return;
+    }
 }
 
 QString MainWindow::readProjectFile(QString projectPath, QString fileName)
@@ -864,6 +893,22 @@ void MainWindow::updateMenus()
     this->ui->actionNew_Record->setEnabled(projectLoaded);
     this->ui->actionEdit_Record->setEnabled(projectLoaded);
     this->ui->actionRemove_Record->setEnabled(projectLoaded);
+}
+
+void MainWindow::updateRecentProjects()
+{
+    // Clear menu.
+    this->ui->menuRecent_Projects->clear();
+
+    // Add recent projects.
+    TomeSettings settings;
+    QStringList recentProjects = settings.getRecentProjects();
+    for (int i = 0; i < recentProjects.size(); ++i)
+    {
+        QString path = recentProjects.at(i);
+        QAction* action = new QAction(path, this);
+        this->ui->menuRecent_Projects->addAction(action);
+    }
 }
 
 void MainWindow::updateWindowTitle()

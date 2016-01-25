@@ -59,7 +59,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Types/customtypewindow.cpp \
     ../Source/Tome/Types/customtypememberwindow.cpp \
     ../Source/Tome/Types/customtype.cpp \
-    ../Source/Tome/Types/customtypesitemmodel.cpp
+    ../Source/Tome/Types/customtypesitemmodel.cpp \
+    ../Source/Tome/Settings/tomesettings.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/builtintype.h \
@@ -93,7 +94,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/customtypewindow.h \
     ../Source/Tome/Types/customtypememberwindow.h \
     ../Source/Tome/Types/customtype.h \
-    ../Source/Tome/Types/customtypesitemmodel.h
+    ../Source/Tome/Types/customtypesitemmodel.h \
+    ../Source/Tome/Settings/tomesettings.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \
