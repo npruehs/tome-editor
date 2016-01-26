@@ -13,6 +13,8 @@ namespace Tome
             CustomTypesItemModel(QSharedPointer<Tome::Project> project);
 
             void addEnumeration(const QString& name, const QStringList& enumeration);
+            void addList(const QString& name, const QString& itemType);
+
             void updateEnumeration(const int index, const QString& name, const QStringList& enumeration);
             void removeCustomType(const int index);
 

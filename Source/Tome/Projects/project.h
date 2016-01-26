@@ -67,6 +67,12 @@ namespace Tome
              * @return List containing the names of all records of this project.
              */
             QStringList getRecordNames() const;
+
+            /**
+             * @brief getTypeNames Returns a list of all type names of this project, including built-in types.
+             * @return List containing the names of all types avaialable in this project.
+             */
+            QStringList getTypeNames() const;
     };
 }
 

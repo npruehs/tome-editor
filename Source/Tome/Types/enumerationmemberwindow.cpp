@@ -1,12 +1,12 @@
 #include "enumerationmemberwindow.h"
-#include "ui_customtypememberwindow.h"
+#include "ui_enumerationmemberwindow.h"
 
 #include <QMessageBox>
 
 
 EnumerationMemberWindow::EnumerationMemberWindow(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::CustomTypeMemberWindow)
+    ui(new Ui::EnumerationMemberWindow)
 {
     ui->setupUi(this);
 }

@@ -8,6 +8,7 @@ CustomTypesWindow::CustomTypesWindow(QSharedPointer<Tome::Project> project, QWid
     QMainWindow(parent),
     ui(new Ui::CustomTypesWindow),
     enumerationWindow(0),
+    listWindow(0),
     project(project)
 {
     ui->setupUi(this);
@@ -37,8 +38,30 @@ void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
     {
         // Add new type.
         this->viewModel->addEnumeration(
-                    this->enumerationWindow->getCustomTypeName(),
-                    this->enumerationWindow->getCustomTypeEnumeration());
+                    this->enumerationWindow->getEnumerationName(),
+                    this->enumerationWindow->getEnumerationMembers());
+    }
+}
+
+void CustomTypesWindow::on_actionNew_List_triggered()
+{
+    // Show window.
+    if (!this->listWindow)
+    {
+        this->listWindow = new ListWindow(this);
+    }
+
+    // Update type selection.
+    this->listWindow->setProject(this->project);
+
+    int result = this->listWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        // Add new type.
+        this->viewModel->addList(
+                    this->listWindow->getListName(),
+                    this->listWindow->getListItemType());
     }
 }
 
@@ -62,8 +85,8 @@ void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
     }
 
     // Update view.
-    this->enumerationWindow->setCustomTypeName(type->name);
-    this->enumerationWindow->setCustomTypeEnumeration(type->getEnumeration());
+    this->enumerationWindow->setEnumerationName(type->name);
+    this->enumerationWindow->setEnumerationMembers(type->getEnumeration());
 
     int result = this->enumerationWindow->exec();
 
@@ -72,8 +95,8 @@ void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
         // Update type.
         this->viewModel->updateEnumeration(
                     index,
-                    this->enumerationWindow->getCustomTypeName(),
-                    this->enumerationWindow->getCustomTypeEnumeration());
+                    this->enumerationWindow->getEnumerationName(),
+                    this->enumerationWindow->getEnumerationMembers());
     }
 }
 

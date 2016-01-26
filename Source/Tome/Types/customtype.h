@@ -26,10 +26,17 @@ namespace Tome
              * @brief setEnumeration Sets the Enumeration restriction of this type.
              * @param enumeration Allowed field values.
              */
-            void setEnumeration(QStringList enumeration);
+            void setEnumeration(const QStringList& enumeration);
+
+            /**
+             * @brief setItemType Sets the Item Type restriction of this type.
+             * @param itemType Type of the list items.
+             */
+            void setItemType(const QString& itemType);
 
         private:
             static const QString RestrictionEnumeration;
+            static const QString RestrictionItemType;
     };
 }
 

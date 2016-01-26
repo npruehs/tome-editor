@@ -38,6 +38,7 @@
      <string>Custom Types</string>
     </property>
     <addaction name="actionNew_Custom_Type"/>
+    <addaction name="actionNew_List"/>
     <addaction name="separator"/>
     <addaction name="actionEdit_Custom_Type"/>
     <addaction name="actionDelete_Custom_Type"/>
@@ -57,20 +58,11 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionNew_Custom_Type"/>
    <addaction name="actionDelete_Custom_Type"/>
   </widget>
   <action name="actionNew_Custom_Type">
-   <property name="icon">
-    <iconset>
-     <normalon>:/Media/Icons/AddUsingNamespace_6782.png</normalon>
-    </iconset>
-   </property>
    <property name="text">
     <string>New Enumeration...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+N</string>
    </property>
   </action>
   <action name="actionEdit_Custom_Type">
@@ -100,6 +92,11 @@
    </property>
    <property name="shortcut">
     <string>Esc</string>
+   </property>
+  </action>
+  <action name="actionNew_List">
+   <property name="text">
+    <string>New List...</string>
    </property>
   </action>
  </widget>

@@ -5,6 +5,7 @@
 
 #include "customtypesitemmodel.h"
 #include "enumerationwindow.h"
+#include "listwindow.h"
 #include "../Projects/project.h"
 
 namespace Ui {
@@ -21,6 +22,8 @@ class CustomTypesWindow : public QMainWindow
 
     private slots:
         void on_actionNew_Custom_Type_triggered();
+        void on_actionNew_List_triggered();
+
         void on_actionEdit_Custom_Type_triggered();
         void on_actionDelete_Custom_Type_triggered();
 
@@ -30,6 +33,7 @@ class CustomTypesWindow : public QMainWindow
         Ui::CustomTypesWindow *ui;
 
         EnumerationWindow* enumerationWindow;
+        ListWindow* listWindow;
 
         QSharedPointer<Tome::Project> project;
         QSharedPointer<Tome::CustomTypesItemModel> viewModel;

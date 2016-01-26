@@ -8,7 +8,7 @@ using namespace Tome;
 
 EnumerationWindow::EnumerationWindow(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::CustomTypeWindow),
+    ui(new Ui::EnumerationWindow),
     enumerationMemberWindow(0)
 {
     ui->setupUi(this);
@@ -23,23 +23,23 @@ EnumerationWindow::~EnumerationWindow()
     delete ui;
 }
 
-QString EnumerationWindow::getCustomTypeName() const
+QString EnumerationWindow::getEnumerationName() const
 {
     return this->ui->lineEdit->text();
 }
 
-QStringList EnumerationWindow::getCustomTypeEnumeration() const
+QStringList EnumerationWindow::getEnumerationMembers() const
 {
     QStringListModel* model = static_cast<QStringListModel*>(this->ui->listView->model());
     return model->stringList();
 }
 
-void EnumerationWindow::setCustomTypeName(const QString& typeName)
+void EnumerationWindow::setEnumerationName(const QString& typeName)
 {
     this->ui->lineEdit->setText(typeName);
 }
 
-void EnumerationWindow::setCustomTypeEnumeration(const QStringList& enumeration)
+void EnumerationWindow::setEnumerationMembers(const QStringList& enumeration)
 {
     QStringListModel* model = static_cast<QStringListModel*>(this->ui->listView->model());
     model->setStringList(enumeration);

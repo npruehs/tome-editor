@@ -1,5 +1,5 @@
-#ifndef CUSTOMTYPEWINDOW_H
-#define CUSTOMTYPEWINDOW_H
+#ifndef ENUMERATIONWINDOW_H
+#define ENUMERATIONWINDOW_H
 
 #include <QDialog>
 
@@ -7,7 +7,7 @@
 #include "enumerationmemberwindow.h"
 
 namespace Ui {
-    class CustomTypeWindow;
+    class EnumerationWindow;
 }
 
 class EnumerationWindow : public QDialog
@@ -18,20 +18,20 @@ class EnumerationWindow : public QDialog
         explicit EnumerationWindow(QWidget *parent = 0);
         ~EnumerationWindow();
 
-        QString getCustomTypeName() const;
-        QStringList getCustomTypeEnumeration() const;
+        QString getEnumerationName() const;
+        QStringList getEnumerationMembers() const;
 
-        void setCustomTypeName(const QString& typeName);
-        void setCustomTypeEnumeration(const QStringList& enumeration);
+        void setEnumerationName(const QString& typeName);
+        void setEnumerationMembers(const QStringList& enumeration);
 
     private slots:
         void on_actionNew_Member_triggered();
         void on_actionDelete_Member_triggered();
 
     private:
-        Ui::CustomTypeWindow *ui;
+        Ui::EnumerationWindow *ui;
 
         EnumerationMemberWindow* enumerationMemberWindow;
 };
 
-#endif // CUSTOMTYPEWINDOW_H
+#endif // ENUMERATIONWINDOW_H

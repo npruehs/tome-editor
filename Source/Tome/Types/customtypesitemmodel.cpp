@@ -43,6 +43,23 @@ void CustomTypesItemModel::addEnumeration(const QString& name, const QStringList
     this->insertItem(newType->name);
 }
 
+void CustomTypesItemModel::addList(const QString& name, const QString& itemType)
+{
+    // Add type.
+    QSharedPointer<CustomType> newType = QSharedPointer<CustomType>::create();
+    newType->name = name;
+    newType->baseType = BuiltInType::String;
+    newType->setItemType(itemType);
+
+    this->project->types.push_back(newType);
+
+    // Sort by name.
+    std::sort(this->project->types.begin(), this->project->types.end(), lessThanCustomTypes);
+
+    // Insert item.
+    this->insertItem(newType->name);
+}
+
 void CustomTypesItemModel::updateEnumeration(const int index, const QString& name, const QStringList& enumeration)
 {
     // Get custom type.

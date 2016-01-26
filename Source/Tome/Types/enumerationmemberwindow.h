@@ -1,10 +1,10 @@
-#ifndef CUSTOMTYPEMEMBERWINDOW_H
-#define CUSTOMTYPEMEMBERWINDOW_H
+#ifndef ENUMERATIONMEMBERWINDOW_H
+#define ENUMERATIONMEMBERWINDOW_H
 
 #include <QDialog>
 
 namespace Ui {
-    class CustomTypeMemberWindow;
+    class EnumerationMemberWindow;
 }
 
 class EnumerationMemberWindow : public QDialog
@@ -21,9 +21,9 @@ class EnumerationMemberWindow : public QDialog
         void accept();
 
     private:
-        Ui::CustomTypeMemberWindow *ui;
+        Ui::EnumerationMemberWindow *ui;
 
         bool validate();
 };
 
-#endif // CUSTOMTYPEMEMBERWINDOW_H
+#endif // ENUMERATIONMEMBERWINDOW_H
