@@ -26,10 +26,15 @@ class ListWindow : public QDialog
 
         void setProject(QSharedPointer<Tome::Project> project);
 
+    public slots:
+        void accept();
+
     private:
         Ui::ListWindow *ui;
 
         QSharedPointer<Tome::Project> project;
+
+        bool validate();
 };
 
 #endif // LISTWINDOW_H
