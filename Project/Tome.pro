@@ -57,11 +57,11 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Components/componentwindow.cpp \
     ../Source/Tome/Types/customtypeswindow.cpp \
     ../Source/Tome/Types/customtype.cpp \
-    ../Source/Tome/Types/customtypesitemmodel.cpp \
     ../Source/Tome/Settings/tomesettings.cpp \
     ../Source/Tome/Types/enumerationwindow.cpp \
     ../Source/Tome/Types/enumerationmemberwindow.cpp \
-    ../Source/Tome/Types/listwindow.cpp
+    ../Source/Tome/Types/listwindow.cpp \
+    ../Source/Tome/Types/customtypestablemodel.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/builtintype.h \
@@ -93,11 +93,11 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Components/componentwindow.h \
     ../Source/Tome/Types/customtypeswindow.h \
     ../Source/Tome/Types/customtype.h \
-    ../Source/Tome/Types/customtypesitemmodel.h \
     ../Source/Tome/Settings/tomesettings.h \
     ../Source/Tome/Types/enumerationmemberwindow.h \
     ../Source/Tome/Types/enumerationwindow.h \
-    ../Source/Tome/Types/listwindow.h
+    ../Source/Tome/Types/listwindow.h \
+    ../Source/Tome/Types/customtypestablemodel.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \

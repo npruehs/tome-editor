@@ -13,10 +13,10 @@ CustomTypesWindow::CustomTypesWindow(QSharedPointer<Tome::Project> project, QWid
 {
     ui->setupUi(this);
 
-    CustomTypesItemModel* model = new CustomTypesItemModel(project);
-    this->viewModel = QSharedPointer<CustomTypesItemModel>(model);
+    CustomTypesTableModel* model = new CustomTypesTableModel(this, project);
+    this->viewModel = QSharedPointer<CustomTypesTableModel>(model);
 
-    this->ui->listView->setModel(model);
+    this->ui->tableView->setModel(model);
 }
 
 CustomTypesWindow::~CustomTypesWindow()
@@ -68,14 +68,13 @@ void CustomTypesWindow::on_actionNew_List_triggered()
 void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
 {
     // Get selected type.
-    QModelIndexList selectedIndexes = this->ui->listView->selectionModel()->selectedRows();
+    int index = getSelectedTypeIndex();
 
-    if (selectedIndexes.isEmpty())
+    if (index < 0)
     {
         return;
     }
 
-    int index = selectedIndexes.first().row();
     QSharedPointer<CustomType> type = this->project->types[index];
 
     // Check type.
@@ -92,23 +91,27 @@ void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
 void CustomTypesWindow::on_actionDelete_Custom_Type_triggered()
 {
     // Get selected type.
-    QModelIndexList selectedIndexes = this->ui->listView->selectionModel()->selectedRows();
+    int index = getSelectedTypeIndex();
 
-    if (selectedIndexes.isEmpty())
+    if (index < 0)
     {
         return;
     }
-
-    int index = selectedIndexes.first().row();
 
     // Delete type.
     this->viewModel->removeCustomType(index);
 }
 
-void CustomTypesWindow::on_listView_doubleClicked(const QModelIndex &index)
+void CustomTypesWindow::on_tableView_doubleClicked(const QModelIndex &index)
 {
     Q_UNUSED(index);
     this->on_actionEdit_Custom_Type_triggered();
+}
+
+int CustomTypesWindow::getSelectedTypeIndex() const
+{
+    QModelIndexList selectedIndexes = this->ui->tableView->selectionModel()->selectedRows();
+    return selectedIndexes.count() > 0 ? selectedIndexes.first().row() : -1;
 }
 
 void CustomTypesWindow::editEnumeration(int index, QSharedPointer<Tome::CustomType> type)
