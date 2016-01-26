@@ -26,7 +26,7 @@ CustomTypesItemModel::CustomTypesItemModel(QSharedPointer<Tome::Project> project
     }
 }
 
-void CustomTypesItemModel::addCustomType(const QString& name, const QStringList& enumeration)
+void CustomTypesItemModel::addEnumeration(const QString& name, const QStringList& enumeration)
 {
     // Add type.
     QSharedPointer<CustomType> newType = QSharedPointer<CustomType>::create();
@@ -43,7 +43,7 @@ void CustomTypesItemModel::addCustomType(const QString& name, const QStringList&
     this->insertItem(newType->name);
 }
 
-void CustomTypesItemModel::updateCustomType(const int index, const QString& name, const QStringList& enumeration)
+void CustomTypesItemModel::updateEnumeration(const int index, const QString& name, const QStringList& enumeration)
 {
     // Get custom type.
     QSharedPointer<CustomType> type =  this->project->types.at(index);

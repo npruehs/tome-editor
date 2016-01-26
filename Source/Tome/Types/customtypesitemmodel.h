@@ -12,8 +12,8 @@ namespace Tome
         public:
             CustomTypesItemModel(QSharedPointer<Tome::Project> project);
 
-            void addCustomType(const QString& name, const QStringList& enumeration);
-            void updateCustomType(const int index, const QString& name, const QStringList& enumeration);
+            void addEnumeration(const QString& name, const QStringList& enumeration);
+            void updateEnumeration(const int index, const QString& name, const QStringList& enumeration);
             void removeCustomType(const int index);
 
         private:

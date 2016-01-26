@@ -38,6 +38,7 @@
      <string>Custom Types</string>
     </property>
     <addaction name="actionNew_Custom_Type"/>
+    <addaction name="separator"/>
     <addaction name="actionEdit_Custom_Type"/>
     <addaction name="actionDelete_Custom_Type"/>
     <addaction name="separator"/>
@@ -66,7 +67,7 @@
     </iconset>
    </property>
    <property name="text">
-    <string>New Custom Type...</string>
+    <string>New Enumeration...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>

@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 #include "customtypesitemmodel.h"
-#include "customtypewindow.h"
+#include "enumerationwindow.h"
 #include "../Projects/project.h"
 
 namespace Ui {
@@ -29,7 +29,7 @@ class CustomTypesWindow : public QMainWindow
     private:
         Ui::CustomTypesWindow *ui;
 
-        CustomTypeWindow* customTypeWindow;
+        EnumerationWindow* enumerationWindow;
 
         QSharedPointer<Tome::Project> project;
         QSharedPointer<Tome::CustomTypesItemModel> viewModel;

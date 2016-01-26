@@ -7,13 +7,13 @@ namespace Ui {
     class CustomTypeMemberWindow;
 }
 
-class CustomTypeMemberWindow : public QDialog
+class EnumerationMemberWindow : public QDialog
 {
         Q_OBJECT
 
     public:
-        explicit CustomTypeMemberWindow(QWidget *parent = 0);
-        ~CustomTypeMemberWindow();
+        explicit EnumerationMemberWindow(QWidget *parent = 0);
+        ~EnumerationMemberWindow();
 
         QString getText() const;
 

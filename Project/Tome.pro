@@ -56,11 +56,11 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Components/componentsitemmodel.cpp \
     ../Source/Tome/Components/componentwindow.cpp \
     ../Source/Tome/Types/customtypeswindow.cpp \
-    ../Source/Tome/Types/customtypewindow.cpp \
-    ../Source/Tome/Types/customtypememberwindow.cpp \
     ../Source/Tome/Types/customtype.cpp \
     ../Source/Tome/Types/customtypesitemmodel.cpp \
-    ../Source/Tome/Settings/tomesettings.cpp
+    ../Source/Tome/Settings/tomesettings.cpp \
+    ../Source/Tome/Types/enumerationwindow.cpp \
+    ../Source/Tome/Types/enumerationmemberwindow.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/builtintype.h \
@@ -91,11 +91,11 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Components/componentsitemmodel.h \
     ../Source/Tome/Components/componentwindow.h \
     ../Source/Tome/Types/customtypeswindow.h \
-    ../Source/Tome/Types/customtypewindow.h \
-    ../Source/Tome/Types/customtypememberwindow.h \
     ../Source/Tome/Types/customtype.h \
     ../Source/Tome/Types/customtypesitemmodel.h \
-    ../Source/Tome/Settings/tomesettings.h
+    ../Source/Tome/Settings/tomesettings.h \
+    ../Source/Tome/Types/enumerationmemberwindow.h \
+    ../Source/Tome/Types/enumerationwindow.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \
@@ -107,8 +107,8 @@ FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Components/componentswindow.ui \
     ../Source/Tome/Components/componentwindow.ui \
     ../Source/Tome/Types/customtypeswindow.ui \
-    ../Source/Tome/Types/customtypewindow.ui \
-    ../Source/Tome/Types/customtypememberwindow.ui
+    ../Source/Tome/Types/enumerationwindow.ui \
+    ../Source/Tome/Types/enumerationmemberwindow.ui
 
 RESOURCES += \
     tome.qrc

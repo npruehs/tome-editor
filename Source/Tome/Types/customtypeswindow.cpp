@@ -7,7 +7,7 @@ using namespace Tome;
 CustomTypesWindow::CustomTypesWindow(QSharedPointer<Tome::Project> project, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::CustomTypesWindow),
-    customTypeWindow(0),
+    enumerationWindow(0),
     project(project)
 {
     ui->setupUi(this);
@@ -26,19 +26,19 @@ CustomTypesWindow::~CustomTypesWindow()
 void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
 {
     // Show window.
-    if (!this->customTypeWindow)
+    if (!this->enumerationWindow)
     {
-        this->customTypeWindow = new CustomTypeWindow(this);
+        this->enumerationWindow = new EnumerationWindow(this);
     }
 
-    int result = this->customTypeWindow->exec();
+    int result = this->enumerationWindow->exec();
 
     if (result == QDialog::Accepted)
     {
         // Add new type.
-        this->viewModel->addCustomType(
-                    this->customTypeWindow->getCustomTypeName(),
-                    this->customTypeWindow->getCustomTypeEnumeration());
+        this->viewModel->addEnumeration(
+                    this->enumerationWindow->getCustomTypeName(),
+                    this->enumerationWindow->getCustomTypeEnumeration());
     }
 }
 
@@ -56,24 +56,24 @@ void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
     QSharedPointer<CustomType> type = this->project->types[index];
 
     // Show window.
-    if (!this->customTypeWindow)
+    if (!this->enumerationWindow)
     {
-        this->customTypeWindow = new CustomTypeWindow(this);
+        this->enumerationWindow = new EnumerationWindow(this);
     }
 
     // Update view.
-    this->customTypeWindow->setCustomTypeName(type->name);
-    this->customTypeWindow->setCustomTypeEnumeration(type->getEnumeration());
+    this->enumerationWindow->setCustomTypeName(type->name);
+    this->enumerationWindow->setCustomTypeEnumeration(type->getEnumeration());
 
-    int result = this->customTypeWindow->exec();
+    int result = this->enumerationWindow->exec();
 
     if (result == QDialog::Accepted)
     {
         // Update type.
-        this->viewModel->updateCustomType(
+        this->viewModel->updateEnumeration(
                     index,
-                    this->customTypeWindow->getCustomTypeName(),
-                    this->customTypeWindow->getCustomTypeEnumeration());
+                    this->enumerationWindow->getCustomTypeName(),
+                    this->enumerationWindow->getCustomTypeEnumeration());
     }
 }
 

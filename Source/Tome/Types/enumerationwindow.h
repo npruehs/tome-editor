@@ -4,19 +4,19 @@
 #include <QDialog>
 
 #include "customtype.h"
-#include "customtypememberwindow.h"
+#include "enumerationmemberwindow.h"
 
 namespace Ui {
     class CustomTypeWindow;
 }
 
-class CustomTypeWindow : public QDialog
+class EnumerationWindow : public QDialog
 {
         Q_OBJECT
 
     public:
-        explicit CustomTypeWindow(QWidget *parent = 0);
-        ~CustomTypeWindow();
+        explicit EnumerationWindow(QWidget *parent = 0);
+        ~EnumerationWindow();
 
         QString getCustomTypeName() const;
         QStringList getCustomTypeEnumeration() const;
@@ -31,7 +31,7 @@ class CustomTypeWindow : public QDialog
     private:
         Ui::CustomTypeWindow *ui;
 
-        CustomTypeMemberWindow* customTypeMemberWindow;
+        EnumerationMemberWindow* enumerationMemberWindow;
 };
 
 #endif // CUSTOMTYPEWINDOW_H
