@@ -74,6 +74,20 @@ void CustomTypesItemModel::updateEnumeration(const int index, const QString& nam
     this->updateItem(oldName, name);
 }
 
+void CustomTypesItemModel::updateList(const int index, const QString& name, const QString& itemType)
+{
+    // Get custom type.
+    QSharedPointer<CustomType> type =  this->project->types.at(index);
+    QString oldName = type->name;
+
+    // Update type.
+    type->name = name;
+    type->setItemType(itemType);
+
+    // Update item.
+    this->updateItem(oldName, name);
+}
+
 void CustomTypesItemModel::removeCustomType(const int index)
 {
     // Remove type.

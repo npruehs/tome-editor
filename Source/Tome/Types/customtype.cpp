@@ -13,13 +13,33 @@ CustomType::CustomType()
 
 QStringList CustomType::getEnumeration()
 {
-    if (!this->restrictions.contains(RestrictionEnumeration))
+    if (!this->isEnumeration())
     {
         return QStringList();
     }
 
     QString enumerationString = this->restrictions[RestrictionEnumeration];
     return enumerationString.split(";");
+}
+
+QString CustomType::getItemType()
+{
+    if (!this->isList())
+    {
+        return QString();
+    }
+
+    return this->restrictions[RestrictionItemType];
+}
+
+bool CustomType::isEnumeration()
+{
+    return this->restrictions.contains(RestrictionEnumeration);
+}
+
+bool CustomType::isList()
+{
+    return this->restrictions.contains(RestrictionItemType);
 }
 
 void CustomType::setEnumeration(const QStringList& enumeration)

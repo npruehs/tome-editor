@@ -16,6 +16,8 @@ namespace Tome
             void addList(const QString& name, const QString& itemType);
 
             void updateEnumeration(const int index, const QString& name, const QStringList& enumeration);
+            void updateList(const int index, const QString& name, const QString& itemType);
+
             void removeCustomType(const int index);
 
         private:

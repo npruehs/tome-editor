@@ -78,25 +78,14 @@ void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
     int index = selectedIndexes.first().row();
     QSharedPointer<CustomType> type = this->project->types[index];
 
-    // Show window.
-    if (!this->enumerationWindow)
+    // Check type.
+    if (type->isEnumeration())
     {
-        this->enumerationWindow = new EnumerationWindow(this);
+        this->editEnumeration(index, type);
     }
-
-    // Update view.
-    this->enumerationWindow->setEnumerationName(type->name);
-    this->enumerationWindow->setEnumerationMembers(type->getEnumeration());
-
-    int result = this->enumerationWindow->exec();
-
-    if (result == QDialog::Accepted)
+    else if (type->isList())
     {
-        // Update type.
-        this->viewModel->updateEnumeration(
-                    index,
-                    this->enumerationWindow->getEnumerationName(),
-                    this->enumerationWindow->getEnumerationMembers());
+        this->editList(index, type);
     }
 }
 
@@ -120,4 +109,55 @@ void CustomTypesWindow::on_listView_doubleClicked(const QModelIndex &index)
 {
     Q_UNUSED(index);
     this->on_actionEdit_Custom_Type_triggered();
+}
+
+void CustomTypesWindow::editEnumeration(int index, QSharedPointer<Tome::CustomType> type)
+{
+    // Show window.
+    if (!this->enumerationWindow)
+    {
+        this->enumerationWindow = new EnumerationWindow(this);
+    }
+
+    // Update view.
+    this->enumerationWindow->setEnumerationName(type->name);
+    this->enumerationWindow->setEnumerationMembers(type->getEnumeration());
+
+    int result = this->enumerationWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        // Update type.
+        this->viewModel->updateEnumeration(
+                    index,
+                    this->enumerationWindow->getEnumerationName(),
+                    this->enumerationWindow->getEnumerationMembers());
+    }
+}
+
+void CustomTypesWindow::editList(int index, QSharedPointer<Tome::CustomType> type)
+{
+    // Show window.
+    if (!this->listWindow)
+    {
+        this->listWindow = new ListWindow(this);
+    }
+
+    // Update type selection.
+    this->listWindow->setProject(this->project);
+
+    // Update view.
+    this->listWindow->setListName(type->name);
+    this->listWindow->setListItemType(type->getItemType());
+
+    int result = this->listWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        // Update type.
+        this->viewModel->updateList(
+                    index,
+                    this->listWindow->getListName(),
+                    this->listWindow->getListItemType());
+    }
 }

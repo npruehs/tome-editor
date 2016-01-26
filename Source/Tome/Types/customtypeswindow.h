@@ -37,6 +37,9 @@ class CustomTypesWindow : public QMainWindow
 
         QSharedPointer<Tome::Project> project;
         QSharedPointer<Tome::CustomTypesItemModel> viewModel;
+
+        void editEnumeration(int index, QSharedPointer<Tome::CustomType> type);
+        void editList(int index, QSharedPointer<Tome::CustomType> type);
 };
 
 #endif // CUSTOMTYPESWINDOW_H

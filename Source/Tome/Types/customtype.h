@@ -23,6 +23,15 @@ namespace Tome
             QStringList getEnumeration();
 
             /**
+             * @brief getItemType Convenience function for retrieving the Item Type restriction of this type, if available. Returns an empty string, if not.
+             * @return Item Type of this list, if available, and an empty string otherwise.
+             */
+            QString getItemType();
+
+            bool isEnumeration();
+            bool isList();
+
+            /**
              * @brief setEnumeration Sets the Enumeration restriction of this type.
              * @param enumeration Allowed field values.
              */
