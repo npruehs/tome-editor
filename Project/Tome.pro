@@ -62,7 +62,9 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Types/enumerationmemberwindow.cpp \
     ../Source/Tome/Types/listwindow.cpp \
     ../Source/Tome/Types/customtypestablemodel.cpp \
-    ../Source/Tome/Fields/listwidget.cpp
+    ../Source/Tome/Fields/listwidget.cpp \
+    ../Source/Tome/Fields/listitemwindow.cpp \
+    ../Source/Tome/Fields/listitemmodel.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/builtintype.h \
@@ -99,7 +101,9 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/enumerationwindow.h \
     ../Source/Tome/Types/listwindow.h \
     ../Source/Tome/Types/customtypestablemodel.h \
-    ../Source/Tome/Fields/listwidget.h
+    ../Source/Tome/Fields/listwidget.h \
+    ../Source/Tome/Fields/listitemwindow.h \
+    ../Source/Tome/Fields/listitemmodel.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \
@@ -113,7 +117,8 @@ FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Types/customtypeswindow.ui \
     ../Source/Tome/Types/enumerationwindow.ui \
     ../Source/Tome/Types/enumerationmemberwindow.ui \
-    ../Source/Tome/Types/listwindow.ui
+    ../Source/Tome/Types/listwindow.ui \
+    ../Source/Tome/Fields/listitemwindow.ui
 
 RESOURCES += \
     tome.qrc

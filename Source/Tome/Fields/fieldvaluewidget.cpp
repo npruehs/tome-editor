@@ -142,6 +142,7 @@ void FieldValueWidget::setCustomFieldType(QSharedPointer<CustomType> fieldType)
     }
     else if (fieldType->isList())
     {
+        this->listWidget->setFieldType(fieldType->getItemType());
         this->setCurrentWidget(this->listWidget);
     }
 }

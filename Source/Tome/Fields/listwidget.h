@@ -1,10 +1,15 @@
 #ifndef LISTWIDGET_H
 #define LISTWIDGET_H
 
+#include <QAction>
 #include <QHBoxLayout>
 #include <QListView>
 #include <QString>
+#include <QToolButton>
 #include <QWidget>
+
+#include "listitemmodel.h"
+#include "listitemwindow.h"
 
 
 namespace Tome
@@ -24,11 +29,18 @@ namespace Tome
 
             void setFieldType(const QString& fieldType);
 
+        private slots:
+            void addItem();
+
         private:
             QString fieldType;
 
+            ListItemWindow* listItemWindow;
+
             QHBoxLayout* layout;
             QListView* listView;
+
+            QSharedPointer<ListItemModel> viewModel;
     };
 }
 #endif // LISTWIDGET_H

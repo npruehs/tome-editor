@@ -34,14 +34,14 @@
             <Name>Slash XML</Name>
             <FileExtension>.blueprints.xml</FileExtension>
             <TypeMap>
+                <Mapping TomeType="Armor Type" ExportedType="FantasyGame.Data.ArmorType"/>
                 <Mapping TomeType="Boolean" ExportedType="System.Boolean"/>
                 <Mapping TomeType="Color" ExportedType="System.String"/>
+                <Mapping TomeType="Damage Type" ExportedType="FantasyGame.Data.DamageType"/>
                 <Mapping TomeType="Integer" ExportedType="System.Int32"/>
                 <Mapping TomeType="Real" ExportedType="System.Single"/>
                 <Mapping TomeType="Reference" ExportedType="System.String"/>
                 <Mapping TomeType="String" ExportedType="System.String"/>
-                <Mapping TomeType="Armor Type" ExportedType="FantasyGame.Data.ArmorType"/>
-                <Mapping TomeType="Damage Type" ExportedType="FantasyGame.Data.DamageType"/>
             </TypeMap>
         </Template>
         <Template>
@@ -54,6 +54,11 @@
         <Type Name="Armor Type" BaseType="String">
             <Restrictions>
                 <Restriction Key="Enumeration" Value="Cloth;Leather;Mail"/>
+            </Restrictions>
+        </Type>
+        <Type Name="Bools" BaseType="None">
+            <Restrictions>
+                <Restriction Key="ItemType" Value="Boolean"/>
             </Restrictions>
         </Type>
         <Type Name="Damage Type" BaseType="String">
