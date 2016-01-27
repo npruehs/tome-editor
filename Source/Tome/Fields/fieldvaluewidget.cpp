@@ -40,6 +40,10 @@ FieldValueWidget::FieldValueWidget(QWidget *parent) :
     this->comboBox = new QComboBox();
     this->addWidget(this->comboBox);
 
+    this->listWidget = new ListWidget();
+    this->addWidget(this->listWidget);
+
+    // Set layout.
     this->setLayout(this->layout);
     this->layout->setContentsMargins(0, 0, 0, 0);
 
@@ -125,9 +129,21 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
         this->setCurrentWidget(this->lineEdit);
         return;
     }
+}
 
-    // Custom datatype.
-    this->setCurrentWidget(this->comboBox);
+void FieldValueWidget::setCustomFieldType(QSharedPointer<CustomType> fieldType)
+{
+    this->fieldType = fieldType->name;
+
+    if (fieldType->isEnumeration())
+    {
+        this->setEnumeration(fieldType->getEnumeration());
+        this->setCurrentWidget(this->comboBox);
+    }
+    else if (fieldType->isList())
+    {
+        this->setCurrentWidget(this->listWidget);
+    }
 }
 
 void FieldValueWidget::setFieldValue(const QString& fieldValue)

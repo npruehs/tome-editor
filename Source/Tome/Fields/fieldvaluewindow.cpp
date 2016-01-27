@@ -43,6 +43,12 @@ void FieldValueWindow::setFieldValue(const QString& fieldValue)
     this->fieldValueWidget->setFieldValue(fieldValue);
 }
 
+void FieldValueWindow::setCustomFieldType(QSharedPointer<CustomType> fieldType)
+{
+    this->ui->labelTypeValue->setText(fieldType->name);
+    this->fieldValueWidget->setCustomFieldType(fieldType);
+}
+
 void FieldValueWindow::setFieldType(const QString& fieldType) const
 {
     this->ui->labelTypeValue->setText(fieldType);

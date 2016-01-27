@@ -125,6 +125,7 @@ void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &f
         recordNames << QString();
 
         this->fieldValueWidget->setEnumeration(recordNames);
+        this->fieldValueWidget->setFieldType(fieldType);
     }
     else
     {
@@ -132,11 +133,14 @@ void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &f
 
         if (type != 0)
         {
-            this->fieldValueWidget->setEnumeration(type->getEnumeration());
+            this->fieldValueWidget->setCustomFieldType(type);
+        }
+        else
+        {
+            // Default built-in type.
+            this->fieldValueWidget->setFieldType(fieldType);
         }
     }
-
-    this->fieldValueWidget->setFieldType(fieldType);
 }
 
 void FieldDefinitionWindow::on_lineEditDisplayName_textEdited(const QString &displayName)
