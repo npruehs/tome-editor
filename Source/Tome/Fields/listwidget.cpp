@@ -32,6 +32,11 @@ ListWidget::ListWidget(QWidget *parent) :
     buttonLayout->addWidget(addButton);
 
     QToolButton* removeButton = new QToolButton(this);
+    connect(
+                removeButton,
+                SIGNAL(clicked()),
+                SLOT(removeItem())
+                );
     removeButton->setArrowType(Qt::RightArrow);
     buttonLayout->addWidget(removeButton);
 
@@ -83,4 +88,17 @@ void ListWidget::addItem()
         QString value = this->listItemWindow->getValue();
         this->viewModel->addItem(value);
     }
+}
+
+void ListWidget::removeItem()
+{
+    QModelIndexList selectedIndexes = this->listView->selectionModel()->selectedRows();
+
+    if (selectedIndexes.isEmpty())
+    {
+        return;
+    }
+
+    int row = selectedIndexes.first().row();
+    this->viewModel->removeItem(row);
 }

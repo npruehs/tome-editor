@@ -31,6 +31,7 @@ namespace Tome
 
         private slots:
             void addItem();
+            void removeItem();
 
         private:
             QString fieldType;
