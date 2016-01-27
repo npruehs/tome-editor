@@ -11,15 +11,42 @@ ListItemModel::ListItemModel(QStringList& list)
 
 void ListItemModel::addItem(const QString& item)
 {
-    this->list.push_back(item);
-
-    QStandardItem* rootItem = this->invisibleRootItem();
-    rootItem->appendRow(new QStandardItem(item));
+    this->addItem(this->list.size(), item);
 }
 
-void ListItemModel::removeItem(const int index)
+void ListItemModel::addItem(int index, const QString& item)
 {
-    this->list.removeAt(index);
+    this->list.insert(index, item);
 
+    QStandardItem* rootItem = this->invisibleRootItem();
+    rootItem->insertRow(index, new QStandardItem(item));
+}
+
+QString ListItemModel::removeItem(const int index)
+{
+    QString item = this->list.takeAt(index);
     this->removeRows(index, 1, QModelIndex());
+    return item;
+}
+
+void ListItemModel::moveItemUp(const int index)
+{
+    if (index < 1)
+    {
+        return;
+    }
+
+    QString item = this->removeItem(index);
+    this->addItem(index - 1, item);
+}
+
+void ListItemModel::moveItemDown(const int index)
+{
+    if (index > this->list.count() - 2)
+    {
+        return;
+    }
+
+    QString item = this->removeItem(index);
+    this->addItem(index + 1, item);
 }

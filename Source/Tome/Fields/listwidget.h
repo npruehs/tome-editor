@@ -32,6 +32,8 @@ namespace Tome
         private slots:
             void addItem();
             void removeItem();
+            void moveItemUp();
+            void moveItemDown();
 
         private:
             QString fieldType;
@@ -42,6 +44,8 @@ namespace Tome
             QListView* listView;
 
             QSharedPointer<ListItemModel> viewModel;
+
+            int getSelectedItemIndex() const;
     };
 }
 #endif // LISTWIDGET_H

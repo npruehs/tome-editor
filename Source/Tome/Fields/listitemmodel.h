@@ -12,10 +12,14 @@ namespace Tome
             ListItemModel(QStringList& list);
 
             void addItem(const QString& item);
-            void removeItem(const int index);
+            QString removeItem(const int index);
+            void moveItemUp(const int index);
+            void moveItemDown(const int index);
 
         private:
             QStringList list;
+
+            void addItem(int index, const QString& item);
     };
 }
 
