@@ -103,7 +103,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/customtypestablemodel.h \
     ../Source/Tome/Fields/listwidget.h \
     ../Source/Tome/Fields/listitemwindow.h \
-    ../Source/Tome/Fields/listitemmodel.h
+    ../Source/Tome/Fields/listitemmodel.h \
+    ../Source/Tome/Util/vectorutils.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \
