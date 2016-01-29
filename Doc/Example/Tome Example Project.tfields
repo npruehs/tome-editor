@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Fields>
     <Field Id="Acceleration" DisplayName="Acceleration" Description="Acceleration of this entity, in m/s²." DefaultValue="4.500" Type="Real" Component="PhysicsComponent"/>
-    <Field Id="ArmorType" DisplayName="Armor Type" Description="Type of the armor of this entity. Affects actual damage taken by enemy attacks, depending on the attacker's damage type." DefaultValue="Cloth" Type="Armor Type" Component="ArmorComponent"/>
+    <Field Id="ArmorType" DisplayName="Armor Type" Description="Type of the armor of this entity. Affects actual damage taken by enemy attacks, depending on the attacker's damage type." DefaultValue="Cloth" Type="Bools" Component="ArmorComponent"/>
     <Field Id="AttackDamage" DisplayName="Attack Damage" Description="Damage dealt by every attack of this entity. Affected by its damage type and the defender's armor type." DefaultValue="12" Type="Integer" Component="AttackComponent"/>
     <Field Id="AttackRange" DisplayName="Attack Range" Description="Range of attack of this entity, in m." DefaultValue="18.250" Type="Real" Component="RangeComponent"/>
     <Field Id="Cooldown" DisplayName="Cooldown" Description="Time between two attacks of this entity, in seconds." DefaultValue="1.200" Type="Real" Component="AttackComponent"/>

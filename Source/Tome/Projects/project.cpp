@@ -2,6 +2,9 @@
 
 using namespace Tome;
 
+#include "../Types/builtintype.h"
+
+
 Project::Project()
 {
 }
@@ -129,4 +132,25 @@ QStringList Project::getRecordNames() const
     }
 
     return names;
+}
+
+QStringList Project::getTypeNames() const
+{
+    QStringList typeNames;
+    typeNames.push_back(BuiltInType::Boolean);
+    typeNames.push_back(BuiltInType::Color);
+    typeNames.push_back(BuiltInType::Integer);
+    typeNames.push_back(BuiltInType::Real);
+    typeNames.push_back(BuiltInType::Reference);
+    typeNames.push_back(BuiltInType::String);
+
+    for (QVector<QSharedPointer<CustomType> >::const_iterator it = this->types.begin();
+         it != this->types.end();
+         ++it)
+    {
+        QSharedPointer<CustomType> type = *it;
+        typeNames.push_back(type->name);
+    }
+
+    return typeNames;
 }

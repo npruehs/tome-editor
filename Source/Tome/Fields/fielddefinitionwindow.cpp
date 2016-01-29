@@ -106,19 +106,12 @@ void FieldDefinitionWindow::setProject(QSharedPointer<Project> project)
 
     // Set type names.
     this->ui->comboBoxType->clear();
-    this->ui->comboBoxType->addItem(BuiltInType::Boolean);
-    this->ui->comboBoxType->addItem(BuiltInType::Color);
-    this->ui->comboBoxType->addItem(BuiltInType::Integer);
-    this->ui->comboBoxType->addItem(BuiltInType::Real);
-    this->ui->comboBoxType->addItem(BuiltInType::Reference);
-    this->ui->comboBoxType->addItem(BuiltInType::String);
 
-    for (QVector<QSharedPointer<CustomType> >::iterator it = this->project->types.begin();
-         it != this->project->types.end();
-         ++it)
+    QStringList typeNames = this->project->getTypeNames();
+
+    for (int i = 0; i < typeNames.length(); ++i)
     {
-        QSharedPointer<CustomType> type = *it;
-        this->ui->comboBoxType->addItem(type->name);
+        this->ui->comboBoxType->addItem(typeNames.at(i));
     }
 }
 
@@ -132,6 +125,7 @@ void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &f
         recordNames << QString();
 
         this->fieldValueWidget->setEnumeration(recordNames);
+        this->fieldValueWidget->setFieldType(fieldType);
     }
     else
     {
@@ -139,11 +133,14 @@ void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &f
 
         if (type != 0)
         {
-            this->fieldValueWidget->setEnumeration(type->getEnumeration());
+            this->fieldValueWidget->setCustomFieldType(type);
+        }
+        else
+        {
+            // Default built-in type.
+            this->fieldValueWidget->setFieldType(fieldType);
         }
     }
-
-    this->fieldValueWidget->setFieldType(fieldType);
 }
 
 void FieldDefinitionWindow::on_lineEditDisplayName_textEdited(const QString &displayName)

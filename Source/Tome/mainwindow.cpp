@@ -359,7 +359,6 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
 
     // Update view.
     this->fieldValueWindow->setFieldDisplayName(fieldDefinition->displayName);
-    this->fieldValueWindow->setFieldType(fieldDefinition->fieldType);
     this->fieldValueWindow->setFieldDescription(fieldDefinition->description);
 
     if (fieldDefinition->fieldType == BuiltInType::Reference)
@@ -369,6 +368,7 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
         // Allow clearing the field.
         recordNames << QString();
 
+        this->fieldValueWindow->setFieldType(fieldDefinition->fieldType);
         this->fieldValueWindow->setEnumeration(recordNames);
     }
     else
@@ -377,7 +377,12 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
 
         if (type != 0)
         {
-            this->fieldValueWindow->setEnumeration(type->getEnumeration());
+            this->fieldValueWindow->setCustomFieldType(type);
+        }
+        else
+        {
+            // Default built-in type.
+            this->fieldValueWindow->setFieldType(fieldDefinition->fieldType);
         }
     }
 

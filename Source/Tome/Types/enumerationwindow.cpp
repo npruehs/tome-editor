@@ -1,15 +1,15 @@
-#include "customtypewindow.h"
-#include "ui_customtypewindow.h"
+#include "enumerationwindow.h"
+#include "ui_enumerationwindow.h"
 
 #include <QStringListModel>
 
 using namespace Tome;
 
 
-CustomTypeWindow::CustomTypeWindow(QWidget *parent) :
+EnumerationWindow::EnumerationWindow(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::CustomTypeWindow),
-    customTypeMemberWindow(0)
+    ui(new Ui::EnumerationWindow),
+    enumerationMemberWindow(0)
 {
     ui->setupUi(this);
 
@@ -18,55 +18,55 @@ CustomTypeWindow::CustomTypeWindow(QWidget *parent) :
     this->ui->listView->setModel(model);
 }
 
-CustomTypeWindow::~CustomTypeWindow()
+EnumerationWindow::~EnumerationWindow()
 {
     delete ui;
 }
 
-QString CustomTypeWindow::getCustomTypeName() const
+QString EnumerationWindow::getEnumerationName() const
 {
     return this->ui->lineEdit->text();
 }
 
-QStringList CustomTypeWindow::getCustomTypeEnumeration() const
+QStringList EnumerationWindow::getEnumerationMembers() const
 {
     QStringListModel* model = static_cast<QStringListModel*>(this->ui->listView->model());
     return model->stringList();
 }
 
-void CustomTypeWindow::setCustomTypeName(const QString& typeName)
+void EnumerationWindow::setEnumerationName(const QString& typeName)
 {
     this->ui->lineEdit->setText(typeName);
 }
 
-void CustomTypeWindow::setCustomTypeEnumeration(const QStringList& enumeration)
+void EnumerationWindow::setEnumerationMembers(const QStringList& enumeration)
 {
     QStringListModel* model = static_cast<QStringListModel*>(this->ui->listView->model());
     model->setStringList(enumeration);
 }
 
-void CustomTypeWindow::on_actionNew_Member_triggered()
+void EnumerationWindow::on_actionNew_Member_triggered()
 {
     // Show window.
-    if (!this->customTypeMemberWindow)
+    if (!this->enumerationMemberWindow)
     {
-        this->customTypeMemberWindow = new CustomTypeMemberWindow(this);
+        this->enumerationMemberWindow = new EnumerationMemberWindow(this);
     }
 
-    int result = this->customTypeMemberWindow->exec();
+    int result = this->enumerationMemberWindow->exec();
 
     if (result == QDialog::Accepted)
     {
         // Add new type member.
         QStringListModel* model = static_cast<QStringListModel*>(this->ui->listView->model());
         QStringList stringList = model->stringList();
-        stringList << this->customTypeMemberWindow->getText();
+        stringList << this->enumerationMemberWindow->getText();
         stringList.sort();
         model->setStringList(stringList);
     }
 }
 
-void CustomTypeWindow::on_actionDelete_Member_triggered()
+void EnumerationWindow::on_actionDelete_Member_triggered()
 {
     QModelIndexList selectedIndexes = this->ui->listView->selectionModel()->selectedRows();
 

@@ -3,8 +3,9 @@
 
 #include <QMainWindow>
 
-#include "customtypesitemmodel.h"
-#include "customtypewindow.h"
+#include "customtypestablemodel.h"
+#include "enumerationwindow.h"
+#include "listwindow.h"
 #include "../Projects/project.h"
 
 namespace Ui {
@@ -21,18 +22,26 @@ class CustomTypesWindow : public QMainWindow
 
     private slots:
         void on_actionNew_Custom_Type_triggered();
+        void on_actionNew_List_triggered();
+
         void on_actionEdit_Custom_Type_triggered();
         void on_actionDelete_Custom_Type_triggered();
 
-        void on_listView_doubleClicked(const QModelIndex &index);
+        void on_tableView_doubleClicked(const QModelIndex &index);
 
     private:
         Ui::CustomTypesWindow *ui;
 
-        CustomTypeWindow* customTypeWindow;
+        EnumerationWindow* enumerationWindow;
+        ListWindow* listWindow;
 
         QSharedPointer<Tome::Project> project;
-        QSharedPointer<Tome::CustomTypesItemModel> viewModel;
+        QSharedPointer<Tome::CustomTypesTableModel> viewModel;
+
+        int getSelectedTypeIndex() const;
+
+        void editEnumeration(int index, QSharedPointer<Tome::CustomType> type);
+        void editList(int index, QSharedPointer<Tome::CustomType> type);
 };
 
 #endif // CUSTOMTYPESWINDOW_H

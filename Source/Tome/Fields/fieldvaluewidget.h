@@ -12,10 +12,14 @@
 #include <QVector>
 #include <QWidget>
 
+#include "listwidget.h"
+#include "../Types/customtype.h"
+
+
 namespace Tome
 {
     /**
-     * @brief Widget that changes its appearance depending on the specified type.
+     * @brief Changes its appearance depending on the specified type.
      */
     class FieldValueWidget : public QWidget
     {
@@ -29,6 +33,7 @@ namespace Tome
             QString getFieldValue() const;
 
             void setFieldType(const QString& fieldType);
+            void setCustomFieldType(QSharedPointer<CustomType> fieldType);
             void setFieldValue(const QString& fieldValue);
             void setEnumeration(const QStringList& enumeration);
 
@@ -46,6 +51,7 @@ namespace Tome
             QLineEdit* lineEdit;
             QComboBox* comboBox;
             QSpinBox* spinBox;
+            ListWidget* listWidget;
 
             void addWidget(QWidget* widget);
             void setCurrentWidget(QWidget* widget);

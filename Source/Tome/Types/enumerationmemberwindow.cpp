@@ -1,27 +1,27 @@
-#include "customtypememberwindow.h"
-#include "ui_customtypememberwindow.h"
+#include "enumerationmemberwindow.h"
+#include "ui_enumerationmemberwindow.h"
 
 #include <QMessageBox>
 
 
-CustomTypeMemberWindow::CustomTypeMemberWindow(QWidget *parent) :
+EnumerationMemberWindow::EnumerationMemberWindow(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::CustomTypeMemberWindow)
+    ui(new Ui::EnumerationMemberWindow)
 {
     ui->setupUi(this);
 }
 
-CustomTypeMemberWindow::~CustomTypeMemberWindow()
+EnumerationMemberWindow::~EnumerationMemberWindow()
 {
     delete ui;
 }
 
-QString CustomTypeMemberWindow::getText() const
+QString EnumerationMemberWindow::getText() const
 {
     return this->ui->lineEdit->text();
 }
 
-void CustomTypeMemberWindow::accept()
+void EnumerationMemberWindow::accept()
 {
     // Validate data.
     if (this->validate())
@@ -30,7 +30,7 @@ void CustomTypeMemberWindow::accept()
     }
 }
 
-bool CustomTypeMemberWindow::validate()
+bool EnumerationMemberWindow::validate()
 {
     // Name must not be empty.
     if (this->getText().isEmpty())
