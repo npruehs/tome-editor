@@ -53,7 +53,6 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Export/recordexporttemplate.cpp \
     ../Source/Tome/Export/recordexporter.cpp \
     ../Source/Tome/Components/componentswindow.cpp \
-    ../Source/Tome/Components/componentsitemmodel.cpp \
     ../Source/Tome/Components/componentwindow.cpp \
     ../Source/Tome/Types/customtypeswindow.cpp \
     ../Source/Tome/Types/customtype.cpp \
@@ -92,7 +91,6 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Export/recordexporttemplate.h \
     ../Source/Tome/Export/recordexporter.h \
     ../Source/Tome/Components/componentswindow.h \
-    ../Source/Tome/Components/componentsitemmodel.h \
     ../Source/Tome/Components/componentwindow.h \
     ../Source/Tome/Types/customtypeswindow.h \
     ../Source/Tome/Types/customtype.h \

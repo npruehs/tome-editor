@@ -1,6 +1,8 @@
 #include "componentswindow.h"
 #include "ui_componentswindow.h"
 
+#include "../Util/vectorutils.h"
+
 using namespace Tome;
 
 ComponentsWindow::ComponentsWindow(QSharedPointer<Tome::Project> project, QWidget *parent) :
@@ -11,10 +13,14 @@ ComponentsWindow::ComponentsWindow(QSharedPointer<Tome::Project> project, QWidge
 {
     ui->setupUi(this);
 
-    ComponentsItemModel* model = new ComponentsItemModel(project);
-    this->viewModel = QSharedPointer<ComponentsItemModel>(model);
+    // Setup view.
+    QVector<QString>& components = this->project->components;
 
-    this->ui->listView->setModel(model);
+    for (int i = 0; i < components.size(); ++i)
+    {
+        QString component = components.at(i);
+        this->ui->listWidget->insertItem(i, component);
+    }
 }
 
 ComponentsWindow::~ComponentsWindow()
@@ -34,25 +40,27 @@ void ComponentsWindow::on_actionNew_Component_triggered()
 
     if (result == QDialog::Accepted)
     {
-        // Add new component.
-        this->viewModel->addComponent(this->componentWindow->getComponentName());
+        QString componentName = this->componentWindow->getComponentName();
+
+        // Find insertion index.
+        int index = findInsertionIndex(this->project->components, componentName);
+
+        // Update model.
+        QVector<QString>& components = this->project->components;
+        components.insert(index, componentName);
+
+        // Update view.
+        this->ui->listWidget->insertItem(index, componentName);
     }
 }
 
 void ComponentsWindow::on_actionDelete_Component_triggered()
 {
-    QModelIndexList selectedIndexes = this->ui->listView->selectionModel()->selectedRows();
+    int index = this->ui->listWidget->currentRow();
 
-    if (selectedIndexes.isEmpty())
-    {
-        return;
-    }
+    // Update model.
+    this->project->components.removeAt(index);
 
-    int row = selectedIndexes.first().row();
-    this->viewModel->removeComponent(row);
-}
-
-void ComponentsWindow::on_listView_doubleClicked(const QModelIndex &index)
-{
-    Q_UNUSED(index);
+    // Update view.
+    this->ui->listWidget->takeItem(index);
 }
