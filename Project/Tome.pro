@@ -42,7 +42,6 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Fields/fielddefinition.cpp \
     ../Source/Tome/Values/valueconverter.cpp \
     ../Source/Tome/IO/xmlreader.cpp \
-    ../Source/Tome/Fields/fielddefinitionstablemodel.cpp \
     ../Source/Tome/Fields/fielddefinitionwindow.cpp \
     ../Source/Tome/Fields/fielddefinitionswindow.cpp \
     ../Source/Tome/Records/recordsitemmodel.cpp \
@@ -80,7 +79,6 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Values/valueconverter.h \
     ../Source/Tome/Util/pathutils.h \
     ../Source/Tome/IO/xmlreader.h \
-    ../Source/Tome/Fields/fielddefinitionstablemodel.h \
     ../Source/Tome/Fields/fielddefinitionwindow.h \
     ../Source/Tome/Fields/fielddefinitionswindow.h \
     ../Source/Tome/Records/recordsitemmodel.h \

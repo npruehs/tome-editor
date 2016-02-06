@@ -8,7 +8,6 @@
 #include "../Projects/project.h"
 
 #include "fielddefinitionwindow.h"
-#include "fielddefinitionstablemodel.h"
 
 
 namespace Ui {
@@ -28,9 +27,10 @@ class FieldDefinitionsWindow : public QMainWindow
         void on_actionEdit_Field_triggered();
         void on_actionDelete_Field_triggered();
 
-        void on_tableView_doubleClicked(const QModelIndex &index);
+        void on_tableWidget_doubleClicked(const QModelIndex &index);
 
-        void tableViewSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
+        void tableWidgetSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
+
 
     private:
         Ui::FieldDefinitionsWindow *ui;
@@ -38,10 +38,12 @@ class FieldDefinitionsWindow : public QMainWindow
         FieldDefinitionWindow* fieldDefinitionWindow;
 
         QSharedPointer<Tome::Project> project;
-        QSharedPointer<Tome::FieldDefinitionsTableModel> viewModel;
 
         int getSelectedFieldIndex() const;
         void updateMenus();
+
+        void updateFieldDefinition(const int index, const QString& id, const QString& displayName, const QString& fieldType, const QString& defaultValue, const QString& description, const QString& component);
+        void updateRow(const int index);
 };
 
 #endif // FIELDDEFINITIONSWINDOW_H

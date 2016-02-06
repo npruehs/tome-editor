@@ -1,7 +1,7 @@
 #ifndef VECTORUTILS
 #define VECTORUTILS
 
-#include <QDir>
+#include <QSharedPointer>
 #include <QVector>
 
 namespace Tome
@@ -17,7 +17,21 @@ namespace Tome
     {
         for (int i = 0; i < vector.size() - 1; ++i)
         {
-            if (vector.at(i) < item && vector.at(i + 1) > item)
+            if (vector.at(i) < item && vector.at(i + 1) >= item)
+            {
+                return i + 1;
+            }
+        }
+
+        return 0;
+    }
+
+    template<typename T>
+    inline int findInsertionIndex(const QVector<T>& vector, T item, bool(*lessThan)(const T& first, const T& second))
+    {
+        for (int i = 0; i < vector.size() - 1; ++i)
+        {
+            if (lessThan(vector.at(i), item) && !lessThan(vector.at(i + 1), item))
             {
                 return i + 1;
             }
