@@ -51,11 +51,11 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
             // Write components.
             writer.writeStartElement(ElementComponents);
             {
-                for (QVector<QString>::iterator it = project->components.begin();
+                for (ComponentList::iterator it = project->components.begin();
                      it != project->components.end();
                      ++it)
                 {
-                    QString component = *it;
+                    Component component = *it;
                     writer.writeTextElement(ElementName, component);
                 }
             }

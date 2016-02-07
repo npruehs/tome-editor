@@ -6,6 +6,7 @@
 #include <QStringList>
 #include <QVector>
 
+#include "../Components/Model/componentlist.h"
 #include "../Export/recordexporttemplate.h"
 #include "../Fields/fielddefinitionset.h"
 #include "../Records/recordset.h"
@@ -22,7 +23,7 @@ namespace Tome
             QString name;
             QString path;
 
-            QVector<QString> components;
+            ComponentList components;
             QVector< QSharedPointer<FieldDefinitionSet> > fieldDefinitionSets;
             QMap<QString, QSharedPointer<RecordExportTemplate> > recordExportTemplates;
             QVector< QSharedPointer<RecordSet> > recordSets;

@@ -46,6 +46,7 @@ bool lessThanRecords(const QSharedPointer<Record>& e1, const QSharedPointer<Reco
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    controller(QSharedPointer<Controller>::create()),
     aboutWindow(0),
     componentsWindow(0),
     customTypesWindow(0),
@@ -112,7 +113,7 @@ void MainWindow::on_actionManage_Components_triggered()
 {
     if (!this->componentsWindow)
     {
-        this->componentsWindow = new ComponentsWindow(this->project, this);
+        this->componentsWindow = new ComponentsWindow(this->controller->getComponentsController(), this);
     }
 
     this->showWindow(this->componentsWindow);
@@ -907,6 +908,9 @@ bool MainWindow::saveProject(QSharedPointer<Project> project)
 void MainWindow::setProject(QSharedPointer<Project> project)
 {
     this->project = project;
+
+    // Update controllers.
+    this->controller->setProject(project);
 
     // Enable project-specific buttons.
     this->updateMenus();

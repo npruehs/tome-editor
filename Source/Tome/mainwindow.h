@@ -4,7 +4,8 @@
 #include <QMainWindow>
 #include <QSharedPointer>
 
-#include "Components/componentswindow.h"
+#include "controller.h"
+#include "Components/View/componentswindow.h"
 #include "Fields/fielddefinitionswindow.h"
 #include "Fields/fieldvaluewindow.h"
 #include "Help/aboutwindow.h"
@@ -68,6 +69,7 @@ class MainWindow : public QMainWindow
         Ui::MainWindow *ui;
 
         QSharedPointer<Tome::Project> project;
+        QSharedPointer<Tome::Controller> controller;
 
         AboutWindow *aboutWindow;
         ComponentsWindow* componentsWindow;

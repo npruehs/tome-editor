@@ -13,7 +13,7 @@ namespace Tome
      * @param item Item to add.
      * @return Index to insert the specified item at to keep the list sorted.
      */
-    inline int findInsertionIndex(const QList<T> list, T item)
+    inline int findInsertionIndex(const QList<T>& list, T item)
     {
         for (int i = 0; i < list.size() - 1; ++i)
         {

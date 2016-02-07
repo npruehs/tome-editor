@@ -4,18 +4,19 @@
 #include <QMainWindow>
 
 #include "componentwindow.h"
-#include "../Projects/project.h"
+#include "../Controller/componentscontroller.h"
 
 namespace Ui {
     class ComponentsWindow;
 }
+
 
 class ComponentsWindow : public QMainWindow
 {
         Q_OBJECT
 
     public:
-        explicit ComponentsWindow(QSharedPointer<Tome::Project> project, QWidget *parent = 0);
+        explicit ComponentsWindow(QSharedPointer<Tome::ComponentsController> controller, QWidget *parent = 0);
         ~ComponentsWindow();
 
     private slots:
@@ -25,9 +26,9 @@ class ComponentsWindow : public QMainWindow
     private:
         Ui::ComponentsWindow *ui;
 
-        ComponentWindow* componentWindow;
+        QSharedPointer<Tome::ComponentsController> controller;
 
-        QSharedPointer<Tome::Project> project;
+        ComponentWindow* componentWindow;
 };
 
 #endif // COMPONENTSWINDOW_H

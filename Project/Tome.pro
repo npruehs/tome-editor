@@ -49,8 +49,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Fields/fieldvaluewidget.cpp \
     ../Source/Tome/Export/recordexporttemplate.cpp \
     ../Source/Tome/Export/recordexporter.cpp \
-    ../Source/Tome/Components/componentswindow.cpp \
-    ../Source/Tome/Components/componentwindow.cpp \
+    ../Source/Tome/Components/View/componentswindow.cpp \
+    ../Source/Tome/Components/View/componentwindow.cpp \
     ../Source/Tome/Types/customtypeswindow.cpp \
     ../Source/Tome/Types/customtype.cpp \
     ../Source/Tome/Settings/tomesettings.cpp \
@@ -58,7 +58,9 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Types/enumerationmemberwindow.cpp \
     ../Source/Tome/Types/listwindow.cpp \
     ../Source/Tome/Fields/listwidget.cpp \
-    ../Source/Tome/Fields/listitemwindow.cpp
+    ../Source/Tome/Fields/listitemwindow.cpp \
+    ../Source/Tome/Components/Controller/componentscontroller.cpp \
+    ../Source/Tome/controller.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/builtintype.h \
@@ -82,8 +84,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/fieldvaluewidget.h \
     ../Source/Tome/Export/recordexporttemplate.h \
     ../Source/Tome/Export/recordexporter.h \
-    ../Source/Tome/Components/componentswindow.h \
-    ../Source/Tome/Components/componentwindow.h \
+    ../Source/Tome/Components/View/componentswindow.h \
+    ../Source/Tome/Components/View/componentwindow.h \
     ../Source/Tome/Types/customtypeswindow.h \
     ../Source/Tome/Types/customtype.h \
     ../Source/Tome/Settings/tomesettings.h \
@@ -92,7 +94,11 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/listwindow.h \
     ../Source/Tome/Fields/listwidget.h \
     ../Source/Tome/Fields/listitemwindow.h \
-    ../Source/Tome/Util/vectorutils.h
+    ../Source/Tome/Util/vectorutils.h \
+    ../Source/Tome/Components/Controller/componentscontroller.h \
+    ../Source/Tome/Components/Model/component.h \
+    ../Source/Tome/controller.h \
+    ../Source/Tome/Components/Model/componentlist.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \
@@ -101,8 +107,8 @@ FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Fields/fielddefinitionswindow.ui \
     ../Source/Tome/Records/recordwindow.ui \
     ../Source/Tome/Fields/fieldvaluewindow.ui \
-    ../Source/Tome/Components/componentswindow.ui \
-    ../Source/Tome/Components/componentwindow.ui \
+    ../Source/Tome/Components/View/componentswindow.ui \
+    ../Source/Tome/Components/View/componentwindow.ui \
     ../Source/Tome/Types/customtypeswindow.ui \
     ../Source/Tome/Types/enumerationwindow.ui \
     ../Source/Tome/Types/enumerationmemberwindow.ui \

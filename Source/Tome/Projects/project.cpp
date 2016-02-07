@@ -13,11 +13,11 @@ QStringList Project::getComponentNames() const
 {
     QStringList components;
 
-    for (QVector<QString>::const_iterator itComponents = this->components.begin();
+    for (ComponentList::const_iterator itComponents = this->components.begin();
          itComponents != this->components.end();
          ++itComponents)
     {
-        const QString& component = *itComponents;
+        const Component& component = *itComponents;
         components << component;
     }
 
