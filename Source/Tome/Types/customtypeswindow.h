@@ -35,7 +35,6 @@ class CustomTypesWindow : public QMainWindow
         ListWindow* listWindow;
 
         QSharedPointer<Tome::Project> project;
-        QSharedPointer<Tome::CustomTypesTableModel> viewModel;
 
         int getSelectedTypeIndex() const;
 

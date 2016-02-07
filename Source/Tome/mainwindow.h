@@ -10,7 +10,6 @@
 #include "Help/aboutwindow.h"
 #include "Projects/newprojectwindow.h"
 #include "Projects/project.h"
-#include "Records/recordsitemmodel.h"
 #include "Records/recordwindow.h"
 #include "Types/customtypeswindow.h"
 
@@ -47,7 +46,7 @@ class MainWindow : public QMainWindow
         void on_actionReport_a_Bug_triggered();
         void on_actionReleases_triggered();
 
-        void on_treeView_doubleClicked(const QModelIndex &index);
+        void on_treeWidget_doubleClicked(const QModelIndex &index);
         void on_tableWidget_doubleClicked(const QModelIndex &index);
 
         void exportRecords(QAction* exportAction);
@@ -78,8 +77,6 @@ class MainWindow : public QMainWindow
         NewProjectWindow *newProjectWindow;
         RecordWindow* recordWindow;
 
-        QSharedPointer<Tome::RecordsItemModel> recordsViewModel;
-
         void addRecordField(const QString& fieldId);
         void createNewProject(const QString& name, const QString& path);
         QString getFullProjectPath() const;
@@ -93,6 +90,7 @@ class MainWindow : public QMainWindow
         void showWindow(QWidget* widget);
         void updateMenus();
         void updateRecentProjects();
+        void updateRecord(const QString& id, const QString& displayName);
         void updateRecordFieldValue(const int index, const QString& key, const QString& value);
         void updateRecordRow(const int i);
         void updateWindowTitle();

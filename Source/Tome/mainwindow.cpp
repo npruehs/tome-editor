@@ -36,6 +36,13 @@ const QString MainWindow::RecordExportRecordDelimiterExtension = ".texportrd";
 const QString MainWindow::RecordExportFieldValueTemplateExtension = ".texportv";
 const QString MainWindow::RecordExportFieldValueDelimiterExtension = ".texportvd";
 
+
+bool lessThanRecords(const QSharedPointer<Record>& e1, const QSharedPointer<Record>& e2)
+{
+    return e1->displayName.toLower() < e2->displayName.toLower();
+}
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -184,18 +191,24 @@ void MainWindow::on_actionNew_Record_triggered()
 
     if (result == QDialog::Accepted)
     {
-        // Add new record.
         const QString& recordId = this->recordWindow->getRecordId();
         const QString& recordDisplayName = this->recordWindow->getRecordDisplayName();
 
-        this->recordsViewModel->addRecord(
-                    recordId,
-                    recordDisplayName);
+        // Update model.
+        QSharedPointer<Record> record = QSharedPointer<Record>::create();
+        record->id = recordId;
+        record->displayName = recordDisplayName;
+
+        QVector<QSharedPointer<Record> >& records = this->project->recordSets[0]->records;
+        int index = findInsertionIndex(records, record, lessThanRecords);
+        records.insert(index, record);
+
+        // Insert tree view item.
+        QTreeWidgetItem* newItem = new QTreeWidgetItem((QTreeWidget*)0, QStringList(recordDisplayName));
+        this->ui->treeWidget->insertTopLevelItem(index, newItem);
 
         // Select new record.
-        const QStandardItem* recordItem = this->recordsViewModel->findItem(recordDisplayName);
-        const QModelIndex index = this->recordsViewModel->indexFromItem(recordItem);
-        this->ui->treeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
+        this->ui->treeWidget->setCurrentItem(newItem);
 
         // Add record fields.
         const QMap<QString, bool> recordFields = this->recordWindow->getRecordFields();
@@ -272,10 +285,7 @@ void MainWindow::on_actionEdit_Record_triggered()
         const QString recordDisplayName = this->recordWindow->getRecordDisplayName();
 
         // Update record.
-        this->recordsViewModel->updateRecord
-                (record->id,
-                 recordId,
-                 recordDisplayName);
+        this->updateRecord(recordId, recordDisplayName);
 
         // Update record fields.
         const QMap<QString, bool> recordFields = this->recordWindow->getRecordFields();
@@ -303,14 +313,25 @@ void MainWindow::on_actionEdit_Record_triggered()
 
 void MainWindow::on_actionRemove_Record_triggered()
 {
-    const QString& displayName = getSelectedRecordDisplayName();
+    QModelIndexList selectedIndexes = this->ui->treeWidget->selectionModel()->selectedIndexes();
 
-    if (displayName.isEmpty())
+    if (selectedIndexes.empty())
     {
         return;
     }
 
-    this->recordsViewModel->removeRecord(displayName);
+    QModelIndex currentIndex = selectedIndexes.first();
+
+    if (!currentIndex.isValid())
+    {
+        return;
+    }
+
+    // Update model.
+    this->project->recordSets[0]->records.removeAt(currentIndex.row());
+
+    // Update view.
+    this->ui->treeWidget->takeTopLevelItem(currentIndex.row());
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -338,7 +359,7 @@ void MainWindow::on_actionReleases_triggered()
     QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/releases"));
 }
 
-void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
+void MainWindow::on_treeWidget_doubleClicked(const QModelIndex &index)
 {
     Q_UNUSED(index);
     this->on_actionEdit_Record_triggered();
@@ -501,12 +522,13 @@ void MainWindow::addRecordField(const QString& fieldId)
     QString recordDisplayName = this->getSelectedRecordDisplayName();
     QSharedPointer<Record> record = this->project->getRecordByDisplayName(recordDisplayName);
 
+    int index = findInsertionIndex(record->fieldValues.keys(), fieldId);
+
     // Update model.
     QSharedPointer<FieldDefinition> field = this->project->getFieldDefinition(fieldId);
     record->fieldValues.insert(fieldId, field->defaultValue);
 
     // Update view.
-    int index = findInsertionIndex(record->fieldValues.keys(), fieldId);
     this->ui->tableWidget->insertRow(index);
     this->updateRecordRow(index);
 }
@@ -555,7 +577,7 @@ QString MainWindow::getFullProjectPath(QSharedPointer<Project> project) const
 
 QString MainWindow::getSelectedRecordDisplayName() const
 {
-    QModelIndexList selectedIndexes = this->ui->treeView->selectionModel()->selectedIndexes();
+    QModelIndexList selectedIndexes = this->ui->treeWidget->selectionModel()->selectedIndexes();
 
     if (selectedIndexes.empty())
     {
@@ -890,15 +912,25 @@ void MainWindow::setProject(QSharedPointer<Project> project)
     this->updateMenus();
 
     // Setup tree view.
-    RecordsItemModel* recordsViewModel = new RecordsItemModel(project);
-    this->recordsViewModel = QSharedPointer<RecordsItemModel>(recordsViewModel);
+    this->ui->treeWidget->setColumnCount(1);
 
-    this->ui->treeView->setModel(recordsViewModel);
-    this->ui->treeView->expandAll();
+    QVector<QSharedPointer<Record> > records = this->project->recordSets[0]->records;
+    QList<QTreeWidgetItem *> items;
+
+    for (QVector<QSharedPointer<Record> >::iterator it = records.begin();
+         it != records.end();
+         ++it)
+    {
+        QSharedPointer<Record> record = *it;
+        items.append(new QTreeWidgetItem((QTreeWidget*)0, QStringList(record->displayName)));
+    }
+
+    this->ui->treeWidget->insertTopLevelItems(0, items);
+    this->ui->treeWidget->expandAll();
 
     // Listen for selection changes.
     connect(
-                this->ui->treeView->selectionModel(),
+                this->ui->treeWidget->selectionModel(),
                 SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
                 SLOT(treeViewSelectionChanged(const QItemSelection &, const QItemSelection &))
                 );
@@ -953,6 +985,43 @@ void MainWindow::updateRecentProjects()
         QString path = recentProjects.at(i);
         QAction* action = new QAction(path, this);
         this->ui->menuRecent_Projects->addAction(action);
+    }
+}
+
+void MainWindow::updateRecord(const QString& id, const QString& displayName)
+{
+    QString recordDisplayName = this->getSelectedRecordDisplayName();
+    QSharedPointer<Record> record = this->project->getRecordByDisplayName(recordDisplayName);
+
+    bool needsSorting = record->displayName != displayName;
+
+    // Update model.
+    record->id = id;
+    record->displayName = displayName;
+
+    // Update view.
+    QModelIndexList selectedIndexes = this->ui->treeWidget->selectionModel()->selectedIndexes();
+
+    if (selectedIndexes.empty())
+    {
+        return;
+    }
+
+    QModelIndex currentIndex = selectedIndexes.first();
+
+    if (!currentIndex.isValid())
+    {
+        return;
+    }
+
+    QTreeWidgetItem* item = this->ui->treeWidget->topLevelItem(currentIndex.row());
+    item->setText(0, displayName);
+
+    // Sort by display name.
+    if (needsSorting)
+    {
+        std::sort(this->project->recordSets[0]->records.begin(), this->project->recordSets[0]->records.end(), lessThanRecords);
+        this->ui->treeWidget->sortItems(0, Qt::AscendingOrder);
     }
 }
 
