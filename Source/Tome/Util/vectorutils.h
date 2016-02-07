@@ -23,7 +23,7 @@ namespace Tome
             }
         }
 
-        return 0;
+        return list.size();
     }
 
     template<typename T>
@@ -43,7 +43,7 @@ namespace Tome
             }
         }
 
-        return 0;
+        return vector.size();
     }
 
     template<typename T>
@@ -57,7 +57,7 @@ namespace Tome
             }
         }
 
-        return 0;
+        return vector.size();
     }
 }
 
