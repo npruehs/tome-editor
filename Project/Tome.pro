@@ -58,7 +58,6 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Types/enumerationwindow.cpp \
     ../Source/Tome/Types/enumerationmemberwindow.cpp \
     ../Source/Tome/Types/listwindow.cpp \
-    ../Source/Tome/Types/customtypestablemodel.cpp \
     ../Source/Tome/Fields/listwidget.cpp \
     ../Source/Tome/Fields/listitemwindow.cpp \
     ../Source/Tome/Fields/listitemmodel.cpp
@@ -94,7 +93,6 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/enumerationmemberwindow.h \
     ../Source/Tome/Types/enumerationwindow.h \
     ../Source/Tome/Types/listwindow.h \
-    ../Source/Tome/Types/customtypestablemodel.h \
     ../Source/Tome/Fields/listwidget.h \
     ../Source/Tome/Fields/listitemwindow.h \
     ../Source/Tome/Fields/listitemmodel.h \

@@ -11,7 +11,6 @@
 #include "Projects/newprojectwindow.h"
 #include "Projects/project.h"
 #include "Records/recordsitemmodel.h"
-#include "Records/recordtablemodel.h"
 #include "Records/recordwindow.h"
 #include "Types/customtypeswindow.h"
 

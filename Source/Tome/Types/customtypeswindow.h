@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 
-#include "customtypestablemodel.h"
 #include "enumerationwindow.h"
 #include "listwindow.h"
 #include "../Projects/project.h"
@@ -27,7 +26,7 @@ class CustomTypesWindow : public QMainWindow
         void on_actionEdit_Custom_Type_triggered();
         void on_actionDelete_Custom_Type_triggered();
 
-        void on_tableView_doubleClicked(const QModelIndex &index);
+        void on_tableWidget_doubleClicked(const QModelIndex &index);
 
     private:
         Ui::CustomTypesWindow *ui;
@@ -42,6 +41,10 @@ class CustomTypesWindow : public QMainWindow
 
         void editEnumeration(int index, QSharedPointer<Tome::CustomType> type);
         void editList(int index, QSharedPointer<Tome::CustomType> type);
+
+        void updateEnumeration(const int index, const QString& name, const QStringList& enumeration);
+        void updateList(int index, const QString& name, const QString& itemType);
+        void updateRow(const int index);
 };
 
 #endif // CUSTOMTYPESWINDOW_H
