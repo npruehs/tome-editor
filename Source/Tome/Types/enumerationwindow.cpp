@@ -3,6 +3,9 @@
 
 #include <QStringListModel>
 
+#include "../Util/vectorutils.h"
+
+
 using namespace Tome;
 
 
@@ -12,10 +15,6 @@ EnumerationWindow::EnumerationWindow(QWidget *parent) :
     enumerationMemberWindow(0)
 {
     ui->setupUi(this);
-
-    QStringListModel* model = new QStringListModel();
-    model->setStringList(QStringList());
-    this->ui->listView->setModel(model);
 }
 
 EnumerationWindow::~EnumerationWindow()
@@ -30,8 +29,7 @@ QString EnumerationWindow::getEnumerationName() const
 
 QStringList EnumerationWindow::getEnumerationMembers() const
 {
-    QStringListModel* model = static_cast<QStringListModel*>(this->ui->listView->model());
-    return model->stringList();
+    return this->enumeration;
 }
 
 void EnumerationWindow::setEnumerationName(const QString& typeName)
@@ -39,10 +37,14 @@ void EnumerationWindow::setEnumerationName(const QString& typeName)
     this->ui->lineEdit->setText(typeName);
 }
 
-void EnumerationWindow::setEnumerationMembers(const QStringList& enumeration)
+void EnumerationWindow::setEnumerationMembers(const QStringList enumeration)
 {
-    QStringListModel* model = static_cast<QStringListModel*>(this->ui->listView->model());
-    model->setStringList(enumeration);
+    // Update model.
+    this->enumeration = enumeration;
+
+    // Update view.
+    this->ui->listWidget->clear();
+    this->ui->listWidget->insertItems(0, enumeration);
 }
 
 void EnumerationWindow::on_actionNew_Member_triggered()
@@ -57,18 +59,20 @@ void EnumerationWindow::on_actionNew_Member_triggered()
 
     if (result == QDialog::Accepted)
     {
-        // Add new type member.
-        QStringListModel* model = static_cast<QStringListModel*>(this->ui->listView->model());
-        QStringList stringList = model->stringList();
-        stringList << this->enumerationMemberWindow->getText();
-        stringList.sort();
-        model->setStringList(stringList);
+        QString item = this->enumerationMemberWindow->getText();
+        int index = findInsertionIndex(this->enumeration, item);
+
+        // Update model.
+        this->enumeration.insert(index, item);
+
+        // Update view.
+        this->ui->listWidget->insertItem(index, item);
     }
 }
 
 void EnumerationWindow::on_actionDelete_Member_triggered()
 {
-    QModelIndexList selectedIndexes = this->ui->listView->selectionModel()->selectedRows();
+    QModelIndexList selectedIndexes = this->ui->listWidget->selectionModel()->selectedRows();
 
     if (selectedIndexes.isEmpty())
     {
@@ -77,8 +81,9 @@ void EnumerationWindow::on_actionDelete_Member_triggered()
 
     int row = selectedIndexes.first().row();
 
-    QStringListModel* model = static_cast<QStringListModel*>(this->ui->listView->model());
-    QStringList stringList = model->stringList();
-    stringList.removeAt(row);
-    model->setStringList(stringList);
+    // Update model.
+    this->enumeration.removeAt(row);
+
+    // Update view.
+    this->ui->listWidget->takeItem(row);
 }

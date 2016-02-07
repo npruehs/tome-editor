@@ -38,7 +38,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QListView" name="listView">
+    <widget class="QListWidget" name="listWidget">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>

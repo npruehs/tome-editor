@@ -22,7 +22,7 @@ class EnumerationWindow : public QDialog
         QStringList getEnumerationMembers() const;
 
         void setEnumerationName(const QString& typeName);
-        void setEnumerationMembers(const QStringList& enumeration);
+        void setEnumerationMembers(const QStringList enumeration);
 
     private slots:
         void on_actionNew_Member_triggered();
@@ -32,6 +32,8 @@ class EnumerationWindow : public QDialog
         Ui::EnumerationWindow *ui;
 
         EnumerationMemberWindow* enumerationMemberWindow;
+
+        QStringList enumeration;
 };
 
 #endif // ENUMERATIONWINDOW_H
