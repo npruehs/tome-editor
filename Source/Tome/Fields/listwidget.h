@@ -3,12 +3,11 @@
 
 #include <QAction>
 #include <QHBoxLayout>
-#include <QListView>
+#include <QListWidget>
 #include <QString>
 #include <QToolButton>
 #include <QWidget>
 
-#include "listitemmodel.h"
 #include "listitemwindow.h"
 
 
@@ -37,13 +36,12 @@ namespace Tome
 
         private:
             QString fieldType;
+            QStringList items;
 
             ListItemWindow* listItemWindow;
 
             QHBoxLayout* layout;
-            QListView* listView;
-
-            QSharedPointer<ListItemModel> viewModel;
+            QListWidget* listWidget;
 
             int getSelectedItemIndex() const;
     };

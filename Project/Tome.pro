@@ -44,7 +44,6 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/IO/xmlreader.cpp \
     ../Source/Tome/Fields/fielddefinitionwindow.cpp \
     ../Source/Tome/Fields/fielddefinitionswindow.cpp \
-    ../Source/Tome/Records/recordsitemmodel.cpp \
     ../Source/Tome/Records/recordwindow.cpp \
     ../Source/Tome/Fields/fieldvaluewindow.cpp \
     ../Source/Tome/Fields/fieldvaluewidget.cpp \
@@ -59,8 +58,7 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Types/enumerationmemberwindow.cpp \
     ../Source/Tome/Types/listwindow.cpp \
     ../Source/Tome/Fields/listwidget.cpp \
-    ../Source/Tome/Fields/listitemwindow.cpp \
-    ../Source/Tome/Fields/listitemmodel.cpp
+    ../Source/Tome/Fields/listitemwindow.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/builtintype.h \
@@ -79,7 +77,6 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/IO/xmlreader.h \
     ../Source/Tome/Fields/fielddefinitionwindow.h \
     ../Source/Tome/Fields/fielddefinitionswindow.h \
-    ../Source/Tome/Records/recordsitemmodel.h \
     ../Source/Tome/Records/recordwindow.h \
     ../Source/Tome/Fields/fieldvaluewindow.h \
     ../Source/Tome/Fields/fieldvaluewidget.h \
@@ -95,7 +92,6 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/listwindow.h \
     ../Source/Tome/Fields/listwidget.h \
     ../Source/Tome/Fields/listitemwindow.h \
-    ../Source/Tome/Fields/listitemmodel.h \
     ../Source/Tome/Util/vectorutils.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \

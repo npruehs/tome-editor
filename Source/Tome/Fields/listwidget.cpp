@@ -11,13 +11,8 @@ ListWidget::ListWidget(QWidget *parent) :
     this->layout = new QHBoxLayout(this);
 
     // Add list view.
-    QStringList stringList;
-    ListItemModel* model = new ListItemModel(stringList);
-    this->viewModel = QSharedPointer<ListItemModel>(model);
-
-    this->listView = new QListView(this);
-    this->listView->setModel(model);
-    this->layout->addWidget(this->listView);
+    this->listWidget = new QListWidget(this);
+    this->layout->addWidget(this->listWidget);
 
     // Add buttons.
     QVBoxLayout* buttonLayout = new QVBoxLayout(this);
@@ -96,7 +91,12 @@ void ListWidget::addItem()
     if (result == QDialog::Accepted)
     {
         QString value = this->listItemWindow->getValue();
-        this->viewModel->addItem(value);
+
+        // Update model.
+        this->items.push_back(value);
+
+        // Update view.
+        this->listWidget->addItem(value);
     }
 }
 
@@ -109,7 +109,11 @@ void ListWidget::removeItem()
         return;
     }
 
-    this->viewModel->removeItem(index);
+    // Update model.
+    this->items.removeAt(index);
+
+    // Update view.
+    this->listWidget->takeItem(index);
 }
 
 void ListWidget::moveItemUp()
@@ -121,11 +125,16 @@ void ListWidget::moveItemUp()
         return;
     }
 
-    this->viewModel->moveItemUp(index);
+    // Update model.
+    this->items.move(index, index - 1);
+
+    // Update view.
+    QListWidgetItem* item = this->listWidget->takeItem(index);
+    this->listWidget->insertItem(index - 1, item);
 
     // Update selection.
-    this->listView->selectionModel()->select(
-                this->listView->currentIndex().sibling(index - 1, 0),
+    this->listWidget->selectionModel()->select(
+                this->listWidget->currentIndex().sibling(index - 1, 0),
                 QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
 }
 
@@ -133,22 +142,27 @@ void ListWidget::moveItemDown()
 {
     int index = this->getSelectedItemIndex();
 
-    if (index > this->viewModel->rowCount() - 2)
+    if (index > this->items.size() - 2)
     {
         return;
     }
 
-    this->viewModel->moveItemDown(index);
+    // Update model.
+    this->items.move(index, index + 1);
+
+    // Update view.
+    QListWidgetItem* item = this->listWidget->takeItem(index);
+    this->listWidget->insertItem(index + 1, item);
 
     // Update selection.
-    this->listView->selectionModel()->select(
-                this->listView->currentIndex().sibling(index + 1, 0),
+    this->listWidget->selectionModel()->select(
+                this->listWidget->currentIndex().sibling(index + 1, 0),
                 QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
 }
 
 int ListWidget::getSelectedItemIndex() const
 {
-    QModelIndexList selectedIndexes = this->listView->selectionModel()->selectedRows();
+    QModelIndexList selectedIndexes = this->listWidget->selectionModel()->selectedRows();
 
     if (selectedIndexes.isEmpty())
     {
