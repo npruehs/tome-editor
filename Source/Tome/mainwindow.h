@@ -49,7 +49,7 @@ class MainWindow : public QMainWindow
         void on_actionReleases_triggered();
 
         void on_treeView_doubleClicked(const QModelIndex &index);
-        void on_tableView_doubleClicked(const QModelIndex &index);
+        void on_tableWidget_doubleClicked(const QModelIndex &index);
 
         void exportRecords(QAction* exportAction);
         void openRecentProject(QAction* recentProjectAction);
@@ -80,19 +80,22 @@ class MainWindow : public QMainWindow
         RecordWindow* recordWindow;
 
         QSharedPointer<Tome::RecordsItemModel> recordsViewModel;
-        QSharedPointer<Tome::RecordTableModel> recordViewModel;
 
+        void addRecordField(const QString& fieldId);
         void createNewProject(const QString& name, const QString& path);
         QString getFullProjectPath() const;
         QString getFullProjectPath(QSharedPointer<Tome::Project> project) const;
         QString getSelectedRecordDisplayName() const;
         void openProject(QString path);
         QString readProjectFile(QString projectPath, QString fileName);
+        void removeRecordField(const QString& fieldId);
         bool saveProject(QSharedPointer<Tome::Project> project);
         void setProject(QSharedPointer<Tome::Project> project);
         void showWindow(QWidget* widget);
         void updateMenus();
         void updateRecentProjects();
+        void updateRecordFieldValue(const int index, const QString& key, const QString& value);
+        void updateRecordRow(const int i);
         void updateWindowTitle();
 };
 

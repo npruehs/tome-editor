@@ -20,6 +20,7 @@
 #include "Settings/tomesettings.h"
 #include "Types/builtintype.h"
 #include "Util/pathutils.h"
+#include "Util/vectorutils.h"
 
 
 using namespace Tome;
@@ -70,10 +71,13 @@ MainWindow::MainWindow(QWidget *parent) :
     this->updateMenus();
     this->updateRecentProjects();
 
-    // Setup record field table model.
-    RecordTableModel* model = new RecordTableModel(this);
-    this->recordViewModel = QSharedPointer<RecordTableModel>(model);
-    this->ui->tableView->setModel(model);
+    // Setup view.
+    this->ui->tableWidget->setColumnCount(2);
+
+    QStringList headers;
+    headers << tr("Field");
+    headers << tr("Value");
+    this->ui->tableWidget->setHorizontalHeaderLabels(headers);
 }
 
 MainWindow::~MainWindow()
@@ -205,8 +209,7 @@ void MainWindow::on_actionNew_Record_triggered()
 
             if (fieldEnabled)
             {
-                QSharedPointer<FieldDefinition> field = this->project->getFieldDefinition(fieldId);
-                this->recordViewModel->addRecordField(fieldId, field->defaultValue);
+                this->addRecordField(fieldId);
             }
         }
     }
@@ -288,12 +291,11 @@ void MainWindow::on_actionEdit_Record_triggered()
 
             if (fieldIsEnabled && !fieldWasEnabled)
             {
-                QSharedPointer<FieldDefinition> field = this->project->getFieldDefinition(fieldId);
-                this->recordViewModel->addRecordField(fieldId, field->defaultValue);
+                this->addRecordField(fieldId);
             }
             else if (fieldWasEnabled && !fieldIsEnabled)
             {
-                this->recordViewModel->removeRecordField(fieldId);
+                this->removeRecordField(fieldId);
             }
         }
     }
@@ -342,11 +344,14 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
     this->on_actionEdit_Record_triggered();
 }
 
-void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
+void MainWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
 {
+    QString recordDisplayName = this->getSelectedRecordDisplayName();
+    QSharedPointer<Record> record = this->project->getRecordByDisplayName(recordDisplayName);
+
     // Get current field data.
-    const QString& fieldId = this->recordViewModel->getFieldId(index);
-    const QString& fieldValue = this->recordViewModel->getFieldValue(index);
+    const QString fieldId = record->fieldValues.keys()[index.row()];
+    const QString fieldValue = record->fieldValues[fieldId];
 
     QSharedPointer<FieldDefinition> fieldDefinition =
             this->project->getFieldDefinition(fieldId);
@@ -393,10 +398,13 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
 
     if (result == QDialog::Accepted)
     {
-        // Update field.
-        this->recordViewModel->setFieldValue(
-                    fieldId,
-                    this->fieldValueWindow->getFieldValue());
+        QString fieldValue = this->fieldValueWindow->getFieldValue();
+
+        // Update model.
+        record->fieldValues[fieldId] = fieldValue;
+
+        // Update view.
+        this->updateRecordRow(index.row());
     }
 }
 
@@ -453,7 +461,7 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
 
     if (selected.empty())
     {
-        this->recordViewModel->clearRecord();
+        this->ui->tableWidget->clear();
         return;
     }
 
@@ -480,8 +488,27 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
     }
 
     // Update field table.
-    this->recordViewModel->setProject(this->project);
-    this->recordViewModel->setRecord(record);
+    this->ui->tableWidget->setRowCount(record->fieldValues.size());
+
+    for (int i = 0; i < record->fieldValues.size(); ++i)
+    {
+        this->updateRecordRow(i);
+    }
+}
+
+void MainWindow::addRecordField(const QString& fieldId)
+{
+    QString recordDisplayName = this->getSelectedRecordDisplayName();
+    QSharedPointer<Record> record = this->project->getRecordByDisplayName(recordDisplayName);
+
+    // Update model.
+    QSharedPointer<FieldDefinition> field = this->project->getFieldDefinition(fieldId);
+    record->fieldValues.insert(fieldId, field->defaultValue);
+
+    // Update view.
+    int index = findInsertionIndex(record->fieldValues.keys(), fieldId);
+    this->ui->tableWidget->insertRow(index);
+    this->updateRecordRow(index);
 }
 
 void MainWindow::createNewProject(const QString &projectName, const QString &projectPath)
@@ -744,6 +771,19 @@ QString MainWindow::readProjectFile(QString projectPath, QString fileName)
     }
 }
 
+void MainWindow::removeRecordField(const QString& fieldId)
+{
+    QString recordDisplayName = this->getSelectedRecordDisplayName();
+    QSharedPointer<Record> record = this->project->getRecordByDisplayName(recordDisplayName);
+
+    // Update model.
+    record->fieldValues.remove(fieldId);
+
+    // Update view.
+    int index = findInsertionIndex(record->fieldValues.keys(), fieldId);
+    this->ui->tableWidget->removeRow(index);
+}
+
 bool MainWindow::saveProject(QSharedPointer<Project> project)
 {
     QString& projectPath = project->path;
@@ -913,6 +953,43 @@ void MainWindow::updateRecentProjects()
         QString path = recentProjects.at(i);
         QAction* action = new QAction(path, this);
         this->ui->menuRecent_Projects->addAction(action);
+    }
+}
+
+void MainWindow::updateRecordFieldValue(const int index, const QString& key, const QString& value)
+{
+    QString selectedRecordDisplayName = this->getSelectedRecordDisplayName();
+    QSharedPointer<Record> record = this->project->getRecordByDisplayName(selectedRecordDisplayName);
+
+    // Update model.
+    record->fieldValues[key] = value;
+
+    // Update view.
+    this->updateRecordRow(index);
+}
+
+void MainWindow::updateRecordRow(int i)
+{
+    // Show field and value.
+    QString selectedRecordDisplayName = this->getSelectedRecordDisplayName();
+    QSharedPointer<Record> record = this->project->getRecordByDisplayName(selectedRecordDisplayName);
+    QString key = record->fieldValues.keys()[i];
+    QString value = record->fieldValues[key];
+
+    this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(key));
+    this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(value));
+
+    // Show field description as tooltip.
+    QSharedPointer<FieldDefinition> fieldDefinition = this->project->getFieldDefinition(key);
+    this->ui->tableWidget->item(i, 0)->setData(Qt::ToolTipRole, fieldDefinition->description);
+    this->ui->tableWidget->item(i, 1)->setData(Qt::ToolTipRole, fieldDefinition->description);
+
+    // Show color preview.
+    if (fieldDefinition->fieldType == BuiltInType::Color)
+    {
+        QColor color;
+        color.setNamedColor(value);
+        this->ui->tableWidget->item(i, 1)->setData(Qt::DecorationRole, color);
     }
 }
 

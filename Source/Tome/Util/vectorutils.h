@@ -8,6 +8,26 @@ namespace Tome
 {
     template<typename T>
     /**
+     * @brief findInsertionIndex Assuming the passed list is sorted, returns the index to insert the specified item at to keep the list sorted.
+     * @param list List to add the item to.
+     * @param item Item to add.
+     * @return Index to insert the specified item at to keep the list sorted.
+     */
+    inline int findInsertionIndex(const QList<T> list, T item)
+    {
+        for (int i = 0; i < list.size() - 1; ++i)
+        {
+            if (list.at(i) < item && list.at(i + 1) >= item)
+            {
+                return i + 1;
+            }
+        }
+
+        return 0;
+    }
+
+    template<typename T>
+    /**
      * @brief findInsertionIndex Assuming the passed vector is sorted, returns the index to insert the specified item at to keep the vector sorted.
      * @param vector Vector to add the item to.
      * @param item Item to add.
