@@ -6,13 +6,18 @@ using namespace Tome;
 
 
 Controller::Controller() :
-    componentsController(QSharedPointer<ComponentsController>::create())
+    componentsController(new ComponentsController())
 {
 }
 
-QSharedPointer<ComponentsController> Controller::getComponentsController()
+Controller::~Controller()
 {
-    return this->componentsController;
+    delete this->componentsController;
+}
+
+ComponentsController& Controller::getComponentsController()
+{
+    return *this->componentsController;
 }
 
 void Controller::setProject(QSharedPointer<Project> project)

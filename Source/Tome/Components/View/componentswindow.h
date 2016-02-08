@@ -16,7 +16,7 @@ class ComponentsWindow : public QMainWindow
         Q_OBJECT
 
     public:
-        explicit ComponentsWindow(QSharedPointer<Tome::ComponentsController> controller, QWidget *parent = 0);
+        explicit ComponentsWindow(Tome::ComponentsController& controller, QWidget *parent = 0);
         ~ComponentsWindow();
 
     private slots:
@@ -26,7 +26,7 @@ class ComponentsWindow : public QMainWindow
     private:
         Ui::ComponentsWindow *ui;
 
-        QSharedPointer<Tome::ComponentsController> controller;
+        Tome::ComponentsController& controller;
 
         ComponentWindow* componentWindow;
 };

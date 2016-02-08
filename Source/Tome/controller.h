@@ -14,13 +14,14 @@ namespace Tome
     {
         public:
             Controller();
+            ~Controller();
 
-            QSharedPointer<ComponentsController> getComponentsController();
+            ComponentsController& getComponentsController();
 
             void setProject(QSharedPointer<Project> project);
 
         private:
-            QSharedPointer<ComponentsController> componentsController;
+            ComponentsController* componentsController;
     };
 }
 

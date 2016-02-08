@@ -7,7 +7,7 @@
 using namespace Tome;
 
 
-ComponentsWindow::ComponentsWindow(QSharedPointer<Tome::ComponentsController> controller, QWidget *parent) :
+ComponentsWindow::ComponentsWindow(ComponentsController& controller, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ComponentsWindow),
     controller(controller),
@@ -16,7 +16,7 @@ ComponentsWindow::ComponentsWindow(QSharedPointer<Tome::ComponentsController> co
     ui->setupUi(this);
 
     // Setup view.
-    const ComponentList& components = this->controller->getComponents();
+    const ComponentList& components = this->controller.getComponents();
 
     for (int i = 0; i < components.size(); ++i)
     {
@@ -45,10 +45,10 @@ void ComponentsWindow::on_actionNew_Component_triggered()
         const QString& componentName = this->componentWindow->getComponentName();
 
         // Update model.
-        const Component& component = this->controller->addComponent(componentName);
+        const Component& component = this->controller.addComponent(componentName);
 
         // Update view.
-        int index = this->controller->indexOf(component);
+        int index = this->controller.indexOf(component);
         this->ui->listWidget->insertItem(index, componentName);
     }
 }
@@ -58,7 +58,7 @@ void ComponentsWindow::on_actionDelete_Component_triggered()
     int index = this->ui->listWidget->currentRow();
 
     // Update model.
-    this->controller->removeComponentAt(index);
+    this->controller.removeComponentAt(index);
 
     // Update view.
     this->ui->listWidget->takeItem(index);
