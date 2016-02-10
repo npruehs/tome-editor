@@ -64,12 +64,10 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
             // Write field definition set paths.
             writer.writeStartElement(ElementFieldDefinitions);
             {
-                for (QVector<QSharedPointer<Tome::FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
-                     it != project->fieldDefinitionSets.end();
-                     ++it)
+                for (int i = 0; i < project->fieldDefinitionSets.size(); ++i)
                 {
-                    Tome::FieldDefinitionSet* fieldDefinitionSet = it->data();
-                    writer.writeTextElement(ElementPath, fieldDefinitionSet->name);
+                    const FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
+                    writer.writeTextElement(ElementPath, fieldDefinitionSet.name);
                 }
             }
             writer.writeEndElement();
@@ -77,12 +75,10 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
             // Write record set paths.
             writer.writeStartElement(ElementRecords);
             {
-                for (QVector<QSharedPointer<Tome::RecordSet> >::iterator it = project->recordSets.begin();
-                     it != project->recordSets.end();
-                     ++it)
+                for (int i = 0; i < project->recordSets.size(); ++i)
                 {
-                    Tome::RecordSet* recordSet = it->data();
-                    writer.writeTextElement(ElementPath, recordSet->name);
+                    const RecordSet& recordSet = project->recordSets[i];
+                    writer.writeTextElement(ElementPath, recordSet.name);
                 }
             }
             writer.writeEndElement();
@@ -199,9 +195,8 @@ void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPoi
                 while (reader.isAtElement(ElementPath))
                 {
                     const QString name = reader.readTextElement(ElementPath);
-                    QSharedPointer<FieldDefinitionSet> fieldDefinitionSet =
-                            QSharedPointer<FieldDefinitionSet>::create();
-                    fieldDefinitionSet->name = name;
+                    FieldDefinitionSet fieldDefinitionSet = FieldDefinitionSet();
+                    fieldDefinitionSet.name = name;
                     project->fieldDefinitionSets.push_back(fieldDefinitionSet);
                 }
             }
@@ -213,9 +208,8 @@ void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPoi
                 while (reader.isAtElement(ElementPath))
                 {
                     const QString name = reader.readTextElement(ElementPath);
-                    QSharedPointer<RecordSet> recordSet =
-                            QSharedPointer<RecordSet>::create();
-                    recordSet->name = name;
+                    RecordSet recordSet = RecordSet();
+                    recordSet.name = name;
                     project->recordSets.push_back(recordSet);
                 }
             }

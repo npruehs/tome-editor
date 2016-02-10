@@ -7,9 +7,9 @@
 using namespace Tome;
 
 
-bool lessThanFieldDefinitions(const QSharedPointer<FieldDefinition>& e1, const QSharedPointer<FieldDefinition>& e2)
+bool lessThanFieldDefinitions(const FieldDefinition& e1, const FieldDefinition& e2)
 {
-    return e1->displayName.toLower() < e2->displayName.toLower();
+    return e1.displayName.toLower() < e2.displayName.toLower();
 }
 
 FieldDefinitionsWindow::FieldDefinitionsWindow(QSharedPointer<Tome::Project> project, QWidget *parent) :
@@ -21,7 +21,7 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(QSharedPointer<Tome::Project> pro
     ui->setupUi(this);
 
     // Setup view.
-    QVector<QSharedPointer<FieldDefinition> >& fieldDefinitions = project->fieldDefinitionSets[0]->fieldDefinitions;
+    FieldDefinitionList& fieldDefinitions = project->fieldDefinitionSets[0].fieldDefinitions;
 
     this->ui->tableWidget->setRowCount(fieldDefinitions.size());
     this->ui->tableWidget->setColumnCount(6);
@@ -72,15 +72,15 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
     if (result == QDialog::Accepted)
     {
         // Update model.
-        QSharedPointer<FieldDefinition> fieldDefinition = QSharedPointer<Tome::FieldDefinition>::create();
-        fieldDefinition->id = this->fieldDefinitionWindow->getFieldId();
-        fieldDefinition->displayName = this->fieldDefinitionWindow->getFieldDisplayName();
-        fieldDefinition->fieldType = this->fieldDefinitionWindow->getFieldType();
-        fieldDefinition->defaultValue = this->fieldDefinitionWindow->getDefaultValue();
-        fieldDefinition->component = this->fieldDefinitionWindow->getFieldComponent();
-        fieldDefinition->description = this->fieldDefinitionWindow->getFieldDescription();
+        FieldDefinition fieldDefinition = Tome::FieldDefinition();
+        fieldDefinition.id = this->fieldDefinitionWindow->getFieldId();
+        fieldDefinition.displayName = this->fieldDefinitionWindow->getFieldDisplayName();
+        fieldDefinition.fieldType = this->fieldDefinitionWindow->getFieldType();
+        fieldDefinition.defaultValue = this->fieldDefinitionWindow->getDefaultValue();
+        fieldDefinition.component = this->fieldDefinitionWindow->getFieldComponent();
+        fieldDefinition.description = this->fieldDefinitionWindow->getFieldDescription();
 
-        QVector<QSharedPointer<FieldDefinition> >& fieldDefinitions = this->project->fieldDefinitionSets[0]->fieldDefinitions;
+        FieldDefinitionList& fieldDefinitions = this->project->fieldDefinitionSets[0].fieldDefinitions;
         int index = findInsertionIndex(fieldDefinitions, fieldDefinition, lessThanFieldDefinitions);
         fieldDefinitions.insert(index, fieldDefinition);
 
@@ -88,12 +88,12 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
         this->ui->tableWidget->insertRow(index);
         this->updateFieldDefinition(
                     index,
-                    fieldDefinition->id,
-                    fieldDefinition->displayName,
-                    fieldDefinition->fieldType,
-                    fieldDefinition->defaultValue,
-                    fieldDefinition->description,
-                    fieldDefinition->component);
+                    fieldDefinition.id,
+                    fieldDefinition.displayName,
+                    fieldDefinition.fieldType,
+                    fieldDefinition.defaultValue,
+                    fieldDefinition.description,
+                    fieldDefinition.component);
     }
 }
 
@@ -107,8 +107,8 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
     }
 
     // Get selected field definition.
-    QSharedPointer<FieldDefinition> fieldDefinition =
-            this->project->fieldDefinitionSets[0]->fieldDefinitions[index];
+    const FieldDefinition& fieldDefinition =
+            this->project->fieldDefinitionSets[0].fieldDefinitions[index];
 
     // Show window.
     if (!this->fieldDefinitionWindow)
@@ -120,12 +120,12 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
     this->fieldDefinitionWindow->setProject(this->project);
 
     // Update view.
-    this->fieldDefinitionWindow->setFieldId(fieldDefinition->id);
-    this->fieldDefinitionWindow->setFieldDisplayName(fieldDefinition->displayName);
-    this->fieldDefinitionWindow->setFieldType(fieldDefinition->fieldType);
-    this->fieldDefinitionWindow->setDefaultValue(fieldDefinition->defaultValue);
-    this->fieldDefinitionWindow->setFieldDescription(fieldDefinition->description);
-    this->fieldDefinitionWindow->setFieldComponent(fieldDefinition->component);
+    this->fieldDefinitionWindow->setFieldId(fieldDefinition.id);
+    this->fieldDefinitionWindow->setFieldDisplayName(fieldDefinition.displayName);
+    this->fieldDefinitionWindow->setFieldType(fieldDefinition.fieldType);
+    this->fieldDefinitionWindow->setDefaultValue(fieldDefinition.defaultValue);
+    this->fieldDefinitionWindow->setFieldDescription(fieldDefinition.description);
+    this->fieldDefinitionWindow->setFieldComponent(fieldDefinition.component);
 
     int result = this->fieldDefinitionWindow->exec();
 
@@ -153,7 +153,7 @@ void FieldDefinitionsWindow::on_actionDelete_Field_triggered()
     }
 
     // Update model.
-    this->project->fieldDefinitionSets[0]->fieldDefinitions.removeAt(index);
+    this->project->fieldDefinitionSets[0].fieldDefinitions.removeAt(index);
 
     // Update view.
     this->ui->tableWidget->removeRow(index);
@@ -187,18 +187,18 @@ void FieldDefinitionsWindow::updateMenus()
 
 void FieldDefinitionsWindow::updateFieldDefinition(const int index, const QString& id, const QString& displayName, const QString& fieldType, const QString& defaultValue, const QString& description, const QString& component)
 {
-    QVector<QSharedPointer<FieldDefinition> >& fieldDefinitions = this->project->fieldDefinitionSets[0]->fieldDefinitions;
-    QSharedPointer<FieldDefinition> fieldDefinition = fieldDefinitions[index];
+    FieldDefinitionList& fieldDefinitions = this->project->fieldDefinitionSets[0].fieldDefinitions;
+    FieldDefinition& fieldDefinition = fieldDefinitions[index];
 
-    bool needsSorting = fieldDefinition->displayName != displayName;
+    bool needsSorting = fieldDefinition.displayName != displayName;
 
     // Update model.
-    fieldDefinition->id = id;
-    fieldDefinition->displayName = displayName;
-    fieldDefinition->fieldType = fieldType;
-    fieldDefinition->defaultValue = defaultValue;
-    fieldDefinition->description = description;
-    fieldDefinition->component = component;
+    fieldDefinition.id = id;
+    fieldDefinition.displayName = displayName;
+    fieldDefinition.fieldType = fieldType;
+    fieldDefinition.defaultValue = defaultValue;
+    fieldDefinition.description = description;
+    fieldDefinition.component = component;
 
     // Update view.
     this->updateRow(index);
@@ -213,21 +213,21 @@ void FieldDefinitionsWindow::updateFieldDefinition(const int index, const QStrin
 
 void FieldDefinitionsWindow::updateRow(const int i)
 {
-    QVector<QSharedPointer<FieldDefinition> >& fieldDefinitions = project->fieldDefinitionSets[0]->fieldDefinitions;
-    QSharedPointer<FieldDefinition> fieldDefinition = fieldDefinitions[i];
+    FieldDefinitionList& fieldDefinitions = project->fieldDefinitionSets[0].fieldDefinitions;
+    FieldDefinition& fieldDefinition = fieldDefinitions[i];
 
-    this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(fieldDefinition->id));
-    this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(fieldDefinition->displayName));
-    this->ui->tableWidget->setItem(i, 2, new QTableWidgetItem(fieldDefinition->fieldType));
-    this->ui->tableWidget->setItem(i, 3, new QTableWidgetItem(fieldDefinition->defaultValue));
-    this->ui->tableWidget->setItem(i, 4, new QTableWidgetItem(fieldDefinition->component));
-    this->ui->tableWidget->setItem(i, 5, new QTableWidgetItem(fieldDefinition->description));
+    this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(fieldDefinition.id));
+    this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(fieldDefinition.displayName));
+    this->ui->tableWidget->setItem(i, 2, new QTableWidgetItem(fieldDefinition.fieldType));
+    this->ui->tableWidget->setItem(i, 3, new QTableWidgetItem(fieldDefinition.defaultValue));
+    this->ui->tableWidget->setItem(i, 4, new QTableWidgetItem(fieldDefinition.component));
+    this->ui->tableWidget->setItem(i, 5, new QTableWidgetItem(fieldDefinition.description));
 
-    if (fieldDefinition->fieldType == BuiltInType::Color)
+    if (fieldDefinition.fieldType == BuiltInType::Color)
     {
         // Show color preview.
         QColor color;
-        color.setNamedColor(fieldDefinition->defaultValue);
+        color.setNamedColor(fieldDefinition.defaultValue);
         this->ui->tableWidget->item(i, 3)->setData(Qt::DecorationRole, color);
     }
 }

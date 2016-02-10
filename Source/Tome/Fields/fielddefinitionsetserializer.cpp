@@ -3,7 +3,6 @@
 #include <QXmlStreamWriter>
 
 #include "../IO/xmlreader.h"
-#include "../Values/valueconverter.h"
 
 using namespace Tome;
 
@@ -23,11 +22,8 @@ FieldDefinitionSetSerializer::FieldDefinitionSetSerializer()
 
 }
 
-void FieldDefinitionSetSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointer<FieldDefinitionSet> fieldDefinitionSet) const
+void FieldDefinitionSetSerializer::serialize(QSharedPointer<QIODevice> device, const FieldDefinitionSet& fieldDefinitionSet) const
 {
-    // Setup value conversion.
-    QSharedPointer<ValueConverter> valueConverter = QSharedPointer<ValueConverter>::create();
-
     // Open device stream.
     QXmlStreamWriter stream(device.data());
     stream.setAutoFormatting(true);
@@ -39,22 +35,20 @@ void FieldDefinitionSetSerializer::serialize(QSharedPointer<QIODevice> device, Q
         stream.writeStartElement(ElementFields);
         {
             // Write fields.
-            for (QVector<QSharedPointer<FieldDefinition> >::iterator it = fieldDefinitionSet->fieldDefinitions.begin();
-                 it != fieldDefinitionSet->fieldDefinitions.end();
-                 ++it)
+            for (int i = 0; i < fieldDefinitionSet.fieldDefinitions.size(); ++i)
             {
-                FieldDefinition* fieldDefinition = it->data();
+                const FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[i];
 
                 stream.writeStartElement(ElementField);
-                stream.writeAttribute(AttributeId, fieldDefinition->id);
-                stream.writeAttribute(AttributeDisplayName, fieldDefinition->displayName);
-                stream.writeAttribute(AttributeDescription, fieldDefinition->description);
-                stream.writeAttribute(AttributeDefaultValue, fieldDefinition->defaultValue);
-                stream.writeAttribute(AttributeType, fieldDefinition->fieldType);
+                stream.writeAttribute(AttributeId, fieldDefinition.id);
+                stream.writeAttribute(AttributeDisplayName, fieldDefinition.displayName);
+                stream.writeAttribute(AttributeDescription, fieldDefinition.description);
+                stream.writeAttribute(AttributeDefaultValue, fieldDefinition.defaultValue);
+                stream.writeAttribute(AttributeType, fieldDefinition.fieldType);
 
-                if (!fieldDefinition->component.isEmpty())
+                if (!fieldDefinition.component.isEmpty())
                 {
-                    stream.writeAttribute(AttributeComponent, fieldDefinition->component);
+                    stream.writeAttribute(AttributeComponent, fieldDefinition.component);
                 }
 
                 stream.writeEndElement();
@@ -67,11 +61,8 @@ void FieldDefinitionSetSerializer::serialize(QSharedPointer<QIODevice> device, Q
     stream.writeEndDocument();
 }
 
-void FieldDefinitionSetSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPointer<FieldDefinitionSet> fieldDefinitionSet) const
+void FieldDefinitionSetSerializer::deserialize(QSharedPointer<QIODevice> device, FieldDefinitionSet& fieldDefinitionSet) const
 {
-    // Setup value conversion.
-    QSharedPointer<ValueConverter> valueConverter = QSharedPointer<ValueConverter>::create();
-
     // Open device stream.
     QSharedPointer<QXmlStreamReader> stream =
             QSharedPointer<QXmlStreamReader>::create(device.data());
@@ -87,24 +78,23 @@ void FieldDefinitionSetSerializer::deserialize(QSharedPointer<QIODevice> device,
             while (reader.isAtElement(ElementField))
             {
                 // Add field definition.
-                QSharedPointer<FieldDefinition> fieldDefinition =
-                        QSharedPointer<FieldDefinition>::create();
-
-                fieldDefinitionSet->fieldDefinitions.push_back(fieldDefinition);
+                FieldDefinition fieldDefinition = FieldDefinition();
 
                 // Read attribute values.
-                fieldDefinition->id = reader.readAttribute(AttributeId);
-                fieldDefinition->displayName = reader.readAttribute(AttributeDisplayName);
-                fieldDefinition->description = reader.readAttribute(AttributeDescription);
-                fieldDefinition->defaultValue = reader.readAttribute(AttributeDefaultValue);
-                fieldDefinition->fieldType = reader.readAttribute(AttributeType);
+                fieldDefinition.id = reader.readAttribute(AttributeId);
+                fieldDefinition.displayName = reader.readAttribute(AttributeDisplayName);
+                fieldDefinition.description = reader.readAttribute(AttributeDescription);
+                fieldDefinition.defaultValue = reader.readAttribute(AttributeDefaultValue);
+                fieldDefinition.fieldType = reader.readAttribute(AttributeType);
 
                 QString component = reader.readAttribute(AttributeComponent);
 
                 if (!component.isEmpty())
                 {
-                    fieldDefinition->component = component;
+                    fieldDefinition.component = component;
                 }
+
+                fieldDefinitionSet.fieldDefinitions.push_back(fieldDefinition);
 
                 // Advance reader.
                 reader.readEmptyElement(ElementField);

@@ -9,6 +9,9 @@
 namespace Tome
 {
     class ComponentsController;
+    class ExportController;
+    class FieldDefinitionsController;
+    class RecordsController;
 
     class Controller
     {
@@ -17,11 +20,17 @@ namespace Tome
             ~Controller();
 
             ComponentsController& getComponentsController();
+            FieldDefinitionsController& getFieldDefinitionsController();
+            RecordsController& getRecordsController();
+            ExportController& getExportController();
 
             void setProject(QSharedPointer<Project> project);
 
         private:
             ComponentsController* componentsController;
+            FieldDefinitionsController* fieldDefinitionsController;
+            RecordsController* recordsController;
+            ExportController* exportController;
     };
 }
 

@@ -47,8 +47,7 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Records/recordwindow.cpp \
     ../Source/Tome/Fields/fieldvaluewindow.cpp \
     ../Source/Tome/Fields/fieldvaluewidget.cpp \
-    ../Source/Tome/Export/recordexporttemplate.cpp \
-    ../Source/Tome/Export/recordexporter.cpp \
+    ../Source/Tome/Export/Model/recordexporttemplate.cpp \
     ../Source/Tome/Components/View/componentswindow.cpp \
     ../Source/Tome/Components/View/componentwindow.cpp \
     ../Source/Tome/Types/customtypeswindow.cpp \
@@ -60,7 +59,10 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Fields/listwidget.cpp \
     ../Source/Tome/Fields/listitemwindow.cpp \
     ../Source/Tome/Components/Controller/componentscontroller.cpp \
-    ../Source/Tome/controller.cpp
+    ../Source/Tome/controller.cpp \
+    ../Source/Tome/Export/Controller/exportcontroller.cpp \
+    ../Source/Tome/Records/Controller/recordscontroller.cpp \
+    ../Source/Tome/Fields/Controller/fielddefinitionscontroller.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/builtintype.h \
@@ -82,8 +84,7 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Records/recordwindow.h \
     ../Source/Tome/Fields/fieldvaluewindow.h \
     ../Source/Tome/Fields/fieldvaluewidget.h \
-    ../Source/Tome/Export/recordexporttemplate.h \
-    ../Source/Tome/Export/recordexporter.h \
+    ../Source/Tome/Export/Model/recordexporttemplate.h \
     ../Source/Tome/Components/View/componentswindow.h \
     ../Source/Tome/Components/View/componentwindow.h \
     ../Source/Tome/Types/customtypeswindow.h \
@@ -98,7 +99,14 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Components/Controller/componentscontroller.h \
     ../Source/Tome/Components/Model/component.h \
     ../Source/Tome/controller.h \
-    ../Source/Tome/Components/Model/componentlist.h
+    ../Source/Tome/Components/Model/componentlist.h \
+    ../Source/Tome/Export/Controller/exportcontroller.h \
+    ../Source/Tome/Records/Controller/recordscontroller.h \
+    ../Source/Tome/Records/Model/recordlist.h \
+    ../Source/Tome/Records/Model/recordsetlist.h \
+    ../Source/Tome/Fields/Controller/fielddefinitionscontroller.h \
+    ../Source/Tome/Fields/Model/fielddefinitionsetlist.h \
+    ../Source/Tome/Fields/Model/fielddefinitionlist.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \

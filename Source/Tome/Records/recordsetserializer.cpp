@@ -19,7 +19,7 @@ RecordSetSerializer::RecordSetSerializer()
 
 }
 
-void RecordSetSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointer<RecordSet> recordSet) const
+void RecordSetSerializer::serialize(QSharedPointer<QIODevice> device, const RecordSet& recordSet) const
 {
     // Open device stream.
     QXmlStreamWriter stream(device.data());
@@ -32,21 +32,19 @@ void RecordSetSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoi
         stream.writeStartElement(ElementRecords);
         {
             // Write records.
-            for (QVector<QSharedPointer<Record> >::iterator it = recordSet->records.begin();
-                 it != recordSet->records.end();
-                 ++it)
+            for (int i = 0; i < recordSet.records.size(); ++i)
             {
-                Record* record = it->data();
+                const Record& record = recordSet.records[i];
 
                 // Begin record.
                 stream.writeStartElement(ElementRecord);
                 {
                     // Write record.
-                    stream.writeAttribute(ElementId, record->id);
-                    stream.writeAttribute(ElementDisplayName, record->displayName);
+                    stream.writeAttribute(ElementId, record.id);
+                    stream.writeAttribute(ElementDisplayName, record.displayName);
 
-                    for (QMap<QString, QString>::iterator it = record->fieldValues.begin();
-                         it != record->fieldValues.end();
+                    for (QMap<QString, QString>::const_iterator it = record.fieldValues.begin();
+                         it != record.fieldValues.end();
                          ++it)
                     {
                         stream.writeStartElement(it.key());
@@ -66,7 +64,7 @@ void RecordSetSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoi
 }
 
 
-void RecordSetSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPointer<RecordSet> recordSet) const
+void RecordSetSerializer::deserialize(QSharedPointer<QIODevice> device, RecordSet& recordSet) const
 {
     // Open device stream.
     QSharedPointer<QXmlStreamReader> stream =
@@ -83,12 +81,11 @@ void RecordSetSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedP
             while (reader.isAtElement(ElementRecord))
             {
                 // Add new record.
-                QSharedPointer<Record> record = QSharedPointer<Record>::create();
-                recordSet->records.push_back(record);
+                Record record = Record();
 
                 // Read record.
-                record->id = reader.readAttribute(ElementId);
-                record->displayName = reader.readAttribute(ElementDisplayName);
+                record.id = reader.readAttribute(ElementId);
+                record.displayName = reader.readAttribute(ElementDisplayName);
 
                 reader.readStartElement(ElementRecord);
 
@@ -97,10 +94,12 @@ void RecordSetSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedP
                     const QString key = reader.getElementName();
                     const QString value = reader.readAttribute(ElementValue);
 
-                    record->fieldValues[key] = value;
+                    record.fieldValues[key] = value;
 
                     reader.readEmptyElement(key);
                 }
+
+                recordSet.records.push_back(record);
 
                 reader.readEndElement();
             }

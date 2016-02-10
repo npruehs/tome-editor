@@ -59,6 +59,20 @@ namespace Tome
 
         return vector.size();
     }
+
+    template<typename T>
+    inline int findInsertionIndex(const QList<T>& vector, T item, bool(*lessThan)(const T& first, const T& second))
+    {
+        for (int i = 0; i < vector.size() - 1; ++i)
+        {
+            if (lessThan(vector.at(i), item) && !lessThan(vector.at(i + 1), item))
+            {
+                return i + 1;
+            }
+        }
+
+        return vector.size();
+    }
 }
 
 #endif // VECTORUTILS

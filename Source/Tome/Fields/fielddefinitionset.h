@@ -5,6 +5,7 @@
 #include <QVector>
 
 #include "fielddefinition.h"
+#include "Model/fielddefinitionlist.h"
 
 namespace Tome
 {
@@ -14,7 +15,7 @@ namespace Tome
             FieldDefinitionSet();
 
             QString name;
-            QVector< QSharedPointer<FieldDefinition> > fieldDefinitions;
+            FieldDefinitionList fieldDefinitions;
     };
 }
 

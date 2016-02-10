@@ -1,8 +1,10 @@
 #include "project.h"
 
-using namespace Tome;
+#include <stdexcept>
 
 #include "../Types/builtintype.h"
+
+using namespace Tome;
 
 
 Project::Project()
@@ -40,94 +42,58 @@ QSharedPointer<CustomType> Project::getCustomType(const QString& name) const
     return QSharedPointer<CustomType>(0);
 }
 
-QSharedPointer<FieldDefinition> Project::getFieldDefinition(const QString& id) const
+Record& Project::getRecord(const QString& id)
 {
-    for (QVector<QSharedPointer<FieldDefinitionSet> >::const_iterator itFieldDefinitionSets = this->fieldDefinitionSets.begin();
-         itFieldDefinitionSets != this->fieldDefinitionSets.end();
-         ++itFieldDefinitionSets)
+    for (int i = 0; i < this->recordSets.size(); ++i)
     {
-        QSharedPointer<FieldDefinitionSet> fieldDefinitionSet = *itFieldDefinitionSets;
+        RecordSet& recordSet = this->recordSets[i];
 
-        for (QVector<QSharedPointer<FieldDefinition> >::const_iterator itFieldDefinitions = fieldDefinitionSet->fieldDefinitions.begin();
-             itFieldDefinitions != fieldDefinitionSet->fieldDefinitions.end();
-             ++itFieldDefinitions)
+        for (int j = 0; j < recordSet.records.size(); ++j)
         {
-            QSharedPointer<FieldDefinition> fieldDefinition = *itFieldDefinitions;
+            Record& record = recordSet.records[j];
 
-            if (fieldDefinition->id == id)
-            {
-                return fieldDefinition;
-            }
-        }
-    }
-
-    return QSharedPointer<FieldDefinition>(0);
-}
-
-QSharedPointer<Record> Project::getRecord(const QString& id) const
-{
-    for (QVector<QSharedPointer<RecordSet> >::const_iterator itRecordSets = this->recordSets.begin();
-         itRecordSets != this->recordSets.end();
-         ++itRecordSets)
-    {
-        QSharedPointer<RecordSet> recordSet = *itRecordSets;
-
-        for (QVector<QSharedPointer<Record> >::const_iterator itRecords = recordSet->records.begin();
-             itRecords != recordSet->records.end();
-             ++itRecords)
-        {
-            QSharedPointer<Record> record = *itRecords;
-
-            if (record->id == id)
+            if (record.id == id)
             {
                 return record;
             }
         }
     }
 
-    return QSharedPointer<Record>(0);
+    throw std::out_of_range(id.toStdString());
 }
 
-QSharedPointer<Record> Project::getRecordByDisplayName(const QString& displayName) const
+Record& Project::getRecordByDisplayName(const QString& displayName)
 {
-    for (QVector<QSharedPointer<RecordSet> >::const_iterator itRecordSets = this->recordSets.begin();
-         itRecordSets != this->recordSets.end();
-         ++itRecordSets)
+    for (int i = 0; i < this->recordSets.size(); ++i)
     {
-        QSharedPointer<RecordSet> recordSet = *itRecordSets;
+        RecordSet& recordSet = this->recordSets[i];
 
-        for (QVector<QSharedPointer<Record> >::const_iterator itRecords = recordSet->records.begin();
-             itRecords != recordSet->records.end();
-             ++itRecords)
+        for (int j = 0; j < recordSet.records.size(); ++j)
         {
-            QSharedPointer<Record> record = *itRecords;
+            Record& record = recordSet.records[j];
 
-            if (record->displayName == displayName)
+            if (record.displayName == displayName)
             {
                 return record;
             }
         }
     }
 
-    return QSharedPointer<Record>(0);
+    throw std::out_of_range(displayName.toStdString());
 }
 
 QStringList Project::getRecordNames() const
 {
     QStringList names;
 
-    for (QVector<QSharedPointer<RecordSet> >::const_iterator itRecordSets = this->recordSets.begin();
-         itRecordSets != this->recordSets.end();
-         ++itRecordSets)
+    for (int i = 0; i < this->recordSets.size(); ++i)
     {
-        QSharedPointer<RecordSet> recordSet = *itRecordSets;
+        const RecordSet& recordSet = this->recordSets[i];
 
-        for (QVector<QSharedPointer<Record> >::const_iterator itRecords = recordSet->records.begin();
-             itRecords != recordSet->records.end();
-             ++itRecords)
+        for (int j = 0; j < recordSet.records.size(); ++j)
         {
-            QSharedPointer<Record> record = *itRecords;
-            names << record->displayName;
+            const Record& record = recordSet.records[j];
+            names << record.displayName;
         }
     }
 

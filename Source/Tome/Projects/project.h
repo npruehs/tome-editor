@@ -7,9 +7,9 @@
 #include <QVector>
 
 #include "../Components/Model/componentlist.h"
-#include "../Export/recordexporttemplate.h"
-#include "../Fields/fielddefinitionset.h"
-#include "../Records/recordset.h"
+#include "../Export/Model/recordexporttemplate.h"
+#include "../Fields/Model/fielddefinitionsetlist.h"
+#include "../Records/Model/recordsetlist.h"
 #include "../Types/customtype.h"
 
 
@@ -24,9 +24,9 @@ namespace Tome
             QString path;
 
             ComponentList components;
-            QVector< QSharedPointer<FieldDefinitionSet> > fieldDefinitionSets;
+            FieldDefinitionSetList fieldDefinitionSets;
             QMap<QString, QSharedPointer<RecordExportTemplate> > recordExportTemplates;
-            QVector< QSharedPointer<RecordSet> > recordSets;
+            RecordSetList recordSets;
             QVector<QSharedPointer<CustomType> > types;
 
             /**
@@ -43,25 +43,18 @@ namespace Tome
             QSharedPointer<CustomType> getCustomType(const QString& name) const;
 
             /**
-             * @brief getFieldDefinition Returns the field definition with the specified id, or a null pointer if that field could not be found.
-             * @param id Id of the field definition to get.
-             * @return Field definition with the specified id, or a null pointer if that field could not be found.
-             */
-            QSharedPointer<FieldDefinition> getFieldDefinition(const QString& id) const;
-
-            /**
              * @brief getRecordByDisplayName Returns the record with the specified id, or a null pointer if that record could not be found.
              * @param id Id of the record to get.
              * @return Record with the specified id, or a null pointer if that record could not be found.
              */
-            QSharedPointer<Record> getRecord(const QString& id) const;
+            Record& getRecord(const QString& id);
 
             /**
              * @brief getRecordByDisplayName Returns the record with the specified display name, or a null pointer if that record could not be found.
              * @param displayName Display name of the record to get.
              * @return Record with the specified display name, or a null pointer if that record could not be found.
              */
-            QSharedPointer<Record> getRecordByDisplayName(const QString& displayName) const;
+            Record& getRecordByDisplayName(const QString& displayName);
 
             /**
              * @brief getRecordNames Returns the list of the names of all records of this project.

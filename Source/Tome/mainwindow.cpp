@@ -12,7 +12,7 @@
 #include <QTextStream>
 #include <QXmlStreamWriter>
 
-#include "Export/recordexporter.h"
+#include "Export/Controller/exportcontroller.h"
 #include "Fields/fielddefinitionsetserializer.h"
 #include "Projects/project.h"
 #include "Projects/projectserializer.h"
@@ -37,9 +37,9 @@ const QString MainWindow::RecordExportFieldValueTemplateExtension = ".texportv";
 const QString MainWindow::RecordExportFieldValueDelimiterExtension = ".texportvd";
 
 
-bool lessThanRecords(const QSharedPointer<Record>& e1, const QSharedPointer<Record>& e2)
+bool lessThanRecords(const Record& e1, const Record& e2)
 {
-    return e1->displayName.toLower() < e2->displayName.toLower();
+    return e1.displayName.toLower() < e2.displayName.toLower();
 }
 
 
@@ -173,18 +173,14 @@ void MainWindow::on_actionNew_Record_triggered()
     // Add fields.
     this->recordWindow->clearRecordFields();
 
-    for (QVector<QSharedPointer<FieldDefinitionSet> >::iterator itFieldDefinitionSet = this->project->fieldDefinitionSets.begin();
-         itFieldDefinitionSet != this->project->fieldDefinitionSets.end();
-         ++itFieldDefinitionSet)
+    for (int i = 0; i < this->project->fieldDefinitionSets.size(); ++i)
     {
-        QSharedPointer<FieldDefinitionSet> fieldDefinitionSet = *itFieldDefinitionSet;
+        const FieldDefinitionSet& fieldDefinitionSet = this->project->fieldDefinitionSets[i];
 
-        for (QVector<QSharedPointer<FieldDefinition> >::iterator itFieldDefinition = fieldDefinitionSet->fieldDefinitions.begin();
-             itFieldDefinition != fieldDefinitionSet->fieldDefinitions.end();
-             ++itFieldDefinition)
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
         {
-            QSharedPointer<FieldDefinition> fieldDefinition = *itFieldDefinition;
-            this->recordWindow->setRecordField(fieldDefinition->id, fieldDefinition->component, false);
+            const FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, false);
         }
     }
 
@@ -200,9 +196,9 @@ void MainWindow::on_actionNew_Record_triggered()
         record->id = recordId;
         record->displayName = recordDisplayName;
 
-        QVector<QSharedPointer<Record> >& records = this->project->recordSets[0]->records;
-        int index = findInsertionIndex(records, record, lessThanRecords);
-        records.insert(index, record);
+        RecordList& records = this->project->recordSets[0].records;
+        int index = findInsertionIndex(records, *record.data(), lessThanRecords);
+        records.insert(index, *record.data());
 
         // Insert tree view item.
         QTreeWidgetItem* newItem = new QTreeWidgetItem((QTreeWidget*)0, QStringList(recordDisplayName));
@@ -239,12 +235,7 @@ void MainWindow::on_actionEdit_Record_triggered()
     }
 
     // Get selected record.
-    QSharedPointer<Record> record = this->project->getRecordByDisplayName(displayName);
-
-    if (record == 0)
-    {
-        return;
-    }
+    const Record& record = this->project->getRecordByDisplayName(displayName);
 
     // Show window.
     if (!this->recordWindow)
@@ -253,28 +244,24 @@ void MainWindow::on_actionEdit_Record_triggered()
     }
 
     // Update view.
-    this->recordWindow->setRecordId(record->id);
-    this->recordWindow->setRecordDisplayName(record->displayName);
+    this->recordWindow->setRecordId(record.id);
+    this->recordWindow->setRecordDisplayName(record.displayName);
 
     this->recordWindow->clearRecordFields();
 
-    for (QVector<QSharedPointer<FieldDefinitionSet> >::iterator itFieldDefinitionSet = this->project->fieldDefinitionSets.begin();
-         itFieldDefinitionSet != this->project->fieldDefinitionSets.end();
-         ++itFieldDefinitionSet)
+    for (int i = 0; i < this->project->fieldDefinitionSets.size(); ++i)
     {
-        QSharedPointer<FieldDefinitionSet> fieldDefinitionSet = *itFieldDefinitionSet;
+        const FieldDefinitionSet& fieldDefinitionSet = this->project->fieldDefinitionSets[i];
 
-        for (QVector<QSharedPointer<FieldDefinition> >::iterator itFieldDefinition = fieldDefinitionSet->fieldDefinitions.begin();
-             itFieldDefinition != fieldDefinitionSet->fieldDefinitions.end();
-             ++itFieldDefinition)
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
         {
-            QSharedPointer<FieldDefinition> fieldDefinition = *itFieldDefinition;
+            const FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
 
             // Check if record contains field.
-            bool fieldEnabled = record->fieldValues.contains(fieldDefinition->id);
+            bool fieldEnabled = record.fieldValues.contains(fieldDefinition.id);
 
             // Add to view.
-            this->recordWindow->setRecordField(fieldDefinition->id, fieldDefinition->component, fieldEnabled);
+            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldEnabled);
         }
     }
 
@@ -297,7 +284,7 @@ void MainWindow::on_actionEdit_Record_triggered()
         {
             const QString& fieldId = it.key();
 
-            const bool fieldWasEnabled = record->fieldValues.contains(fieldId);
+            const bool fieldWasEnabled = record.fieldValues.contains(fieldId);
             const bool fieldIsEnabled = it.value();
 
             if (fieldIsEnabled && !fieldWasEnabled)
@@ -329,7 +316,7 @@ void MainWindow::on_actionRemove_Record_triggered()
     }
 
     // Update model.
-    this->project->recordSets[0]->records.removeAt(currentIndex.row());
+    this->project->recordSets[0].records.removeAt(currentIndex.row());
 
     // Update view.
     this->ui->treeWidget->takeTopLevelItem(currentIndex.row());
@@ -369,14 +356,14 @@ void MainWindow::on_treeWidget_doubleClicked(const QModelIndex &index)
 void MainWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
 {
     QString recordDisplayName = this->getSelectedRecordDisplayName();
-    QSharedPointer<Record> record = this->project->getRecordByDisplayName(recordDisplayName);
+    Record& record = this->project->getRecordByDisplayName(recordDisplayName);
 
     // Get current field data.
-    const QString fieldId = record->fieldValues.keys()[index.row()];
-    const QString fieldValue = record->fieldValues[fieldId];
+    const QString fieldId = record.fieldValues.keys()[index.row()];
+    const QString fieldValue = record.fieldValues[fieldId];
 
-    QSharedPointer<FieldDefinition> fieldDefinition =
-            this->project->getFieldDefinition(fieldId);
+    const FieldDefinition& field =
+            this->controller->getFieldDefinitionsController().getFieldDefinition(fieldId);
 
     // Prepare window.
     if (!this->fieldValueWindow)
@@ -385,22 +372,22 @@ void MainWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
     }
 
     // Update view.
-    this->fieldValueWindow->setFieldDisplayName(fieldDefinition->displayName);
-    this->fieldValueWindow->setFieldDescription(fieldDefinition->description);
+    this->fieldValueWindow->setFieldDisplayName(field.displayName);
+    this->fieldValueWindow->setFieldDescription(field.description);
 
-    if (fieldDefinition->fieldType == BuiltInType::Reference)
+    if (field.fieldType == BuiltInType::Reference)
     {
         QStringList recordNames = this->project->getRecordNames();
 
         // Allow clearing the field.
         recordNames << QString();
 
-        this->fieldValueWindow->setFieldType(fieldDefinition->fieldType);
+        this->fieldValueWindow->setFieldType(field.fieldType);
         this->fieldValueWindow->setEnumeration(recordNames);
     }
     else
     {
-        QSharedPointer<CustomType> type = this->project->getCustomType(fieldDefinition->fieldType);
+        QSharedPointer<CustomType> type = this->project->getCustomType(field.fieldType);
 
         if (type != 0)
         {
@@ -409,7 +396,7 @@ void MainWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
         else
         {
             // Default built-in type.
-            this->fieldValueWindow->setFieldType(fieldDefinition->fieldType);
+            this->fieldValueWindow->setFieldType(field.fieldType);
         }
     }
 
@@ -423,7 +410,7 @@ void MainWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
         QString fieldValue = this->fieldValueWindow->getFieldValue();
 
         // Update model.
-        record->fieldValues[fieldId] = fieldValue;
+        record.fieldValues[fieldId] = fieldValue;
 
         // Update view.
         this->updateRecordRow(index.row());
@@ -452,12 +439,11 @@ void MainWindow::exportRecords(QAction* exportAction)
     }
 
     // Export records.
-    QSharedPointer<QFile> file = QSharedPointer<QFile>::create(filePath);
+    QFile file(filePath);
 
-    if (file->open(QIODevice::ReadWrite | QIODevice::Truncate))
+    if (file.open(QIODevice::ReadWrite | QIODevice::Truncate))
     {
-        RecordExporter exporter;
-        exporter.exportRecords(file, this->project, exportTemplate);
+        this->controller->getExportController().exportRecords(*exportTemplate.data(), file);
     }
     else
     {
@@ -502,17 +488,12 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
     }
 
     // Get selected record.
-    QSharedPointer<Record> record = this->project->getRecordByDisplayName(displayName);
-
-    if (record == 0)
-    {
-        return;
-    }
+    const Record& record = this->project->getRecordByDisplayName(displayName);
 
     // Update field table.
-    this->ui->tableWidget->setRowCount(record->fieldValues.size());
+    this->ui->tableWidget->setRowCount(record.fieldValues.size());
 
-    for (int i = 0; i < record->fieldValues.size(); ++i)
+    for (int i = 0; i < record.fieldValues.size(); ++i)
     {
         this->updateRecordRow(i);
     }
@@ -521,13 +502,14 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
 void MainWindow::addRecordField(const QString& fieldId)
 {
     QString recordDisplayName = this->getSelectedRecordDisplayName();
-    QSharedPointer<Record> record = this->project->getRecordByDisplayName(recordDisplayName);
+    Record& record = this->project->getRecordByDisplayName(recordDisplayName);
 
-    int index = findInsertionIndex(record->fieldValues.keys(), fieldId);
+    int index = findInsertionIndex(record.fieldValues.keys(), fieldId);
 
     // Update model.
-    QSharedPointer<FieldDefinition> field = this->project->getFieldDefinition(fieldId);
-    record->fieldValues.insert(fieldId, field->defaultValue);
+    const FieldDefinition& field =
+            this->controller->getFieldDefinitionsController().getFieldDefinition(fieldId);
+    record.fieldValues.insert(fieldId, field.defaultValue);
 
     // Update view.
     this->ui->tableWidget->insertRow(index);
@@ -542,15 +524,13 @@ void MainWindow::createNewProject(const QString &projectName, const QString &pro
     newProject->path = projectPath;
 
     // Create field definition set.
-    QSharedPointer<FieldDefinitionSet> fieldDefinitionSet =
-            QSharedPointer<FieldDefinitionSet>::create();
-    fieldDefinitionSet->name = projectName;
+    FieldDefinitionSet fieldDefinitionSet = FieldDefinitionSet();
+    fieldDefinitionSet.name = projectName;
     newProject->fieldDefinitionSets.push_back(fieldDefinitionSet);
 
     // Create record set.
-    QSharedPointer<RecordSet> recordSet =
-            QSharedPointer<RecordSet>::create();
-    recordSet->name = projectName;
+    RecordSet recordSet = RecordSet();
+    recordSet.name = projectName;
     newProject->recordSets.push_back(recordSet);
 
     // Write project files.
@@ -634,14 +614,12 @@ void MainWindow::openProject(QString projectFileName)
         QSharedPointer<FieldDefinitionSetSerializer> fieldDefinitionSerializer =
                 QSharedPointer<FieldDefinitionSetSerializer>::create();
 
-        for (QVector<QSharedPointer<FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
-             it != project->fieldDefinitionSets.end();
-             ++it)
+        for (int i = 0; i < project->fieldDefinitionSets.size(); ++i)
         {
-            QSharedPointer<FieldDefinitionSet> fieldDefinitionSet = *it;
+            FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
 
             // Open field definition file.
-            const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSet->name + FieldDefinitionFileExtension);
+            const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSet.name + FieldDefinitionFileExtension);
             QSharedPointer<QFile> fieldDefinitionFile = QSharedPointer<QFile>::create(fullFieldDefinitionSetPath);
 
             if (fieldDefinitionFile->open(QIODevice::ReadOnly))
@@ -677,14 +655,12 @@ void MainWindow::openProject(QString projectFileName)
         QSharedPointer<RecordSetSerializer> recordSetSerializer =
                 QSharedPointer<RecordSetSerializer>::create();
 
-        for (QVector<QSharedPointer<RecordSet> >::iterator it = project->recordSets.begin();
-             it != project->recordSets.end();
-             ++it)
+        for (int i = 0; i < project->recordSets.size(); ++i)
         {
-            QSharedPointer<RecordSet> recordSet = *it;
+            RecordSet& recordSet = project->recordSets[i];
 
             // Open record file.
-            const QString fullRecordSetPath = combinePaths(projectPath, recordSet->name + RecordFileExtension);
+            const QString fullRecordSetPath = combinePaths(projectPath, recordSet.name + RecordFileExtension);
             QSharedPointer<QFile> recordFile = QSharedPointer<QFile>::create(fullRecordSetPath);
 
             if (recordFile->open(QIODevice::ReadOnly))
@@ -797,13 +773,13 @@ QString MainWindow::readProjectFile(QString projectPath, QString fileName)
 void MainWindow::removeRecordField(const QString& fieldId)
 {
     QString recordDisplayName = this->getSelectedRecordDisplayName();
-    QSharedPointer<Record> record = this->project->getRecordByDisplayName(recordDisplayName);
+    Record& record = this->project->getRecordByDisplayName(recordDisplayName);
 
     // Update model.
-    record->fieldValues.remove(fieldId);
+    record.fieldValues.remove(fieldId);
 
     // Update view.
-    int index = findInsertionIndex(record->fieldValues.keys(), fieldId);
+    int index = findInsertionIndex(record.fieldValues.keys(), fieldId);
     this->ui->tableWidget->removeRow(index);
 }
 
@@ -839,14 +815,12 @@ bool MainWindow::saveProject(QSharedPointer<Project> project)
     QSharedPointer<FieldDefinitionSetSerializer> fieldDefinitionSetSerializer =
             QSharedPointer<FieldDefinitionSetSerializer>::create();
 
-    for (QVector<QSharedPointer<FieldDefinitionSet> >::iterator it = project->fieldDefinitionSets.begin();
-         it != project->fieldDefinitionSets.end();
-         ++it)
+    for (int i = 0; i < project->fieldDefinitionSets.size(); ++i)
     {
-        QSharedPointer<FieldDefinitionSet> fieldDefinitionSet = *it;
+        const FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
 
         // Build file name.
-        const QString fieldDefinitionSetFileName = fieldDefinitionSet->name + FieldDefinitionFileExtension;
+        const QString fieldDefinitionSetFileName = fieldDefinitionSet.name + FieldDefinitionFileExtension;
         const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSetFileName);
 
         // Write file.
@@ -873,14 +847,12 @@ bool MainWindow::saveProject(QSharedPointer<Project> project)
     QSharedPointer<Tome::RecordSetSerializer> recordSetSerializer =
             QSharedPointer<Tome::RecordSetSerializer>::create();
 
-    for (QVector<QSharedPointer<RecordSet> >::iterator it = project->recordSets.begin();
-         it != project->recordSets.end();
-         ++it)
+    for (int i = 0; i < project->recordSets.size(); ++i)
     {
-        QSharedPointer<RecordSet> recordSet = *it;
+        const RecordSet& recordSet = project->recordSets[i];
 
         // Build file name.
-        const QString recordSetFileName = recordSet->name + RecordFileExtension;
+        const QString recordSetFileName = recordSet.name + RecordFileExtension;
         const QString fullRecordSetPath = Tome::combinePaths(projectPath, recordSetFileName);
 
         // Write file.
@@ -918,15 +890,13 @@ void MainWindow::setProject(QSharedPointer<Project> project)
     // Setup tree view.
     this->ui->treeWidget->setColumnCount(1);
 
-    QVector<QSharedPointer<Record> > records = this->project->recordSets[0]->records;
+    const RecordList& records = this->project->recordSets[0].records;
     QList<QTreeWidgetItem *> items;
 
-    for (QVector<QSharedPointer<Record> >::iterator it = records.begin();
-         it != records.end();
-         ++it)
+    for (int i = 0; i < records.size(); ++i)
     {
-        QSharedPointer<Record> record = *it;
-        items.append(new QTreeWidgetItem((QTreeWidget*)0, QStringList(record->displayName)));
+        const Record& record = records[i];
+        items.append(new QTreeWidgetItem((QTreeWidget*)0, QStringList(record.displayName)));
     }
 
     this->ui->treeWidget->insertTopLevelItems(0, items);
@@ -995,13 +965,13 @@ void MainWindow::updateRecentProjects()
 void MainWindow::updateRecord(const QString& id, const QString& displayName)
 {
     QString recordDisplayName = this->getSelectedRecordDisplayName();
-    QSharedPointer<Record> record = this->project->getRecordByDisplayName(recordDisplayName);
+    Record& record = this->project->getRecordByDisplayName(recordDisplayName);
 
-    bool needsSorting = record->displayName != displayName;
+    bool needsSorting = record.displayName != displayName;
 
     // Update model.
-    record->id = id;
-    record->displayName = displayName;
+    record.id = id;
+    record.displayName = displayName;
 
     // Update view.
     QModelIndexList selectedIndexes = this->ui->treeWidget->selectionModel()->selectedIndexes();
@@ -1024,7 +994,7 @@ void MainWindow::updateRecord(const QString& id, const QString& displayName)
     // Sort by display name.
     if (needsSorting)
     {
-        std::sort(this->project->recordSets[0]->records.begin(), this->project->recordSets[0]->records.end(), lessThanRecords);
+        std::sort(this->project->recordSets[0].records.begin(), this->project->recordSets[0].records.end(), lessThanRecords);
         this->ui->treeWidget->sortItems(0, Qt::AscendingOrder);
     }
 }
@@ -1032,10 +1002,10 @@ void MainWindow::updateRecord(const QString& id, const QString& displayName)
 void MainWindow::updateRecordFieldValue(const int index, const QString& key, const QString& value)
 {
     QString selectedRecordDisplayName = this->getSelectedRecordDisplayName();
-    QSharedPointer<Record> record = this->project->getRecordByDisplayName(selectedRecordDisplayName);
+    Record& record = this->project->getRecordByDisplayName(selectedRecordDisplayName);
 
     // Update model.
-    record->fieldValues[key] = value;
+    record.fieldValues[key] = value;
 
     // Update view.
     this->updateRecordRow(index);
@@ -1045,20 +1015,21 @@ void MainWindow::updateRecordRow(int i)
 {
     // Show field and value.
     QString selectedRecordDisplayName = this->getSelectedRecordDisplayName();
-    QSharedPointer<Record> record = this->project->getRecordByDisplayName(selectedRecordDisplayName);
-    QString key = record->fieldValues.keys()[i];
-    QString value = record->fieldValues[key];
+    const Record& record = this->project->getRecordByDisplayName(selectedRecordDisplayName);
+    QString key = record.fieldValues.keys()[i];
+    QString value = record.fieldValues[key];
 
     this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(key));
     this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(value));
 
     // Show field description as tooltip.
-    QSharedPointer<FieldDefinition> fieldDefinition = this->project->getFieldDefinition(key);
-    this->ui->tableWidget->item(i, 0)->setData(Qt::ToolTipRole, fieldDefinition->description);
-    this->ui->tableWidget->item(i, 1)->setData(Qt::ToolTipRole, fieldDefinition->description);
+    const FieldDefinition& field =
+            this->controller->getFieldDefinitionsController().getFieldDefinition(key);
+    this->ui->tableWidget->item(i, 0)->setData(Qt::ToolTipRole, field.description);
+    this->ui->tableWidget->item(i, 1)->setData(Qt::ToolTipRole, field.description);
 
     // Show color preview.
-    if (fieldDefinition->fieldType == BuiltInType::Color)
+    if (field.fieldType == BuiltInType::Color)
     {
         QColor color;
         color.setNamedColor(value);

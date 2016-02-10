@@ -2,9 +2,9 @@
 #define RECORDSET_H
 
 #include <QSharedPointer>
-#include <QVector>
 
 #include "record.h"
+#include "Model/recordlist.h"
 
 namespace Tome
 {
@@ -14,7 +14,7 @@ namespace Tome
             RecordSet();
 
             QString name;
-            QVector< QSharedPointer<Record> > records;
+            RecordList records;
     };
 }
 

@@ -5,19 +5,19 @@
 #include <QSharedPointer>
 #include <QString>
 
-#include "recordexporttemplate.h"
-
-#include "../Projects/project.h"
+#include "../Model/recordexporttemplate.h"
+#include "../../Fields//Controller/fielddefinitionscontroller.h"
+#include "../../Records/Controller/recordscontroller.h"
 
 
 namespace Tome
 {
-    class RecordExporter
+    class ExportController
     {
         public:
-            RecordExporter();
+            ExportController(const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController);
 
-            void exportRecords(QSharedPointer<QIODevice> device, QSharedPointer<Project> project, QSharedPointer<RecordExportTemplate> exportTemplate);
+            void exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device);
 
         private:
             static const QString PlaceholderComponents;
@@ -28,6 +28,9 @@ namespace Tome
             static const QString PlaceholderRecordFields;
             static const QString PlaceholderRecordId;
             static const QString PlaceholderRecords;
+
+            const FieldDefinitionsController& fieldDefinitionsController;
+            const RecordsController& recordsController;
     };
 }
 

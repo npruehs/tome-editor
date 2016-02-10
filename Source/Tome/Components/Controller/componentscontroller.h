@@ -1,7 +1,6 @@
 #ifndef COMPONENTSCONTROLLER_H
 #define COMPONENTSCONTROLLER_H
 
-#include "../../controller.h"
 #include "../Model/component.h"
 #include "../Model/componentlist.h"
 
