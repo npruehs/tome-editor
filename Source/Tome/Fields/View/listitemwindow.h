@@ -6,7 +6,8 @@
 #include <QString>
 #include <QStringList>
 
-#include "../Types/customtype.h"
+#include "../../Types/customtype.h"
+
 
 namespace Ui {
     class ListItemWindow;
@@ -27,7 +28,7 @@ class ListItemWindow : public QDialog
         QString getValue() const;
         void setValue(const QString& value);
 
-        void setCustomFieldType(QSharedPointer<Tome::CustomType> fieldType);
+        void setCustomFieldType(const Tome::CustomType& fieldType);
         void setFieldType(const QString& fieldType) const;
         void setEnumeration(const QStringList& recordNames);
 

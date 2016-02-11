@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "../Projects/project.h"
+#include "../Types/Controller/typescontroller.h"
 
 
 namespace Ui {
@@ -15,7 +15,7 @@ class ListWindow : public QDialog
         Q_OBJECT
 
     public:
-        explicit ListWindow(QWidget *parent = 0);
+        explicit ListWindow(Tome::TypesController& typesController, QWidget *parent = 0);
         ~ListWindow();
 
         QString getListName() const;
@@ -24,15 +24,13 @@ class ListWindow : public QDialog
         void setListName(const QString& listName);
         void setListItemType(const QString& itemType);
 
-        void setProject(QSharedPointer<Tome::Project> project);
-
     public slots:
         void accept();
+        int exec();
 
     private:
         Ui::ListWindow *ui;
-
-        QSharedPointer<Tome::Project> project;
+        Tome::TypesController& typesController;
 
         bool validate();
 };

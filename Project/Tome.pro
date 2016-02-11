@@ -30,8 +30,8 @@ Release:UI_DIR = ../Obj/release/.ui
 
 SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/mainwindow.cpp \
-    ../Source/Tome/Fields/fielddefinitionset.cpp \
-    ../Source/Tome/Fields/fielddefinitionsetserializer.cpp \
+    ../Source/Tome/Fields/Model/fielddefinitionset.cpp \
+    ../Source/Tome/Fields/Controller/fielddefinitionsetserializer.cpp \
     ../Source/Tome/Help/aboutwindow.cpp \
     ../Source/Tome/Projects/newprojectwindow.cpp \
     ../Source/Tome/Projects/projectserializer.cpp \
@@ -39,14 +39,14 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Records/record.cpp \
     ../Source/Tome/Records/recordset.cpp \
     ../Source/Tome/Records/recordsetserializer.cpp \
-    ../Source/Tome/Fields/fielddefinition.cpp \
+    ../Source/Tome/Fields/Model/fielddefinition.cpp \
     ../Source/Tome/Values/valueconverter.cpp \
     ../Source/Tome/IO/xmlreader.cpp \
-    ../Source/Tome/Fields/fielddefinitionwindow.cpp \
-    ../Source/Tome/Fields/fielddefinitionswindow.cpp \
+    ../Source/Tome/Fields/View/fielddefinitionwindow.cpp \
+    ../Source/Tome/Fields/View/fielddefinitionswindow.cpp \
     ../Source/Tome/Records/recordwindow.cpp \
-    ../Source/Tome/Fields/fieldvaluewindow.cpp \
-    ../Source/Tome/Fields/fieldvaluewidget.cpp \
+    ../Source/Tome/Fields/View/fieldvaluewindow.cpp \
+    ../Source/Tome/Fields/View/fieldvaluewidget.cpp \
     ../Source/Tome/Export/Model/recordexporttemplate.cpp \
     ../Source/Tome/Components/View/componentswindow.cpp \
     ../Source/Tome/Components/View/componentwindow.cpp \
@@ -56,19 +56,20 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Types/enumerationwindow.cpp \
     ../Source/Tome/Types/enumerationmemberwindow.cpp \
     ../Source/Tome/Types/listwindow.cpp \
-    ../Source/Tome/Fields/listwidget.cpp \
-    ../Source/Tome/Fields/listitemwindow.cpp \
+    ../Source/Tome/Fields/View/listwidget.cpp \
+    ../Source/Tome/Fields/View/listitemwindow.cpp \
     ../Source/Tome/Components/Controller/componentscontroller.cpp \
     ../Source/Tome/controller.cpp \
     ../Source/Tome/Export/Controller/exportcontroller.cpp \
     ../Source/Tome/Records/Controller/recordscontroller.cpp \
-    ../Source/Tome/Fields/Controller/fielddefinitionscontroller.cpp
+    ../Source/Tome/Fields/Controller/fielddefinitionscontroller.cpp \
+    ../Source/Tome/Types/Controller/typescontroller.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/builtintype.h \
-    ../Source/Tome/Fields/fielddefinition.h \
-    ../Source/Tome/Fields/fielddefinitionset.h \
-    ../Source/Tome/Fields/fielddefinitionsetserializer.h \
+    ../Source/Tome/Fields/Model/fielddefinition.h \
+    ../Source/Tome/Fields/Model/fielddefinitionset.h \
+    ../Source/Tome/Fields/Controller/fielddefinitionsetserializer.h \
     ../Source/Tome/Help/aboutwindow.h \
     ../Source/Tome/Projects/newprojectwindow.h \
     ../Source/Tome/Projects/projectserializer.h \
@@ -79,11 +80,11 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Values/valueconverter.h \
     ../Source/Tome/Util/pathutils.h \
     ../Source/Tome/IO/xmlreader.h \
-    ../Source/Tome/Fields/fielddefinitionwindow.h \
-    ../Source/Tome/Fields/fielddefinitionswindow.h \
+    ../Source/Tome/Fields/View/fielddefinitionwindow.h \
+    ../Source/Tome/Fields/View/fielddefinitionswindow.h \
     ../Source/Tome/Records/recordwindow.h \
-    ../Source/Tome/Fields/fieldvaluewindow.h \
-    ../Source/Tome/Fields/fieldvaluewidget.h \
+    ../Source/Tome/Fields/View/fieldvaluewindow.h \
+    ../Source/Tome/Fields/View/fieldvaluewidget.h \
     ../Source/Tome/Export/Model/recordexporttemplate.h \
     ../Source/Tome/Components/View/componentswindow.h \
     ../Source/Tome/Components/View/componentwindow.h \
@@ -93,8 +94,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/enumerationmemberwindow.h \
     ../Source/Tome/Types/enumerationwindow.h \
     ../Source/Tome/Types/listwindow.h \
-    ../Source/Tome/Fields/listwidget.h \
-    ../Source/Tome/Fields/listitemwindow.h \
+    ../Source/Tome/Fields/View/listwidget.h \
+    ../Source/Tome/Fields/View/listitemwindow.h \
     ../Source/Tome/Util/vectorutils.h \
     ../Source/Tome/Components/Controller/componentscontroller.h \
     ../Source/Tome/Components/Model/component.h \
@@ -106,22 +107,24 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Records/Model/recordsetlist.h \
     ../Source/Tome/Fields/Controller/fielddefinitionscontroller.h \
     ../Source/Tome/Fields/Model/fielddefinitionsetlist.h \
-    ../Source/Tome/Fields/Model/fielddefinitionlist.h
+    ../Source/Tome/Fields/Model/fielddefinitionlist.h \
+    ../Source/Tome/Types/Controller/typescontroller.h \
+    ../Source/Tome/Types/Model/customtypelist.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/aboutwindow.ui \
     ../Source/Tome/Projects/newprojectwindow.ui \
-    ../Source/Tome/Fields/fielddefinitionwindow.ui \
-    ../Source/Tome/Fields/fielddefinitionswindow.ui \
+    ../Source/Tome/Fields/View/fielddefinitionwindow.ui \
+    ../Source/Tome/Fields/View/fielddefinitionswindow.ui \
     ../Source/Tome/Records/recordwindow.ui \
-    ../Source/Tome/Fields/fieldvaluewindow.ui \
+    ../Source/Tome/Fields/View/fieldvaluewindow.ui \
     ../Source/Tome/Components/View/componentswindow.ui \
     ../Source/Tome/Components/View/componentwindow.ui \
     ../Source/Tome/Types/customtypeswindow.ui \
     ../Source/Tome/Types/enumerationwindow.ui \
     ../Source/Tome/Types/enumerationmemberwindow.ui \
     ../Source/Tome/Types/listwindow.ui \
-    ../Source/Tome/Fields/listitemwindow.ui
+    ../Source/Tome/Fields/View/listitemwindow.ui
 
 RESOURCES += \
     tome.qrc

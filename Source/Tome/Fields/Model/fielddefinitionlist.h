@@ -2,7 +2,7 @@
 #define FIELDDEFINITIONLIST
 
 #include <QList>
-#include "../fielddefinition.h"
+#include "fielddefinition.h"
 
 namespace Tome
 {

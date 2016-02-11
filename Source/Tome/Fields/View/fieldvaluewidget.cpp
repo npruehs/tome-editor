@@ -2,8 +2,8 @@
 
 #include <limits>
 
-#include "../Types/builtintype.h"
-#include "../Values/valueconverter.h"
+#include "../../Types/builtintype.h"
+#include "../../Values/valueconverter.h"
 
 using namespace Tome;
 
@@ -131,18 +131,18 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
     }
 }
 
-void FieldValueWidget::setCustomFieldType(QSharedPointer<CustomType> fieldType)
+void FieldValueWidget::setCustomFieldType(const CustomType& fieldType)
 {
-    this->fieldType = fieldType->name;
+    this->fieldType = fieldType.name;
 
-    if (fieldType->isEnumeration())
+    if (fieldType.isEnumeration())
     {
-        this->setEnumeration(fieldType->getEnumeration());
+        this->setEnumeration(fieldType.getEnumeration());
         this->setCurrentWidget(this->comboBox);
     }
-    else if (fieldType->isList())
+    else if (fieldType.isList())
     {
-        this->listWidget->setFieldType(fieldType->getItemType());
+        this->listWidget->setFieldType(fieldType.getItemType());
         this->setCurrentWidget(this->listWidget);
     }
 }

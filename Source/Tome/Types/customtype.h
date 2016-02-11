@@ -20,16 +20,16 @@ namespace Tome
              * @brief getEnumeration Convenience function for retrieving the Enumeration restriction of this type, if available. Returns an empty list, if not.
              * @return Enumeration of allowed field values, if available, and an empty list otherwise.
              */
-            QStringList getEnumeration();
+            QStringList getEnumeration() const;
 
             /**
              * @brief getItemType Convenience function for retrieving the Item Type restriction of this type, if available. Returns an empty string, if not.
              * @return Item Type of this list, if available, and an empty string otherwise.
              */
-            QString getItemType();
+            QString getItemType() const;
 
-            bool isEnumeration();
-            bool isList();
+            bool isEnumeration() const;
+            bool isList() const;
 
             /**
              * @brief setEnumeration Sets the Enumeration restriction of this type.
@@ -47,6 +47,9 @@ namespace Tome
             static const QString RestrictionEnumeration;
             static const QString RestrictionItemType;
     };
+
+    inline bool operator==(const CustomType& lhs, const CustomType& rhs){ return lhs.name == rhs.name; }
+    inline bool operator!=(const CustomType& lhs, const CustomType& rhs){ return !(lhs == rhs); }
 }
 
 #endif // CUSTOMFIELDTYPE_H

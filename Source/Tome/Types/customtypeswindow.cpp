@@ -7,23 +7,19 @@
 using namespace Tome;
 
 
-bool lessThanCustomTypes(const QSharedPointer<CustomType>& e1, const QSharedPointer<CustomType>& e2)
-{
-    return e1->name.toLower() < e2->name.toLower();
-}
-
-
-CustomTypesWindow::CustomTypesWindow(QSharedPointer<Tome::Project> project, QWidget *parent) :
+CustomTypesWindow::CustomTypesWindow(TypesController& typesController, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::CustomTypesWindow),
+    typesController(typesController),
     enumerationWindow(0),
-    listWindow(0),
-    project(project)
+    listWindow(0)
 {
     ui->setupUi(this);
 
     // Setup view.
-    this->ui->tableWidget->setRowCount(this->project->types.size());
+    int typeCount = this->typesController.getCustomTypes().size();
+
+    this->ui->tableWidget->setRowCount(typeCount);
     this->ui->tableWidget->setColumnCount(3);
 
     QStringList headers;
@@ -32,7 +28,7 @@ CustomTypesWindow::CustomTypesWindow(QSharedPointer<Tome::Project> project, QWid
     headers << tr("Details");
     this->ui->tableWidget->setHorizontalHeaderLabels(headers);
 
-    for (int i = 0; i < this->project->types.size(); ++i)
+    for (int i = 0; i < typeCount; ++i)
     {
         this->updateRow(i);
     }
@@ -56,15 +52,13 @@ void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
     if (result == QDialog::Accepted)
     {
         // Update model.
-        QSharedPointer<CustomType> newType = QSharedPointer<CustomType>::create();
-        newType->name = this->enumerationWindow->getEnumerationName();
-        newType->baseType = BuiltInType::String;
-        newType->setEnumeration(this->enumerationWindow->getEnumerationMembers());
-
-        int index = findInsertionIndex(this->project->types, newType, lessThanCustomTypes);
-        this->project->types.insert(index, newType);
+        CustomType newType =
+                this->typesController.addEnumeration(
+                    this->enumerationWindow->getEnumerationName(),
+                    this->enumerationWindow->getEnumerationMembers());
 
         // Update view.
+        int index = this->typesController.indexOf(newType);
         this->ui->tableWidget->insertRow(index);
         this->updateRow(index);
     }
@@ -75,26 +69,22 @@ void CustomTypesWindow::on_actionNew_List_triggered()
     // Show window.
     if (!this->listWindow)
     {
-        this->listWindow = new ListWindow(this);
+        this->listWindow = new ListWindow(this->typesController, this);
     }
-
-    // Update type selection.
-    this->listWindow->setProject(this->project);
 
     int result = this->listWindow->exec();
 
     if (result == QDialog::Accepted)
     {
         // Update model.
-        QSharedPointer<CustomType> newType = QSharedPointer<CustomType>::create();
-        newType->name = this->listWindow->getListName();
-        newType->baseType = BuiltInType::None;
-        newType->setItemType(this->listWindow->getListItemType());
-
-        int index = findInsertionIndex(this->project->types, newType, lessThanCustomTypes);
-        this->project->types.insert(index, newType);
+        CustomType newType =
+                this->typesController.addList(
+                    this->listWindow->getListName(),
+                    this->listWindow->getListItemType());
 
         // Update view.
+        int index = this->typesController.indexOf(newType);
+
         this->ui->tableWidget->insertRow(index);
         this->updateRow(index);
     }
@@ -103,30 +93,30 @@ void CustomTypesWindow::on_actionNew_List_triggered()
 void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
 {
     // Get selected type.
-    int index = getSelectedTypeIndex();
+    QString typeName = this->getSelectedTypeName();
 
-    if (index < 0)
+    if (typeName.isEmpty())
     {
         return;
     }
 
-    QSharedPointer<CustomType> type = this->project->types[index];
+    const CustomType& type = this->typesController.getCustomType(typeName);
 
     // Check type.
-    if (type->isEnumeration())
+    if (type.isEnumeration())
     {
-        this->editEnumeration(index, type);
+        this->editEnumeration(typeName, type);
     }
-    else if (type->isList())
+    else if (type.isList())
     {
-        this->editList(index, type);
+        this->editList(typeName, type);
     }
 }
 
 void CustomTypesWindow::on_actionDelete_Custom_Type_triggered()
 {
     // Get selected type.
-    int index = getSelectedTypeIndex();
+    int index = this->getSelectedTypeIndex();
 
     if (index < 0)
     {
@@ -134,7 +124,7 @@ void CustomTypesWindow::on_actionDelete_Custom_Type_triggered()
     }
 
     // Update model.
-    this->project->types.removeAt(index);
+    this->typesController.removeCustomTypeAt(index);
 
     // Update view.
     this->ui->tableWidget->removeRow(index);
@@ -152,7 +142,19 @@ int CustomTypesWindow::getSelectedTypeIndex() const
     return selectedIndexes.count() > 0 ? selectedIndexes.first().row() : -1;
 }
 
-void CustomTypesWindow::editEnumeration(int index, QSharedPointer<Tome::CustomType> type)
+QString CustomTypesWindow::getSelectedTypeName() const
+{
+    int selectedIndex = this->getSelectedTypeIndex();
+
+    if (selectedIndex < 0)
+    {
+        return QString();
+    }
+
+    return this->ui->tableWidget->item(selectedIndex, 0)->data(Qt::DisplayRole).toString();
+}
+
+void CustomTypesWindow::editEnumeration(QString typeName, const CustomType& type)
 {
     // Show window.
     if (!this->enumerationWindow)
@@ -161,8 +163,8 @@ void CustomTypesWindow::editEnumeration(int index, QSharedPointer<Tome::CustomTy
     }
 
     // Update view.
-    this->enumerationWindow->setEnumerationName(type->name);
-    this->enumerationWindow->setEnumerationMembers(type->getEnumeration());
+    this->enumerationWindow->setEnumerationName(type.name);
+    this->enumerationWindow->setEnumerationMembers(type.getEnumeration());
 
     int result = this->enumerationWindow->exec();
 
@@ -170,26 +172,23 @@ void CustomTypesWindow::editEnumeration(int index, QSharedPointer<Tome::CustomTy
     {
         // Update type.
         this->updateEnumeration(
-                    index,
+                    typeName,
                     this->enumerationWindow->getEnumerationName(),
                     this->enumerationWindow->getEnumerationMembers());
     }
 }
 
-void CustomTypesWindow::editList(int index, QSharedPointer<Tome::CustomType> type)
+void CustomTypesWindow::editList(QString typeName, const CustomType& type)
 {
     // Show window.
     if (!this->listWindow)
     {
-        this->listWindow = new ListWindow(this);
+        this->listWindow = new ListWindow(this->typesController, this);
     }
 
-    // Update type selection.
-    this->listWindow->setProject(this->project);
-
     // Update view.
-    this->listWindow->setListName(type->name);
-    this->listWindow->setListItemType(type->getItemType());
+    this->listWindow->setListName(type.name);
+    this->listWindow->setListItemType(type.getItemType());
 
     int result = this->listWindow->exec();
 
@@ -197,69 +196,67 @@ void CustomTypesWindow::editList(int index, QSharedPointer<Tome::CustomType> typ
     {
         // Update type.
         this->updateList(
-                    index,
+                    typeName,
                     this->listWindow->getListName(),
                     this->listWindow->getListItemType());
     }
 }
 
-void CustomTypesWindow::updateEnumeration(const int index, const QString& name, const QStringList& enumeration)
+void CustomTypesWindow::updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration)
 {
-    QSharedPointer<CustomType>& type = this->project->types[index];
+    const CustomType& type = this->typesController.getCustomType(oldName);
 
-    bool needsSorting = type->name != name;
+    bool needsSorting = type.name != newName;
 
     // Update model.
-    type->name = name;
-    type->setEnumeration(enumeration);
+    this->typesController.updateEnumeration(oldName, newName, enumeration);
 
     // Update view.
+    int index = this->typesController.indexOf(type);
     this->updateRow(index);
 
     // Sort by display name.
     if (needsSorting)
     {
-        std::sort(this->project->types.begin(), this->project->types.end(), lessThanCustomTypes);
         this->ui->tableWidget->sortItems(0);
     }
 }
 
-void CustomTypesWindow::updateList(int index, const QString& name, const QString& itemType)
+void CustomTypesWindow::updateList(const QString& oldName, const QString& newName, const QString& itemType)
 {
-    QSharedPointer<CustomType>& type = this->project->types[index];
+    const CustomType& type = this->typesController.getCustomType(oldName);
 
-    bool needsSorting = type->name != name;
+    bool needsSorting = type.name != newName;
 
     // Update model.
-    type->name = name;
-    type->setItemType(itemType);
+    this->typesController.updateList(oldName, newName, itemType);
 
     // Update view.
+    int index = this->typesController.indexOf(type);
     this->updateRow(index);
 
     // Sort by display name.
     if (needsSorting)
     {
-        std::sort(this->project->types.begin(), this->project->types.end(), lessThanCustomTypes);
         this->ui->tableWidget->sortItems(0);
     }
 }
 
 void CustomTypesWindow::updateRow(const int index)
 {
-    QVector<QSharedPointer<CustomType> >& types = this->project->types;
-    QSharedPointer<CustomType> type = types[index];
+    const CustomTypeList& types = this->typesController.getCustomTypes();
+    const CustomType& type = types[index];
 
-    this->ui->tableWidget->setItem(index, 0, new QTableWidgetItem(type->name));
+    this->ui->tableWidget->setItem(index, 0, new QTableWidgetItem(type.name));
 
-    if (type->isEnumeration())
+    if (type.isEnumeration())
     {
         this->ui->tableWidget->setItem(index, 1, new QTableWidgetItem("Enumeration"));
-        this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(type->getEnumeration().join(", ")));
+        this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(type.getEnumeration().join(", ")));
     }
-    else if (type->isList())
+    else if (type.isList())
     {
         this->ui->tableWidget->setItem(index, 1, new QTableWidgetItem("List"));
-        this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(type->getItemType()));
+        this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(type.getItemType()));
     }
 }

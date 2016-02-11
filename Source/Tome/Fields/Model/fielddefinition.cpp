@@ -4,6 +4,4 @@ using namespace Tome;
 
 FieldDefinition::FieldDefinition()
 {
-
 }
-

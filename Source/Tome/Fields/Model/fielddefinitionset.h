@@ -5,7 +5,7 @@
 #include <QVector>
 
 #include "fielddefinition.h"
-#include "Model/fielddefinitionlist.h"
+#include "fielddefinitionlist.h"
 
 namespace Tome
 {

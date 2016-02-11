@@ -11,7 +11,7 @@ CustomType::CustomType()
 {
 }
 
-QStringList CustomType::getEnumeration()
+QStringList CustomType::getEnumeration() const
 {
     if (!this->isEnumeration())
     {
@@ -22,7 +22,7 @@ QStringList CustomType::getEnumeration()
     return enumerationString.split(";");
 }
 
-QString CustomType::getItemType()
+QString CustomType::getItemType() const
 {
     if (!this->isList())
     {
@@ -32,12 +32,12 @@ QString CustomType::getItemType()
     return this->restrictions[RestrictionItemType];
 }
 
-bool CustomType::isEnumeration()
+bool CustomType::isEnumeration() const
 {
     return this->restrictions.contains(RestrictionEnumeration);
 }
 
-bool CustomType::isList()
+bool CustomType::isList() const
 {
     return this->restrictions.contains(RestrictionItemType);
 }

@@ -4,9 +4,10 @@
 #include <QMessageBox>
 
 
-ListWindow::ListWindow(QWidget *parent) :
+ListWindow::ListWindow(Tome::TypesController& typesController, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ListWindow)
+    ui(new Ui::ListWindow),
+    typesController(typesController)
 {
     ui->setupUi(this);
 }
@@ -36,21 +37,6 @@ void ListWindow::setListItemType(const QString& itemType)
     this->ui->comboBox->setCurrentText(itemType);
 }
 
-void ListWindow::setProject(QSharedPointer<Tome::Project> project)
-{
-    this->project = project;
-
-    // Set type names.
-    this->ui->comboBox->clear();
-
-    QStringList typeNames = this->project->getTypeNames();
-
-    for (int i = 0; i < typeNames.length(); ++i)
-    {
-        this->ui->comboBox->addItem(typeNames.at(i));
-    }
-}
-
 void ListWindow::accept()
 {
     // Validate data.
@@ -58,6 +44,22 @@ void ListWindow::accept()
     {
         this->done(Accepted);
     }
+}
+
+int ListWindow::exec()
+{
+    // Set type names.
+    this->ui->comboBox->clear();
+
+    const QStringList& typeNames = this->typesController.getTypeNames();
+
+    for (int i = 0; i < typeNames.length(); ++i)
+    {
+        this->ui->comboBox->addItem(typeNames[i]);
+    }
+
+    // Show window.
+    return QDialog::exec();
 }
 
 bool ListWindow::validate()

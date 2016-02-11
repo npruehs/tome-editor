@@ -3,8 +3,12 @@
 
 #include <QDialog>
 
-#include "../Projects/project.h"
-#include "../Fields/fieldvaluewidget.h"
+#include "fieldvaluewidget.h"
+#include "../Controller/fielddefinitionscontroller.h"
+#include "../../Components/Controller/componentscontroller.h"
+#include "../../Components/Model/component.h"
+#include "../../Records/Controller/recordscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
 
 
 namespace Ui {
@@ -16,10 +20,15 @@ class FieldDefinitionWindow : public QDialog
         Q_OBJECT
 
     public:
-        explicit FieldDefinitionWindow(QWidget *parent = 0);
+        explicit FieldDefinitionWindow(
+                Tome::FieldDefinitionsController& fieldDefinitionsController,
+                Tome::ComponentsController& componentsController,
+                Tome::RecordsController& recordsController,
+                Tome::TypesController& typesController,
+                QWidget *parent = 0);
         ~FieldDefinitionWindow();
 
-        QString getFieldComponent() const;
+        Tome::Component getFieldComponent() const;
         QString getFieldDescription() const;
         QString getFieldDisplayName() const;
         QString getFieldId() const;
@@ -33,19 +42,21 @@ class FieldDefinitionWindow : public QDialog
         void setDefaultValue(const QString& defaultValue);
         void setFieldType(const QString& fieldType) const;
 
-        void setProject(QSharedPointer<Tome::Project> project);
-
     public slots:
         void accept();
+        int exec();
 
     private slots:
         void on_comboBoxType_currentIndexChanged(const QString &fieldType);
         void on_lineEditDisplayName_textEdited(const QString &displayName);
 
     private:
-        QSharedPointer<Tome::Project> project;
-
         Ui::FieldDefinitionWindow *ui;
+        Tome::FieldDefinitionsController& fieldDefinitionsController;
+        Tome::ComponentsController& componentsController;
+        Tome::RecordsController& recordsController;
+        Tome::TypesController& typesController;
+
         Tome::FieldValueWidget* fieldValueWidget;
 
         bool validate();

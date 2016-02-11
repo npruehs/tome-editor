@@ -3,7 +3,7 @@
 #include <QStringBuilder>
 #include <QTextStream>
 
-#include "../../Fields/fielddefinition.h"
+#include "../../Fields/Model/fielddefinition.h"
 
 using namespace Tome;
 

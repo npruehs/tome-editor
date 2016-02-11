@@ -3,6 +3,9 @@
 
 #include <QString>
 
+#include "../../Components/Model/component.h"
+
+
 namespace Tome
 {
     class FieldDefinition
@@ -10,14 +13,16 @@ namespace Tome
         public:
             FieldDefinition();
 
-            QString component;
+            Component component;
             QString defaultValue;
             QString description;
             QString displayName;
             QString fieldType;
             QString id;
-
     };
+
+    inline bool operator==(const FieldDefinition& lhs, const FieldDefinition& rhs){ return lhs.id == rhs.id; }
+    inline bool operator!=(const FieldDefinition& lhs, const FieldDefinition& rhs){ return !(lhs == rhs); }
 }
 
 #endif // FIELDDEFINITION_H

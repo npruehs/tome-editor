@@ -13,7 +13,7 @@
 #include <QXmlStreamWriter>
 
 #include "Export/Controller/exportcontroller.h"
-#include "Fields/fielddefinitionsetserializer.h"
+#include "Fields/Controller/fielddefinitionsetserializer.h"
 #include "Projects/project.h"
 #include "Projects/projectserializer.h"
 #include "Records/recordsetserializer.h"
@@ -102,7 +102,12 @@ void MainWindow::on_actionField_Definions_triggered()
 {
     if (!this->fieldDefinitionsWindow)
     {
-        this->fieldDefinitionsWindow = new FieldDefinitionsWindow(this->project, this);
+        this->fieldDefinitionsWindow = new FieldDefinitionsWindow(
+                    this->controller->getFieldDefinitionsController(),
+                    this->controller->getComponentsController(),
+                    this->controller->getRecordsController(),
+                    this->controller->getTypesController(),
+                    this);
     }
 
     this->showWindow(this->fieldDefinitionsWindow);
@@ -123,7 +128,7 @@ void MainWindow::on_actionManage_Custom_Types_triggered()
 {
     if (!this->customTypesWindow)
     {
-        this->customTypesWindow = new CustomTypesWindow(this->project, this);
+        this->customTypesWindow = new CustomTypesWindow(this->controller->getTypesController(), this);
     }
 
     this->showWindow(this->customTypesWindow);
@@ -377,7 +382,7 @@ void MainWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
 
     if (field.fieldType == BuiltInType::Reference)
     {
-        QStringList recordNames = this->project->getRecordNames();
+        QStringList recordNames = this->controller->getRecordsController().getRecordNames();
 
         // Allow clearing the field.
         recordNames << QString();
@@ -387,10 +392,13 @@ void MainWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
     }
     else
     {
-        QSharedPointer<CustomType> type = this->project->getCustomType(field.fieldType);
+        const bool isCustomType = this->controller->getTypesController().isCustomType(field.fieldType);
 
-        if (type != 0)
+        if (isCustomType)
         {
+            const CustomType& type =
+                    this->controller->getTypesController().getCustomType(field.fieldType);
+
             this->fieldValueWindow->setCustomFieldType(type);
         }
         else
@@ -620,9 +628,9 @@ void MainWindow::openProject(QString projectFileName)
 
             // Open field definition file.
             const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSet.name + FieldDefinitionFileExtension);
-            QSharedPointer<QFile> fieldDefinitionFile = QSharedPointer<QFile>::create(fullFieldDefinitionSetPath);
+            QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
 
-            if (fieldDefinitionFile->open(QIODevice::ReadOnly))
+            if (fieldDefinitionFile.open(QIODevice::ReadOnly))
             {
                 try
                 {
@@ -824,9 +832,9 @@ bool MainWindow::saveProject(QSharedPointer<Project> project)
         const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSetFileName);
 
         // Write file.
-        QSharedPointer<QFile> fieldDefinitionSetFile = QSharedPointer<QFile>::create(fullFieldDefinitionSetPath);
+        QFile fieldDefinitionSetFile(fullFieldDefinitionSetPath);
 
-        if (fieldDefinitionSetFile->open(QIODevice::ReadWrite | QIODevice::Truncate))
+        if (fieldDefinitionSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
             fieldDefinitionSetSerializer->serialize(fieldDefinitionSetFile, fieldDefinitionSet);
         }

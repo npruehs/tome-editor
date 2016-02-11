@@ -3,15 +3,23 @@
 
 #include <QMessageBox>
 
-#include "../Types/builtintype.h"
-#include "../Values/valueconverter.h"
+#include "../../Types/builtintype.h"
 
 using namespace Tome;
 
 
-FieldDefinitionWindow::FieldDefinitionWindow(QWidget *parent) :
+FieldDefinitionWindow::FieldDefinitionWindow(
+        FieldDefinitionsController& fieldDefinitionsController,
+        ComponentsController& componentsController,
+        RecordsController& recordsController,
+        TypesController& typesController,
+        QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::FieldDefinitionWindow)
+    ui(new Ui::FieldDefinitionWindow),
+    fieldDefinitionsController(fieldDefinitionsController),
+    componentsController(componentsController),
+    recordsController(recordsController),
+    typesController(typesController)
 {
     ui->setupUi(this);
 
@@ -35,7 +43,28 @@ void FieldDefinitionWindow::accept()
     }
 }
 
-QString FieldDefinitionWindow::getFieldComponent() const
+int FieldDefinitionWindow::exec()
+{
+    // Set component names.
+    this->ui->comboBoxComponent->clear();
+    this->ui->comboBoxComponent->addItem(QString());
+    this->ui->comboBoxComponent->addItems(this->componentsController.getComponents());
+
+    // Set type names.
+    this->ui->comboBoxType->clear();
+
+    const QStringList& typeNames = this->typesController.getTypeNames();
+
+    for (int i = 0; i < typeNames.length(); ++i)
+    {
+        this->ui->comboBoxType->addItem(typeNames[i]);
+    }
+
+    // Show dialog.
+    return QDialog::exec();
+}
+
+Component FieldDefinitionWindow::getFieldComponent() const
 {
     return this->ui->comboBoxComponent->currentText();
 }
@@ -95,31 +124,11 @@ void FieldDefinitionWindow::setFieldType(const QString& fieldType) const
     this->ui->comboBoxType->setCurrentText(fieldType);
 }
 
-void FieldDefinitionWindow::setProject(QSharedPointer<Project> project)
-{
-    this->project = project;
-
-    // Set component names.
-    this->ui->comboBoxComponent->clear();
-    this->ui->comboBoxComponent->addItem(QString());
-    this->ui->comboBoxComponent->addItems(project->getComponentNames());
-
-    // Set type names.
-    this->ui->comboBoxType->clear();
-
-    QStringList typeNames = this->project->getTypeNames();
-
-    for (int i = 0; i < typeNames.length(); ++i)
-    {
-        this->ui->comboBoxType->addItem(typeNames.at(i));
-    }
-}
-
 void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &fieldType)
 {
     if (fieldType == BuiltInType::Reference)
     {
-        QStringList recordNames = this->project->getRecordNames();
+        QStringList recordNames = this->recordsController.getRecordNames();
 
         // Allow clearing the field.
         recordNames << QString();
@@ -129,10 +138,11 @@ void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &f
     }
     else
     {
-        QSharedPointer<CustomType> type = this->project->getCustomType(fieldType);
+        const bool isCustomType = this->typesController.isCustomType(fieldType);
 
-        if (type != 0)
+        if (isCustomType)
         {
+            const CustomType& type = this->typesController.getCustomType(fieldType);
             this->fieldValueWidget->setCustomFieldType(type);
         }
         else

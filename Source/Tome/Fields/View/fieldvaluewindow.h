@@ -3,8 +3,8 @@
 
 #include <QDialog>
 
-#include "../Fields/fieldvaluewidget.h"
-#include "../Types/customtype.h"
+#include "fieldvaluewidget.h"
+#include "../../Types/customtype.h"
 
 
 namespace Ui {
@@ -24,7 +24,7 @@ class FieldValueWindow : public QDialog
         void setFieldDescription(const QString& description);
         void setFieldDisplayName(const QString& displayName);
         void setFieldValue(const QString& fieldValue);
-        void setCustomFieldType(QSharedPointer<Tome::CustomType> fieldType);
+        void setCustomFieldType(const Tome::CustomType& fieldType);
         void setFieldType(const QString& fieldType) const;
         void setEnumeration(const QStringList& recordNames);
 

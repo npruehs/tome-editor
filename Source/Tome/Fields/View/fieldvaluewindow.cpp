@@ -1,7 +1,7 @@
 #include "fieldvaluewindow.h"
 #include "ui_fieldvaluewindow.h"
 
-#include "../Values/valueconverter.h"
+#include "../../Values/valueconverter.h"
 
 using namespace Tome;
 
@@ -43,9 +43,9 @@ void FieldValueWindow::setFieldValue(const QString& fieldValue)
     this->fieldValueWidget->setFieldValue(fieldValue);
 }
 
-void FieldValueWindow::setCustomFieldType(QSharedPointer<CustomType> fieldType)
+void FieldValueWindow::setCustomFieldType(const CustomType& fieldType)
 {
-    this->ui->labelTypeValue->setText(fieldType->name);
+    this->ui->labelTypeValue->setText(fieldType.name);
     this->fieldValueWidget->setCustomFieldType(fieldType);
 }
 

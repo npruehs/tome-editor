@@ -13,7 +13,7 @@
 #include <QWidget>
 
 #include "listwidget.h"
-#include "../Types/customtype.h"
+#include "../../Types/customtype.h"
 
 
 namespace Tome
@@ -33,7 +33,7 @@ namespace Tome
             QString getFieldValue() const;
 
             void setFieldType(const QString& fieldType);
-            void setCustomFieldType(QSharedPointer<CustomType> fieldType);
+            void setCustomFieldType(const CustomType& fieldType);
             void setFieldValue(const QString& fieldValue);
             void setEnumeration(const QStringList& enumeration);
 

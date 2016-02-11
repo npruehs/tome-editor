@@ -120,26 +120,24 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
             // Write types.
             writer.writeStartElement(ElementTypes);
             {
-                for (QVector<QSharedPointer<CustomType> >::iterator it = project->types.begin();
-                     it != project->types.end();
-                     ++it)
+                for (int i = 0; i < project->types.size(); ++i)
                 {
-                    QSharedPointer<CustomType> type = *it;
+                    const CustomType& type = project->types.at(i);
 
                     writer.writeStartElement(ElementType);
                     {
-                        writer.writeAttribute(ElementName, type->name);
+                        writer.writeAttribute(ElementName, type.name);
 
-                        if (!type->baseType.isEmpty())
+                        if (!type.baseType.isEmpty())
                         {
-                            writer.writeAttribute(AttributeBaseType, type->baseType);
+                            writer.writeAttribute(AttributeBaseType, type.baseType);
                         }
 
                         // Write restrictions map.
                         writer.writeStartElement(ElementRestrictions);
                         {
-                            for (QMap<QString, QString>::iterator itRestrictions = type->restrictions.begin();
-                                 itRestrictions != type->restrictions.end();
+                            for (QMap<QString, QString>::const_iterator itRestrictions = type.restrictions.begin();
+                                 itRestrictions != type.restrictions.end();
                                  ++itRestrictions)
                             {
                                 writer.writeStartElement(ElementRestriction);
@@ -256,11 +254,10 @@ void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPoi
             {
                 while (reader.isAtElement(ElementType))
                 {
-                    QSharedPointer<CustomType> type =
-                            QSharedPointer<CustomType>::create();
+                    CustomType type = CustomType();
 
-                    type->name = reader.readAttribute(ElementName);
-                    type->baseType = reader.readAttribute(AttributeBaseType);
+                    type.name = reader.readAttribute(ElementName);
+                    type.baseType = reader.readAttribute(AttributeBaseType);
 
                     reader.readStartElement(ElementType);
                     {
@@ -272,7 +269,7 @@ void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPoi
                                 QString restrictionKey = reader.readAttribute(AttributeKey);
                                 QString restrictionValue = reader.readAttribute(AttributeValue);
 
-                                type->restrictions.insert(restrictionKey, restrictionValue);
+                                type.restrictions.insert(restrictionKey, restrictionValue);
 
                                 // Advance reader.
                                 reader.readEmptyElement(ElementRestriction);

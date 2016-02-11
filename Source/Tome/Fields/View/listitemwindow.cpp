@@ -1,7 +1,7 @@
 #include "listitemwindow.h"
 #include "ui_listitemwindow.h"
 
-#include "../Fields/fieldvaluewidget.h"
+#include "fieldvaluewidget.h"
 
 
 using namespace Tome;
@@ -34,7 +34,7 @@ void ListItemWindow::setValue(const QString& value)
     this->fieldValueWidget->setFieldValue(value);
 }
 
-void ListItemWindow::setCustomFieldType(QSharedPointer<CustomType> fieldType)
+void ListItemWindow::setCustomFieldType(const CustomType& fieldType)
 {
     this->fieldValueWidget->setCustomFieldType(fieldType);
 }

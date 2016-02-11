@@ -6,8 +6,8 @@
 
 #include "controller.h"
 #include "Components/View/componentswindow.h"
-#include "Fields/fielddefinitionswindow.h"
-#include "Fields/fieldvaluewindow.h"
+#include "Fields/View/fielddefinitionswindow.h"
+#include "Fields/View/fieldvaluewindow.h"
 #include "Help/aboutwindow.h"
 #include "Projects/newprojectwindow.h"
 #include "Projects/project.h"

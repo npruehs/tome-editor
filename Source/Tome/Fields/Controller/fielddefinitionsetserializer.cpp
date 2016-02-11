@@ -2,7 +2,7 @@
 
 #include <QXmlStreamWriter>
 
-#include "../IO/xmlreader.h"
+#include "../../IO/xmlreader.h"
 
 using namespace Tome;
 
@@ -22,10 +22,10 @@ FieldDefinitionSetSerializer::FieldDefinitionSetSerializer()
 
 }
 
-void FieldDefinitionSetSerializer::serialize(QSharedPointer<QIODevice> device, const FieldDefinitionSet& fieldDefinitionSet) const
+void FieldDefinitionSetSerializer::serialize(QIODevice& device, const FieldDefinitionSet& fieldDefinitionSet) const
 {
     // Open device stream.
-    QXmlStreamWriter stream(device.data());
+    QXmlStreamWriter stream(&device);
     stream.setAutoFormatting(true);
 
     // Begin document.
@@ -61,11 +61,11 @@ void FieldDefinitionSetSerializer::serialize(QSharedPointer<QIODevice> device, c
     stream.writeEndDocument();
 }
 
-void FieldDefinitionSetSerializer::deserialize(QSharedPointer<QIODevice> device, FieldDefinitionSet& fieldDefinitionSet) const
+void FieldDefinitionSetSerializer::deserialize(QIODevice& device, FieldDefinitionSet& fieldDefinitionSet) const
 {
     // Open device stream.
     QSharedPointer<QXmlStreamReader> stream =
-            QSharedPointer<QXmlStreamReader>::create(device.data());
+            QSharedPointer<QXmlStreamReader>::create(&device);
     XmlReader reader(stream);
 
     // Begin document.

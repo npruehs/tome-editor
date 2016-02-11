@@ -6,6 +6,8 @@
 #include "enumerationwindow.h"
 #include "listwindow.h"
 #include "../Projects/project.h"
+#include "Controller/typescontroller.h"
+
 
 namespace Ui {
     class CustomTypesWindow;
@@ -16,7 +18,7 @@ class CustomTypesWindow : public QMainWindow
         Q_OBJECT
 
     public:
-        explicit CustomTypesWindow(QSharedPointer<Tome::Project> project, QWidget *parent = 0);
+        explicit CustomTypesWindow(Tome::TypesController& typesController, QWidget *parent = 0);
         ~CustomTypesWindow();
 
     private slots:
@@ -30,19 +32,19 @@ class CustomTypesWindow : public QMainWindow
 
     private:
         Ui::CustomTypesWindow *ui;
+        Tome::TypesController& typesController;
 
         EnumerationWindow* enumerationWindow;
         ListWindow* listWindow;
 
-        QSharedPointer<Tome::Project> project;
-
         int getSelectedTypeIndex() const;
+        QString getSelectedTypeName() const;
 
-        void editEnumeration(int index, QSharedPointer<Tome::CustomType> type);
-        void editList(int index, QSharedPointer<Tome::CustomType> type);
+        void editEnumeration(QString typeName, const Tome::CustomType& type);
+        void editList(QString typeName, const Tome::CustomType& type);
 
-        void updateEnumeration(const int index, const QString& name, const QStringList& enumeration);
-        void updateList(int index, const QString& name, const QString& itemType);
+        void updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration);
+        void updateList(const QString& oldName, const QString& name, const QString& itemType);
         void updateRow(const int index);
 };
 
