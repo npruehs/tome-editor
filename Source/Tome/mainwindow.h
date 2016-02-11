@@ -8,9 +8,9 @@
 #include "Components/View/componentswindow.h"
 #include "Fields/View/fielddefinitionswindow.h"
 #include "Fields/View/fieldvaluewindow.h"
-#include "Help/aboutwindow.h"
-#include "Projects/newprojectwindow.h"
-#include "Projects/project.h"
+#include "Help/View/aboutwindow.h"
+#include "Projects/View/newprojectwindow.h"
+#include "Projects/Model/project.h"
 #include "Records/recordwindow.h"
 #include "Types/customtypeswindow.h"
 
@@ -93,7 +93,6 @@ class MainWindow : public QMainWindow
         void updateMenus();
         void updateRecentProjects();
         void updateRecord(const QString& id, const QString& displayName);
-        void updateRecordFieldValue(const int index, const QString& key, const QString& value);
         void updateRecordRow(const int i);
         void updateWindowTitle();
 };

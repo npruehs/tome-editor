@@ -2,7 +2,7 @@
 #define RECORDLIST
 
 #include <QList>
-#include "../record.h"
+#include "record.h"
 
 namespace Tome
 {

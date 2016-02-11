@@ -14,8 +14,8 @@
 
 #include "Export/Controller/exportcontroller.h"
 #include "Fields/Controller/fielddefinitionsetserializer.h"
-#include "Projects/project.h"
-#include "Projects/projectserializer.h"
+#include "Projects/Model/project.h"
+#include "Projects/Controller/projectserializer.h"
 #include "Records/recordsetserializer.h"
 #include "Settings/tomesettings.h"
 #include "Types/builtintype.h"
@@ -35,12 +35,6 @@ const QString MainWindow::RecordExportRecordTemplateExtension = ".texportr";
 const QString MainWindow::RecordExportRecordDelimiterExtension = ".texportrd";
 const QString MainWindow::RecordExportFieldValueTemplateExtension = ".texportv";
 const QString MainWindow::RecordExportFieldValueDelimiterExtension = ".texportvd";
-
-
-bool lessThanRecords(const Record& e1, const Record& e2)
-{
-    return e1.displayName.toLower() < e2.displayName.toLower();
-}
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -202,7 +196,7 @@ void MainWindow::on_actionNew_Record_triggered()
         record->displayName = recordDisplayName;
 
         RecordList& records = this->project->recordSets[0].records;
-        int index = findInsertionIndex(records, *record.data(), lessThanRecords);
+        int index = findInsertionIndex(records, *record.data(), recordLessThanDisplayName);
         records.insert(index, *record.data());
 
         // Insert tree view item.
@@ -240,7 +234,8 @@ void MainWindow::on_actionEdit_Record_triggered()
     }
 
     // Get selected record.
-    const Record& record = this->project->getRecordByDisplayName(displayName);
+    const Record& record =
+            this->controller->getRecordsController().getRecordByDisplayName(displayName);
 
     // Show window.
     if (!this->recordWindow)
@@ -361,7 +356,8 @@ void MainWindow::on_treeWidget_doubleClicked(const QModelIndex &index)
 void MainWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
 {
     QString recordDisplayName = this->getSelectedRecordDisplayName();
-    Record& record = this->project->getRecordByDisplayName(recordDisplayName);
+    const Record& record =
+            this->controller->getRecordsController().getRecordByDisplayName(recordDisplayName);
 
     // Get current field data.
     const QString fieldId = record.fieldValues.keys()[index.row()];
@@ -418,7 +414,7 @@ void MainWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
         QString fieldValue = this->fieldValueWindow->getFieldValue();
 
         // Update model.
-        record.fieldValues[fieldId] = fieldValue;
+        this->controller->getRecordsController().updateRecordFieldValue(record.id, fieldId, fieldValue);
 
         // Update view.
         this->updateRecordRow(index.row());
@@ -496,7 +492,8 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
     }
 
     // Get selected record.
-    const Record& record = this->project->getRecordByDisplayName(displayName);
+    const Record& record =
+            this->controller->getRecordsController().getRecordByDisplayName(displayName);
 
     // Update field table.
     this->ui->tableWidget->setRowCount(record.fieldValues.size());
@@ -510,14 +507,13 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
 void MainWindow::addRecordField(const QString& fieldId)
 {
     QString recordDisplayName = this->getSelectedRecordDisplayName();
-    Record& record = this->project->getRecordByDisplayName(recordDisplayName);
+    const Record& record =
+            this->controller->getRecordsController().getRecordByDisplayName(recordDisplayName);
 
     int index = findInsertionIndex(record.fieldValues.keys(), fieldId);
 
     // Update model.
-    const FieldDefinition& field =
-            this->controller->getFieldDefinitionsController().getFieldDefinition(fieldId);
-    record.fieldValues.insert(fieldId, field.defaultValue);
+    this->controller->getRecordsController().addRecordField(record.id, fieldId);
 
     // Update view.
     this->ui->tableWidget->insertRow(index);
@@ -781,10 +777,11 @@ QString MainWindow::readProjectFile(QString projectPath, QString fileName)
 void MainWindow::removeRecordField(const QString& fieldId)
 {
     QString recordDisplayName = this->getSelectedRecordDisplayName();
-    Record& record = this->project->getRecordByDisplayName(recordDisplayName);
+    const Record& record =
+            this->controller->getRecordsController().getRecordByDisplayName(recordDisplayName);
 
     // Update model.
-    record.fieldValues.remove(fieldId);
+    this->controller->getRecordsController().removeRecordField(record.id, fieldId);
 
     // Update view.
     int index = findInsertionIndex(record.fieldValues.keys(), fieldId);
@@ -973,13 +970,13 @@ void MainWindow::updateRecentProjects()
 void MainWindow::updateRecord(const QString& id, const QString& displayName)
 {
     QString recordDisplayName = this->getSelectedRecordDisplayName();
-    Record& record = this->project->getRecordByDisplayName(recordDisplayName);
+    const Record& record =
+            this->controller->getRecordsController().getRecordByDisplayName(recordDisplayName);
 
     bool needsSorting = record.displayName != displayName;
 
     // Update model.
-    record.id = id;
-    record.displayName = displayName;
+    this->controller->getRecordsController().updateRecord(record.id, id, displayName);
 
     // Update view.
     QModelIndexList selectedIndexes = this->ui->treeWidget->selectionModel()->selectedIndexes();
@@ -1002,28 +999,16 @@ void MainWindow::updateRecord(const QString& id, const QString& displayName)
     // Sort by display name.
     if (needsSorting)
     {
-        std::sort(this->project->recordSets[0].records.begin(), this->project->recordSets[0].records.end(), lessThanRecords);
         this->ui->treeWidget->sortItems(0, Qt::AscendingOrder);
     }
-}
-
-void MainWindow::updateRecordFieldValue(const int index, const QString& key, const QString& value)
-{
-    QString selectedRecordDisplayName = this->getSelectedRecordDisplayName();
-    Record& record = this->project->getRecordByDisplayName(selectedRecordDisplayName);
-
-    // Update model.
-    record.fieldValues[key] = value;
-
-    // Update view.
-    this->updateRecordRow(index);
 }
 
 void MainWindow::updateRecordRow(int i)
 {
     // Show field and value.
     QString selectedRecordDisplayName = this->getSelectedRecordDisplayName();
-    const Record& record = this->project->getRecordByDisplayName(selectedRecordDisplayName);
+    const Record& record =
+            this->controller->getRecordsController().getRecordByDisplayName(selectedRecordDisplayName);
     QString key = record.fieldValues.keys()[i];
     QString value = record.fieldValues[key];
 

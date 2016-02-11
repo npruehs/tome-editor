@@ -4,7 +4,7 @@
 #include <QIODevice>
 #include <QSharedPointer>
 
-#include "recordset.h"
+#include "../Model/recordset.h"
 
 namespace Tome
 {

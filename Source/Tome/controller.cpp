@@ -12,7 +12,7 @@ using namespace Tome;
 Controller::Controller() :
     componentsController(new ComponentsController()),
     fieldDefinitionsController(new FieldDefinitionsController()),
-    recordsController(new RecordsController()),
+    recordsController(new RecordsController(*this->fieldDefinitionsController)),
     exportController(new ExportController(*this->fieldDefinitionsController, *this->recordsController)),
     typesController(new TypesController())
 {

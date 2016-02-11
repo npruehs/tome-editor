@@ -5,7 +5,7 @@
 
 #include "enumerationwindow.h"
 #include "listwindow.h"
-#include "../Projects/project.h"
+#include "../Projects/Model/project.h"
 #include "Controller/typescontroller.h"
 
 

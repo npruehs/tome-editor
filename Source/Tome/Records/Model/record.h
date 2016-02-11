@@ -16,6 +16,11 @@ namespace Tome
             QString id;
             QMap<QString, QString> fieldValues;
     };
+
+    inline bool recordLessThanDisplayName(const Record& e1, const Record& e2)
+    {
+        return e1.displayName.toLower() < e2.displayName.toLower();
+    }
 }
 
 #endif // RECORD_H

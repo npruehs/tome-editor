@@ -4,7 +4,7 @@
 #include <QSharedPointer>
 
 #include "record.h"
-#include "Model/recordlist.h"
+#include "recordlist.h"
 
 namespace Tome
 {

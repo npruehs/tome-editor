@@ -33,18 +33,18 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Fields/Model/fielddefinitionset.cpp \
     ../Source/Tome/Fields/Controller/fielddefinitionsetserializer.cpp \
     ../Source/Tome/Help/View/aboutwindow.cpp \
-    ../Source/Tome/Projects/newprojectwindow.cpp \
-    ../Source/Tome/Projects/projectserializer.cpp \
-    ../Source/Tome/Projects/project.cpp \
-    ../Source/Tome/Records/record.cpp \
-    ../Source/Tome/Records/recordset.cpp \
-    ../Source/Tome/Records/recordsetserializer.cpp \
+    ../Source/Tome/Projects/View/newprojectwindow.cpp \
+    ../Source/Tome/Projects/Controller/projectserializer.cpp \
+    ../Source/Tome/Projects/Model/project.cpp \
+    ../Source/Tome/Records/Model/record.cpp \
+    ../Source/Tome/Records/Model/recordset.cpp \
+    ../Source/Tome/Records/Controller/recordsetserializer.cpp \
     ../Source/Tome/Fields/Model/fielddefinition.cpp \
     ../Source/Tome/Values/valueconverter.cpp \
     ../Source/Tome/IO/xmlreader.cpp \
     ../Source/Tome/Fields/View/fielddefinitionwindow.cpp \
     ../Source/Tome/Fields/View/fielddefinitionswindow.cpp \
-    ../Source/Tome/Records/recordwindow.cpp \
+    ../Source/Tome/Records/View/recordwindow.cpp \
     ../Source/Tome/Fields/View/fieldvaluewindow.cpp \
     ../Source/Tome/Fields/View/fieldvaluewidget.cpp \
     ../Source/Tome/Export/Model/recordexporttemplate.cpp \
@@ -71,18 +71,18 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/Model/fielddefinitionset.h \
     ../Source/Tome/Fields/Controller/fielddefinitionsetserializer.h \
     ../Source/Tome/Help/View/aboutwindow.h \
-    ../Source/Tome/Projects/newprojectwindow.h \
-    ../Source/Tome/Projects/projectserializer.h \
-    ../Source/Tome/Projects/project.h \
-    ../Source/Tome/Records/record.h \
-    ../Source/Tome/Records/recordset.h \
-    ../Source/Tome/Records/recordsetserializer.h \
+    ../Source/Tome/Projects/View/newprojectwindow.h \
+    ../Source/Tome/Projects/Controller/projectserializer.h \
+    ../Source/Tome/Projects/Model/project.h \
+    ../Source/Tome/Records/Model/record.h \
+    ../Source/Tome/Records/Model/recordset.h \
+    ../Source/Tome/Records/Controller/recordsetserializer.h \
     ../Source/Tome/Values/valueconverter.h \
     ../Source/Tome/Util/pathutils.h \
     ../Source/Tome/IO/xmlreader.h \
     ../Source/Tome/Fields/View/fielddefinitionwindow.h \
     ../Source/Tome/Fields/View/fielddefinitionswindow.h \
-    ../Source/Tome/Records/recordwindow.h \
+    ../Source/Tome/Records/View/recordwindow.h \
     ../Source/Tome/Fields/View/fieldvaluewindow.h \
     ../Source/Tome/Fields/View/fieldvaluewidget.h \
     ../Source/Tome/Export/Model/recordexporttemplate.h \
@@ -113,10 +113,10 @@ HEADERS  += ../Source/Tome/mainwindow.h \
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/View/aboutwindow.ui \
-    ../Source/Tome/Projects/newprojectwindow.ui \
+    ../Source/Tome/Projects/View/newprojectwindow.ui \
     ../Source/Tome/Fields/View/fielddefinitionwindow.ui \
     ../Source/Tome/Fields/View/fielddefinitionswindow.ui \
-    ../Source/Tome/Records/recordwindow.ui \
+    ../Source/Tome/Records/View/recordwindow.ui \
     ../Source/Tome/Fields/View/fieldvaluewindow.ui \
     ../Source/Tome/Components/View/componentswindow.ui \
     ../Source/Tome/Components/View/componentwindow.ui \
