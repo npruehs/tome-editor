@@ -32,7 +32,7 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/mainwindow.cpp \
     ../Source/Tome/Fields/Model/fielddefinitionset.cpp \
     ../Source/Tome/Fields/Controller/fielddefinitionsetserializer.cpp \
-    ../Source/Tome/Help/aboutwindow.cpp \
+    ../Source/Tome/Help/View/aboutwindow.cpp \
     ../Source/Tome/Projects/newprojectwindow.cpp \
     ../Source/Tome/Projects/projectserializer.cpp \
     ../Source/Tome/Projects/project.cpp \
@@ -70,7 +70,7 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/Model/fielddefinition.h \
     ../Source/Tome/Fields/Model/fielddefinitionset.h \
     ../Source/Tome/Fields/Controller/fielddefinitionsetserializer.h \
-    ../Source/Tome/Help/aboutwindow.h \
+    ../Source/Tome/Help/View/aboutwindow.h \
     ../Source/Tome/Projects/newprojectwindow.h \
     ../Source/Tome/Projects/projectserializer.h \
     ../Source/Tome/Projects/project.h \
@@ -112,7 +112,7 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/Model/customtypelist.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
-    ../Source/Tome/Help/aboutwindow.ui \
+    ../Source/Tome/Help/View/aboutwindow.ui \
     ../Source/Tome/Projects/newprojectwindow.ui \
     ../Source/Tome/Fields/View/fielddefinitionwindow.ui \
     ../Source/Tome/Fields/View/fielddefinitionswindow.ui \
