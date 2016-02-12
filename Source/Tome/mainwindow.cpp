@@ -20,7 +20,7 @@
 #include "Settings/Controller/settingscontroller.h"
 #include "Types/Model/builtintype.h"
 #include "Util/pathutils.h"
-#include "Util/vectorutils.h"
+#include "Util/listutils.h"
 
 
 using namespace Tome;

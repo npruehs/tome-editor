@@ -95,7 +95,6 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/View/listwindow.h \
     ../Source/Tome/Fields/View/listwidget.h \
     ../Source/Tome/Fields/View/listitemwindow.h \
-    ../Source/Tome/Util/vectorutils.h \
     ../Source/Tome/Components/Controller/componentscontroller.h \
     ../Source/Tome/Components/Model/component.h \
     ../Source/Tome/controller.h \
@@ -109,7 +108,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/Model/fielddefinitionlist.h \
     ../Source/Tome/Types/Controller/typescontroller.h \
     ../Source/Tome/Types/Model/customtypelist.h \
-    ../Source/Tome/Settings/Controller/settingscontroller.h
+    ../Source/Tome/Settings/Controller/settingscontroller.h \
+    ../Source/Tome/Util/listutils.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/View/aboutwindow.ui \
