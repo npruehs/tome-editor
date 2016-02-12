@@ -16,8 +16,8 @@
 #include "Fields/Controller/fielddefinitionsetserializer.h"
 #include "Projects/Model/project.h"
 #include "Projects/Controller/projectserializer.h"
-#include "Records/recordsetserializer.h"
-#include "Settings/tomesettings.h"
+#include "Records/Controller/recordsetserializer.h"
+#include "Settings/Controller/settingscontroller.h"
 #include "Types/builtintype.h"
 #include "Util/pathutils.h"
 #include "Util/vectorutils.h"
@@ -733,8 +733,7 @@ void MainWindow::openProject(QString projectFileName)
         }
 
         // Add to recent projects.
-        TomeSettings settings;
-        settings.addRecentProject(projectFileName);
+        this->controller->getSettingsController().addRecentProject(projectFileName);
         this->updateRecentProjects();
 
         // Set project reference.
@@ -743,8 +742,7 @@ void MainWindow::openProject(QString projectFileName)
     else
     {
         // Remove from recent projects.
-        TomeSettings settings;
-        settings.removeRecentProject(projectFileName);
+        this->controller->getSettingsController().removeRecentProject(projectFileName);
         this->updateRecentProjects();
 
         QMessageBox::critical(
@@ -957,8 +955,7 @@ void MainWindow::updateRecentProjects()
     this->ui->menuRecent_Projects->clear();
 
     // Add recent projects.
-    TomeSettings settings;
-    QStringList recentProjects = settings.getRecentProjects();
+    const QStringList& recentProjects = this->controller->getSettingsController().getRecentProjects();
     for (int i = 0; i < recentProjects.size(); ++i)
     {
         QString path = recentProjects.at(i);

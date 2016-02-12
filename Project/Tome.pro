@@ -52,7 +52,6 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Components/View/componentwindow.cpp \
     ../Source/Tome/Types/customtypeswindow.cpp \
     ../Source/Tome/Types/customtype.cpp \
-    ../Source/Tome/Settings/tomesettings.cpp \
     ../Source/Tome/Types/enumerationwindow.cpp \
     ../Source/Tome/Types/enumerationmemberwindow.cpp \
     ../Source/Tome/Types/listwindow.cpp \
@@ -63,7 +62,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Export/Controller/exportcontroller.cpp \
     ../Source/Tome/Records/Controller/recordscontroller.cpp \
     ../Source/Tome/Fields/Controller/fielddefinitionscontroller.cpp \
-    ../Source/Tome/Types/Controller/typescontroller.cpp
+    ../Source/Tome/Types/Controller/typescontroller.cpp \
+    ../Source/Tome/Settings/Controller/settingscontroller.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/builtintype.h \
@@ -90,7 +90,6 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Components/View/componentwindow.h \
     ../Source/Tome/Types/customtypeswindow.h \
     ../Source/Tome/Types/customtype.h \
-    ../Source/Tome/Settings/tomesettings.h \
     ../Source/Tome/Types/enumerationmemberwindow.h \
     ../Source/Tome/Types/enumerationwindow.h \
     ../Source/Tome/Types/listwindow.h \
@@ -109,7 +108,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Fields/Model/fielddefinitionsetlist.h \
     ../Source/Tome/Fields/Model/fielddefinitionlist.h \
     ../Source/Tome/Types/Controller/typescontroller.h \
-    ../Source/Tome/Types/Model/customtypelist.h
+    ../Source/Tome/Types/Model/customtypelist.h \
+    ../Source/Tome/Settings/Controller/settingscontroller.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/View/aboutwindow.ui \

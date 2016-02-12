@@ -11,7 +11,7 @@
 #include "Help/View/aboutwindow.h"
 #include "Projects/View/newprojectwindow.h"
 #include "Projects/Model/project.h"
-#include "Records/recordwindow.h"
+#include "Records/View/recordwindow.h"
 #include "Types/customtypeswindow.h"
 
 

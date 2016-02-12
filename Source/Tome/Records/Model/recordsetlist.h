@@ -2,7 +2,7 @@
 #define RECORDSETLIST
 
 #include <QList>
-#include "../recordset.h"
+#include "recordset.h"
 
 namespace Tome
 {

@@ -1,24 +1,29 @@
-#include "tomesettings.h"
+#include "settingscontroller.h"
 
 #include <QCoreApplication>
 
-
-const QString TomeSettings::SettingsRecentProjects = "recentProjects";
-const QString TomeSettings::SettingsPath = "path";
+using namespace Tome;
 
 
-TomeSettings::TomeSettings()
+const QString SettingsController::SettingsRecentProjects = "recentProjects";
+const QString SettingsController::SettingsPath = "path";
+
+
+SettingsController::SettingsController()
 {
-    QSettings* s = new QSettings(
+    this->settings = new QSettings(
                 QSettings::IniFormat,
                 QSettings::UserScope,
                 QCoreApplication::organizationName(),
                 QCoreApplication::applicationName());
-
-    this->settings = QSharedPointer<QSettings>(s);
 }
 
-void TomeSettings::addRecentProject(const QString& path)
+SettingsController::~SettingsController()
+{
+    delete this->settings;
+}
+
+void SettingsController::addRecentProject(const QString& path)
 {
     QStringList recentProjects = this->getRecentProjects();
 
@@ -32,7 +37,7 @@ void TomeSettings::addRecentProject(const QString& path)
     this->setRecentProjects(recentProjects);
 }
 
-QStringList TomeSettings::getRecentProjects()
+const QStringList SettingsController::getRecentProjects() const
 {
     QStringList recentProjects;
 
@@ -48,14 +53,14 @@ QStringList TomeSettings::getRecentProjects()
     return recentProjects;
 }
 
-void TomeSettings::removeRecentProject(const QString& path)
+void SettingsController::removeRecentProject(const QString& path)
 {
     QStringList recentProjects = this->getRecentProjects();
     recentProjects.removeOne(path);
     this->setRecentProjects(recentProjects);
 }
 
-void TomeSettings::setRecentProjects(QStringList recentProjects)
+void SettingsController::setRecentProjects(const QStringList& recentProjects)
 {
     this->settings->beginWriteArray(SettingsRecentProjects);
     for (int i = 0; i < recentProjects.size(); ++i)
