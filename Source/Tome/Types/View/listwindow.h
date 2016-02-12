@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "../Types/Controller/typescontroller.h"
+#include "../Controller/typescontroller.h"
 
 
 namespace Ui {

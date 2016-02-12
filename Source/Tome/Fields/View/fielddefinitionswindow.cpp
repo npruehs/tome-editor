@@ -1,7 +1,7 @@
 #include "fielddefinitionswindow.h"
 #include "ui_fielddefinitionswindow.h"
 
-#include "../../Types/builtintype.h"
+#include "../../Types/Model/builtintype.h"
 #include "../../Util/vectorutils.h"
 
 using namespace Tome;

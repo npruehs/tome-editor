@@ -18,7 +18,7 @@
 #include "Projects/Controller/projectserializer.h"
 #include "Records/Controller/recordsetserializer.h"
 #include "Settings/Controller/settingscontroller.h"
-#include "Types/builtintype.h"
+#include "Types/Model/builtintype.h"
 #include "Util/pathutils.h"
 #include "Util/vectorutils.h"
 

@@ -3,7 +3,7 @@
 
 #include <QMessageBox>
 
-#include "../../Types/builtintype.h"
+#include "../../Types/Model/builtintype.h"
 
 using namespace Tome;
 

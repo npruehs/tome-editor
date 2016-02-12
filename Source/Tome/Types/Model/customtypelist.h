@@ -2,7 +2,7 @@
 #define CUSTOMTYPELIST
 
 #include <QList>
-#include "../customtype.h"
+#include "customtype.h"
 
 namespace Tome
 {

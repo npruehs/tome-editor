@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-#include "../builtintype.h"
+#include "../Model/builtintype.h"
 #include "../../Util/vectorutils.h"
 
 

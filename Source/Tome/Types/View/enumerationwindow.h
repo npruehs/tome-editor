@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "customtype.h"
+#include "../Model/customtype.h"
 #include "enumerationmemberwindow.h"
 
 namespace Ui {

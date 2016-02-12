@@ -1,8 +1,8 @@
 #include "customtypeswindow.h"
 #include "ui_customtypeswindow.h"
 
-#include "builtintype.h"
-#include "../Util/vectorutils.h"
+#include "../Model/builtintype.h"
+#include "../../Util/vectorutils.h"
 
 using namespace Tome;
 

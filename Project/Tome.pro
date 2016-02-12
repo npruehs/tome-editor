@@ -50,11 +50,11 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Export/Model/recordexporttemplate.cpp \
     ../Source/Tome/Components/View/componentswindow.cpp \
     ../Source/Tome/Components/View/componentwindow.cpp \
-    ../Source/Tome/Types/customtypeswindow.cpp \
-    ../Source/Tome/Types/customtype.cpp \
-    ../Source/Tome/Types/enumerationwindow.cpp \
-    ../Source/Tome/Types/enumerationmemberwindow.cpp \
-    ../Source/Tome/Types/listwindow.cpp \
+    ../Source/Tome/Types/View/customtypeswindow.cpp \
+    ../Source/Tome/Types/Model/customtype.cpp \
+    ../Source/Tome/Types/View/enumerationwindow.cpp \
+    ../Source/Tome/Types/View/enumerationmemberwindow.cpp \
+    ../Source/Tome/Types/View/listwindow.cpp \
     ../Source/Tome/Fields/View/listwidget.cpp \
     ../Source/Tome/Fields/View/listitemwindow.cpp \
     ../Source/Tome/Components/Controller/componentscontroller.cpp \
@@ -66,7 +66,7 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Settings/Controller/settingscontroller.cpp
 
 HEADERS  += ../Source/Tome/mainwindow.h \
-    ../Source/Tome/Types/builtintype.h \
+    ../Source/Tome/Types/Model/builtintype.h \
     ../Source/Tome/Fields/Model/fielddefinition.h \
     ../Source/Tome/Fields/Model/fielddefinitionset.h \
     ../Source/Tome/Fields/Controller/fielddefinitionsetserializer.h \
@@ -88,11 +88,11 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Export/Model/recordexporttemplate.h \
     ../Source/Tome/Components/View/componentswindow.h \
     ../Source/Tome/Components/View/componentwindow.h \
-    ../Source/Tome/Types/customtypeswindow.h \
-    ../Source/Tome/Types/customtype.h \
-    ../Source/Tome/Types/enumerationmemberwindow.h \
-    ../Source/Tome/Types/enumerationwindow.h \
-    ../Source/Tome/Types/listwindow.h \
+    ../Source/Tome/Types/View/customtypeswindow.h \
+    ../Source/Tome/Types/Model/customtype.h \
+    ../Source/Tome/Types/View/enumerationmemberwindow.h \
+    ../Source/Tome/Types/View/enumerationwindow.h \
+    ../Source/Tome/Types/View/listwindow.h \
     ../Source/Tome/Fields/View/listwidget.h \
     ../Source/Tome/Fields/View/listitemwindow.h \
     ../Source/Tome/Util/vectorutils.h \
@@ -120,10 +120,10 @@ FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Fields/View/fieldvaluewindow.ui \
     ../Source/Tome/Components/View/componentswindow.ui \
     ../Source/Tome/Components/View/componentwindow.ui \
-    ../Source/Tome/Types/customtypeswindow.ui \
-    ../Source/Tome/Types/enumerationwindow.ui \
-    ../Source/Tome/Types/enumerationmemberwindow.ui \
-    ../Source/Tome/Types/listwindow.ui \
+    ../Source/Tome/Types/View/customtypeswindow.ui \
+    ../Source/Tome/Types/View/enumerationwindow.ui \
+    ../Source/Tome/Types/View/enumerationmemberwindow.ui \
+    ../Source/Tome/Types/View/listwindow.ui \
     ../Source/Tome/Fields/View/listitemwindow.ui
 
 RESOURCES += \

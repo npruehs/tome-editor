@@ -3,7 +3,7 @@
 
 #include <QStringListModel>
 
-#include "../Util/vectorutils.h"
+#include "../../Util/vectorutils.h"
 
 
 using namespace Tome;

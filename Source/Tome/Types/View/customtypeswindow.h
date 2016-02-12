@@ -5,8 +5,8 @@
 
 #include "enumerationwindow.h"
 #include "listwindow.h"
-#include "../Projects/Model/project.h"
-#include "Controller/typescontroller.h"
+#include "../../Projects/Model/project.h"
+#include "../Controller/typescontroller.h"
 
 
 namespace Ui {

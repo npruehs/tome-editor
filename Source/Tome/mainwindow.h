@@ -12,7 +12,7 @@
 #include "Projects/View/newprojectwindow.h"
 #include "Projects/Model/project.h"
 #include "Records/View/recordwindow.h"
-#include "Types/customtypeswindow.h"
+#include "Types/View/customtypeswindow.h"
 
 
 namespace Ui {

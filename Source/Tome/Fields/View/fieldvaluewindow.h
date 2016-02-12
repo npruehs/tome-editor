@@ -4,7 +4,7 @@
 #include <QDialog>
 
 #include "fieldvaluewidget.h"
-#include "../../Types/customtype.h"
+#include "../../Types/Model/customtype.h"
 
 
 namespace Ui {

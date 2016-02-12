@@ -2,7 +2,7 @@
 
 #include <limits>
 
-#include "../../Types/builtintype.h"
+#include "../../Types/Model/builtintype.h"
 #include "../../Values/valueconverter.h"
 
 using namespace Tome;

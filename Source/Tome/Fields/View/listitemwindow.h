@@ -6,7 +6,7 @@
 #include <QString>
 #include <QStringList>
 
-#include "../../Types/customtype.h"
+#include "../../Types/Model/customtype.h"
 
 
 namespace Ui {

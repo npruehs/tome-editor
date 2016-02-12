@@ -13,7 +13,7 @@
 #include <QWidget>
 
 #include "listwidget.h"
-#include "../../Types/customtype.h"
+#include "../../Types/Model/customtype.h"
 
 
 namespace Tome
