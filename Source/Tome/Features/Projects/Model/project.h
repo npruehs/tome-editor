@@ -1,7 +1,6 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
-#include <QSharedPointer>
 #include <QString>
 #include <QStringList>
 #include <QVector>

@@ -1,8 +1,6 @@
 #ifndef RECORDSET_H
 #define RECORDSET_H
 
-#include <QSharedPointer>
-
 #include "record.h"
 #include "recordlist.h"
 

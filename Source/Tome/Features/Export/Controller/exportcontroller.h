@@ -2,7 +2,6 @@
 #define RECORDEXPORTER_H
 
 #include <QIODevice>
-#include <QSharedPointer>
 #include <QString>
 
 #include "../Model/recordexporttemplatemap.h"

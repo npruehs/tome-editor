@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QSharedPointer>
 
 #include "controller.h"
 #include "../Features/Components/View/componentswindow.h"
@@ -57,7 +56,7 @@ class MainWindow : public QMainWindow
     private:
         Ui::MainWindow *ui;
 
-        QSharedPointer<Tome::Controller> controller;
+        Tome::Controller* controller;
 
         AboutWindow *aboutWindow;
         ComponentsWindow* componentsWindow;

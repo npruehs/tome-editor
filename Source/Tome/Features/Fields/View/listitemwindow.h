@@ -2,7 +2,6 @@
 #define LISTITEMWINDOW_H
 
 #include <QDialog>
-#include <QSharedPointer>
 #include <QString>
 #include <QStringList>
 

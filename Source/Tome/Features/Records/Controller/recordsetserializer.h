@@ -2,7 +2,6 @@
 #define RECORDSETSERIALIZER_H
 
 #include <QIODevice>
-#include <QSharedPointer>
 
 #include "../Model/recordset.h"
 

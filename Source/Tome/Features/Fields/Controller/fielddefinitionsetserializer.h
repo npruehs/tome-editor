@@ -2,7 +2,6 @@
 #define FIELDDEFINITIONSETSERIALIZER_H
 
 #include <QIODevice>
-#include <QSharedPointer>
 
 #include "../Model/fielddefinitionset.h"
 

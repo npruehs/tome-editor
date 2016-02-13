@@ -1,7 +1,6 @@
 #ifndef FIELDDEFINITIONSET_H
 #define FIELDDEFINITIONSET_H
 
-#include <QSharedPointer>
 #include <QVector>
 
 #include "fielddefinition.h"

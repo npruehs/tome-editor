@@ -3,7 +3,6 @@
 
 #include <QItemSelection>
 #include <QMainWindow>
-#include <QSharedPointer>
 
 #include "fielddefinitionwindow.h"
 #include "../Controller/fielddefinitionscontroller.h"
