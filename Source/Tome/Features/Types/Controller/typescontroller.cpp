@@ -9,12 +9,6 @@
 using namespace Tome;
 
 
-bool lessThanCustomTypes(const CustomType& e1, const CustomType& e2)
-{
-    return e1.name.toLower() < e2.name.toLower();
-}
-
-
 TypesController::TypesController()
 {
 }
@@ -26,7 +20,7 @@ const CustomType TypesController::addEnumeration(const QString& name, const QStr
     newType.baseType = BuiltInType::String;
     newType.setEnumeration(enumeration);
 
-    int index = findInsertionIndex(*this->model, newType, lessThanCustomTypes);
+    int index = findInsertionIndex(*this->model, newType, customTypeLessThanName);
     this->model->insert(index, newType);
 
     return newType;
@@ -39,7 +33,7 @@ const CustomType TypesController::addList(const QString& name, const QString& it
     newType.baseType = BuiltInType::None;
     newType.setItemType(itemType);
 
-    int index = findInsertionIndex(*this->model, newType, lessThanCustomTypes);
+    int index = findInsertionIndex(*this->model, newType, customTypeLessThanName);
     this->model->insert(index, newType);
 
     return newType;
@@ -114,7 +108,7 @@ void TypesController::updateEnumeration(const QString& oldName, const QString& n
 
     if (needsSorting)
     {
-        std::sort(this->model->begin(), this->model->end(), lessThanCustomTypes);
+        std::sort(this->model->begin(), this->model->end(), customTypeLessThanName);
     }
 }
 
@@ -129,7 +123,7 @@ void TypesController::updateList(const QString& oldName, const QString& newName,
 
     if (needsSorting)
     {
-        std::sort(this->model->begin(), this->model->end(), lessThanCustomTypes);
+        std::sort(this->model->begin(), this->model->end(), customTypeLessThanName);
     }
 }
 

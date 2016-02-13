@@ -50,6 +50,11 @@ namespace Tome
 
     inline bool operator==(const CustomType& lhs, const CustomType& rhs){ return lhs.name == rhs.name; }
     inline bool operator!=(const CustomType& lhs, const CustomType& rhs){ return !(lhs == rhs); }
+
+    inline bool customTypeLessThanName(const CustomType& e1, const CustomType& e2)
+    {
+        return e1.name.toLower() < e2.name.toLower();
+    }
 }
 
 #endif // CUSTOMFIELDTYPE_H

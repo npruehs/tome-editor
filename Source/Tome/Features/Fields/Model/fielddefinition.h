@@ -23,6 +23,11 @@ namespace Tome
 
     inline bool operator==(const FieldDefinition& lhs, const FieldDefinition& rhs){ return lhs.id == rhs.id; }
     inline bool operator!=(const FieldDefinition& lhs, const FieldDefinition& rhs){ return !(lhs == rhs); }
+
+    inline bool fieldDefinitionLessThanDisplayName(const FieldDefinition& e1, const FieldDefinition& e2)
+    {
+        return e1.displayName.toLower() < e2.displayName.toLower();
+    }
 }
 
 #endif // FIELDDEFINITION_H

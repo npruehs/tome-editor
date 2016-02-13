@@ -8,12 +8,6 @@
 using namespace Tome;
 
 
-bool lessThanFieldDefinitions(const FieldDefinition& e1, const FieldDefinition& e2)
-{
-    return e1.displayName.toLower() < e2.displayName.toLower();
-}
-
-
 FieldDefinitionsController::FieldDefinitionsController()
 {
 }
@@ -29,7 +23,7 @@ const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QStri
     fieldDefinition.description = description;
 
     FieldDefinitionList& fieldDefinitions = (*this->model)[0].fieldDefinitions;
-    int index = findInsertionIndex(fieldDefinitions, fieldDefinition, lessThanFieldDefinitions);
+    int index = findInsertionIndex(fieldDefinitions, fieldDefinition, fieldDefinitionLessThanDisplayName);
     fieldDefinitions.insert(index, fieldDefinition);
 
     return fieldDefinition;
@@ -77,7 +71,7 @@ void FieldDefinitionsController::updateFieldDefinition(const QString& oldId, con
     // Sort by display name.
     if (needsSorting)
     {
-        std::sort((*this->model)[0].fieldDefinitions.begin(), (*this->model)[0].fieldDefinitions.end(), lessThanFieldDefinitions);
+        std::sort((*this->model)[0].fieldDefinitions.begin(), (*this->model)[0].fieldDefinitions.end(), fieldDefinitionLessThanDisplayName);
     }
 }
 
