@@ -40,7 +40,6 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Records/Model/recordset.cpp \
     ../Source/Tome/Records/Controller/recordsetserializer.cpp \
     ../Source/Tome/Fields/Model/fielddefinition.cpp \
-    ../Source/Tome/Values/valueconverter.cpp \
     ../Source/Tome/IO/xmlreader.cpp \
     ../Source/Tome/Fields/View/fielddefinitionwindow.cpp \
     ../Source/Tome/Fields/View/fielddefinitionswindow.cpp \
@@ -77,7 +76,6 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Records/Model/record.h \
     ../Source/Tome/Records/Model/recordset.h \
     ../Source/Tome/Records/Controller/recordsetserializer.h \
-    ../Source/Tome/Values/valueconverter.h \
     ../Source/Tome/Util/pathutils.h \
     ../Source/Tome/IO/xmlreader.h \
     ../Source/Tome/Fields/View/fielddefinitionwindow.h \
@@ -109,7 +107,8 @@ HEADERS  += ../Source/Tome/mainwindow.h \
     ../Source/Tome/Types/Controller/typescontroller.h \
     ../Source/Tome/Types/Model/customtypelist.h \
     ../Source/Tome/Settings/Controller/settingscontroller.h \
-    ../Source/Tome/Util/listutils.h
+    ../Source/Tome/Util/listutils.h \
+    ../Source/Tome/Util/conversionutils.h
 
 FORMS    += ../Source/Tome/mainwindow.ui \
     ../Source/Tome/Help/View/aboutwindow.ui \

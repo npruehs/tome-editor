@@ -3,7 +3,7 @@
 #include <limits>
 
 #include "../../Types/Model/builtintype.h"
-#include "../../Values/valueconverter.h"
+#include "../../Util/conversionutils.h"
 
 using namespace Tome;
 
@@ -62,12 +62,11 @@ QString FieldValueWidget::getFieldType() const
 
 QString FieldValueWidget::getFieldValue() const
 {
-    ValueConverter valueConverter;
     QString fieldType = this->getFieldType();
 
     if (fieldType == BuiltInType::Boolean)
     {
-        return valueConverter.BoolToString(this->checkBox->isChecked());
+        return BoolToString(this->checkBox->isChecked());
     }
 
     if (fieldType == BuiltInType::Color)
@@ -149,11 +148,9 @@ void FieldValueWidget::setCustomFieldType(const CustomType& fieldType)
 
 void FieldValueWidget::setFieldValue(const QString& fieldValue)
 {
-    ValueConverter valueConverter;
-
     if (fieldType == BuiltInType::Boolean)
     {
-        bool value = valueConverter.StringToBool(fieldValue);
+        bool value = StringToBool(fieldValue);
         this->checkBox->setChecked(value);
         return;
     }

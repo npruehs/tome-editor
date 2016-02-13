@@ -1,8 +1,6 @@
 #include "fieldvaluewindow.h"
 #include "ui_fieldvaluewindow.h"
 
-#include "../../Values/valueconverter.h"
-
 using namespace Tome;
 
 
