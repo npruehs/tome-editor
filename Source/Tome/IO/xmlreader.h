@@ -7,7 +7,7 @@
 class XmlReader
 {
     public:
-        XmlReader(QSharedPointer<QXmlStreamReader> reader);
+        XmlReader(QXmlStreamReader& reader);
 
         /**
          * @brief getElementName Gets the name of the current element.
@@ -64,7 +64,7 @@ class XmlReader
         QString readTextElement(const QString& textElementName);
 
     private:
-        QSharedPointer<QXmlStreamReader> reader;
+        QXmlStreamReader& reader;
 
         void moveToNextToken();
         void readToken(const QXmlStreamReader::TokenType& expectedTokenType);
