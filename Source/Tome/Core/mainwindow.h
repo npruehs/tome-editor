@@ -5,14 +5,14 @@
 #include <QSharedPointer>
 
 #include "controller.h"
-#include "Components/View/componentswindow.h"
-#include "Fields/View/fielddefinitionswindow.h"
-#include "Fields/View/fieldvaluewindow.h"
-#include "Help/View/aboutwindow.h"
-#include "Projects/View/newprojectwindow.h"
-#include "Projects/Model/project.h"
-#include "Records/View/recordwindow.h"
-#include "Types/View/customtypeswindow.h"
+#include "../Features/Components/View/componentswindow.h"
+#include "../Features/Fields/View/fielddefinitionswindow.h"
+#include "../Features/Fields/View/fieldvaluewindow.h"
+#include "../Features/Help/View/aboutwindow.h"
+#include "../Features/Projects/View/newprojectwindow.h"
+#include "../Features/Projects/Model/project.h"
+#include "../Features/Records/View/recordwindow.h"
+#include "../Features/Types/View/customtypeswindow.h"
 
 
 namespace Ui {

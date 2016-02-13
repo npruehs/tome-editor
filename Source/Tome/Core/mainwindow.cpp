@@ -12,15 +12,15 @@
 #include <QTextStream>
 #include <QXmlStreamWriter>
 
-#include "Export/Controller/exportcontroller.h"
-#include "Fields/Controller/fielddefinitionsetserializer.h"
-#include "Projects/Model/project.h"
-#include "Projects/Controller/projectserializer.h"
-#include "Records/Controller/recordsetserializer.h"
-#include "Settings/Controller/settingscontroller.h"
-#include "Types/Model/builtintype.h"
-#include "Util/pathutils.h"
-#include "Util/listutils.h"
+#include "../Features/Export/Controller/exportcontroller.h"
+#include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
+#include "../Features/Projects/Model/project.h"
+#include "../Features/Projects/Controller/projectserializer.h"
+#include "../Features/Records/Controller/recordsetserializer.h"
+#include "../Features/Settings/Controller/settingscontroller.h"
+#include "../Features/Types/Model/builtintype.h"
+#include "../Util/pathutils.h"
+#include "../Util/listutils.h"
 
 using namespace Tome;
 

@@ -3,7 +3,7 @@
 
 #include <QSharedPointer>
 
-#include "Projects/Model/project.h"
+#include "../Features/Projects/Model/project.h"
 
 
 namespace Tome

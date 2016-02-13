@@ -2,7 +2,7 @@
 
 #include <QXmlStreamWriter>
 
-#include "../../IO/xmlreader.h"
+#include "../../../IO/xmlreader.h"
 
 using namespace Tome;
 

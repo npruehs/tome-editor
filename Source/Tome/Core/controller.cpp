@@ -7,16 +7,16 @@
 #include <QObject>
 #include <QTextStream>
 
-#include "Components/Controller/componentscontroller.h"
-#include "Export/Controller/exportcontroller.h"
-#include "Fields/Controller/fielddefinitionscontroller.h"
-#include "Fields/Controller/fielddefinitionsetserializer.h"
-#include "Projects/Controller/projectserializer.h"
-#include "Records/Controller/recordscontroller.h"
-#include "Records/Controller/recordsetserializer.h"
-#include "Settings/Controller/settingscontroller.h"
-#include "Types/Controller/typescontroller.h"
-#include "Util/pathutils.h"
+#include "../Features/Components/Controller/componentscontroller.h"
+#include "../Features/Export/Controller/exportcontroller.h"
+#include "../Features/Fields/Controller/fielddefinitionscontroller.h"
+#include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
+#include "../Features/Projects/Controller/projectserializer.h"
+#include "../Features/Records/Controller/recordscontroller.h"
+#include "../Features/Records/Controller/recordsetserializer.h"
+#include "../Features/Settings/Controller/settingscontroller.h"
+#include "../Features/Types/Controller/typescontroller.h"
+#include "../Util/pathutils.h"
 
 using namespace Tome;
 
