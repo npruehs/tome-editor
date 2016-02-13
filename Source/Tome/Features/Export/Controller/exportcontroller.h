@@ -1,5 +1,5 @@
-#ifndef RECORDEXPORTER_H
-#define RECORDEXPORTER_H
+#ifndef EXPORTCONTROLLER_H
+#define EXPORTCONTROLLER_H
 
 #include <QIODevice>
 #include <QString>
@@ -40,4 +40,4 @@ namespace Tome
     };
 }
 
-#endif // RECORDEXPORTER_H
+#endif // EXPORTCONTROLLER_H

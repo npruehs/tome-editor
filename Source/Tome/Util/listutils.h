@@ -1,5 +1,5 @@
-#ifndef LISTUTILS
-#define LISTUTILS
+#ifndef LISTUTILS_H
+#define LISTUTILS_H
 
 #include <QList>
 
@@ -41,5 +41,5 @@ namespace Tome
     }
 }
 
-#endif // LISTUTILS
+#endif // LISTUTILS_H
 

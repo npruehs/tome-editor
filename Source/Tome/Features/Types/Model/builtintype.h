@@ -1,5 +1,5 @@
-#ifndef FIELDTYPE
-#define FIELDTYPE
+#ifndef BUILTINTYPE_H
+#define BUILTINTYPE_H
 
 #include <QString>
 
@@ -18,4 +18,4 @@ namespace Tome
     }
 }
 
-#endif // FIELDTYPE
+#endif // BUILTINTYPE_H

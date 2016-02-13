@@ -1,5 +1,5 @@
-#ifndef MEMORYUTILS
-#define MEMORYUTILS
+#ifndef MEMORYUTILS_H
+#define MEMORYUTILS_H
 
 #include <QLayout>
 
@@ -23,5 +23,5 @@ namespace Tome
     }
 }
 
-#endif // MEMORYUTILS
+#endif // MEMORYUTILS_H
 

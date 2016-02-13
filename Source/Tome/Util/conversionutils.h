@@ -1,5 +1,5 @@
-#ifndef CONVERSIONUTILS
-#define CONVERSIONUTILS
+#ifndef CONVERSIONUTILS_H
+#define CONVERSIONUTILS_H
 
 #include <QString>
 
@@ -17,5 +17,5 @@ namespace Tome
     }
 }
 
-#endif // CONVERSIONUTILS
+#endif // CONVERSIONUTILS_H
 

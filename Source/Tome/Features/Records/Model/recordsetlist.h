@@ -1,5 +1,5 @@
-#ifndef RECORDSETLIST
-#define RECORDSETLIST
+#ifndef RECORDSETLIST_H
+#define RECORDSETLIST_H
 
 #include <QList>
 #include "recordset.h"
@@ -10,4 +10,4 @@ namespace Tome
 }
 
 
-#endif // RECORDSETLIST
+#endif // RECORDSETLIST_H

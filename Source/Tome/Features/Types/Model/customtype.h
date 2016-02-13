@@ -1,5 +1,5 @@
-#ifndef CUSTOMFIELDTYPE_H
-#define CUSTOMFIELDTYPE_H
+#ifndef CUSTOMTYPE_H
+#define CUSTOMTYPE_H
 
 #include <QMap>
 #include <QString>
@@ -57,4 +57,4 @@ namespace Tome
     }
 }
 
-#endif // CUSTOMFIELDTYPE_H
+#endif // CUSTOMTYPE_H
