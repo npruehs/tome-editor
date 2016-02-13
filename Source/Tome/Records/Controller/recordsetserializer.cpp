@@ -19,10 +19,10 @@ RecordSetSerializer::RecordSetSerializer()
 
 }
 
-void RecordSetSerializer::serialize(QSharedPointer<QIODevice> device, const RecordSet& recordSet) const
+void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSet) const
 {
     // Open device stream.
-    QXmlStreamWriter stream(device.data());
+    QXmlStreamWriter stream(&device);
     stream.setAutoFormatting(true);
 
     // Begin document.
@@ -64,11 +64,10 @@ void RecordSetSerializer::serialize(QSharedPointer<QIODevice> device, const Reco
 }
 
 
-void RecordSetSerializer::deserialize(QSharedPointer<QIODevice> device, RecordSet& recordSet) const
+void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) const
 {
     // Open device stream.
-    QSharedPointer<QXmlStreamReader> stream =
-            QSharedPointer<QXmlStreamReader>::create(device.data());
+    QXmlStreamReader stream(&device);
     XmlReader reader(stream);
 
     // Begin document.

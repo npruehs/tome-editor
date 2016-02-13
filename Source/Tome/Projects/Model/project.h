@@ -7,7 +7,7 @@
 #include <QVector>
 
 #include "../../Components/Model/componentlist.h"
-#include "../../Export/Model/recordexporttemplate.h"
+#include "../../Export/Model/recordexporttemplatemap.h"
 #include "../../Fields/Model/fielddefinitionsetlist.h"
 #include "../../Records/Model/recordsetlist.h"
 #include "../../Types/Model/customtypelist.h"
@@ -25,7 +25,7 @@ namespace Tome
 
             ComponentList components;
             FieldDefinitionSetList fieldDefinitionSets;
-            QMap<QString, QSharedPointer<RecordExportTemplate> > recordExportTemplates;
+            RecordExportTemplateMap recordExportTemplates;
             RecordSetList recordSets;
             CustomTypeList types;
     };

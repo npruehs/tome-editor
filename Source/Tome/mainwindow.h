@@ -55,20 +55,8 @@ class MainWindow : public QMainWindow
         void treeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
     private:
-        static const QString FieldDefinitionFileExtension;
-        static const QString ProjectFileExtension;
-        static const QString RecordExportComponentDelimiterExtension;
-        static const QString RecordExportComponentTemplateExtension;
-        static const QString RecordExportRecordFileTemplateExtension;
-        static const QString RecordExportRecordTemplateExtension;
-        static const QString RecordExportRecordDelimiterExtension;
-        static const QString RecordExportFieldValueTemplateExtension;
-        static const QString RecordExportFieldValueDelimiterExtension;
-        static const QString RecordFileExtension;
-
         Ui::MainWindow *ui;
 
-        QSharedPointer<Tome::Project> project;
         QSharedPointer<Tome::Controller> controller;
 
         AboutWindow *aboutWindow;
@@ -80,15 +68,10 @@ class MainWindow : public QMainWindow
         RecordWindow* recordWindow;
 
         void addRecordField(const QString& fieldId);
-        void createNewProject(const QString& name, const QString& path);
-        QString getFullProjectPath() const;
-        QString getFullProjectPath(QSharedPointer<Tome::Project> project) const;
         QString getSelectedRecordDisplayName() const;
         void openProject(QString path);
-        QString readProjectFile(QString projectPath, QString fileName);
         void removeRecordField(const QString& fieldId);
-        bool saveProject(QSharedPointer<Tome::Project> project);
-        void setProject(QSharedPointer<Tome::Project> project);
+        void onProjectChanged();
         void showWindow(QWidget* widget);
         void updateMenus();
         void updateRecentProjects();

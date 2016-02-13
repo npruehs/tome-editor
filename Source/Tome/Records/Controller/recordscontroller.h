@@ -13,6 +13,7 @@ namespace Tome
         public:
             RecordsController(const FieldDefinitionsController& fieldDefinitionsController);
 
+            const Record addRecord(const QString& id, const QString& displayName);
             void addRecordField(const QString& recordId, const QString& fieldId);
             const RecordSetList& getRecordSets() const;
 
@@ -29,6 +30,8 @@ namespace Tome
              */
             const QStringList getRecordNames() const;
 
+            int indexOf(const Record& record) const;
+            void removeRecordAt(const int index);
             void removeRecordField(const QString& recordId, const QString& fieldId);
             void setRecordSets(RecordSetList& model);
             void updateRecord(const QString& oldId, const QString& newId, const QString& displayName);

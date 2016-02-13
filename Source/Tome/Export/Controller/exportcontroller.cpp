@@ -1,5 +1,8 @@
 #include "exportcontroller.h"
 
+#include <stdexcept>
+
+#include <QFile>
 #include <QStringBuilder>
 #include <QTextStream>
 
@@ -21,6 +24,31 @@ ExportController::ExportController(const FieldDefinitionsController& fieldDefini
     : fieldDefinitionsController(fieldDefinitionsController),
       recordsController(recordsController)
 {
+}
+
+const RecordExportTemplate ExportController::getRecordExportTemplate(const QString& name) const
+{
+    return this->model->value(name);
+}
+
+const RecordExportTemplateMap&ExportController::getRecordExportTemplates() const
+{
+    return *this->model;
+}
+
+void ExportController::exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath)
+{
+    QFile file(filePath);
+
+    if (file.open(QIODevice::ReadWrite | QIODevice::Truncate))
+    {
+        this->exportRecords(exportTemplate, file);
+    }
+    else
+    {
+        QString errorMessage = QObject::tr("Destination file could not be written:\r\n") + filePath;
+        throw std::runtime_error(errorMessage.toStdString());
+    }
 }
 
 void ExportController::exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device)
@@ -132,4 +160,9 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
     // Write record file.
     QTextStream textStream(&device);
     textStream << recordFileString;
+}
+
+void ExportController::setRecordExportTemplates(RecordExportTemplateMap& model)
+{
+    this->model = &model;
 }

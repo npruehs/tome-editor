@@ -22,19 +22,7 @@
 #include "Util/pathutils.h"
 #include "Util/listutils.h"
 
-
 using namespace Tome;
-
-const QString MainWindow::FieldDefinitionFileExtension = ".tfields";
-const QString MainWindow::ProjectFileExtension = ".tproj";
-const QString MainWindow::RecordFileExtension = ".tdata";
-const QString MainWindow::RecordExportComponentTemplateExtension = ".texportc";
-const QString MainWindow::RecordExportComponentDelimiterExtension = ".texportcd";
-const QString MainWindow::RecordExportRecordFileTemplateExtension = ".texportf";
-const QString MainWindow::RecordExportRecordTemplateExtension = ".texportr";
-const QString MainWindow::RecordExportRecordDelimiterExtension = ".texportrd";
-const QString MainWindow::RecordExportFieldValueTemplateExtension = ".texportv";
-const QString MainWindow::RecordExportFieldValueDelimiterExtension = ".texportvd";
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -142,7 +130,20 @@ void MainWindow::on_actionNew_Project_triggered()
         const QString& projectName = this->newProjectWindow->getProjectName();
         const QString& projectPath = this->newProjectWindow->getProjectPath();
 
-        this->createNewProject(projectName, projectPath);
+        try
+        {
+            this->controller->createProject(projectName, projectPath);
+            this->onProjectChanged();
+        }
+        catch (std::runtime_error& e)
+        {
+            QMessageBox::critical(
+                        this,
+                        tr("Unable to create project"),
+                        e.what(),
+                        QMessageBox::Close,
+                        QMessageBox::Close);
+        }
     }
 }
 
@@ -154,12 +155,24 @@ void MainWindow::on_actionOpen_Project_triggered()
                                                                   QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
                                                                   "Tome Project Files (*.tproj)");
 
-    this->openProject(projectFileName);
+    this->controller->openProject(projectFileName);
 }
 
 void MainWindow::on_actionSave_Project_triggered()
 {
-    this->saveProject(this->project);
+    try
+    {
+         this->controller->saveProject();
+    }
+    catch (std::runtime_error& e)
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to create project"),
+                    e.what(),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+    }
 }
 
 void MainWindow::on_actionNew_Record_triggered()
@@ -172,9 +185,12 @@ void MainWindow::on_actionNew_Record_triggered()
     // Add fields.
     this->recordWindow->clearRecordFields();
 
-    for (int i = 0; i < this->project->fieldDefinitionSets.size(); ++i)
+    const FieldDefinitionSetList& fieldDefinitionSetList =
+            this->controller->getFieldDefinitionsController().getFieldDefinitionSets();
+
+    for (int i = 0; i < fieldDefinitionSetList.size(); ++i)
     {
-        const FieldDefinitionSet& fieldDefinitionSet = this->project->fieldDefinitionSets[i];
+        const FieldDefinitionSet& fieldDefinitionSet = fieldDefinitionSetList[i];
 
         for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
         {
@@ -191,15 +207,10 @@ void MainWindow::on_actionNew_Record_triggered()
         const QString& recordDisplayName = this->recordWindow->getRecordDisplayName();
 
         // Update model.
-        QSharedPointer<Record> record = QSharedPointer<Record>::create();
-        record->id = recordId;
-        record->displayName = recordDisplayName;
+        const Record& record = this->controller->getRecordsController().addRecord(recordId, recordDisplayName);
 
-        RecordList& records = this->project->recordSets[0].records;
-        int index = findInsertionIndex(records, *record.data(), recordLessThanDisplayName);
-        records.insert(index, *record.data());
-
-        // Insert tree view item.
+        // Update view.
+        int index = this->controller->getRecordsController().indexOf(record);
         QTreeWidgetItem* newItem = new QTreeWidgetItem((QTreeWidget*)0, QStringList(recordDisplayName));
         this->ui->treeWidget->insertTopLevelItem(index, newItem);
 
@@ -249,9 +260,12 @@ void MainWindow::on_actionEdit_Record_triggered()
 
     this->recordWindow->clearRecordFields();
 
-    for (int i = 0; i < this->project->fieldDefinitionSets.size(); ++i)
+    const FieldDefinitionSetList& fieldDefinitionSets =
+            this->controller->getFieldDefinitionsController().getFieldDefinitionSets();
+
+    for (int i = 0; i < fieldDefinitionSets.size(); ++i)
     {
-        const FieldDefinitionSet& fieldDefinitionSet = this->project->fieldDefinitionSets[i];
+        const FieldDefinitionSet& fieldDefinitionSet = fieldDefinitionSets[i];
 
         for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
         {
@@ -315,11 +329,13 @@ void MainWindow::on_actionRemove_Record_triggered()
         return;
     }
 
+    int index = currentIndex.row();
+
     // Update model.
-    this->project->recordSets[0].records.removeAt(currentIndex.row());
+    this->controller->getRecordsController().removeRecordAt(index);
 
     // Update view.
-    this->ui->treeWidget->takeTopLevelItem(currentIndex.row());
+    this->ui->treeWidget->takeTopLevelItem(index);
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -425,12 +441,12 @@ void MainWindow::exportRecords(QAction* exportAction)
 {
     // Get export template.
     QString exportTemplateName = exportAction->text();
-    QSharedPointer<RecordExportTemplate> exportTemplate =
-            this->project->recordExportTemplates[exportTemplateName];
+    const RecordExportTemplate& exportTemplate =
+            this->controller->getExportController().getRecordExportTemplate(exportTemplateName);
 
     // Build export file name suggestion.
-    const QString suggestedFileName = this->project->name + exportTemplate->fileExtension;
-    const QString suggestedFilePath = combinePaths(this->project->path, suggestedFileName);
+    const QString suggestedFileName = this->controller->getProjectName() + exportTemplate.fileExtension;
+    const QString suggestedFilePath = combinePaths(this->controller->getProjectPath(), suggestedFileName);
 
     // Show file dialog.
     QString filePath = QFileDialog::getSaveFileName(this,
@@ -443,21 +459,18 @@ void MainWindow::exportRecords(QAction* exportAction)
     }
 
     // Export records.
-    QFile file(filePath);
-
-    if (file.open(QIODevice::ReadWrite | QIODevice::Truncate))
+    try
     {
-        this->controller->getExportController().exportRecords(*exportTemplate.data(), file);
+        this->controller->getExportController().exportRecords(exportTemplate, filePath);
     }
-    else
+    catch (std::runtime_error& e)
     {
         QMessageBox::critical(
                     this,
                     tr("Unable to export records"),
-                    tr("Destination file could not be written:\r\n") + filePath,
+                    e.what(),
                     QMessageBox::Close,
                     QMessageBox::Close);
-        return;
     }
 }
 
@@ -520,46 +533,6 @@ void MainWindow::addRecordField(const QString& fieldId)
     this->updateRecordRow(index);
 }
 
-void MainWindow::createNewProject(const QString &projectName, const QString &projectPath)
-{
-    // Create new project.
-    QSharedPointer<Project> newProject = QSharedPointer<Project>::create();
-    newProject->name = projectName;
-    newProject->path = projectPath;
-
-    // Create field definition set.
-    FieldDefinitionSet fieldDefinitionSet = FieldDefinitionSet();
-    fieldDefinitionSet.name = projectName;
-    newProject->fieldDefinitionSets.push_back(fieldDefinitionSet);
-
-    // Create record set.
-    RecordSet recordSet = RecordSet();
-    recordSet.name = projectName;
-    newProject->recordSets.push_back(recordSet);
-
-    // Write project files.
-    if (this->saveProject(newProject))
-    {
-        // Set project reference.
-        this->setProject(newProject);
-    }
-}
-
-QString MainWindow::getFullProjectPath() const
-{
-    return this->getFullProjectPath(this->project);
-}
-
-QString MainWindow::getFullProjectPath(QSharedPointer<Project> project) const
-{
-    if (project == 0)
-    {
-        return QString();
-    }
-
-    return combinePaths(project->path, project->name + ProjectFileExtension);
-}
-
 QString MainWindow::getSelectedRecordDisplayName() const
 {
     QModelIndexList selectedIndexes = this->ui->treeWidget->selectionModel()->selectedIndexes();
@@ -579,196 +552,24 @@ QString MainWindow::getSelectedRecordDisplayName() const
     return currentIndex.data(Qt::DisplayRole).toString();
 }
 
-void MainWindow::openProject(QString projectFileName)
+void MainWindow::openProject(QString path)
 {
-    if (projectFileName.count() <= 0)
+    try
     {
-        return;
-    }
-
-    // Open project file.
-    QSharedPointer<QFile> projectFile = QSharedPointer<QFile>::create(projectFileName);
-    QSharedPointer<QFileInfo> projectFileInfo = QSharedPointer<QFileInfo>::create(projectFileName);
-    const QString projectPath = projectFileInfo->path();
-
-    if (projectFile->open(QIODevice::ReadOnly))
-    {
-        // Load project from file.
-        QSharedPointer<ProjectSerializer> projectSerializer =
-                QSharedPointer<ProjectSerializer>::create();
-        QSharedPointer<Project> project = QSharedPointer<Project>::create();
-        project->path = projectPath;
-
-        try
-        {
-            projectSerializer->deserialize(projectFile, project);
-        }
-        catch (const std::runtime_error& e)
-        {
-            QMessageBox::critical(
-                        this,
-                        tr("Unable to open project"),
-                        tr("File could not be read: ") + projectFileName + "\r\n" + e.what(),
-                        QMessageBox::Close,
-                        QMessageBox::Close);
-            return;
-        }
-
-        // Load field definition files.
-        QSharedPointer<FieldDefinitionSetSerializer> fieldDefinitionSerializer =
-                QSharedPointer<FieldDefinitionSetSerializer>::create();
-
-        for (int i = 0; i < project->fieldDefinitionSets.size(); ++i)
-        {
-            FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
-
-            // Open field definition file.
-            const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSet.name + FieldDefinitionFileExtension);
-            QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
-
-            if (fieldDefinitionFile.open(QIODevice::ReadOnly))
-            {
-                try
-                {
-                    fieldDefinitionSerializer->deserialize(fieldDefinitionFile, fieldDefinitionSet);
-                }
-                catch (const std::runtime_error& e)
-                {
-                    QMessageBox::critical(
-                                this,
-                                tr("Unable to open project"),
-                                tr("File could not be read: ") + fullFieldDefinitionSetPath + "\r\n" + e.what(),
-                                QMessageBox::Close,
-                                QMessageBox::Close);
-                    return;
-                }
-            }
-            else
-            {
-                QMessageBox::critical(
-                            this,
-                            tr("Unable to open project"),
-                            tr("File could not be read:\r\n") + fullFieldDefinitionSetPath,
-                            QMessageBox::Close,
-                            QMessageBox::Close);
-                return;
-            }
-        }
-
-        // Load record files.
-        QSharedPointer<RecordSetSerializer> recordSetSerializer =
-                QSharedPointer<RecordSetSerializer>::create();
-
-        for (int i = 0; i < project->recordSets.size(); ++i)
-        {
-            RecordSet& recordSet = project->recordSets[i];
-
-            // Open record file.
-            const QString fullRecordSetPath = combinePaths(projectPath, recordSet.name + RecordFileExtension);
-            QSharedPointer<QFile> recordFile = QSharedPointer<QFile>::create(fullRecordSetPath);
-
-            if (recordFile->open(QIODevice::ReadOnly))
-            {
-                try
-                {
-                    recordSetSerializer->deserialize(recordFile, recordSet);
-                }
-                catch (const std::runtime_error& e)
-                {
-                    QMessageBox::critical(
-                                this,
-                                tr("Unable to open project"),
-                                tr("File could not be read: ") + fullRecordSetPath + "\r\n" + e.what(),
-                                QMessageBox::Close,
-                                QMessageBox::Close);
-                    return;
-                }
-            }
-            else
-            {
-                QMessageBox::critical(
-                            this,
-                            tr("Unable to open project"),
-                            tr("File could not be read:\r\n") + fullRecordSetPath,
-                            QMessageBox::Close,
-                            QMessageBox::Close);
-                return;
-            }
-        }
-
-        // Load record export template files.
-        for (QMap<QString, QSharedPointer<RecordExportTemplate> >::iterator it = project->recordExportTemplates.begin();
-             it != project->recordExportTemplates.end();
-             ++it)
-        {
-            QSharedPointer<RecordExportTemplate> exportTemplate = it.value();
-
-            try
-            {
-                exportTemplate->fieldValueDelimiter =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportFieldValueDelimiterExtension);
-                exportTemplate->fieldValueTemplate =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportFieldValueTemplateExtension);
-                exportTemplate->recordDelimiter =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordDelimiterExtension);
-                exportTemplate->recordFileTemplate =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordFileTemplateExtension);
-                exportTemplate->recordTemplate =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportRecordTemplateExtension);
-                exportTemplate->componentDelimiter =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportComponentDelimiterExtension);
-                exportTemplate->componentTemplate =
-                        this->readProjectFile(projectPath, exportTemplate->name + RecordExportComponentTemplateExtension);
-            }
-            catch (const std::runtime_error& e)
-            {
-                QMessageBox::critical(
-                            this,
-                            tr("Unable to open project"),
-                            tr("File could not be read:\r\n") + e.what(),
-                            QMessageBox::Close,
-                            QMessageBox::Close);
-                return;
-            }
-        }
-
-        // Add to recent projects.
-        this->controller->getSettingsController().addRecentProject(projectFileName);
+        this->controller->openProject(path);
         this->updateRecentProjects();
-
-        // Set project reference.
-        this->setProject(project);
+        this->onProjectChanged();
     }
-    else
+    catch (std::runtime_error& e)
     {
-        // Remove from recent projects.
-        this->controller->getSettingsController().removeRecentProject(projectFileName);
         this->updateRecentProjects();
 
         QMessageBox::critical(
                     this,
                     tr("Unable to open project"),
-                    tr("File could not be read:\r\n") + projectFileName,
+                    e.what(),
                     QMessageBox::Close,
                     QMessageBox::Close);
-        return;
-    }
-}
-
-QString MainWindow::readProjectFile(QString projectPath, QString fileName)
-{
-    // Open export template file.
-    const QString fullPath = combinePaths(projectPath, fileName);
-    QSharedPointer<QFile> file = QSharedPointer<QFile>::create(fullPath);
-
-    if (file->open(QIODevice::ReadOnly))
-    {
-        QTextStream textStream(file.data());
-        return textStream.readAll();
-    }
-    else
-    {
-        throw std::runtime_error(fullPath.toStdString());
     }
 }
 
@@ -786,120 +587,27 @@ void MainWindow::removeRecordField(const QString& fieldId)
     this->ui->tableWidget->removeRow(index);
 }
 
-bool MainWindow::saveProject(QSharedPointer<Project> project)
+void MainWindow::onProjectChanged()
 {
-    QString& projectPath = project->path;
-
-    QSharedPointer<ProjectSerializer> projectSerializer =
-            QSharedPointer<ProjectSerializer>::create();
-
-    // Build file name.
-    const QString fullProjectPath = this->getFullProjectPath(project);
-
-    // Write project file.
-    QSharedPointer<QFile> projectFile = QSharedPointer<QFile>::create(fullProjectPath);
-
-    if (projectFile->open(QIODevice::ReadWrite | QIODevice::Truncate))
-    {
-        projectSerializer->serialize(projectFile, project);
-    }
-    else
-    {
-        QMessageBox::critical(
-                    this,
-                    tr("Unable to create project"),
-                    tr("Destination file could not be written:\r\n") + fullProjectPath,
-                    QMessageBox::Close,
-                    QMessageBox::Close);
-        return false;
-    }
-
-    // Write field definition sets.
-    QSharedPointer<FieldDefinitionSetSerializer> fieldDefinitionSetSerializer =
-            QSharedPointer<FieldDefinitionSetSerializer>::create();
-
-    for (int i = 0; i < project->fieldDefinitionSets.size(); ++i)
-    {
-        const FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
-
-        // Build file name.
-        const QString fieldDefinitionSetFileName = fieldDefinitionSet.name + FieldDefinitionFileExtension;
-        const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSetFileName);
-
-        // Write file.
-        QFile fieldDefinitionSetFile(fullFieldDefinitionSetPath);
-
-        if (fieldDefinitionSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
-        {
-            fieldDefinitionSetSerializer->serialize(fieldDefinitionSetFile, fieldDefinitionSet);
-        }
-        else
-        {
-            QMessageBox::critical(
-                        this,
-                        tr("Unable to create project"),
-                        tr("Destination file could not be written:\r\n") + fullFieldDefinitionSetPath,
-                        QMessageBox::Close,
-                        QMessageBox::Close);
-            return false;
-        }
-    }
-
-
-    // Write record sets.
-    QSharedPointer<Tome::RecordSetSerializer> recordSetSerializer =
-            QSharedPointer<Tome::RecordSetSerializer>::create();
-
-    for (int i = 0; i < project->recordSets.size(); ++i)
-    {
-        const RecordSet& recordSet = project->recordSets[i];
-
-        // Build file name.
-        const QString recordSetFileName = recordSet.name + RecordFileExtension;
-        const QString fullRecordSetPath = Tome::combinePaths(projectPath, recordSetFileName);
-
-        // Write file.
-        QSharedPointer<QFile> recordSetFile = QSharedPointer<QFile>::create(fullRecordSetPath);
-
-        if (recordSetFile->open(QIODevice::ReadWrite | QIODevice::Truncate))
-        {
-            recordSetSerializer->serialize(recordSetFile, recordSet);
-        }
-        else
-        {
-            QMessageBox::critical(
-                        this,
-                        tr("Unable to create project"),
-                        tr("Destination file could not be written:\r\n") + fullRecordSetPath,
-                        QMessageBox::Close,
-                        QMessageBox::Close);
-            return false;
-        }
-    }
-
-    return true;
-}
-
-void MainWindow::setProject(QSharedPointer<Project> project)
-{
-    this->project = project;
-
-    // Update controllers.
-    this->controller->setProject(project);
-
     // Enable project-specific buttons.
     this->updateMenus();
 
     // Setup tree view.
     this->ui->treeWidget->setColumnCount(1);
 
-    const RecordList& records = this->project->recordSets[0].records;
     QList<QTreeWidgetItem *> items;
 
-    for (int i = 0; i < records.size(); ++i)
+    const RecordSetList& recordSetList = this->controller->getRecordsController().getRecordSets();
+
+    for (int i = 0; i < recordSetList.size(); ++i)
     {
-        const Record& record = records[i];
-        items.append(new QTreeWidgetItem((QTreeWidget*)0, QStringList(record.displayName)));
+        const RecordSet& recordSet = recordSetList[i];
+
+        for (int j = 0; j < recordSet.records.size(); ++j)
+        {
+            const Record& record = recordSet.records[j];
+            items.append(new QTreeWidgetItem((QTreeWidget*)0, QStringList(record.displayName)));
+        }
     }
 
     this->ui->treeWidget->insertTopLevelItems(0, items);
@@ -915,8 +623,11 @@ void MainWindow::setProject(QSharedPointer<Project> project)
     // Setup record exports.
     this->ui->menuExport->clear();
 
-    for (QMap<QString, QSharedPointer<RecordExportTemplate> >::iterator it = this->project->recordExportTemplates.begin();
-         it != this->project->recordExportTemplates.end();
+    const RecordExportTemplateMap& recordExportTemplateMap =
+            this->controller->getExportController().getRecordExportTemplates();
+
+    for (RecordExportTemplateMap::const_iterator it = recordExportTemplateMap.begin();
+         it != recordExportTemplateMap.end();
          ++it)
     {
         QAction* exportAction = new QAction(it.key(), this);
@@ -936,7 +647,7 @@ void MainWindow::showWindow(QWidget* widget)
 
 void MainWindow::updateMenus()
 {
-    bool projectLoaded = this->project != 0;
+    bool projectLoaded = this->controller->isProjectLoaded();
 
     this->ui->actionSave_Project->setEnabled(projectLoaded);
 
@@ -1032,10 +743,10 @@ void MainWindow::updateWindowTitle()
     // Get application version.
     QString windowTitle = "Tome " + QApplication::instance()->applicationVersion();
 
-    if (this->project != 0)
+    if (this->controller->isProjectLoaded())
     {
         // Add project name.
-        windowTitle += " - " + this->getFullProjectPath();
+        windowTitle += " - " + this->controller->getFullProjectPath();
     }
 
     this->setWindowTitle(windowTitle);

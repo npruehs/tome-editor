@@ -2,12 +2,28 @@
 
 #include <stdexcept>
 
+#include "../../Util/listutils.h"
+
+
 using namespace Tome;
 
 
 RecordsController::RecordsController(const FieldDefinitionsController& fieldDefinitionsController)
     : fieldDefinitionsController(fieldDefinitionsController)
 {
+}
+
+const Record RecordsController::addRecord(const QString& id, const QString& displayName)
+{
+    Record record = Record();
+    record.id = id;
+    record.displayName = displayName;
+
+    RecordList& records = (*this->model)[0].records;
+    int index = findInsertionIndex(records, record, recordLessThanDisplayName);
+    records.insert(index, record);
+
+    return record;
 }
 
 void RecordsController::addRecordField(const QString& recordId, const QString& fieldId)
@@ -59,6 +75,16 @@ const QStringList RecordsController::getRecordNames() const
     }
 
     return names;
+}
+
+int RecordsController::indexOf(const Record& record) const
+{
+    return this->model->at(0).records.indexOf(record);
+}
+
+void RecordsController::removeRecordAt(const int index)
+{
+    (*this->model)[0].records.removeAt(index);
 }
 
 void RecordsController::removeRecordField(const QString& recordId, const QString& fieldId)

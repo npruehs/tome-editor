@@ -5,7 +5,7 @@
 #include <QSharedPointer>
 #include <QString>
 
-#include "../Model/recordexporttemplate.h"
+#include "../Model/recordexporttemplatemap.h"
 #include "../../Fields//Controller/fielddefinitionscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 
@@ -17,9 +17,16 @@ namespace Tome
         public:
             ExportController(const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController);
 
+            const RecordExportTemplate getRecordExportTemplate(const QString& name) const;
+            const RecordExportTemplateMap& getRecordExportTemplates() const;
+
+            void exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath);
             void exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device);
+            void setRecordExportTemplates(RecordExportTemplateMap& model);
 
         private:
+            RecordExportTemplateMap* model;
+
             static const QString PlaceholderComponents;
             static const QString PlaceholderComponentName;
             static const QString PlaceholderFieldId;

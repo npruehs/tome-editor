@@ -33,10 +33,10 @@ ProjectSerializer::ProjectSerializer()
 {
 }
 
-void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPointer<Project> project) const
+void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> project) const
 {
     // Open device stream.
-    QXmlStreamWriter writer(device.data());
+    QXmlStreamWriter writer(&device);
     writer.setAutoFormatting(true);
 
     // Begin document.
@@ -86,22 +86,22 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
             // Write record export templates.
             writer.writeStartElement(ElementRecordExportTemplates);
             {
-                for (QMap<QString, QSharedPointer<RecordExportTemplate> >::iterator it = project->recordExportTemplates.begin();
+                for (RecordExportTemplateMap::const_iterator it = project->recordExportTemplates.begin();
                      it != project->recordExportTemplates.end();
                      ++it)
                 {
                     writer.writeStartElement(ElementTemplate);
                     {
-                        QSharedPointer<RecordExportTemplate> exportTemplate = it.value();
+                        const RecordExportTemplate& exportTemplate = it.value();
 
-                        writer.writeTextElement(ElementName, exportTemplate->name);
-                        writer.writeTextElement(ElementFileExtension, exportTemplate->fileExtension);
+                        writer.writeTextElement(ElementName, exportTemplate.name);
+                        writer.writeTextElement(ElementFileExtension, exportTemplate.fileExtension);
 
                         // Write export type map.
                         writer.writeStartElement(ElementTypeMap);
                         {
-                            for (QMap<QString, QString>::iterator itTypeMap = exportTemplate->typeMap.begin();
-                                 itTypeMap != exportTemplate->typeMap.end();
+                            for (QMap<QString, QString>::const_iterator itTypeMap = exportTemplate.typeMap.begin();
+                                 itTypeMap != exportTemplate.typeMap.end();
                                  ++itTypeMap)
                             {
                                 writer.writeStartElement(ElementMapping);
@@ -160,11 +160,10 @@ void ProjectSerializer::serialize(QSharedPointer<QIODevice> device, QSharedPoint
     writer.writeEndDocument();
 }
 
-void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPointer<Project> project) const
+void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> project) const
 {
     // Open device stream.
-    QSharedPointer<QXmlStreamReader> streamReader =
-            QSharedPointer<QXmlStreamReader>::create(device.data());
+    QXmlStreamReader streamReader(&device);
     XmlReader reader(streamReader);
 
     // Begin document.
@@ -220,11 +219,10 @@ void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPoi
                 {
                     reader.readStartElement(ElementTemplate);
                     {
-                        QSharedPointer<RecordExportTemplate> exportTemplate =
-                                QSharedPointer<RecordExportTemplate>::create();
+                        RecordExportTemplate exportTemplate = RecordExportTemplate();
 
-                        exportTemplate->name = reader.readTextElement(ElementName);
-                        exportTemplate->fileExtension = reader.readTextElement(ElementFileExtension);
+                        exportTemplate.name = reader.readTextElement(ElementName);
+                        exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);
 
                         // Read export type map.
                         reader.readStartElement(ElementTypeMap);
@@ -234,7 +232,7 @@ void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPoi
                                 QString typeMapKey = reader.readAttribute(AttributeTomeType);
                                 QString typeMapValue = reader.readAttribute(AttributeExportedType);
 
-                                exportTemplate->typeMap.insert(typeMapKey, typeMapValue);
+                                exportTemplate.typeMap.insert(typeMapKey, typeMapValue);
 
                                 // Advance reader.
                                 reader.readEmptyElement(ElementMapping);
@@ -242,7 +240,7 @@ void ProjectSerializer::deserialize(QSharedPointer<QIODevice> device, QSharedPoi
                         }
                         reader.readEndElement();
 
-                        project->recordExportTemplates.insert(exportTemplate->name, exportTemplate);
+                        project->recordExportTemplates.insert(exportTemplate.name, exportTemplate);
                     }
                     reader.readEndElement();
                 }

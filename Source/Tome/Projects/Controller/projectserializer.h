@@ -18,14 +18,14 @@ namespace Tome
              * @param device Device to write the project to.
              * @param project Project to write.
              */
-            void serialize(QSharedPointer<QIODevice> device, QSharedPointer<Project> project) const;
+            void serialize(QIODevice& device, QSharedPointer<Project> project) const;
 
             /**
              * @brief deserialize Reads the project from the specified device.
              * @param device Device to read the project from.
              * @param project Project to fill with read data.
              */
-            void deserialize(QSharedPointer<QIODevice> device, QSharedPointer<Project> project) const;
+            void deserialize(QIODevice& device, QSharedPointer<Project> project) const;
 
         private:
             static const QString AttributeBaseType;
