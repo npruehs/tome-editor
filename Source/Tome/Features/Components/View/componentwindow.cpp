@@ -13,7 +13,7 @@ ComponentWindow::ComponentWindow(QWidget *parent) :
 
 ComponentWindow::~ComponentWindow()
 {
-    delete ui;
+    delete this->ui;
 }
 
 QString ComponentWindow::getComponentName() const

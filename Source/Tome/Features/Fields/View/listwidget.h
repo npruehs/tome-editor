@@ -6,6 +6,7 @@
 #include <QListWidget>
 #include <QString>
 #include <QToolButton>
+#include <QVBoxLayout>
 #include <QWidget>
 
 #include "listitemwindow.h"
@@ -41,6 +42,7 @@ namespace Tome
             ListItemWindow* listItemWindow;
 
             QHBoxLayout* layout;
+            QVBoxLayout* buttonLayout;
             QListWidget* listWidget;
 
             int getSelectedItemIndex() const;

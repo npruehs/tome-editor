@@ -1,7 +1,6 @@
 #ifndef XMLREADER_H
 #define XMLREADER_H
 
-#include <QSharedPointer>
 #include <QXmlStreamReader>
 
 class XmlReader

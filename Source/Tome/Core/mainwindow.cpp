@@ -28,7 +28,7 @@ using namespace Tome;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    controller(QSharedPointer<Controller>::create()),
+    controller(new Controller()),
     aboutWindow(0),
     componentsWindow(0),
     customTypesWindow(0),
@@ -72,7 +72,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete this->ui;
+    delete this->controller;
+
+    delete this->aboutWindow;
+    delete this->componentsWindow;
+    delete this->customTypesWindow;
+    delete this->fieldDefinitionsWindow;
+    delete this->fieldValueWindow;
+    delete this->newProjectWindow;
+    delete this->recordWindow;
 }
 
 void MainWindow::on_actionExit_triggered()

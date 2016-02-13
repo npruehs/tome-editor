@@ -17,7 +17,7 @@ RecordWindow::RecordWindow(QWidget *parent) :
 
 RecordWindow::~RecordWindow()
 {
-    delete ui;
+    delete this->ui;
 }
 
 void RecordWindow::accept()

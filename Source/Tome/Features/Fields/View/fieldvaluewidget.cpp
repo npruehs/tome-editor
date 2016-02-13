@@ -4,6 +4,7 @@
 
 #include "../../Types/Model/builtintype.h"
 #include "../../../Util/conversionutils.h"
+#include "../../../Util/memoryutils.h"
 
 using namespace Tome;
 
@@ -53,6 +54,7 @@ FieldValueWidget::FieldValueWidget(QWidget *parent) :
 
 FieldValueWidget::~FieldValueWidget()
 {
+    deleteLayout(this->layout);
 }
 
 QString FieldValueWidget::getFieldType() const

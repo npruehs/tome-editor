@@ -54,7 +54,9 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
 
 FieldDefinitionsWindow::~FieldDefinitionsWindow()
 {
-    delete ui;
+    delete this->ui;
+
+    delete this->fieldDefinitionWindow;
 }
 
 void FieldDefinitionsWindow::on_actionNew_Field_triggered()
