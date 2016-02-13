@@ -74,6 +74,14 @@ MainWindow::~MainWindow()
 {
     delete this->ui;
     delete this->controller;
+
+    delete this->aboutWindow;
+    delete this->componentsWindow;
+    delete this->customTypesWindow;
+    delete this->fieldDefinitionsWindow;
+    delete this->fieldValueWindow;
+    delete this->newProjectWindow;
+    delete this->recordWindow;
 }
 
 void MainWindow::on_actionExit_triggered()

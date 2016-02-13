@@ -27,7 +27,9 @@ ComponentsWindow::ComponentsWindow(ComponentsController& controller, QWidget *pa
 
 ComponentsWindow::~ComponentsWindow()
 {
-    delete ui;
+    delete this->ui;
+
+    delete this->componentWindow;
 }
 
 void ComponentsWindow::on_actionNew_Component_triggered()

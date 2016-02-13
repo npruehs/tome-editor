@@ -18,7 +18,9 @@ FieldValueWindow::FieldValueWindow(QWidget *parent) :
 
 FieldValueWindow::~FieldValueWindow()
 {
-    delete ui;
+    delete this->ui;
+
+    delete this->fieldValueWidget;
 }
 
 QString FieldValueWindow::getFieldValue() const

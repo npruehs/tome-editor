@@ -36,7 +36,10 @@ CustomTypesWindow::CustomTypesWindow(TypesController& typesController, QWidget *
 
 CustomTypesWindow::~CustomTypesWindow()
 {
-    delete ui;
+    delete this->ui;
+
+    delete this->enumerationWindow;
+    delete this->listWindow;
 }
 
 void CustomTypesWindow::on_actionNew_Custom_Type_triggered()

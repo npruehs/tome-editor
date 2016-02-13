@@ -14,7 +14,7 @@ ListWindow::ListWindow(Tome::TypesController& typesController, QWidget *parent) 
 
 ListWindow::~ListWindow()
 {
-    delete ui;
+    delete this->ui;
 }
 
 QString ListWindow::getListName() const

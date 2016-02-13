@@ -31,7 +31,9 @@ FieldDefinitionWindow::FieldDefinitionWindow(
 
 FieldDefinitionWindow::~FieldDefinitionWindow()
 {
-    delete ui;
+    delete this->ui;
+
+    delete this->fieldValueWidget;
 }
 
 void FieldDefinitionWindow::accept()

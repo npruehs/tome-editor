@@ -19,7 +19,9 @@ EnumerationWindow::EnumerationWindow(QWidget *parent) :
 
 EnumerationWindow::~EnumerationWindow()
 {
-    delete ui;
+    delete this->ui;
+
+    delete this->enumerationMemberWindow;
 }
 
 QString EnumerationWindow::getEnumerationName() const

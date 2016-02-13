@@ -1,5 +1,8 @@
 #include "listwidget.h"
 
+#include "../../../Util/memoryutils.h"
+
+
 using namespace Tome;
 
 
@@ -15,7 +18,7 @@ ListWidget::ListWidget(QWidget *parent) :
     this->layout->addWidget(this->listWidget);
 
     // Add buttons.
-    QVBoxLayout* buttonLayout = new QVBoxLayout(this);
+    this->buttonLayout = new QVBoxLayout(this);
 
     QToolButton* addButton = new QToolButton(this);
     addButton->setArrowType(Qt::LeftArrow);
@@ -62,6 +65,8 @@ ListWidget::ListWidget(QWidget *parent) :
 
 ListWidget::~ListWidget()
 {
+    deleteLayout(this->buttonLayout);
+    deleteLayout(this->layout);
 }
 
 QString ListWidget::getFieldType() const

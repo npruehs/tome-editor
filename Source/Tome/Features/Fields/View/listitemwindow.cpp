@@ -21,7 +21,9 @@ ListItemWindow::ListItemWindow(QWidget *parent) :
 
 ListItemWindow::~ListItemWindow()
 {
-    delete ui;
+    delete this->ui;
+
+    delete this->fieldValueWidget;
 }
 
 QString ListItemWindow::getValue() const

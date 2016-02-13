@@ -13,7 +13,7 @@ EnumerationMemberWindow::EnumerationMemberWindow(QWidget *parent) :
 
 EnumerationMemberWindow::~EnumerationMemberWindow()
 {
-    delete ui;
+    delete this->ui;
 }
 
 QString EnumerationMemberWindow::getText() const

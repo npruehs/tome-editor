@@ -24,7 +24,7 @@ NewProjectWindow::NewProjectWindow(QWidget *parent) :
 
 NewProjectWindow::~NewProjectWindow()
 {
-    delete ui;
+    delete this->ui;
 }
 
 void NewProjectWindow::on_pushButtonBrowse_clicked()
