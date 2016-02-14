@@ -2,6 +2,8 @@
 <Records>
     <Record Id="Archer" DisplayName="Archer">
         <Acceleration Value="5"/>
+        <AllowedTargets Value="Air"/>
+        <AllowedTargets Value="Ground"/>
         <ArmorType Value="Leather"/>
         <AttackDamage Value="8"/>
         <AttackRange Value="8"/>
@@ -33,6 +35,7 @@
     </Record>
     <Record Id="Knight" DisplayName="Knight">
         <Acceleration Value="8"/>
+        <AllowedTargets Value="Ground"/>
         <ArmorType Value="Mail"/>
         <AttackDamage Value="7"/>
         <AttackRange Value="1"/>
@@ -54,6 +57,8 @@
     </Record>
     <Record Id="Mage" DisplayName="Mage">
         <Acceleration Value="4"/>
+        <AllowedTargets Value="Air"/>
+        <AllowedTargets Value="Ground"/>
         <ArmorType Value="Cloth"/>
         <AttackDamage Value="10"/>
         <AttackRange Value="6"/>
@@ -75,6 +80,7 @@
     </Record>
     <Record Id="Peasant" DisplayName="Peasant">
         <Acceleration Value="4.5"/>
+        <AllowedTargets Value="Ground"/>
         <ArmorType Value="Cloth"/>
         <AttackDamage Value="5"/>
         <AttackRange Value="1"/>
