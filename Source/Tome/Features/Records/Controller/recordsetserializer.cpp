@@ -43,12 +43,12 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
                     stream.writeAttribute(ElementId, record.id);
                     stream.writeAttribute(ElementDisplayName, record.displayName);
 
-                    for (QMap<QString, QString>::const_iterator it = record.fieldValues.begin();
+                    for (QMap<QString, QVariant>::const_iterator it = record.fieldValues.begin();
                          it != record.fieldValues.end();
                          ++it)
                     {
                         stream.writeStartElement(it.key());
-                        stream.writeAttribute(ElementValue, it.value());
+                        stream.writeAttribute(ElementValue, it.value().toString());
                         stream.writeEndElement();
                     }
                 }

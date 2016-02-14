@@ -11,6 +11,8 @@
 
 #include "listitemwindow.h"
 
+#include "../../Records/Controller/recordscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
 
 namespace Tome
 {
@@ -22,7 +24,7 @@ namespace Tome
             Q_OBJECT
 
         public:
-            explicit ListWidget(QWidget *parent = 0);
+            explicit ListWidget(RecordsController& recordsController, TypesController& typesController, QWidget *parent = 0);
             ~ListWidget();
 
             QString getFieldType() const;
@@ -37,13 +39,16 @@ namespace Tome
 
         private:
             QString fieldType;
-            QStringList items;
+            QVariantList items;
 
             ListItemWindow* listItemWindow;
 
             QHBoxLayout* layout;
             QVBoxLayout* buttonLayout;
             QListWidget* listWidget;
+
+            RecordsController& recordsController;
+            TypesController& typesController;
 
             int getSelectedItemIndex() const;
     };

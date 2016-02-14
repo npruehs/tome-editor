@@ -113,7 +113,7 @@ void RecordsController::updateRecord(const QString& oldId, const QString& newId,
     }
 }
 
-void RecordsController::updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QString& fieldValue)
+void RecordsController::updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue)
 {
     Record& record = *this->getRecordById(recordId);
     record.fieldValues[fieldId] = fieldValue;

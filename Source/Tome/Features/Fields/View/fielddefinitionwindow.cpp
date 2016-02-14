@@ -24,7 +24,7 @@ FieldDefinitionWindow::FieldDefinitionWindow(
     ui->setupUi(this);
 
     // Add widget for specifying the default field value.
-    this->fieldValueWidget = new FieldValueWidget(this);
+    this->fieldValueWidget = new FieldValueWidget(this->recordsController, this->typesController, this);
     QFormLayout* layout = static_cast<QFormLayout*>(this->layout());
     layout->insertRow(2, tr("Default Value:"), this->fieldValueWidget);
 }
@@ -86,7 +86,7 @@ QString FieldDefinitionWindow::getFieldId() const
     return this->ui->lineEditId->text();
 }
 
-QString FieldDefinitionWindow::getDefaultValue() const
+QVariant FieldDefinitionWindow::getDefaultValue() const
 {
     return this->fieldValueWidget->getFieldValue();
 }
@@ -116,7 +116,7 @@ void FieldDefinitionWindow::setFieldId(const QString& fieldId)
     this->ui->lineEditId->setText(fieldId);
 }
 
-void FieldDefinitionWindow::setDefaultValue(const QString& defaultValue)
+void FieldDefinitionWindow::setDefaultValue(const QVariant& defaultValue)
 {
     this->fieldValueWidget->setFieldValue(defaultValue);
 }
@@ -128,31 +128,7 @@ void FieldDefinitionWindow::setFieldType(const QString& fieldType) const
 
 void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &fieldType)
 {
-    if (fieldType == BuiltInType::Reference)
-    {
-        QStringList recordNames = this->recordsController.getRecordNames();
-
-        // Allow clearing the field.
-        recordNames << QString();
-
-        this->fieldValueWidget->setEnumeration(recordNames);
-        this->fieldValueWidget->setFieldType(fieldType);
-    }
-    else
-    {
-        const bool isCustomType = this->typesController.isCustomType(fieldType);
-
-        if (isCustomType)
-        {
-            const CustomType& type = this->typesController.getCustomType(fieldType);
-            this->fieldValueWidget->setCustomFieldType(type);
-        }
-        else
-        {
-            // Default built-in type.
-            this->fieldValueWidget->setFieldType(fieldType);
-        }
-    }
+    this->fieldValueWidget->setFieldType(fieldType);
 }
 
 void FieldDefinitionWindow::on_lineEditDisplayName_textEdited(const QString &displayName)

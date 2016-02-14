@@ -13,7 +13,6 @@ namespace Tome
             CustomType();
 
             QString name;
-            QString baseType;
             QMap<QString, QString> restrictions;
 
             /**

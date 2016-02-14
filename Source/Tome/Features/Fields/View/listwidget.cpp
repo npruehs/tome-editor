@@ -6,9 +6,11 @@
 using namespace Tome;
 
 
-ListWidget::ListWidget(QWidget *parent) :
+ListWidget::ListWidget(RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
     QWidget(parent),
-    listItemWindow(0)
+    listItemWindow(0),
+    recordsController(recordsController),
+    typesController(typesController)
 {
     // Create layout.
     this->layout = new QHBoxLayout(this);
@@ -84,7 +86,7 @@ void ListWidget::addItem()
     // Prepare window.
     if (!this->listItemWindow)
     {
-        this->listItemWindow = new ListItemWindow(this);
+        this->listItemWindow = new ListItemWindow(this->recordsController, this->typesController, this);
     }
 
     // Update view.
@@ -95,13 +97,13 @@ void ListWidget::addItem()
 
     if (result == QDialog::Accepted)
     {
-        QString value = this->listItemWindow->getValue();
+        QVariant value = this->listItemWindow->getValue();
 
         // Update model.
         this->items.push_back(value);
 
         // Update view.
-        this->listWidget->addItem(value);
+        this->listWidget->addItem(value.toString());
     }
 }
 

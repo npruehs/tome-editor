@@ -108,7 +108,6 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/customtypelist.h \
     ../Source/Tome/Features/Settings/Controller/settingscontroller.h \
     ../Source/Tome/Util/listutils.h \
-    ../Source/Tome/Util/conversionutils.h \
     ../Source/Tome/Features/Export/Model/recordexporttemplatemap.h \
     ../Source/Tome/Util/memoryutils.h
 

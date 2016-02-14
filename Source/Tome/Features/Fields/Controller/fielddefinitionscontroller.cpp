@@ -12,7 +12,7 @@ FieldDefinitionsController::FieldDefinitionsController()
 {
 }
 
-const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QString& id, const QString& displayName, const QString& fieldType, const QString& defaultValue, const QString& component, const QString& description)
+const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QString& id, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& component, const QString& description)
 {
     FieldDefinition fieldDefinition = FieldDefinition();
     fieldDefinition.id = id;
@@ -54,7 +54,7 @@ void FieldDefinitionsController::setFieldDefinitionSets(FieldDefinitionSetList& 
     this->model = &model;
 }
 
-void FieldDefinitionsController::updateFieldDefinition(const QString& oldId, const QString& newId, const QString& displayName, const QString& fieldType, const QString& defaultValue, const QString& component, const QString& description)
+void FieldDefinitionsController::updateFieldDefinition(const QString& oldId, const QString& newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& component, const QString& description)
 {
     FieldDefinition& fieldDefinition = *this->getFieldDefinitionById(oldId);
 

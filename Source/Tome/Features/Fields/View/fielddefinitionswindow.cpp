@@ -192,7 +192,7 @@ void FieldDefinitionsWindow::updateMenus()
     this->ui->actionDelete_Field->setEnabled(hasSelection);
 }
 
-void FieldDefinitionsWindow::updateFieldDefinition(const QString& oldId, const QString& newId, const QString& displayName, const QString& fieldType, const QString& defaultValue, const QString& description, const Component& component)
+void FieldDefinitionsWindow::updateFieldDefinition(const QString& oldId, const QString& newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Component& component)
 {
     const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(oldId);
 
@@ -220,15 +220,14 @@ void FieldDefinitionsWindow::updateRow(const int i)
     this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(fieldDefinition.id));
     this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(fieldDefinition.displayName));
     this->ui->tableWidget->setItem(i, 2, new QTableWidgetItem(fieldDefinition.fieldType));
-    this->ui->tableWidget->setItem(i, 3, new QTableWidgetItem(fieldDefinition.defaultValue));
+    this->ui->tableWidget->setItem(i, 3, new QTableWidgetItem(fieldDefinition.defaultValue.toString()));
     this->ui->tableWidget->setItem(i, 4, new QTableWidgetItem(fieldDefinition.component));
     this->ui->tableWidget->setItem(i, 5, new QTableWidgetItem(fieldDefinition.description));
 
     if (fieldDefinition.fieldType == BuiltInType::Color)
     {
         // Show color preview.
-        QColor color;
-        color.setNamedColor(fieldDefinition.defaultValue);
+        QColor color = fieldDefinition.defaultValue.value<QColor>();
         this->ui->tableWidget->item(i, 3)->setData(Qt::DecorationRole, color);
     }
 }

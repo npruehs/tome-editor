@@ -386,7 +386,7 @@ void MainWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
 
     // Get current field data.
     const QString fieldId = record.fieldValues.keys()[index.row()];
-    const QString fieldValue = record.fieldValues[fieldId];
+    const QVariant fieldValue = record.fieldValues[fieldId];
 
     const FieldDefinition& field =
             this->controller->getFieldDefinitionsController().getFieldDefinition(fieldId);
@@ -394,41 +394,16 @@ void MainWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
     // Prepare window.
     if (!this->fieldValueWindow)
     {
-        this->fieldValueWindow = new FieldValueWindow(this);
+        this->fieldValueWindow = new FieldValueWindow
+                (this->controller->getRecordsController(),
+                 this->controller->getTypesController(),
+                 this);
     }
 
     // Update view.
     this->fieldValueWindow->setFieldDisplayName(field.displayName);
     this->fieldValueWindow->setFieldDescription(field.description);
-
-    if (field.fieldType == BuiltInType::Reference)
-    {
-        QStringList recordNames = this->controller->getRecordsController().getRecordNames();
-
-        // Allow clearing the field.
-        recordNames << QString();
-
-        this->fieldValueWindow->setFieldType(field.fieldType);
-        this->fieldValueWindow->setEnumeration(recordNames);
-    }
-    else
-    {
-        const bool isCustomType = this->controller->getTypesController().isCustomType(field.fieldType);
-
-        if (isCustomType)
-        {
-            const CustomType& type =
-                    this->controller->getTypesController().getCustomType(field.fieldType);
-
-            this->fieldValueWindow->setCustomFieldType(type);
-        }
-        else
-        {
-            // Default built-in type.
-            this->fieldValueWindow->setFieldType(field.fieldType);
-        }
-    }
-
+    this->fieldValueWindow->setFieldType(field.fieldType);
     this->fieldValueWindow->setFieldValue(fieldValue);
 
     // Show window.
@@ -436,7 +411,7 @@ void MainWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
 
     if (result == QDialog::Accepted)
     {
-        QString fieldValue = this->fieldValueWindow->getFieldValue();
+        QVariant fieldValue = this->fieldValueWindow->getFieldValue();
 
         // Update model.
         this->controller->getRecordsController().updateRecordFieldValue(record.id, fieldId, fieldValue);
@@ -727,10 +702,10 @@ void MainWindow::updateRecordRow(int i)
     const Record& record =
             this->controller->getRecordsController().getRecordByDisplayName(selectedRecordDisplayName);
     QString key = record.fieldValues.keys()[i];
-    QString value = record.fieldValues[key];
+    QVariant value = record.fieldValues[key];
 
     this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(key));
-    this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(value));
+    this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(value.toString()));
 
     // Show field description as tooltip.
     const FieldDefinition& field =
@@ -741,8 +716,7 @@ void MainWindow::updateRecordRow(int i)
     // Show color preview.
     if (field.fieldType == BuiltInType::Color)
     {
-        QColor color;
-        color.setNamedColor(value);
+        QColor color = value.value<QColor>();
         this->ui->tableWidget->item(i, 1)->setData(Qt::DecorationRole, color);
     }
 }

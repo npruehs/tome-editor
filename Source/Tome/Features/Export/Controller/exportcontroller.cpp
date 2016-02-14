@@ -69,12 +69,12 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             // Build field values string.
             QString fieldValuesString;
 
-            for (QMap<QString, QString>::const_iterator itFields = record.fieldValues.begin();
+            for (QMap<QString, QVariant>::const_iterator itFields = record.fieldValues.begin();
                  itFields != record.fieldValues.end();
                  ++itFields)
             {
                 QString fieldId = itFields.key();
-                QString fieldValue = itFields.value();
+                QVariant fieldValue = itFields.value();
                 const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(fieldId);
 
                 // Get field type name.
@@ -89,7 +89,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 QString fieldValueString = exportTemplate.fieldValueTemplate;
                 fieldValueString = fieldValueString.replace(PlaceholderFieldId, fieldId);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldType, fieldType);
-                fieldValueString = fieldValueString.replace(PlaceholderFieldValue, fieldValue);
+                fieldValueString = fieldValueString.replace(PlaceholderFieldValue, fieldValue.toString());
 
                 fieldValuesString.append(fieldValueString);
 
@@ -103,7 +103,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             // Collect components.
             QStringList components;
 
-            for (QMap<QString, QString>::const_iterator itFields = record.fieldValues.begin();
+            for (QMap<QString, QVariant>::const_iterator itFields = record.fieldValues.begin();
                  itFields != record.fieldValues.end();
                  ++itFields)
             {

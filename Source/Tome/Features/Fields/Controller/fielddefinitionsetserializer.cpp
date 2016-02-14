@@ -43,7 +43,7 @@ void FieldDefinitionSetSerializer::serialize(QIODevice& device, const FieldDefin
                 stream.writeAttribute(AttributeId, fieldDefinition.id);
                 stream.writeAttribute(AttributeDisplayName, fieldDefinition.displayName);
                 stream.writeAttribute(AttributeDescription, fieldDefinition.description);
-                stream.writeAttribute(AttributeDefaultValue, fieldDefinition.defaultValue);
+                stream.writeAttribute(AttributeDefaultValue, fieldDefinition.defaultValue.toString());
                 stream.writeAttribute(AttributeType, fieldDefinition.fieldType);
 
                 if (!fieldDefinition.component.isEmpty())

@@ -128,11 +128,6 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
                     {
                         writer.writeAttribute(ElementName, type.name);
 
-                        if (!type.baseType.isEmpty())
-                        {
-                            writer.writeAttribute(AttributeBaseType, type.baseType);
-                        }
-
                         // Write restrictions map.
                         writer.writeStartElement(ElementRestrictions);
                         {
@@ -255,7 +250,6 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
                     CustomType type = CustomType();
 
                     type.name = reader.readAttribute(ElementName);
-                    type.baseType = reader.readAttribute(AttributeBaseType);
 
                     reader.readStartElement(ElementType);
                     {
