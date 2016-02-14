@@ -20,7 +20,7 @@ ListWidget::ListWidget(RecordsController& recordsController, TypesController& ty
     this->layout->addWidget(this->listWidget);
 
     // Add buttons.
-    this->buttonLayout = new QVBoxLayout(this);
+    this->buttonLayout = new QVBoxLayout();
 
     QToolButton* addButton = new QToolButton(this);
     addButton->setArrowType(Qt::LeftArrow);
