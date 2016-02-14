@@ -1,6 +1,7 @@
 #include "componentscontroller.h"
 
 #include "../../../Util/listutils.h"
+#include "../../../Util/stringutils.h"
 
 
 using namespace Tome;
@@ -13,7 +14,7 @@ ComponentsController::ComponentsController()
 const Component ComponentsController::addComponent(const QString& componentName)
 {
     Component component = Component(componentName);
-    int index = findInsertionIndex(*this->model, component);
+    int index = findInsertionIndex(*this->model, component, qStringLessThanLowerCase);
     this->model->insert(index, component);
     return component;
 }

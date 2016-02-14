@@ -19,8 +19,9 @@
 #include "../Features/Records/Controller/recordsetserializer.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
 #include "../Features/Types/Model/builtintype.h"
-#include "../Util/pathutils.h"
 #include "../Util/listutils.h"
+#include "../Util/pathutils.h"
+#include "../Util/stringutils.h"
 
 using namespace Tome;
 
@@ -507,7 +508,7 @@ void MainWindow::addRecordField(const QString& fieldId)
     const Record& record =
             this->controller->getRecordsController().getRecordByDisplayName(recordDisplayName);
 
-    int index = findInsertionIndex(record.fieldValues.keys(), fieldId);
+    int index = findInsertionIndex(record.fieldValues.keys(), fieldId, qStringLessThanLowerCase);
 
     // Update model.
     this->controller->getRecordsController().addRecordField(record.id, fieldId);
@@ -567,7 +568,7 @@ void MainWindow::removeRecordField(const QString& fieldId)
     this->controller->getRecordsController().removeRecordField(record.id, fieldId);
 
     // Update view.
-    int index = findInsertionIndex(record.fieldValues.keys(), fieldId);
+    int index = findInsertionIndex(record.fieldValues.keys(), fieldId, qStringLessThanLowerCase);
     this->ui->tableWidget->removeRow(index);
 }
 

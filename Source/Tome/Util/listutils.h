@@ -2,7 +2,7 @@
 #define LISTUTILS_H
 
 #include <QList>
-
+#include <QStringList>
 
 namespace Tome
 {
@@ -13,22 +13,18 @@ namespace Tome
      * @param item Item to add.
      * @return Index to insert the specified item at to keep the list sorted.
      */
-    inline int findInsertionIndex(const QList<T>& list, T item)
+    inline int findInsertionIndex(const QList<T>& list, const T& item, bool(*lessThan)(const T& first, const T& second))
     {
-        for (int i = 0; i < list.size() - 1; ++i)
+        if (list.isEmpty())
         {
-            if (list.at(i) < item && list.at(i + 1) >= item)
-            {
-                return i + 1;
-            }
+            return 0;
         }
 
-        return list.size();
-    }
+        if (list.size() == 1)
+        {
+            return lessThan(list.first(), item) ? 1 : 0;
+        }
 
-    template<typename T>
-    inline int findInsertionIndex(const QList<T>& list, T item, bool(*lessThan)(const T& first, const T& second))
-    {
         for (int i = 0; i < list.size() - 1; ++i)
         {
             if (lessThan(list.at(i), item) && !lessThan(list.at(i + 1), item))
@@ -42,4 +38,3 @@ namespace Tome
 }
 
 #endif // LISTUTILS_H
-

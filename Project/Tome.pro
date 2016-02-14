@@ -109,7 +109,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Settings/Controller/settingscontroller.h \
     ../Source/Tome/Util/listutils.h \
     ../Source/Tome/Features/Export/Model/recordexporttemplatemap.h \
-    ../Source/Tome/Util/memoryutils.h
+    ../Source/Tome/Util/memoryutils.h \
+    ../Source/Tome/Util/stringutils.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
