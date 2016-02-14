@@ -72,6 +72,8 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
                     this);
     }
 
+    this->fieldDefinitionWindow->init();
+
     // Show window.
     int result = this->fieldDefinitionWindow->exec();
 
