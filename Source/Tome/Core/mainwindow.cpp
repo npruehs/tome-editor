@@ -698,19 +698,36 @@ void MainWindow::updateRecord(const QString& id, const QString& displayName)
 
 void MainWindow::updateRecordRow(int i)
 {
-    // Show field and value.
+    // Get selected record.
     QString selectedRecordDisplayName = this->getSelectedRecordDisplayName();
     const Record& record =
             this->controller->getRecordsController().getRecordByDisplayName(selectedRecordDisplayName);
+
+    // Get selected record field key and value.
     QString key = record.fieldValues.keys()[i];
     QVariant value = record.fieldValues[key];
 
-    this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(key));
-    this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(value.toString()));
+    QString valueString = value.toString();
 
-    // Show field description as tooltip.
+    // Get selected record field type.
     const FieldDefinition& field =
             this->controller->getFieldDefinitionsController().getFieldDefinition(key);
+
+    if (this->controller->getTypesController().isCustomType(field.fieldType))
+    {
+        const CustomType& customType = this->controller->getTypesController().getCustomType(field.fieldType);
+
+        if (customType.isList())
+        {
+            valueString = toString(value.toList());
+        }
+    }
+
+    // Show field and value.
+    this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(key));
+    this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(valueString));
+
+    // Show field description as tooltip.
     this->ui->tableWidget->item(i, 0)->setData(Qt::ToolTipRole, field.description);
     this->ui->tableWidget->item(i, 1)->setData(Qt::ToolTipRole, field.description);
 

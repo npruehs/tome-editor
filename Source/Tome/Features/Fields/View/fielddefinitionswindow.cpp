@@ -218,13 +218,27 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString& oldId, const Q
 
 void FieldDefinitionsWindow::updateRow(const int i)
 {
+    // Get field definition.
     const FieldDefinitionList& fieldDefinitions = this->fieldDefinitionsController.getFieldDefinitionSets()[0].fieldDefinitions;
     const FieldDefinition& fieldDefinition = fieldDefinitions[i];
+
+    // Convert default value to string.
+    QString defaultValueString = fieldDefinition.defaultValue.toString();
+
+    if (this->typesController.isCustomType(fieldDefinition.fieldType))
+    {
+        const CustomType& customType = this->typesController.getCustomType(fieldDefinition.fieldType);
+
+        if (customType.isList())
+        {
+            defaultValueString = toString(fieldDefinition.defaultValue.toList());
+        }
+    }
 
     this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(fieldDefinition.id));
     this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(fieldDefinition.displayName));
     this->ui->tableWidget->setItem(i, 2, new QTableWidgetItem(fieldDefinition.fieldType));
-    this->ui->tableWidget->setItem(i, 3, new QTableWidgetItem(fieldDefinition.defaultValue.toString()));
+    this->ui->tableWidget->setItem(i, 3, new QTableWidgetItem(defaultValueString));
     this->ui->tableWidget->setItem(i, 4, new QTableWidgetItem(fieldDefinition.component));
     this->ui->tableWidget->setItem(i, 5, new QTableWidgetItem(fieldDefinition.description));
 

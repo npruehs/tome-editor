@@ -3,6 +3,7 @@
 
 #include <QList>
 #include <QStringList>
+#include <QVariantList>
 
 namespace Tome
 {
@@ -34,6 +35,25 @@ namespace Tome
         }
 
         return list.size();
+    }
+
+    inline QString toString(const QVariantList& list)
+    {
+        QString s("[");
+
+        for (int i = 0; i < list.length(); ++i)
+        {
+            QVariant item = list[i];
+            s.append(item.toString());
+
+            if (i < list.length() - 1)
+            {
+                s.append(", ");
+            }
+        }
+
+        s.append("]");
+        return s;
     }
 }
 
