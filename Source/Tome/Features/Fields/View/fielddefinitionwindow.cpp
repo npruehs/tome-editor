@@ -45,27 +45,6 @@ void FieldDefinitionWindow::accept()
     }
 }
 
-int FieldDefinitionWindow::exec()
-{
-    // Set component names.
-    this->ui->comboBoxComponent->clear();
-    this->ui->comboBoxComponent->addItem(QString());
-    this->ui->comboBoxComponent->addItems(this->componentsController.getComponents());
-
-    // Set type names.
-    this->ui->comboBoxType->clear();
-
-    const QStringList& typeNames = this->typesController.getTypeNames();
-
-    for (int i = 0; i < typeNames.length(); ++i)
-    {
-        this->ui->comboBoxType->addItem(typeNames[i]);
-    }
-
-    // Show dialog.
-    return QDialog::exec();
-}
-
 Component FieldDefinitionWindow::getFieldComponent() const
 {
     return this->ui->comboBoxComponent->currentText();
@@ -94,6 +73,24 @@ QVariant FieldDefinitionWindow::getDefaultValue() const
 QString FieldDefinitionWindow::getFieldType() const
 {
     return this->fieldValueWidget->getFieldType();
+}
+
+void FieldDefinitionWindow::init()
+{
+    // Set component names.
+    this->ui->comboBoxComponent->clear();
+    this->ui->comboBoxComponent->addItem(QString());
+    this->ui->comboBoxComponent->addItems(this->componentsController.getComponents());
+
+    // Set type names.
+    this->ui->comboBoxType->clear();
+
+    const QStringList& typeNames = this->typesController.getTypeNames();
+
+    for (int i = 0; i < typeNames.length(); ++i)
+    {
+        this->ui->comboBoxType->addItem(typeNames[i]);
+    }
 }
 
 void FieldDefinitionWindow::setFieldComponent(const QString& component) const

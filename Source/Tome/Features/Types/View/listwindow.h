@@ -21,12 +21,13 @@ class ListWindow : public QDialog
         QString getListName() const;
         QString getListItemType() const;
 
+        void init();
+
         void setListName(const QString& listName);
         void setListItemType(const QString& itemType);
 
     public slots:
         void accept();
-        int exec();
 
     private:
         Ui::ListWindow *ui;

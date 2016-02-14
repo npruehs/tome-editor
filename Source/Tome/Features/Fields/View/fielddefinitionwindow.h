@@ -35,6 +35,8 @@ class FieldDefinitionWindow : public QDialog
         QVariant getDefaultValue() const;
         QString getFieldType() const;
 
+        void init();
+
         void setFieldComponent(const QString& component) const;
         void setFieldDescription(const QString& description);
         void setFieldDisplayName(const QString& displayName);
@@ -44,7 +46,6 @@ class FieldDefinitionWindow : public QDialog
 
     public slots:
         void accept();
-        int exec();
 
     private slots:
         void on_comboBoxType_currentIndexChanged(const QString &fieldType);

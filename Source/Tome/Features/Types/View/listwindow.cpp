@@ -27,6 +27,19 @@ QString ListWindow::getListItemType() const
     return this->ui->comboBox->currentText();
 }
 
+void ListWindow::init()
+{
+    // Set type names.
+    this->ui->comboBox->clear();
+
+    const QStringList& typeNames = this->typesController.getTypeNames();
+
+    for (int i = 0; i < typeNames.length(); ++i)
+    {
+        this->ui->comboBox->addItem(typeNames[i]);
+    }
+}
+
 void ListWindow::setListName(const QString& listName)
 {
     this->ui->lineEdit->setText(listName);
@@ -44,22 +57,6 @@ void ListWindow::accept()
     {
         this->done(Accepted);
     }
-}
-
-int ListWindow::exec()
-{
-    // Set type names.
-    this->ui->comboBox->clear();
-
-    const QStringList& typeNames = this->typesController.getTypeNames();
-
-    for (int i = 0; i < typeNames.length(); ++i)
-    {
-        this->ui->comboBox->addItem(typeNames[i]);
-    }
-
-    // Show window.
-    return QDialog::exec();
 }
 
 bool ListWindow::validate()

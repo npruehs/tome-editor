@@ -126,6 +126,8 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
                     this);
     }
 
+    this->fieldDefinitionWindow->init();
+
     // Update view.
     this->fieldDefinitionWindow->setFieldId(fieldDefinition.id);
     this->fieldDefinitionWindow->setFieldDisplayName(fieldDefinition.displayName);

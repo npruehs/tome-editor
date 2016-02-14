@@ -75,6 +75,7 @@ void CustomTypesWindow::on_actionNew_List_triggered()
         this->listWindow = new ListWindow(this->typesController, this);
     }
 
+    this->listWindow->init();
     int result = this->listWindow->exec();
 
     if (result == QDialog::Accepted)
@@ -188,6 +189,8 @@ void CustomTypesWindow::editList(QString typeName, const CustomType& type)
     {
         this->listWindow = new ListWindow(this->typesController, this);
     }
+
+    this->listWindow->init();
 
     // Update view.
     this->listWindow->setListName(type.name);
