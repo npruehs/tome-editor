@@ -26,6 +26,9 @@ const QString Controller::ProjectFileExtension = ".tproj";
 const QString Controller::RecordFileExtension = ".tdata";
 const QString Controller::RecordExportComponentTemplateExtension = ".texportc";
 const QString Controller::RecordExportComponentDelimiterExtension = ".texportcd";
+const QString Controller::RecordExportListTemplateExtension = ".texportl";
+const QString Controller::RecordExportListItemTemplateExtension = ".texportli";
+const QString Controller::RecordExportListItemDelimiterExtension = ".texportld";
 const QString Controller::RecordExportRecordFileTemplateExtension = ".texportf";
 const QString Controller::RecordExportRecordTemplateExtension = ".texportr";
 const QString Controller::RecordExportRecordDelimiterExtension = ".texportrd";
@@ -36,10 +39,10 @@ const QString Controller::RecordExportFieldValueDelimiterExtension = ".texportvd
 Controller::Controller() :
     componentsController(new ComponentsController()),
     fieldDefinitionsController(new FieldDefinitionsController()),
+    typesController(new TypesController()),
     recordsController(new RecordsController(*this->fieldDefinitionsController)),
-    exportController(new ExportController(*this->fieldDefinitionsController, *this->recordsController)),
-    settingsController(new SettingsController()),
-    typesController(new TypesController())
+    exportController(new ExportController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
+    settingsController(new SettingsController())
 {
 }
 
@@ -235,6 +238,12 @@ void Controller::openProject(const QString& projectFileName)
                         this->readFile(projectPath, exportTemplate.name + RecordExportComponentDelimiterExtension);
                 exportTemplate.componentTemplate =
                         this->readFile(projectPath, exportTemplate.name + RecordExportComponentTemplateExtension);
+                exportTemplate.listTemplate =
+                        this->readFile(projectPath, exportTemplate.name + RecordExportListTemplateExtension);
+                exportTemplate.listItemTemplate =
+                        this->readFile(projectPath, exportTemplate.name + RecordExportListItemTemplateExtension);
+                exportTemplate.listItemDelimiter =
+                        this->readFile(projectPath, exportTemplate.name + RecordExportListItemDelimiterExtension);
             }
             catch (const std::runtime_error& e)
             {

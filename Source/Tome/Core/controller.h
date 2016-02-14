@@ -41,6 +41,9 @@ namespace Tome
             static const QString ProjectFileExtension;
             static const QString RecordExportComponentDelimiterExtension;
             static const QString RecordExportComponentTemplateExtension;
+            static const QString RecordExportListTemplateExtension;
+            static const QString RecordExportListItemTemplateExtension;
+            static const QString RecordExportListItemDelimiterExtension;
             static const QString RecordExportRecordFileTemplateExtension;
             static const QString RecordExportRecordTemplateExtension;
             static const QString RecordExportRecordDelimiterExtension;
@@ -52,10 +55,10 @@ namespace Tome
 
             ComponentsController* componentsController;
             FieldDefinitionsController* fieldDefinitionsController;
+            TypesController* typesController;
             RecordsController* recordsController;
             ExportController* exportController;
             SettingsController* settingsController;
-            TypesController* typesController;
 
             const QString getFullProjectPath(QSharedPointer<Project> project) const;
             void saveProject(QSharedPointer<Project> project);
