@@ -6,9 +6,11 @@
 using namespace Tome;
 
 
-ListWidget::ListWidget(QWidget *parent) :
+ListWidget::ListWidget(RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
     QWidget(parent),
-    listItemWindow(0)
+    listItemWindow(0),
+    recordsController(recordsController),
+    typesController(typesController)
 {
     // Create layout.
     this->layout = new QHBoxLayout(this);
@@ -18,7 +20,7 @@ ListWidget::ListWidget(QWidget *parent) :
     this->layout->addWidget(this->listWidget);
 
     // Add buttons.
-    this->buttonLayout = new QVBoxLayout(this);
+    this->buttonLayout = new QVBoxLayout();
 
     QToolButton* addButton = new QToolButton(this);
     addButton->setArrowType(Qt::LeftArrow);
@@ -74,9 +76,28 @@ QString ListWidget::getFieldType() const
     return this->fieldType;
 }
 
+QVariantList ListWidget::getItems() const
+{
+    return this->items;
+}
+
 void ListWidget::setFieldType(const QString& fieldType)
 {
     this->fieldType = fieldType;
+}
+
+void ListWidget::setItems(const QVariantList& items)
+{
+    // Update model.
+    this->items = items;
+
+    // Update view.
+    this->listWidget->clear();
+
+    for (int i = 0; i < items.size(); ++i)
+    {
+        this->listWidget->addItem(items[i].toString());
+    }
 }
 
 void ListWidget::addItem()
@@ -84,7 +105,7 @@ void ListWidget::addItem()
     // Prepare window.
     if (!this->listItemWindow)
     {
-        this->listItemWindow = new ListItemWindow(this);
+        this->listItemWindow = new ListItemWindow(this->recordsController, this->typesController, this);
     }
 
     // Update view.
@@ -95,13 +116,13 @@ void ListWidget::addItem()
 
     if (result == QDialog::Accepted)
     {
-        QString value = this->listItemWindow->getValue();
+        QVariant value = this->listItemWindow->getValue();
 
         // Update model.
         this->items.push_back(value);
 
         // Update view.
-        this->listWidget->addItem(value);
+        this->listWidget->addItem(value.toString());
     }
 }
 

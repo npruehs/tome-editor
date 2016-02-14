@@ -32,19 +32,20 @@ class FieldDefinitionWindow : public QDialog
         QString getFieldDescription() const;
         QString getFieldDisplayName() const;
         QString getFieldId() const;
-        QString getDefaultValue() const;
+        QVariant getDefaultValue() const;
         QString getFieldType() const;
+
+        void init();
 
         void setFieldComponent(const QString& component) const;
         void setFieldDescription(const QString& description);
         void setFieldDisplayName(const QString& displayName);
         void setFieldId(const QString& fieldId);
-        void setDefaultValue(const QString& defaultValue);
+        void setDefaultValue(const QVariant& defaultValue);
         void setFieldType(const QString& fieldType) const;
 
     public slots:
         void accept();
-        int exec();
 
     private slots:
         void on_comboBoxType_currentIndexChanged(const QString &fieldType);

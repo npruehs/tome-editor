@@ -2,6 +2,7 @@
 #define FIELDDEFINITION_H
 
 #include <QString>
+#include <QVariant>
 
 #include "../../Components/Model/component.h"
 
@@ -14,7 +15,7 @@ namespace Tome
             FieldDefinition();
 
             Component component;
-            QString defaultValue;
+            QVariant defaultValue;
             QString description;
             QString displayName;
             QString fieldType;

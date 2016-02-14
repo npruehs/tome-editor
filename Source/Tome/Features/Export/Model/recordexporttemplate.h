@@ -16,6 +16,9 @@ namespace Tome
             QString fieldValueDelimiter;
             QString fieldValueTemplate;
             QString fileExtension;
+            QString listTemplate;
+            QString listItemTemplate;
+            QString listItemDelimiter;
             QString name;
             QString recordDelimiter;
             QString recordFileTemplate;

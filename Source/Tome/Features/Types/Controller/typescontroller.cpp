@@ -17,7 +17,6 @@ const CustomType TypesController::addEnumeration(const QString& name, const QStr
 {
     CustomType newType = CustomType();
     newType.name = name;
-    newType.baseType = BuiltInType::String;
     newType.setEnumeration(enumeration);
 
     int index = findInsertionIndex(*this->model, newType, customTypeLessThanName);
@@ -30,7 +29,6 @@ const CustomType TypesController::addList(const QString& name, const QString& it
 {
     CustomType newType = CustomType();
     newType.name = name;
-    newType.baseType = BuiltInType::None;
     newType.setItemType(itemType);
 
     int index = findInsertionIndex(*this->model, newType, customTypeLessThanName);
@@ -138,5 +136,6 @@ CustomType* TypesController::getCustomTypeByName(const QString& name) const
         }
     }
 
-    throw std::out_of_range(name.toStdString());
+    const QString errorMessage = "Type not found: " + name;
+    throw std::out_of_range(errorMessage.toStdString());
 }

@@ -7,14 +7,16 @@
 using namespace Tome;
 
 
-ListItemWindow::ListItemWindow(QWidget *parent) :
+ListItemWindow::ListItemWindow(Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ListItemWindow)
+    ui(new Ui::ListItemWindow),
+    recordsController(recordsController),
+    typesController(typesController)
 {
     ui->setupUi(this);
 
     // Add widget for specifying the list item value.
-    this->fieldValueWidget = new FieldValueWidget(this);
+    this->fieldValueWidget = new FieldValueWidget(this->recordsController, this->typesController, this);
     QFormLayout* layout = static_cast<QFormLayout*>(this->layout());
     layout->insertRow(0, tr("Value:"), this->fieldValueWidget);
 }
@@ -26,27 +28,17 @@ ListItemWindow::~ListItemWindow()
     delete this->fieldValueWidget;
 }
 
-QString ListItemWindow::getValue() const
+QVariant ListItemWindow::getValue() const
 {
     return this->fieldValueWidget->getFieldValue();
 }
 
-void ListItemWindow::setValue(const QString& value)
+void ListItemWindow::setValue(const QVariant& value)
 {
     this->fieldValueWidget->setFieldValue(value);
-}
-
-void ListItemWindow::setCustomFieldType(const CustomType& fieldType)
-{
-    this->fieldValueWidget->setCustomFieldType(fieldType);
 }
 
 void ListItemWindow::setFieldType(const QString& fieldType) const
 {
     this->fieldValueWidget->setFieldType(fieldType);
-}
-
-void ListItemWindow::setEnumeration(const QStringList& recordNames)
-{
-    this->fieldValueWidget->setEnumeration(recordNames);
 }

@@ -43,13 +43,29 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
                     stream.writeAttribute(ElementId, record.id);
                     stream.writeAttribute(ElementDisplayName, record.displayName);
 
-                    for (QMap<QString, QString>::const_iterator it = record.fieldValues.begin();
+                    for (QMap<QString, QVariant>::const_iterator it = record.fieldValues.begin();
                          it != record.fieldValues.end();
                          ++it)
                     {
-                        stream.writeStartElement(it.key());
-                        stream.writeAttribute(ElementValue, it.value());
-                        stream.writeEndElement();
+                        QVariant value = it.value();
+
+                        if (value.canConvert<QVariantList>())
+                        {
+                            QVariantList list = value.toList();
+
+                            for (int i = 0; i < list.size(); ++i)
+                            {
+                                stream.writeStartElement(it.key());
+                                stream.writeAttribute(ElementValue, list[i].toString());
+                                stream.writeEndElement();
+                            }
+                        }
+                        else
+                        {
+                            stream.writeStartElement(it.key());
+                            stream.writeAttribute(ElementValue, it.value().toString());
+                            stream.writeEndElement();
+                        }
                     }
                 }
                 // End record.
@@ -88,14 +104,38 @@ void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) c
 
                 reader.readStartElement(ElementRecord);
 
+                QString lastKey;
+                QVariant lastValue;
+
                 while (!reader.isAtElement(ElementRecord))
                 {
-                    const QString key = reader.getElementName();
-                    const QString value = reader.readAttribute(ElementValue);
+                    QString key = reader.getElementName();
+                    QVariant value = reader.readAttribute(ElementValue);
+
+                    if (key == lastKey)
+                    {
+                        // List value.
+                        if (lastValue.canConvert<QVariantList>())
+                        {
+                            QVariantList list = lastValue.toList();
+                            list.append(value);
+                            value = list;
+                        }
+                        else
+                        {
+                            QVariantList list = QVariantList();
+                            list.append(lastValue);
+                            list.append(value);
+                            value = list;
+                        }
+                    }
 
                     record.fieldValues[key] = value;
 
                     reader.readEmptyElement(key);
+
+                    lastKey = key;
+                    lastValue = value;
                 }
 
                 recordSet.records.push_back(record);

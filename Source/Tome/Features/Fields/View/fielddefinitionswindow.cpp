@@ -72,6 +72,8 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
                     this);
     }
 
+    this->fieldDefinitionWindow->init();
+
     // Show window.
     int result = this->fieldDefinitionWindow->exec();
 
@@ -125,6 +127,8 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
                     this->typesController,
                     this);
     }
+
+    this->fieldDefinitionWindow->init();
 
     // Update view.
     this->fieldDefinitionWindow->setFieldId(fieldDefinition.id);
@@ -192,7 +196,7 @@ void FieldDefinitionsWindow::updateMenus()
     this->ui->actionDelete_Field->setEnabled(hasSelection);
 }
 
-void FieldDefinitionsWindow::updateFieldDefinition(const QString& oldId, const QString& newId, const QString& displayName, const QString& fieldType, const QString& defaultValue, const QString& description, const Component& component)
+void FieldDefinitionsWindow::updateFieldDefinition(const QString& oldId, const QString& newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Component& component)
 {
     const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(oldId);
 
@@ -214,21 +218,34 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString& oldId, const Q
 
 void FieldDefinitionsWindow::updateRow(const int i)
 {
+    // Get field definition.
     const FieldDefinitionList& fieldDefinitions = this->fieldDefinitionsController.getFieldDefinitionSets()[0].fieldDefinitions;
     const FieldDefinition& fieldDefinition = fieldDefinitions[i];
+
+    // Convert default value to string.
+    QString defaultValueString = fieldDefinition.defaultValue.toString();
+
+    if (this->typesController.isCustomType(fieldDefinition.fieldType))
+    {
+        const CustomType& customType = this->typesController.getCustomType(fieldDefinition.fieldType);
+
+        if (customType.isList())
+        {
+            defaultValueString = toString(fieldDefinition.defaultValue.toList());
+        }
+    }
 
     this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(fieldDefinition.id));
     this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(fieldDefinition.displayName));
     this->ui->tableWidget->setItem(i, 2, new QTableWidgetItem(fieldDefinition.fieldType));
-    this->ui->tableWidget->setItem(i, 3, new QTableWidgetItem(fieldDefinition.defaultValue));
+    this->ui->tableWidget->setItem(i, 3, new QTableWidgetItem(defaultValueString));
     this->ui->tableWidget->setItem(i, 4, new QTableWidgetItem(fieldDefinition.component));
     this->ui->tableWidget->setItem(i, 5, new QTableWidgetItem(fieldDefinition.description));
 
     if (fieldDefinition.fieldType == BuiltInType::Color)
     {
         // Show color preview.
-        QColor color;
-        color.setNamedColor(fieldDefinition.defaultValue);
+        QColor color = fieldDefinition.defaultValue.value<QColor>();
         this->ui->tableWidget->item(i, 3)->setData(Qt::DecorationRole, color);
     }
 }

@@ -4,6 +4,7 @@
 #include <QStringListModel>
 
 #include "../../../Util/listutils.h"
+#include "../../../Util/stringutils.h"
 
 
 using namespace Tome;
@@ -62,7 +63,7 @@ void EnumerationWindow::on_actionNew_Member_triggered()
     if (result == QDialog::Accepted)
     {
         QString item = this->enumerationMemberWindow->getText();
-        int index = findInsertionIndex(this->enumeration, item);
+        int index = findInsertionIndex(this->enumeration, item, qStringLessThanLowerCase);
 
         // Update model.
         this->enumeration.insert(index, item);

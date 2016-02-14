@@ -1,0 +1,6 @@
+        <Attribute keyType="System.String" valueType="System.Collections.Generic.List`1[[$FIELD_TYPE$]]">
+          <Key>$FIELD_ID$</Key>
+          <Value>
+$FIELD_VALUE$
+          </Value>
+        </Attribute>

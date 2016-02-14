@@ -35,7 +35,7 @@ namespace Tome
             void removeRecordField(const QString& recordId, const QString& fieldId);
             void setRecordSets(RecordSetList& model);
             void updateRecord(const QString& oldId, const QString& newId, const QString& displayName);
-            void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QString& fieldValue);
+            void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue);
 
         private:
             RecordSetList* model;

@@ -5,6 +5,8 @@
 #include <QString>
 #include <QStringList>
 
+#include "../../Records/Controller/recordscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/customtype.h"
 
 
@@ -21,19 +23,20 @@ class ListItemWindow : public QDialog
         Q_OBJECT
 
     public:
-        explicit ListItemWindow(QWidget *parent = 0);
+        explicit ListItemWindow(Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent = 0);
         ~ListItemWindow();
 
-        QString getValue() const;
-        void setValue(const QString& value);
+        QVariant getValue() const;
+        void setValue(const QVariant& value);
 
-        void setCustomFieldType(const Tome::CustomType& fieldType);
         void setFieldType(const QString& fieldType) const;
-        void setEnumeration(const QStringList& recordNames);
 
     private:
         Ui::ListItemWindow *ui;
         Tome::FieldValueWidget* fieldValueWidget;
+
+        Tome::RecordsController& recordsController;
+        Tome::TypesController& typesController;
 };
 
 #endif // LISTITEMWINDOW_H

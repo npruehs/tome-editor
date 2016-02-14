@@ -1,17 +1,19 @@
 #include "fieldvaluewidget.h"
 
 #include <limits>
+#include <stdexcept>
 
 #include "../../Types/Model/builtintype.h"
-#include "../../../Util/conversionutils.h"
 #include "../../../Util/memoryutils.h"
 
 using namespace Tome;
 
 
-FieldValueWidget::FieldValueWidget(QWidget *parent) :
+FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
     QWidget(parent),
-    currentWidget(0)
+    currentWidget(0),
+    recordsController(recordsController),
+    typesController(typesController)
 {
     // Create layout.
     this->layout = new QVBoxLayout();
@@ -41,7 +43,7 @@ FieldValueWidget::FieldValueWidget(QWidget *parent) :
     this->comboBox = new QComboBox();
     this->addWidget(this->comboBox);
 
-    this->listWidget = new ListWidget();
+    this->listWidget = new ListWidget(this->recordsController, this->typesController);
     this->addWidget(this->listWidget);
 
     // Set layout.
@@ -62,131 +64,191 @@ QString FieldValueWidget::getFieldType() const
     return this->fieldType;
 }
 
-QString FieldValueWidget::getFieldValue() const
+QVariant FieldValueWidget::getFieldValue() const
 {
-    QString fieldType = this->getFieldType();
-
-    if (fieldType == BuiltInType::Boolean)
+    // Check built-in types.
+    if (this->fieldType == BuiltInType::Boolean)
     {
-        return BoolToString(this->checkBox->isChecked());
+        return this->checkBox->isChecked();
     }
 
-    if (fieldType == BuiltInType::Color)
+    if (this->fieldType == BuiltInType::Color)
     {
-        return this->colorDialog->currentColor().name(QColor::HexArgb);
+        return this->colorDialog->currentColor();
     }
 
-    if (fieldType == BuiltInType::Integer)
+    if (this->fieldType == BuiltInType::Integer)
     {
         return this->spinBox->text();
     }
 
-    if (fieldType == BuiltInType::Real)
+    if (this->fieldType == BuiltInType::Real)
     {
         return this->doubleSpinBox->text();
     }
 
-    if (fieldType == BuiltInType::String)
+    if (this->fieldType == BuiltInType::String)
     {
         return this->lineEdit->text();
     }
 
-    // Custom datatype.
-    return this->comboBox->currentText();
+    if (this->fieldType == BuiltInType::Reference)
+    {
+        return this->lineEdit->text();
+    }
+
+    // Check custom data types.
+    const CustomType& customType = this->typesController.getCustomType(this->fieldType);
+
+    if (customType.isEnumeration())
+    {
+        return this->comboBox->currentText();
+    }
+
+    if (customType.isList())
+    {
+        return this->listWidget->getItems();
+    }
+
+    const QString errorMessage = "Unknown field type: " + this->fieldType;
+    throw std::runtime_error(errorMessage.toStdString());
 }
 
 void FieldValueWidget::setFieldType(const QString& fieldType)
 {
+    if (fieldType.isEmpty())
+    {
+        return;
+    }
+
     // Set new field type.
     this->fieldType = fieldType;
 
-    // Update view.
-    if (fieldType == BuiltInType::Boolean)
+    // Update view - check built-in types.
+    if (this->fieldType == BuiltInType::Boolean)
     {
         this->setCurrentWidget(this->checkBox);
         return;
     }
 
-    if (fieldType == BuiltInType::Color)
+    if (this->fieldType == BuiltInType::Color)
     {
         this->setCurrentWidget(this->colorDialog);
         return;
     }
 
-    if (fieldType == BuiltInType::Integer)
+    if (this->fieldType == BuiltInType::Integer)
     {
         this->setCurrentWidget(this->spinBox);
         return;
     }
 
-    if (fieldType == BuiltInType::Real)
+    if (this->fieldType == BuiltInType::Real)
     {
         this->setCurrentWidget(this->doubleSpinBox);
         return;
     }
 
-    if (fieldType == BuiltInType::String)
+    if (this->fieldType == BuiltInType::String)
     {
         this->setCurrentWidget(this->lineEdit);
         return;
     }
-}
 
-void FieldValueWidget::setCustomFieldType(const CustomType& fieldType)
-{
-    this->fieldType = fieldType.name;
-
-    if (fieldType.isEnumeration())
+    if (this->fieldType == BuiltInType::Reference)
     {
-        this->setEnumeration(fieldType.getEnumeration());
+        QStringList recordNames = this->recordsController.getRecordNames();
+
+        // Allow clearing the field.
+        recordNames << QString();
+
+        this->setEnumeration(recordNames);
         this->setCurrentWidget(this->comboBox);
+        return;
     }
-    else if (fieldType.isList())
+
+    // Update view - check custom types.
+    const CustomType& customType = this->typesController.getCustomType(this->fieldType);
+
+    if (customType.isEnumeration())
     {
-        this->listWidget->setFieldType(fieldType.getItemType());
-        this->setCurrentWidget(this->listWidget);
+        this->setEnumeration(customType.getEnumeration());
+        this->setCurrentWidget(this->comboBox);
+        return;
     }
+
+    if (customType.isList())
+    {
+        this->listWidget->setFieldType(customType.getItemType());
+        this->setCurrentWidget(this->listWidget);
+        return;
+    }
+
+    const QString errorMessage = "Unknown field type: " + this->fieldType;
+    throw std::runtime_error(errorMessage.toStdString());
 }
 
-void FieldValueWidget::setFieldValue(const QString& fieldValue)
+void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
 {
-    if (fieldType == BuiltInType::Boolean)
+    // Check built-in types.
+    if (this->fieldType == BuiltInType::Boolean)
     {
-        bool value = StringToBool(fieldValue);
+        bool value = fieldValue.toBool();
         this->checkBox->setChecked(value);
         return;
     }
 
-    if (fieldType == BuiltInType::Color)
+    if (this->fieldType == BuiltInType::Color)
     {
-        QColor color;
-        color.setNamedColor(fieldValue);
+        QColor color = fieldValue.value<QColor>();
         this->colorDialog->setCurrentColor(color);
         return;
     }
 
-    if (fieldType == BuiltInType::Integer)
+    if (this->fieldType == BuiltInType::Integer)
     {
         int value = fieldValue.toInt();
         this->spinBox->setValue(value);
         return;
     }
 
-    if (fieldType == BuiltInType::Real)
+    if (this->fieldType == BuiltInType::Real)
     {
         double value = fieldValue.toDouble();
         this->doubleSpinBox->setValue(value);
         return;
     }
 
-    if (fieldType == BuiltInType::String)
+    if (this->fieldType == BuiltInType::String)
     {
-        this->lineEdit->setText(fieldValue);
+        QString value = fieldValue.toString();
+        this->lineEdit->setText(value);
         return;
     }
 
-    // Custom datatype.
-    this->comboBox->setCurrentText(fieldValue);
+    if (this->fieldType == BuiltInType::Reference)
+    {
+        this->comboBox->setCurrentText(fieldValue.toString());
+        return;
+    }
+
+    // Check custom types.
+    const CustomType& customType = this->typesController.getCustomType(this->fieldType);
+
+    if (customType.isEnumeration())
+    {
+        this->comboBox->setCurrentText(fieldValue.toString());
+        return;
+    }
+
+    if (customType.isList())
+    {
+        this->listWidget->setItems(fieldValue.toList());
+        return;
+    }
+
+    const QString errorMessage = "Unknown field type: " + this->fieldType;
+    throw std::runtime_error(errorMessage.toStdString());
 }
 
 void FieldValueWidget::setEnumeration(const QStringList& enumeration)

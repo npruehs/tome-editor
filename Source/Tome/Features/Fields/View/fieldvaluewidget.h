@@ -13,6 +13,8 @@
 #include <QWidget>
 
 #include "listwidget.h"
+#include "../../Records/Controller/recordscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/customtype.h"
 
 
@@ -26,16 +28,14 @@ namespace Tome
             Q_OBJECT
 
         public:
-            explicit FieldValueWidget(QWidget *parent = 0);
+            explicit FieldValueWidget(RecordsController& recordsController, TypesController& typesController, QWidget *parent = 0);
             ~FieldValueWidget();
 
             QString getFieldType() const;
-            QString getFieldValue() const;
+            QVariant getFieldValue() const;
 
             void setFieldType(const QString& fieldType);
-            void setCustomFieldType(const CustomType& fieldType);
-            void setFieldValue(const QString& fieldValue);
-            void setEnumeration(const QStringList& enumeration);
+            void setFieldValue(const QVariant& fieldValue);
 
         protected:
             virtual void focusInEvent(QFocusEvent* event);
@@ -53,8 +53,12 @@ namespace Tome
             QSpinBox* spinBox;
             ListWidget* listWidget;
 
+            RecordsController& recordsController;
+            TypesController& typesController;
+
             void addWidget(QWidget* widget);
             void setCurrentWidget(QWidget* widget);
+            void setEnumeration(const QStringList& enumeration);
     };
 }
 

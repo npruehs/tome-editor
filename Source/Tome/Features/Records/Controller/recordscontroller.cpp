@@ -56,7 +56,8 @@ const Record&RecordsController::getRecordByDisplayName(const QString& displayNam
         }
     }
 
-    throw std::out_of_range(displayName.toStdString());
+    const QString errorMessage = "Record not found: " + displayName;
+    throw std::out_of_range(errorMessage.toStdString());
 }
 
 const QStringList RecordsController::getRecordNames() const
@@ -113,7 +114,7 @@ void RecordsController::updateRecord(const QString& oldId, const QString& newId,
     }
 }
 
-void RecordsController::updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QString& fieldValue)
+void RecordsController::updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue)
 {
     Record& record = *this->getRecordById(recordId);
     record.fieldValues[fieldId] = fieldValue;
@@ -136,5 +137,6 @@ Record* RecordsController::getRecordById(const QString& id) const
         }
     }
 
-    throw std::out_of_range(id.toStdString());
+    const QString errorMessage = "Record not found: " + id;
+    throw std::out_of_range(errorMessage.toStdString());
 }

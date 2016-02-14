@@ -3,6 +3,7 @@
 
 #include <QMap>
 #include <QString>
+#include <QVariant>
 
 
 namespace Tome
@@ -14,7 +15,7 @@ namespace Tome
 
             QString displayName;
             QString id;
-            QMap<QString, QString> fieldValues;
+            QMap<QString, QVariant> fieldValues;
     };
 
     inline bool operator==(const Record& lhs, const Record& rhs){ return lhs.id == rhs.id; }

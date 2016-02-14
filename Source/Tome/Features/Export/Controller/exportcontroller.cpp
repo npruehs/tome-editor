@@ -15,14 +15,16 @@ const QString ExportController::PlaceholderComponentName = "$COMPONENT_NAME$";
 const QString ExportController::PlaceholderFieldId = "$FIELD_ID$";
 const QString ExportController::PlaceholderFieldType = "$FIELD_TYPE$";
 const QString ExportController::PlaceholderFieldValue = "$FIELD_VALUE$";
+const QString ExportController::PlaceholderListItem = "$LIST_ITEM$";
 const QString ExportController::PlaceholderRecordFields = "$RECORD_FIELDS$";
 const QString ExportController::PlaceholderRecordId = "$RECORD_ID$";
 const QString ExportController::PlaceholderRecords = "$RECORDS$";
 
 
-ExportController::ExportController(const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController)
+ExportController::ExportController(const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController, const TypesController& typesController)
     : fieldDefinitionsController(fieldDefinitionsController),
-      recordsController(recordsController)
+      recordsController(recordsController),
+      typesController(typesController)
 {
 }
 
@@ -69,27 +71,61 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             // Build field values string.
             QString fieldValuesString;
 
-            for (QMap<QString, QString>::const_iterator itFields = record.fieldValues.begin();
+            for (QMap<QString, QVariant>::const_iterator itFields = record.fieldValues.begin();
                  itFields != record.fieldValues.end();
                  ++itFields)
             {
                 QString fieldId = itFields.key();
-                QString fieldValue = itFields.value();
+                QVariant fieldValue = itFields.value();
+                QString fieldValueText = fieldValue.toString();
+
                 const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(fieldId);
 
                 // Get field type name.
                 QString fieldType = fieldDefinition.fieldType;
-
-                if (exportTemplate.typeMap.contains(fieldType))
-                {
-                    fieldType = exportTemplate.typeMap[fieldType];
-                }
+                QString exportedFieldType = exportTemplate.typeMap.contains(fieldType)
+                        ? exportTemplate.typeMap[fieldType]
+                        : fieldType;
 
                 // Apply field value template.
                 QString fieldValueString = exportTemplate.fieldValueTemplate;
+
+                // Check if list.
+                if (this->typesController.isCustomType(fieldType))
+                {
+                    const CustomType& customType = this->typesController.getCustomType(fieldType);
+
+                    if (customType.isList())
+                    {
+                        // Use other template.
+                        fieldValueString = exportTemplate.listTemplate;
+                        fieldValueText = QString();
+                        exportedFieldType = exportTemplate.typeMap.contains(customType.getItemType())
+                                ? exportTemplate.typeMap[customType.getItemType()]
+                                : customType.getItemType();
+
+                        // Build list string.
+                        QVariantList list = fieldValue.toList();
+
+                        for (int i = 0; i < list.size(); ++i)
+                        {
+                            QString listItem = exportTemplate.listItemTemplate;
+                            listItem = listItem.replace(PlaceholderFieldId, fieldId);
+                            listItem = listItem.replace(PlaceholderFieldType, exportedFieldType);
+                            listItem = listItem.replace(PlaceholderListItem, list[i].toString());
+                            fieldValueText.append(listItem);
+
+                            if (i < list.size() - 1)
+                            {
+                                fieldValueText.append(exportTemplate.listItemDelimiter);
+                            }
+                        }
+                    }
+                }
+
                 fieldValueString = fieldValueString.replace(PlaceholderFieldId, fieldId);
-                fieldValueString = fieldValueString.replace(PlaceholderFieldType, fieldType);
-                fieldValueString = fieldValueString.replace(PlaceholderFieldValue, fieldValue);
+                fieldValueString = fieldValueString.replace(PlaceholderFieldType, exportedFieldType);
+                fieldValueString = fieldValueString.replace(PlaceholderFieldValue, fieldValueText);
 
                 fieldValuesString.append(fieldValueString);
 
@@ -103,7 +139,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             // Collect components.
             QStringList components;
 
-            for (QMap<QString, QString>::const_iterator itFields = record.fieldValues.begin();
+            for (QMap<QString, QVariant>::const_iterator itFields = record.fieldValues.begin();
                  itFields != record.fieldValues.end();
                  ++itFields)
             {

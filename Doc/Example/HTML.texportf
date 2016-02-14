@@ -9,6 +9,7 @@
 	  <tr>
 		<th>Unit</th>
 		<th>Acceleration</th>
+        <th>Allowed Targets</th>
 		<th>Armor Type</th>
 		<th>Attack Damage</th>
 		<th>Attack Range</th>
