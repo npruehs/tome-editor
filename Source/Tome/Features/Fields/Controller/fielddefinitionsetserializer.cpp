@@ -13,6 +13,7 @@ const QString FieldDefinitionSetSerializer::AttributeDescription = "Description"
 const QString FieldDefinitionSetSerializer::AttributeDisplayName = "DisplayName";
 const QString FieldDefinitionSetSerializer::AttributeId = "Id";
 const QString FieldDefinitionSetSerializer::AttributeType = "Type";
+const QString FieldDefinitionSetSerializer::AttributeValue = "Value";
 const QString FieldDefinitionSetSerializer::ElementField = "Field";
 const QString FieldDefinitionSetSerializer::ElementFields = "Fields";
 
@@ -43,12 +44,27 @@ void FieldDefinitionSetSerializer::serialize(QIODevice& device, const FieldDefin
                 stream.writeAttribute(AttributeId, fieldDefinition.id);
                 stream.writeAttribute(AttributeDisplayName, fieldDefinition.displayName);
                 stream.writeAttribute(AttributeDescription, fieldDefinition.description);
-                stream.writeAttribute(AttributeDefaultValue, fieldDefinition.defaultValue.toString());
                 stream.writeAttribute(AttributeType, fieldDefinition.fieldType);
 
                 if (!fieldDefinition.component.isEmpty())
                 {
                     stream.writeAttribute(AttributeComponent, fieldDefinition.component);
+                }
+
+                if (fieldDefinition.defaultValue.canConvert<QVariantList>())
+                {
+                    QVariantList list = fieldDefinition.defaultValue.toList();
+
+                    for (int i = 0; i < list.size(); ++i)
+                    {
+                        stream.writeStartElement(AttributeDefaultValue);
+                        stream.writeAttribute(AttributeValue, list[i].toString());
+                        stream.writeEndElement();
+                    }
+                }
+                else
+                {
+                    stream.writeAttribute(AttributeDefaultValue, fieldDefinition.defaultValue.toString());
                 }
 
                 stream.writeEndElement();
@@ -93,10 +109,27 @@ void FieldDefinitionSetSerializer::deserialize(QIODevice& device, FieldDefinitio
                     fieldDefinition.component = component;
                 }
 
-                fieldDefinitionSet.fieldDefinitions.push_back(fieldDefinition);
+                reader.readStartElement(ElementField);
 
-                // Advance reader.
-                reader.readEmptyElement(ElementField);
+                // Check for list default value.
+                QVariantList list;
+
+                while (reader.isAtElement(AttributeDefaultValue))
+                {
+                    QVariant item = reader.readAttribute(AttributeValue);
+                    list.append(item);
+                    reader.readEmptyElement(AttributeDefaultValue);
+                }
+
+                if (!list.isEmpty())
+                {
+                    fieldDefinition.defaultValue = list;
+                }
+
+                reader.readEndElement();
+
+                // Finish field definition.
+                fieldDefinitionSet.fieldDefinitions.push_back(fieldDefinition);
             }
         }
         // End fields.
