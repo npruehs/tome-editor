@@ -92,5 +92,6 @@ FieldDefinition* FieldDefinitionsController::getFieldDefinitionById(const QStrin
         }
     }
 
-    throw std::out_of_range(id.toStdString());
+    const QString errorMessage = "Field not found: " + id;
+    throw std::out_of_range(errorMessage.toStdString());
 }

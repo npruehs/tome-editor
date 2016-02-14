@@ -111,6 +111,11 @@ QVariant FieldValueWidget::getFieldValue() const
 
 void FieldValueWidget::setFieldType(const QString& fieldType)
 {
+    if (fieldType.isEmpty())
+    {
+        return;
+    }
+
     // Set new field type.
     this->fieldType = fieldType;
 

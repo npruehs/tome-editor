@@ -136,5 +136,6 @@ CustomType* TypesController::getCustomTypeByName(const QString& name) const
         }
     }
 
-    throw std::out_of_range(name.toStdString());
+    const QString errorMessage = "Type not found: " + name;
+    throw std::out_of_range(errorMessage.toStdString());
 }
