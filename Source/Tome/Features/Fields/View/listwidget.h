@@ -28,8 +28,10 @@ namespace Tome
             ~ListWidget();
 
             QString getFieldType() const;
+            QVariantList getItems() const;
 
             void setFieldType(const QString& fieldType);
+            void setItems(const QVariantList& items);
 
         private slots:
             void addItem();

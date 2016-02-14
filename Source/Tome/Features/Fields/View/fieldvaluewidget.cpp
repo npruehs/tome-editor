@@ -105,6 +105,11 @@ QVariant FieldValueWidget::getFieldValue() const
         return this->comboBox->currentText();
     }
 
+    if (customType.isList())
+    {
+        return this->listWidget->getItems();
+    }
+
     const QString errorMessage = "Unknown field type: " + this->fieldType;
     throw std::runtime_error(errorMessage.toStdString());
 }
@@ -172,6 +177,13 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
         return;
     }
 
+    if (customType.isList())
+    {
+        this->listWidget->setFieldType(customType.getItemType());
+        this->setCurrentWidget(this->listWidget);
+        return;
+    }
+
     const QString errorMessage = "Unknown field type: " + this->fieldType;
     throw std::runtime_error(errorMessage.toStdString());
 }
@@ -226,6 +238,12 @@ void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
     if (customType.isEnumeration())
     {
         this->comboBox->setCurrentText(fieldValue.toString());
+        return;
+    }
+
+    if (customType.isList())
+    {
+        this->listWidget->setItems(fieldValue.toList());
         return;
     }
 

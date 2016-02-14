@@ -76,9 +76,28 @@ QString ListWidget::getFieldType() const
     return this->fieldType;
 }
 
+QVariantList ListWidget::getItems() const
+{
+    return this->items;
+}
+
 void ListWidget::setFieldType(const QString& fieldType)
 {
     this->fieldType = fieldType;
+}
+
+void ListWidget::setItems(const QVariantList& items)
+{
+    // Update model.
+    this->items = items;
+
+    // Update view.
+    this->listWidget->clear();
+
+    for (int i = 0; i < items.size(); ++i)
+    {
+        this->listWidget->addItem(items[i].toString());
+    }
 }
 
 void ListWidget::addItem()
