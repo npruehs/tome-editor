@@ -14,6 +14,14 @@ FieldDefinitionsController::FieldDefinitionsController()
 
 const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QString& id, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& component, const QString& description)
 {
+    // Check if already exists.
+    if (this->hasFieldDefinition(id))
+    {
+        const QString errorMessage = "Field with the specified id already exists: " + id;
+        throw std::out_of_range(errorMessage.toStdString());
+    }
+
+    // Add new field.
     FieldDefinition fieldDefinition = FieldDefinition();
     fieldDefinition.id = stripWhitespaces(id);
     fieldDefinition.displayName = displayName;
@@ -37,6 +45,26 @@ const FieldDefinition& FieldDefinitionsController::getFieldDefinition(const QStr
 const FieldDefinitionSetList& FieldDefinitionsController::getFieldDefinitionSets() const
 {
     return *this->model;
+}
+
+bool FieldDefinitionsController::hasFieldDefinition(const QString& id) const
+{
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
+        {
+            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+
+            if (fieldDefinition.id == id)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 int FieldDefinitionsController::indexOf(const FieldDefinition& fieldDefinition) const

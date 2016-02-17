@@ -1,6 +1,10 @@
 #include "fielddefinitionswindow.h"
 #include "ui_fielddefinitionswindow.h"
 
+#include <stdexcept>
+
+#include <QMessageBox>
+
 #include "../../Types/Model/builtintype.h"
 #include "../../../Util/listutils.h"
 
@@ -79,28 +83,42 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
 
     if (result == QDialog::Accepted)
     {
-        // Update model.
-        FieldDefinition fieldDefinition =
-                this->fieldDefinitionsController.addFieldDefinition(
-                    this->fieldDefinitionWindow->getFieldId(),
-                    this->fieldDefinitionWindow->getFieldDisplayName(),
-                    this->fieldDefinitionWindow->getFieldType(),
-                    this->fieldDefinitionWindow->getDefaultValue(),
-                    this->fieldDefinitionWindow->getFieldComponent(),
-                    this->fieldDefinitionWindow->getFieldDescription());
+        try
+        {
+            // Update model.
+            FieldDefinition fieldDefinition =
+                    this->fieldDefinitionsController.addFieldDefinition(
+                        this->fieldDefinitionWindow->getFieldId(),
+                        this->fieldDefinitionWindow->getFieldDisplayName(),
+                        this->fieldDefinitionWindow->getFieldType(),
+                        this->fieldDefinitionWindow->getDefaultValue(),
+                        this->fieldDefinitionWindow->getFieldComponent(),
+                        this->fieldDefinitionWindow->getFieldDescription());
 
-        // Update view.
-        int index = this->fieldDefinitionsController.indexOf(fieldDefinition);
+            // Update view.
+            int index = this->fieldDefinitionsController.indexOf(fieldDefinition);
 
-        this->ui->tableWidget->insertRow(index);
-        this->updateFieldDefinition(
-                    fieldDefinition.id,
-                    fieldDefinition.id,
-                    fieldDefinition.displayName,
-                    fieldDefinition.fieldType,
-                    fieldDefinition.defaultValue,
-                    fieldDefinition.description,
-                    fieldDefinition.component);
+            this->ui->tableWidget->insertRow(index);
+            this->updateFieldDefinition(
+                        fieldDefinition.id,
+                        fieldDefinition.id,
+                        fieldDefinition.displayName,
+                        fieldDefinition.fieldType,
+                        fieldDefinition.defaultValue,
+                        fieldDefinition.description,
+                        fieldDefinition.component);
+        }
+        catch (std::out_of_range& e)
+        {
+            QMessageBox::critical(
+                        this,
+                        tr("Unable to add field"),
+                        e.what(),
+                        QMessageBox::Close,
+                        QMessageBox::Close);
+
+            this->on_actionNew_Field_triggered();
+        }
     }
 }
 
