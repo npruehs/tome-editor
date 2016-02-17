@@ -39,7 +39,7 @@ const RecordSetList& RecordsController::getRecordSets() const
     return *this->model;
 }
 
-const Record&RecordsController::getRecordByDisplayName(const QString& displayName) const
+const Record& RecordsController::getRecord(const QString& id) const
 {
     for (int i = 0; i < this->model->size(); ++i)
     {
@@ -49,14 +49,14 @@ const Record&RecordsController::getRecordByDisplayName(const QString& displayNam
         {
             const Record& record = recordSet.records[j];
 
-            if (record.displayName == displayName)
+            if (record.id == id)
             {
                 return record;
             }
         }
     }
 
-    const QString errorMessage = "Record not found: " + displayName;
+    const QString errorMessage = "Record not found: " + id;
     throw std::out_of_range(errorMessage.toStdString());
 }
 

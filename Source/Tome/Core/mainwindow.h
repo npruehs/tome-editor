@@ -10,6 +10,7 @@
 #include "../Features/Help/View/aboutwindow.h"
 #include "../Features/Projects/View/newprojectwindow.h"
 #include "../Features/Projects/Model/project.h"
+#include "../Features/Records/View/recordtreewidgetitem.h"
 #include "../Features/Records/View/recordwindow.h"
 #include "../Features/Types/View/customtypeswindow.h"
 
@@ -67,7 +68,7 @@ class MainWindow : public QMainWindow
         RecordWindow* recordWindow;
 
         void addRecordField(const QString& fieldId);
-        QString getSelectedRecordDisplayName() const;
+        QString getSelectedRecordId() const;
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
         void onProjectChanged();
