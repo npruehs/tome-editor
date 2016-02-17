@@ -71,6 +71,8 @@ class MainWindow : public QMainWindow
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
         void onProjectChanged();
+        void resetFields();
+        void resetRecords();
         void showWindow(QWidget* widget);
         void updateMenus();
         void updateRecentProjects();

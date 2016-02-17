@@ -63,12 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->updateRecentProjects();
 
     // Setup view.
-    this->ui->tableWidget->setColumnCount(2);
-
-    QStringList headers;
-    headers << tr("Field");
-    headers << tr("Value");
-    this->ui->tableWidget->setHorizontalHeaderLabels(headers);
+    this->resetFields();
 }
 
 MainWindow::~MainWindow()
@@ -471,7 +466,7 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
 
     if (selected.empty())
     {
-        this->ui->tableWidget->clear();
+        this->resetFields();
         return;
     }
 
@@ -516,6 +511,16 @@ void MainWindow::addRecordField(const QString& fieldId)
     // Update view.
     this->ui->tableWidget->insertRow(index);
     this->updateRecordRow(index);
+}
+
+void MainWindow::resetRecords()
+{
+    this->ui->treeWidget->setColumnCount(1);
+
+    while (this->ui->treeWidget->topLevelItemCount() > 0)
+    {
+        this->ui->treeWidget->takeTopLevelItem(0);
+    }
 }
 
 QString MainWindow::getSelectedRecordDisplayName() const
@@ -577,7 +582,7 @@ void MainWindow::onProjectChanged()
     this->updateMenus();
 
     // Setup tree view.
-    this->ui->treeWidget->setColumnCount(1);
+    this->resetRecords();
 
     QList<QTreeWidgetItem *> items;
 
@@ -623,6 +628,19 @@ void MainWindow::onProjectChanged()
 
     // Update recent projects.
     this->updateRecentProjects();
+}
+
+void MainWindow::resetFields()
+{
+    this->ui->tableWidget->clear();
+
+    this->ui->tableWidget->setRowCount(0);
+    this->ui->tableWidget->setColumnCount(2);
+
+    QStringList headers;
+    headers << tr("Field");
+    headers << tr("Value");
+    this->ui->tableWidget->setHorizontalHeaderLabels(headers);
 }
 
 void MainWindow::showWindow(QWidget* widget)
