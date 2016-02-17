@@ -35,6 +35,7 @@ namespace Tome
 
         private slots:
             void addItem();
+            void editItem(QListWidgetItem* item);
             void removeItem();
             void moveItemUp();
             void moveItemDown();

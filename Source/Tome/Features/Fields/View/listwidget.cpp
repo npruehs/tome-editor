@@ -17,6 +17,11 @@ ListWidget::ListWidget(RecordsController& recordsController, TypesController& ty
 
     // Add list view.
     this->listWidget = new QListWidget(this);
+    connect(
+                this->listWidget,
+                SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+                SLOT(editItem(QListWidgetItem*))
+                );
     this->layout->addWidget(this->listWidget);
 
     // Add buttons.
@@ -123,6 +128,36 @@ void ListWidget::addItem()
 
         // Update view.
         this->listWidget->addItem(value.toString());
+    }
+}
+
+void ListWidget::editItem(QListWidgetItem* item)
+{
+    // Prepare window.
+    if (!this->listItemWindow)
+    {
+        this->listItemWindow = new ListItemWindow(this->recordsController, this->typesController, this);
+    }
+
+    QVariant currentValue = item->text();
+
+    // Update view.
+    this->listItemWindow->setFieldType(this->fieldType);
+    this->listItemWindow->setValue(currentValue);
+
+    // Show window.
+    int result = this->listItemWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        QVariant value = this->listItemWindow->getValue();
+
+        // Update model.
+        int index = this->getSelectedItemIndex();
+        this->items[index] = value;
+
+        // Update view.
+        item->setText(value.toString());
     }
 }
 
