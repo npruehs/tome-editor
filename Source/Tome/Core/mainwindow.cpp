@@ -237,6 +237,12 @@ void MainWindow::on_actionNew_Record_triggered()
                 this->addRecordField(fieldId);
             }
         }
+
+        // Update view.
+        for (int i = 0; i < record.fieldValues.size(); ++i)
+        {
+            this->updateRecordRow(i);
+        }
     }
 }
 
@@ -314,6 +320,12 @@ void MainWindow::on_actionEdit_Record_triggered()
             {
                 this->removeRecordField(fieldId);
             }
+        }
+
+        // Update view.
+        for (int i = 0; i < record.fieldValues.size(); ++i)
+        {
+            this->updateRecordRow(i);
         }
     }
 }
@@ -510,7 +522,6 @@ void MainWindow::addRecordField(const QString& fieldId)
 
     // Update view.
     this->ui->tableWidget->insertRow(index);
-    this->updateRecordRow(index);
 }
 
 void MainWindow::resetRecords()
