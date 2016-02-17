@@ -239,10 +239,7 @@ void MainWindow::on_actionNew_Record_triggered()
         }
 
         // Update view.
-        for (int i = 0; i < record.fieldValues.size(); ++i)
-        {
-            this->updateRecordRow(i);
-        }
+        this->refreshRecordTable();
     }
 }
 
@@ -323,10 +320,7 @@ void MainWindow::on_actionEdit_Record_triggered()
         }
 
         // Update view.
-        for (int i = 0; i < record.fieldValues.size(); ++i)
-        {
-            this->updateRecordRow(i);
-        }
+        this->refreshRecordTable();
     }
 }
 
@@ -490,11 +484,7 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
 
     // Update field table.
     this->ui->tableWidget->setRowCount(record.fieldValues.size());
-
-    for (int i = 0; i < record.fieldValues.size(); ++i)
-    {
-        this->updateRecordRow(i);
-    }
+    this->refreshRecordTable();
 }
 
 void MainWindow::addRecordField(const QString& fieldId)
@@ -621,6 +611,14 @@ void MainWindow::onProjectChanged()
 
     // Update recent projects.
     this->updateRecentProjects();
+}
+
+void MainWindow::refreshRecordTable()
+{
+    for (int i = 0; i < this->ui->tableWidget->rowCount(); ++i)
+    {
+        this->updateRecordRow(i);
+    }
 }
 
 void MainWindow::resetFields()

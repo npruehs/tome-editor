@@ -72,6 +72,7 @@ class MainWindow : public QMainWindow
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
         void onProjectChanged();
+        void refreshRecordTable();
         void resetFields();
         void resetRecords();
         void showWindow(QWidget* widget);
