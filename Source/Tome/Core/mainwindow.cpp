@@ -722,11 +722,12 @@ void MainWindow::updateRecordRow(int i)
     QString key = record.fieldValues.keys()[i];
     QVariant value = record.fieldValues[key];
 
-    QString valueString = value.toString();
-
     // Get selected record field type.
     const FieldDefinition& field =
             this->controller->getFieldDefinitionsController().getFieldDefinition(key);
+
+    QString keyString = field.displayName;
+    QString valueString = value.toString();
 
     if (this->controller->getTypesController().isCustomType(field.fieldType))
     {
@@ -739,7 +740,7 @@ void MainWindow::updateRecordRow(int i)
     }
 
     // Show field and value.
-    this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(key));
+    this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(keyString));
     this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(valueString));
 
     // Show field description as tooltip.
