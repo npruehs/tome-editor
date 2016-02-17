@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TomeProject>
+<TomeProject Version="1">
     <Name>Tome Example Project</Name>
     <Components>
         <Name>ArmorComponent</Name>

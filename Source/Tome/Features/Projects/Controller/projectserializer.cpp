@@ -12,6 +12,7 @@ const QString ProjectSerializer::AttributeExportedType = "ExportedType";
 const QString ProjectSerializer::AttributeKey = "Key";
 const QString ProjectSerializer::AttributeTomeType = "TomeType";
 const QString ProjectSerializer::AttributeValue = "Value";
+const QString ProjectSerializer::AttributeVersion = "Version";
 const QString ProjectSerializer::ElementComponents = "Components";
 const QString ProjectSerializer::ElementFieldDefinitions = "FieldDefinitions";
 const QString ProjectSerializer::ElementFileExtension = "FileExtension";
@@ -27,6 +28,8 @@ const QString ProjectSerializer::ElementTomeProject = "TomeProject";
 const QString ProjectSerializer::ElementType = "Type";
 const QString ProjectSerializer::ElementTypes = "Types";
 const QString ProjectSerializer::ElementTypeMap = "TypeMap";
+
+const int ProjectSerializer::Version = 1;
 
 
 ProjectSerializer::ProjectSerializer()
@@ -45,6 +48,9 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
         // Begin project.
         writer.writeStartElement(ElementTomeProject);
         {
+            // Write version.
+            writer.writeAttribute(AttributeVersion, QString::number(Version));
+
             // Write project name.
             writer.writeTextElement(ElementName, project->name);
 
