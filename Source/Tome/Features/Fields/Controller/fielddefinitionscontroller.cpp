@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 #include "../../../Util/listutils.h"
-
+#include "../../../Util/stringutils.h"
 
 using namespace Tome;
 
@@ -15,7 +15,7 @@ FieldDefinitionsController::FieldDefinitionsController()
 const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QString& id, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& component, const QString& description)
 {
     FieldDefinition fieldDefinition = FieldDefinition();
-    fieldDefinition.id = id;
+    fieldDefinition.id = stripWhitespaces(id);
     fieldDefinition.displayName = displayName;
     fieldDefinition.fieldType = fieldType;
     fieldDefinition.defaultValue = defaultValue;
@@ -61,7 +61,7 @@ void FieldDefinitionsController::updateFieldDefinition(const QString& oldId, con
     bool needsSorting = fieldDefinition.displayName != displayName;
 
     // Update model.
-    fieldDefinition.id = newId;
+    fieldDefinition.id = stripWhitespaces(newId);
     fieldDefinition.displayName = displayName;
     fieldDefinition.fieldType = fieldType;
     fieldDefinition.defaultValue = defaultValue;
