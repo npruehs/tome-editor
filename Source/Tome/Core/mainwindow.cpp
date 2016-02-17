@@ -216,7 +216,7 @@ void MainWindow::on_actionNew_Record_triggered()
 
         // Update view.
         int index = this->controller->getRecordsController().indexOf(record);
-        QTreeWidgetItem* newItem = new QTreeWidgetItem((QTreeWidget*)0, QStringList(recordDisplayName));
+        QTreeWidgetItem* newItem = new RecordTreeWidgetItem(recordId, recordDisplayName);
         this->ui->treeWidget->insertTopLevelItem(index, newItem);
 
         // Select new record.
