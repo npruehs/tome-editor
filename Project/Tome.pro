@@ -62,7 +62,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Records/Controller/recordscontroller.cpp \
     ../Source/Tome/Features/Fields/Controller/fielddefinitionscontroller.cpp \
     ../Source/Tome/Features/Types/Controller/typescontroller.cpp \
-    ../Source/Tome/Features/Settings/Controller/settingscontroller.cpp
+    ../Source/Tome/Features/Settings/Controller/settingscontroller.cpp \
+    ../Source/Tome/Features/Records/View/recordtreewidgetitem.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -110,7 +111,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Util/listutils.h \
     ../Source/Tome/Features/Export/Model/recordexporttemplatemap.h \
     ../Source/Tome/Util/memoryutils.h \
-    ../Source/Tome/Util/stringutils.h
+    ../Source/Tome/Util/stringutils.h \
+    ../Source/Tome/Features/Records/View/recordtreewidgetitem.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

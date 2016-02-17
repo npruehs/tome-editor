@@ -18,11 +18,11 @@ namespace Tome
             const RecordSetList& getRecordSets() const;
 
             /**
-             * @brief getRecordByDisplayName Returns the record with the specified display name.
-             * @param displayName Display name of the record to get.
-             * @return Record with the specified display name.
+             * @brief getRecord Returns the record with the specified id.
+             * @param id Id of the record to get.
+             * @return Record with the specified id.
              */
-            const Record& getRecordByDisplayName(const QString& displayName) const;
+            const Record& getRecord(const QString& id) const;
 
             /**
              * @brief getRecordNames Returns the list of the names of all records of this project.

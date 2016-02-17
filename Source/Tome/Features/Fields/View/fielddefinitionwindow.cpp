@@ -4,6 +4,7 @@
 #include <QMessageBox>
 
 #include "../../Types/Model/builtintype.h"
+#include "../../../Util/stringutils.h"
 
 using namespace Tome;
 
@@ -130,7 +131,7 @@ void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &f
 
 void FieldDefinitionWindow::on_lineEditDisplayName_textEdited(const QString &displayName)
 {
-    this->setFieldId(displayName);
+    this->setFieldId(stripWhitespaces(displayName));
 }
 
 bool FieldDefinitionWindow::validate()
@@ -142,6 +143,18 @@ bool FieldDefinitionWindow::validate()
                     this,
                     tr("Missing data"),
                     tr("Please specify an id for the field."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return false;
+    }
+
+    // Id must not contain any whitespaces.
+    if (containsWhitespaces(this->getFieldId()))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Incorrect id"),
+                    tr("Please specify an id without whitespaces."),
                     QMessageBox::Close,
                     QMessageBox::Close);
         return false;
