@@ -27,11 +27,7 @@ void SettingsController::addRecentProject(const QString& path)
 {
     QStringList recentProjects = this->getRecentProjects();
 
-    if (recentProjects.contains(path))
-    {
-        return;
-    }
-
+    recentProjects.removeOne(path);
     recentProjects.push_front(path);
 
     this->setRecentProjects(recentProjects);
