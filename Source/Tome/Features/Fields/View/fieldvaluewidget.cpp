@@ -160,7 +160,7 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
         QStringList recordNames = this->recordsController.getRecordNames();
 
         // Allow clearing the field.
-        recordNames << QString();
+        recordNames.push_front(QString());
 
         this->setEnumeration(recordNames);
         this->setCurrentWidget(this->comboBox);
