@@ -41,23 +41,7 @@ const RecordSetList& RecordsController::getRecordSets() const
 
 const Record& RecordsController::getRecord(const QString& id) const
 {
-    for (int i = 0; i < this->model->size(); ++i)
-    {
-        const RecordSet& recordSet = this->model->at(i);
-
-        for (int j = 0; j < recordSet.records.size(); ++j)
-        {
-            const Record& record = recordSet.records[j];
-
-            if (record.id == id)
-            {
-                return record;
-            }
-        }
-    }
-
-    const QString errorMessage = "Record not found: " + id;
-    throw std::out_of_range(errorMessage.toStdString());
+    return *this->getRecordById(id);
 }
 
 const QStringList RecordsController::getRecordNames() const
@@ -76,6 +60,26 @@ const QStringList RecordsController::getRecordNames() const
     }
 
     return names;
+}
+
+bool RecordsController::hasRecord(const QString& id) const
+{
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        RecordSet& recordSet = (*this->model)[i];
+
+        for (int j = 0; j < recordSet.records.size(); ++j)
+        {
+            Record& record = recordSet.records[j];
+
+            if (record.id == id)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 int RecordsController::indexOf(const Record& record) const

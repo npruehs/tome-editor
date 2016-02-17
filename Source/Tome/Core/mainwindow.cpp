@@ -478,6 +478,11 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
         return;
     }
 
+    if (!this->controller->getRecordsController().hasRecord(id))
+    {
+        return;
+    }
+
     // Get selected record.
     const Record& record =
             this->controller->getRecordsController().getRecord(id);
@@ -566,6 +571,7 @@ void MainWindow::onProjectChanged()
 
     // Setup tree view.
     this->resetRecords();
+    this->resetFields();
 
     QList<QTreeWidgetItem *> items;
 
