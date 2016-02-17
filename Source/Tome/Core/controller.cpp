@@ -252,9 +252,6 @@ void Controller::openProject(const QString& projectFileName)
             }
         }
 
-        // Add to recent projects.
-        this->settingsController->addRecentProject(projectFileName);
-
         // Set project reference.
         this->setProject(project);
     }
@@ -371,6 +368,10 @@ void Controller::setProject(QSharedPointer<Project> project)
     this->fieldDefinitionsController->setFieldDefinitionSets(project->fieldDefinitionSets);
     this->recordsController->setRecordSets(project->recordSets);
     this->typesController->setCustomTypes(project->types);
+
+    // Add to recent projects.
+    const QString& fullPath = this->getFullProjectPath();
+    this->settingsController->addRecentProject(fullPath);
 }
 
 const QString Controller::getFullProjectPath() const

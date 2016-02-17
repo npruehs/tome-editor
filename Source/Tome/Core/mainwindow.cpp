@@ -165,7 +165,7 @@ void MainWindow::on_actionOpen_Project_triggered()
                                                                   QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
                                                                   "Tome Project Files (*.tproj)");
 
-    this->controller->openProject(projectFileName);
+    this->openProject(projectFileName);
 }
 
 void MainWindow::on_actionSave_Project_triggered()
@@ -542,7 +542,6 @@ void MainWindow::openProject(QString path)
     try
     {
         this->controller->openProject(path);
-        this->updateRecentProjects();
         this->onProjectChanged();
     }
     catch (std::runtime_error& e)
@@ -621,6 +620,9 @@ void MainWindow::onProjectChanged()
 
     // Update title.
     this->updateWindowTitle();
+
+    // Update recent projects.
+    this->updateRecentProjects();
 }
 
 void MainWindow::showWindow(QWidget* widget)
