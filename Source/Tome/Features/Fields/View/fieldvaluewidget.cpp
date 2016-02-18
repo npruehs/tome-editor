@@ -94,7 +94,7 @@ QVariant FieldValueWidget::getFieldValue() const
 
     if (this->fieldType == BuiltInType::Reference)
     {
-        return this->lineEdit->text();
+        return this->comboBox->currentText();
     }
 
     // Check custom data types.
