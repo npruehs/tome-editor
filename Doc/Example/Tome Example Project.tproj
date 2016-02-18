@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TomeProject>
+<TomeProject Version="1">
     <Name>Tome Example Project</Name>
     <Components>
         <Name>ArmorComponent</Name>
@@ -34,14 +34,15 @@
             <Name>Slash XML</Name>
             <FileExtension>.blueprints.xml</FileExtension>
             <TypeMap>
+                <Mapping TomeType="Armor Type" ExportedType="FantasyGame.Data.ArmorType"/>
                 <Mapping TomeType="Boolean" ExportedType="System.Boolean"/>
                 <Mapping TomeType="Color" ExportedType="System.String"/>
+                <Mapping TomeType="Damage Type" ExportedType="FantasyGame.Data.DamageType"/>
                 <Mapping TomeType="Integer" ExportedType="System.Int32"/>
+                <Mapping TomeType="Movement Type" ExportedType="FantasyGame.Data.MovementType"/>
                 <Mapping TomeType="Real" ExportedType="System.Single"/>
                 <Mapping TomeType="Reference" ExportedType="System.String"/>
                 <Mapping TomeType="String" ExportedType="System.String"/>
-                <Mapping TomeType="Armor Type" ExportedType="FantasyGame.Data.ArmorType"/>
-                <Mapping TomeType="Damage Type" ExportedType="FantasyGame.Data.DamageType"/>
             </TypeMap>
         </Template>
         <Template>
@@ -51,14 +52,24 @@
         </Template>
     </RecordExportTemplates>
     <Types>
-        <Type Name="Armor Type" BaseType="String">
+        <Type Name="Armor Type">
             <Restrictions>
                 <Restriction Key="Enumeration" Value="Cloth;Leather;Mail"/>
             </Restrictions>
         </Type>
-        <Type Name="Damage Type" BaseType="String">
+        <Type Name="Damage Type">
             <Restrictions>
                 <Restriction Key="Enumeration" Value="Magic;Normal;Pierce"/>
+            </Restrictions>
+        </Type>
+        <Type Name="Movement Type">
+            <Restrictions>
+                <Restriction Key="Enumeration" Value="Air;Ground"/>
+            </Restrictions>
+        </Type>
+        <Type Name="Movement Types">
+            <Restrictions>
+                <Restriction Key="ItemType" Value="Movement Type"/>
             </Restrictions>
         </Type>
     </Types>

@@ -13,100 +13,123 @@ TEMPLATE = app
 
 # Expose application version in Windows property window and in application code.
 # http://www.openguru.com/2009/11/qt-best-way-to-set-application-version.html
-VERSION = 0.2
+VERSION = 0.3
+VERSION_NAME = Basilisk
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+DEFINES += APP_VERSION_NAME=\\\"$$VERSION_NAME\\\"
 
-Debug:DESTDIR = ../Bin/debug
-Debug:OBJECTS_DIR = ../Obj/debug
-Debug:MOC_DIR = ../Obj/debug/.moc
-Debug:RCC_DIR = ../Obj/debug/.rcc
-Debug:UI_DIR = ../Obj/debug/.ui
+Debug:DESTDIR = ../../Bin/debug
+Debug:OBJECTS_DIR = ../../Obj/debug
+Debug:MOC_DIR = ../../Obj/debug/.moc
+Debug:RCC_DIR = ../../Obj/debug/.rcc
+Debug:UI_DIR = ../../Obj/debug/.ui
 
-Release:DESTDIR = ../Bin/release
-Release:OBJECTS_DIR = ../Obj/release
-Release:MOC_DIR = ../Obj/release/.moc
-Release:RCC_DIR = ../Obj/release/.rcc
-Release:UI_DIR = ../Obj/release/.ui
+Release:DESTDIR = ../../Bin/release
+Release:OBJECTS_DIR = ../../Obj/release
+Release:MOC_DIR = ../../Obj/release/.moc
+Release:RCC_DIR = ../../Obj/release/.rcc
+Release:UI_DIR = ../../Obj/release/.ui
 
 SOURCES += ../Source/Tome/main.cpp \
-    ../Source/Tome/mainwindow.cpp \
-    ../Source/Tome/Fields/fielddefinitionset.cpp \
-    ../Source/Tome/Fields/fielddefinitionsetserializer.cpp \
-    ../Source/Tome/Help/aboutwindow.cpp \
-    ../Source/Tome/Projects/newprojectwindow.cpp \
-    ../Source/Tome/Projects/projectserializer.cpp \
-    ../Source/Tome/Projects/project.cpp \
-    ../Source/Tome/Records/record.cpp \
-    ../Source/Tome/Records/recordset.cpp \
-    ../Source/Tome/Records/recordsetserializer.cpp \
-    ../Source/Tome/Fields/fielddefinition.cpp \
-    ../Source/Tome/Values/valueconverter.cpp \
+    ../Source/Tome/Core/mainwindow.cpp \
+    ../Source/Tome/Features/Fields/Model/fielddefinitionset.cpp \
+    ../Source/Tome/Features/Fields/Controller/fielddefinitionsetserializer.cpp \
+    ../Source/Tome/Features/Help/View/aboutwindow.cpp \
+    ../Source/Tome/Features/Projects/View/newprojectwindow.cpp \
+    ../Source/Tome/Features/Projects/Controller/projectserializer.cpp \
+    ../Source/Tome/Features/Projects/Model/project.cpp \
+    ../Source/Tome/Features/Records/Model/record.cpp \
+    ../Source/Tome/Features/Records/Model/recordset.cpp \
+    ../Source/Tome/Features/Records/Controller/recordsetserializer.cpp \
+    ../Source/Tome/Features/Fields/Model/fielddefinition.cpp \
     ../Source/Tome/IO/xmlreader.cpp \
-    ../Source/Tome/Fields/fielddefinitionstablemodel.cpp \
-    ../Source/Tome/Fields/fielddefinitionwindow.cpp \
-    ../Source/Tome/Fields/fielddefinitionswindow.cpp \
-    ../Source/Tome/Records/recordsitemmodel.cpp \
-    ../Source/Tome/Records/recordwindow.cpp \
-    ../Source/Tome/Records/recordtablemodel.cpp \
-    ../Source/Tome/Fields/fieldvaluewindow.cpp \
-    ../Source/Tome/Fields/fieldvaluewidget.cpp \
-    ../Source/Tome/Export/recordexporttemplate.cpp \
-    ../Source/Tome/Export/recordexporter.cpp \
-    ../Source/Tome/Components/componentswindow.cpp \
-    ../Source/Tome/Components/componentsitemmodel.cpp \
-    ../Source/Tome/Components/componentwindow.cpp \
-    ../Source/Tome/Types/customtypeswindow.cpp \
-    ../Source/Tome/Types/customtypewindow.cpp \
-    ../Source/Tome/Types/customtypememberwindow.cpp \
-    ../Source/Tome/Types/customtype.cpp \
-    ../Source/Tome/Types/customtypesitemmodel.cpp
+    ../Source/Tome/Features/Fields/View/fielddefinitionwindow.cpp \
+    ../Source/Tome/Features/Fields/View/fielddefinitionswindow.cpp \
+    ../Source/Tome/Features/Records/View/recordwindow.cpp \
+    ../Source/Tome/Features/Fields/View/fieldvaluewindow.cpp \
+    ../Source/Tome/Features/Fields/View/fieldvaluewidget.cpp \
+    ../Source/Tome/Features/Export/Model/recordexporttemplate.cpp \
+    ../Source/Tome/Features/Components/View/componentswindow.cpp \
+    ../Source/Tome/Features/Components/View/componentwindow.cpp \
+    ../Source/Tome/Features/Types/View/customtypeswindow.cpp \
+    ../Source/Tome/Features/Types/Model/customtype.cpp \
+    ../Source/Tome/Features/Types/View/enumerationwindow.cpp \
+    ../Source/Tome/Features/Types/View/enumerationmemberwindow.cpp \
+    ../Source/Tome/Features/Types/View/listwindow.cpp \
+    ../Source/Tome/Features/Fields/View/listwidget.cpp \
+    ../Source/Tome/Features/Fields/View/listitemwindow.cpp \
+    ../Source/Tome/Features/Components/Controller/componentscontroller.cpp \
+    ../Source/Tome/Core/controller.cpp \
+    ../Source/Tome/Features/Export/Controller/exportcontroller.cpp \
+    ../Source/Tome/Features/Records/Controller/recordscontroller.cpp \
+    ../Source/Tome/Features/Fields/Controller/fielddefinitionscontroller.cpp \
+    ../Source/Tome/Features/Types/Controller/typescontroller.cpp \
+    ../Source/Tome/Features/Settings/Controller/settingscontroller.cpp \
+    ../Source/Tome/Features/Records/View/recordtreewidgetitem.cpp
 
-HEADERS  += ../Source/Tome/mainwindow.h \
-    ../Source/Tome/Types/builtintype.h \
-    ../Source/Tome/Fields/fielddefinition.h \
-    ../Source/Tome/Fields/fielddefinitionset.h \
-    ../Source/Tome/Fields/fielddefinitionsetserializer.h \
-    ../Source/Tome/Help/aboutwindow.h \
-    ../Source/Tome/Projects/newprojectwindow.h \
-    ../Source/Tome/Projects/projectserializer.h \
-    ../Source/Tome/Projects/project.h \
-    ../Source/Tome/Records/record.h \
-    ../Source/Tome/Records/recordset.h \
-    ../Source/Tome/Records/recordsetserializer.h \
-    ../Source/Tome/Values/valueconverter.h \
+HEADERS  += ../Source/Tome/Core/mainwindow.h \
+    ../Source/Tome/Features/Types/Model/builtintype.h \
+    ../Source/Tome/Features/Fields/Model/fielddefinition.h \
+    ../Source/Tome/Features/Fields/Model/fielddefinitionset.h \
+    ../Source/Tome/Features/Fields/Controller/fielddefinitionsetserializer.h \
+    ../Source/Tome/Features/Help/View/aboutwindow.h \
+    ../Source/Tome/Features/Projects/View/newprojectwindow.h \
+    ../Source/Tome/Features/Projects/Controller/projectserializer.h \
+    ../Source/Tome/Features/Projects/Model/project.h \
+    ../Source/Tome/Features/Records/Model/record.h \
+    ../Source/Tome/Features/Records/Model/recordset.h \
+    ../Source/Tome/Features/Records/Controller/recordsetserializer.h \
     ../Source/Tome/Util/pathutils.h \
     ../Source/Tome/IO/xmlreader.h \
-    ../Source/Tome/Fields/fielddefinitionstablemodel.h \
-    ../Source/Tome/Fields/fielddefinitionwindow.h \
-    ../Source/Tome/Fields/fielddefinitionswindow.h \
-    ../Source/Tome/Records/recordsitemmodel.h \
-    ../Source/Tome/Records/recordwindow.h \
-    ../Source/Tome/Records/recordtablemodel.h \
-    ../Source/Tome/Fields/fieldvaluewindow.h \
-    ../Source/Tome/Fields/fieldvaluewidget.h \
-    ../Source/Tome/Export/recordexporttemplate.h \
-    ../Source/Tome/Export/recordexporter.h \
-    ../Source/Tome/Components/componentswindow.h \
-    ../Source/Tome/Components/componentsitemmodel.h \
-    ../Source/Tome/Components/componentwindow.h \
-    ../Source/Tome/Types/customtypeswindow.h \
-    ../Source/Tome/Types/customtypewindow.h \
-    ../Source/Tome/Types/customtypememberwindow.h \
-    ../Source/Tome/Types/customtype.h \
-    ../Source/Tome/Types/customtypesitemmodel.h
+    ../Source/Tome/Features/Fields/View/fielddefinitionwindow.h \
+    ../Source/Tome/Features/Fields/View/fielddefinitionswindow.h \
+    ../Source/Tome/Features/Records/View/recordwindow.h \
+    ../Source/Tome/Features/Fields/View/fieldvaluewindow.h \
+    ../Source/Tome/Features/Fields/View/fieldvaluewidget.h \
+    ../Source/Tome/Features/Export/Model/recordexporttemplate.h \
+    ../Source/Tome/Features/Components/View/componentswindow.h \
+    ../Source/Tome/Features/Components/View/componentwindow.h \
+    ../Source/Tome/Features/Types/View/customtypeswindow.h \
+    ../Source/Tome/Features/Types/Model/customtype.h \
+    ../Source/Tome/Features/Types/View/enumerationmemberwindow.h \
+    ../Source/Tome/Features/Types/View/enumerationwindow.h \
+    ../Source/Tome/Features/Types/View/listwindow.h \
+    ../Source/Tome/Features/Fields/View/listwidget.h \
+    ../Source/Tome/Features/Fields/View/listitemwindow.h \
+    ../Source/Tome/Features/Components/Controller/componentscontroller.h \
+    ../Source/Tome/Features/Components/Model/component.h \
+    ../Source/Tome/Core/controller.h \
+    ../Source/Tome/Features/Components/Model/componentlist.h \
+    ../Source/Tome/Features/Export/Controller/exportcontroller.h \
+    ../Source/Tome/Features/Records/Controller/recordscontroller.h \
+    ../Source/Tome/Features/Records/Model/recordlist.h \
+    ../Source/Tome/Features/Records/Model/recordsetlist.h \
+    ../Source/Tome/Features/Fields/Controller/fielddefinitionscontroller.h \
+    ../Source/Tome/Features/Fields/Model/fielddefinitionsetlist.h \
+    ../Source/Tome/Features/Fields/Model/fielddefinitionlist.h \
+    ../Source/Tome/Features/Types/Controller/typescontroller.h \
+    ../Source/Tome/Features/Types/Model/customtypelist.h \
+    ../Source/Tome/Features/Settings/Controller/settingscontroller.h \
+    ../Source/Tome/Util/listutils.h \
+    ../Source/Tome/Features/Export/Model/recordexporttemplatemap.h \
+    ../Source/Tome/Util/memoryutils.h \
+    ../Source/Tome/Util/stringutils.h \
+    ../Source/Tome/Features/Records/View/recordtreewidgetitem.h
 
-FORMS    += ../Source/Tome/mainwindow.ui \
-    ../Source/Tome/Help/aboutwindow.ui \
-    ../Source/Tome/Projects/newprojectwindow.ui \
-    ../Source/Tome/Fields/fielddefinitionwindow.ui \
-    ../Source/Tome/Fields/fielddefinitionswindow.ui \
-    ../Source/Tome/Records/recordwindow.ui \
-    ../Source/Tome/Fields/fieldvaluewindow.ui \
-    ../Source/Tome/Components/componentswindow.ui \
-    ../Source/Tome/Components/componentwindow.ui \
-    ../Source/Tome/Types/customtypeswindow.ui \
-    ../Source/Tome/Types/customtypewindow.ui \
-    ../Source/Tome/Types/customtypememberwindow.ui
+FORMS    += ../Source/Tome/Core/mainwindow.ui \
+    ../Source/Tome/Features/Help/View/aboutwindow.ui \
+    ../Source/Tome/Features/Projects/View/newprojectwindow.ui \
+    ../Source/Tome/Features/Fields/View/fielddefinitionwindow.ui \
+    ../Source/Tome/Features/Fields/View/fielddefinitionswindow.ui \
+    ../Source/Tome/Features/Records/View/recordwindow.ui \
+    ../Source/Tome/Features/Fields/View/fieldvaluewindow.ui \
+    ../Source/Tome/Features/Components/View/componentswindow.ui \
+    ../Source/Tome/Features/Components/View/componentwindow.ui \
+    ../Source/Tome/Features/Types/View/customtypeswindow.ui \
+    ../Source/Tome/Features/Types/View/enumerationwindow.ui \
+    ../Source/Tome/Features/Types/View/enumerationmemberwindow.ui \
+    ../Source/Tome/Features/Types/View/listwindow.ui \
+    ../Source/Tome/Features/Fields/View/listitemwindow.ui
 
 RESOURCES += \
     tome.qrc

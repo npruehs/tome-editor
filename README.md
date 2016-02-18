@@ -15,13 +15,6 @@ The tool is pretty self-explanatory. However, to give you a headstart, feel free
 * Arbitrary output data formats through templates
 * Splitting data up into multiple files for improved collaboration
 
-### In Development (subject to change)
-
-* Hierarchical record structure
-* Data import from various sources such as Microsoft Excel
-* Export and import of localization tables as CSV and TMX
-* Command-line support for easy integration into CI and other tool chains
-
 ## Development Cycle
 
 We know that using a tool like Tome in production requires you to be completely sure about stability and compatibility. Thus, new releases of Tome are created using [Semantic Versioning](http://semver.org/). In short:
@@ -59,7 +52,7 @@ Tome is developed using the [GitFlow branching model](http://nvie.com/posts/a-su
 
 ### Step 3: Implement your feature or bugfix
 
-Tome is based on [Qt 5.5](http://www.qt.io/).
+Tome is based on [Qt 5.4](http://www.qt.io/).
 
 You might also take a look at our [development wiki](https://github.com/npruehs/game-data-editor/wiki) in order to get a better understanding of how everything's tied together.
 

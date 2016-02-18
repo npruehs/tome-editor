@@ -1,5 +1,5 @@
-#ifndef PATHUTILS
-#define PATHUTILS
+#ifndef PATHUTILS_H
+#define PATHUTILS_H
 
 #include <QDir>
 #include <QString>
@@ -18,5 +18,5 @@ namespace Tome
     }
 }
 
-#endif // PATHUTILS
+#endif // PATHUTILS_H
 
