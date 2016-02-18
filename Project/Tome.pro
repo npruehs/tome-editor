@@ -13,8 +13,10 @@ TEMPLATE = app
 
 # Expose application version in Windows property window and in application code.
 # http://www.openguru.com/2009/11/qt-best-way-to-set-application-version.html
-VERSION = 0.2
+VERSION = 0.3
+VERSION_NAME = Basilisk
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+DEFINES += APP_VERSION_NAME=\\\"$$VERSION_NAME\\\"
 
 Debug:DESTDIR = ../Bin/debug
 Debug:OBJECTS_DIR = ../Obj/debug
