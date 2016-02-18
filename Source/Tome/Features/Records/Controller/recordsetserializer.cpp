@@ -9,6 +9,7 @@ using namespace Tome;
 
 const QString RecordSetSerializer::ElementDisplayName = "DisplayName";
 const QString RecordSetSerializer::ElementId = "Id";
+const QString RecordSetSerializer::ElementItem = "Item";
 const QString RecordSetSerializer::ElementRecord = "Record";
 const QString RecordSetSerializer::ElementRecords = "Records";
 const QString RecordSetSerializer::ElementValue = "Value";
@@ -53,12 +54,16 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
                         {
                             QVariantList list = value.toList();
 
+                            stream.writeStartElement(it.key());
+
                             for (int i = 0; i < list.size(); ++i)
                             {
-                                stream.writeStartElement(it.key());
+                                stream.writeStartElement(ElementItem);
                                 stream.writeAttribute(ElementValue, list[i].toString());
                                 stream.writeEndElement();
                             }
+
+                            stream.writeEndElement();
                         }
                         else
                         {
@@ -104,38 +109,36 @@ void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) c
 
                 reader.readStartElement(ElementRecord);
 
-                QString lastKey;
-                QVariant lastValue;
-
                 while (!reader.isAtElement(ElementRecord))
                 {
                     QString key = reader.getElementName();
                     QVariant value = reader.readAttribute(ElementValue);
 
-                    if (key == lastKey)
+                    if (value.toString().isEmpty())
                     {
-                        // List value.
-                        if (lastValue.canConvert<QVariantList>())
+                        reader.readStartElement(key);
                         {
-                            QVariantList list = lastValue.toList();
-                            list.append(value);
-                            value = list;
-                        }
-                        else
-                        {
+                            // Begin list.
                             QVariantList list = QVariantList();
-                            list.append(lastValue);
-                            list.append(value);
+
+                            while (reader.isAtElement(ElementItem))
+                            {
+                                // Read list item.
+                                QVariant item = reader.readAttribute(ElementValue);
+                                list.append(item);
+                                reader.readEmptyElement(ElementItem);
+                            }
+
                             value = list;
                         }
+                        reader.readEndElement();
+                    }
+                    else
+                    {
+                        reader.readEmptyElement(key);
                     }
 
                     record.fieldValues[key] = value;
-
-                    reader.readEmptyElement(key);
-
-                    lastKey = key;
-                    lastValue = value;
                 }
 
                 recordSet.records.push_back(record);
