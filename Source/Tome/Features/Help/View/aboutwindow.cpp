@@ -8,7 +8,8 @@ AboutWindow::AboutWindow(QWidget *parent) :
     ui->setupUi(this);
 
     // Show version number.
-    this->ui->labelVersion->setText("Version " + QApplication::instance()->applicationVersion());
+    const QString version = "Version " + QApplication::instance()->applicationVersion() + " (" + APP_VERSION_NAME + ")";
+    this->ui->labelVersion->setText(version);
 }
 
 AboutWindow::~AboutWindow()

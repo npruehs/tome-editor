@@ -216,7 +216,7 @@ void MainWindow::on_actionNew_Record_triggered()
 
         // Update view.
         int index = this->controller->getRecordsController().indexOf(record);
-        QTreeWidgetItem* newItem = new QTreeWidgetItem((QTreeWidget*)0, QStringList(recordDisplayName));
+        QTreeWidgetItem* newItem = new RecordTreeWidgetItem(recordId, recordDisplayName);
         this->ui->treeWidget->insertTopLevelItem(index, newItem);
 
         // Select new record.
@@ -239,10 +239,7 @@ void MainWindow::on_actionNew_Record_triggered()
         }
 
         // Update view.
-        for (int i = 0; i < record.fieldValues.size(); ++i)
-        {
-            this->updateRecordRow(i);
-        }
+        this->refreshRecordTable();
     }
 }
 
@@ -323,10 +320,7 @@ void MainWindow::on_actionEdit_Record_triggered()
         }
 
         // Update view.
-        for (int i = 0; i < record.fieldValues.size(); ++i)
-        {
-            this->updateRecordRow(i);
-        }
+        this->refreshRecordTable();
     }
 }
 
@@ -439,11 +433,13 @@ void MainWindow::exportRecords(QAction* exportAction)
     // Build export file name suggestion.
     const QString suggestedFileName = this->controller->getProjectName() + exportTemplate.fileExtension;
     const QString suggestedFilePath = combinePaths(this->controller->getProjectPath(), suggestedFileName);
+    const QString filter = exportTemplateName + " (*" + exportTemplate.fileExtension + ")";
 
     // Show file dialog.
     QString filePath = QFileDialog::getSaveFileName(this,
                                                     tr("Export Records"),
-                                                    suggestedFilePath);
+                                                    suggestedFilePath,
+                                                    filter);
 
     if (filePath.isEmpty())
     {
@@ -479,22 +475,19 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
 
     const QString& id = this->getSelectedRecordId();
 
-    if (id.isEmpty())
+    if (id.isEmpty() || !this->controller->getRecordsController().hasRecord(id))
     {
+        // Clear table.
+        this->ui->tableWidget->setRowCount(0);
         return;
     }
 
     // Get selected record.
-    const Record& record =
-            this->controller->getRecordsController().getRecord(id);
+    const Record& record = this->controller->getRecordsController().getRecord(id);
 
     // Update field table.
     this->ui->tableWidget->setRowCount(record.fieldValues.size());
-
-    for (int i = 0; i < record.fieldValues.size(); ++i)
-    {
-        this->updateRecordRow(i);
-    }
+    this->refreshRecordTable();
 }
 
 void MainWindow::addRecordField(const QString& fieldId)
@@ -537,6 +530,11 @@ QString MainWindow::getSelectedRecordId() const
 
 void MainWindow::openProject(QString path)
 {
+    if (path.isEmpty())
+    {
+        return;
+    }
+
     try
     {
         this->controller->openProject(path);
@@ -576,6 +574,7 @@ void MainWindow::onProjectChanged()
 
     // Setup tree view.
     this->resetRecords();
+    this->resetFields();
 
     QList<QTreeWidgetItem *> items;
 
@@ -621,6 +620,14 @@ void MainWindow::onProjectChanged()
 
     // Update recent projects.
     this->updateRecentProjects();
+}
+
+void MainWindow::refreshRecordTable()
+{
+    for (int i = 0; i < this->ui->tableWidget->rowCount(); ++i)
+    {
+        this->updateRecordRow(i);
+    }
 }
 
 void MainWindow::resetFields()

@@ -2,8 +2,10 @@
 <Records>
     <Record Id="Archer" DisplayName="Archer">
         <Acceleration Value="5"/>
-        <AllowedTargets Value="Air"/>
-        <AllowedTargets Value="Ground"/>
+        <AllowedTargets>
+            <Item Value="Air"/>
+            <Item Value="Ground"/>
+        </AllowedTargets>
         <ArmorType Value="Leather"/>
         <AttackDamage Value="8"/>
         <AttackRange Value="8"/>
@@ -35,7 +37,9 @@
     </Record>
     <Record Id="Knight" DisplayName="Knight">
         <Acceleration Value="8"/>
-        <AllowedTargets Value="Ground"/>
+        <AllowedTargets>
+            <Item Value="Ground"/>
+        </AllowedTargets>
         <ArmorType Value="Mail"/>
         <AttackDamage Value="7"/>
         <AttackRange Value="1"/>
@@ -49,7 +53,7 @@
         <Mass Value="2.5"/>
         <MovementSpeed Value="20"/>
         <Name Value="Knight"/>
-        <Projectile Value=""/>
+        <Projectile/>
         <RotationSpeed Value="360"/>
         <SightRadius Value="25"/>
         <Sprite Value="Sprites/Knight"/>
@@ -57,8 +61,10 @@
     </Record>
     <Record Id="Mage" DisplayName="Mage">
         <Acceleration Value="4"/>
-        <AllowedTargets Value="Air"/>
-        <AllowedTargets Value="Ground"/>
+        <AllowedTargets>
+            <Item Value="Air"/>
+            <Item Value="Ground"/>
+        </AllowedTargets>
         <ArmorType Value="Cloth"/>
         <AttackDamage Value="10"/>
         <AttackRange Value="6"/>
@@ -80,7 +86,9 @@
     </Record>
     <Record Id="Peasant" DisplayName="Peasant">
         <Acceleration Value="4.5"/>
-        <AllowedTargets Value="Ground"/>
+        <AllowedTargets>
+            <Item Value="Ground"/>
+        </AllowedTargets>
         <ArmorType Value="Cloth"/>
         <AttackDamage Value="5"/>
         <AttackRange Value="1"/>
@@ -94,7 +102,7 @@
         <Mass Value="1"/>
         <MovementSpeed Value="12.75"/>
         <Name Value="Peasant"/>
-        <Projectile Value=""/>
+        <Projectile/>
         <RotationSpeed Value="360"/>
         <SightRadius Value="20"/>
         <Sprite Value="Sprites/Peasant"/>
