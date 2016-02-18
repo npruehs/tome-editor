@@ -473,19 +473,15 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
 
     const QString& id = this->getSelectedRecordId();
 
-    if (id.isEmpty())
+    if (id.isEmpty() || !this->controller->getRecordsController().hasRecord(id))
     {
-        return;
-    }
-
-    if (!this->controller->getRecordsController().hasRecord(id))
-    {
+        // Clear table.
+        this->ui->tableWidget->setRowCount(0);
         return;
     }
 
     // Get selected record.
-    const Record& record =
-            this->controller->getRecordsController().getRecord(id);
+    const Record& record = this->controller->getRecordsController().getRecord(id);
 
     // Update field table.
     this->ui->tableWidget->setRowCount(record.fieldValues.size());
