@@ -18,17 +18,17 @@ VERSION_NAME = Basilisk
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 DEFINES += APP_VERSION_NAME=\\\"$$VERSION_NAME\\\"
 
-Debug:DESTDIR = ../Bin/debug
-Debug:OBJECTS_DIR = ../Obj/debug
-Debug:MOC_DIR = ../Obj/debug/.moc
-Debug:RCC_DIR = ../Obj/debug/.rcc
-Debug:UI_DIR = ../Obj/debug/.ui
+Debug:DESTDIR = ../../Bin/debug
+Debug:OBJECTS_DIR = ../../Obj/debug
+Debug:MOC_DIR = ../../Obj/debug/.moc
+Debug:RCC_DIR = ../../Obj/debug/.rcc
+Debug:UI_DIR = ../../Obj/debug/.ui
 
-Release:DESTDIR = ../Bin/release
-Release:OBJECTS_DIR = ../Obj/release
-Release:MOC_DIR = ../Obj/release/.moc
-Release:RCC_DIR = ../Obj/release/.rcc
-Release:UI_DIR = ../Obj/release/.ui
+Release:DESTDIR = ../../Bin/release
+Release:OBJECTS_DIR = ../../Obj/release
+Release:MOC_DIR = ../../Obj/release/.moc
+Release:RCC_DIR = ../../Obj/release/.rcc
+Release:UI_DIR = ../../Obj/release/.ui
 
 SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Core/mainwindow.cpp \
