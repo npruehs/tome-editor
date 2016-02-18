@@ -530,6 +530,11 @@ QString MainWindow::getSelectedRecordId() const
 
 void MainWindow::openProject(QString path)
 {
+    if (path.isEmpty())
+    {
+        return;
+    }
+
     try
     {
         this->controller->openProject(path);
