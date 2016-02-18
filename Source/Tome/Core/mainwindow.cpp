@@ -433,11 +433,13 @@ void MainWindow::exportRecords(QAction* exportAction)
     // Build export file name suggestion.
     const QString suggestedFileName = this->controller->getProjectName() + exportTemplate.fileExtension;
     const QString suggestedFilePath = combinePaths(this->controller->getProjectPath(), suggestedFileName);
+    const QString filter = exportTemplateName + " (*" + exportTemplate.fileExtension + ")";
 
     // Show file dialog.
     QString filePath = QFileDialog::getSaveFileName(this,
                                                     tr("Export Records"),
-                                                    suggestedFilePath);
+                                                    suggestedFilePath,
+                                                    filter);
 
     if (filePath.isEmpty())
     {
