@@ -16,6 +16,7 @@ namespace Tome
             QString displayName;
             QString id;
             QMap<QString, QVariant> fieldValues;
+            QString parentId;
     };
 
     inline bool operator==(const Record& lhs, const Record& rhs){ return lhs.id == rhs.id; }
