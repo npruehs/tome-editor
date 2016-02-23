@@ -216,7 +216,7 @@ void MainWindow::on_actionNew_Record_triggered()
 
         // Update view.
         int index = this->controller->getRecordsController().indexOf(record);
-        QTreeWidgetItem* newItem = new RecordTreeWidgetItem(recordId, recordDisplayName);
+        QTreeWidgetItem* newItem = new RecordTreeWidgetItem(recordId, recordDisplayName, QString());
         this->ui->treeWidget->insertTopLevelItem(index, newItem);
 
         // Select new record.
@@ -576,7 +576,8 @@ void MainWindow::onProjectChanged()
     this->resetRecords();
     this->resetFields();
 
-    QList<QTreeWidgetItem *> items;
+    // Create record tree items.
+    QMap<QString, RecordTreeWidgetItem*> recordItems;
 
     const RecordSetList& recordSetList = this->controller->getRecordsController().getRecordSets();
 
@@ -587,10 +588,31 @@ void MainWindow::onProjectChanged()
         for (int j = 0; j < recordSet.records.size(); ++j)
         {
             const Record& record = recordSet.records[j];
-            items.append(new RecordTreeWidgetItem(record.id, record.displayName));
+            RecordTreeWidgetItem* recordItem =
+                    new RecordTreeWidgetItem(record.id, record.displayName, record.parentId);
+            recordItems.insert(record.id, recordItem);
         }
     }
 
+    // Build hierarchy and prepare item list for tree widget.
+    QList<QTreeWidgetItem* > items;
+
+    for (QMap<QString, RecordTreeWidgetItem*>::iterator it = recordItems.begin();
+         it != recordItems.end();
+         ++it)
+    {
+        RecordTreeWidgetItem* recordItem = it.value();
+        QString recordItemParentId = recordItem->getParentId();
+        if (!recordItemParentId.isEmpty() && recordItems.contains(recordItemParentId))
+        {
+            RecordTreeWidgetItem* recordParent = recordItems[recordItemParentId];
+            recordParent->addChild(recordItem);
+        }
+
+        items.append(recordItem);
+    }
+
+    // Fill tree widget.
     this->ui->treeWidget->insertTopLevelItems(0, items);
     this->ui->treeWidget->expandAll();
 
