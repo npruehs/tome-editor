@@ -108,4 +108,23 @@
         <Sprite Value="Sprites/Peasant"/>
         <SpriteColor Value="#FFFFFFFF"/>
     </Record>
+    <Record Id="TestUnit" DisplayName="TestUnit" Parent="Unit">
+        <MovementSpeed Value="14.750"/>
+    </Record>
+    <Record Id="TestUnit2" DisplayName="TestUnit2" Parent="TestUnit">
+        <MovementSpeed Value="12.750"/>
+    </Record>
+    <Record Id="Unit" DisplayName="Unit">
+        <Acceleration Value="4.500"/>
+        <AllowedTargets>
+            <Item Value="Ground"/>
+        </AllowedTargets>
+        <AttackDamage Value="12"/>
+        <Cooldown Value="1.200"/>
+        <DamageType Value="Normal"/>
+        <Mass Value="1.000"/>
+        <MovementSpeed Value="12.750"/>
+        <Projectile/>
+        <RotationSpeed Value="360.000"/>
+    </Record>
 </Records>

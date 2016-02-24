@@ -51,6 +51,7 @@ class MainWindow : public QMainWindow
 
         void exportRecords(QAction* exportAction);
         void openRecentProject(QAction* recentProjectAction);
+        void revertFieldValue();
         void tableWidgetDoubleClicked(const QModelIndex &index);
         void treeWidgetDoubleClicked(const QModelIndex &index);
         void treeWidgetRecordReparented(const QString& recordId, const QString& newParentId);

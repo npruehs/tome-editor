@@ -235,6 +235,30 @@ void RecordsController::removeRecordField(const QString& recordId, const QString
     record.fieldValues.remove(fieldId);
 }
 
+QVariant RecordsController::revertFieldValue(const QString& recordId, const QString& fieldId)
+{
+    QVariant inheritedValue = this->getInheritedFieldValue(recordId, fieldId);
+
+    if (inheritedValue != QVariant())
+    {
+        this->updateRecordFieldValue(recordId, fieldId, inheritedValue);
+        return inheritedValue;
+    }
+    else
+    {
+        RecordFieldValueMap recordFieldValues = this->getRecordFieldValues(recordId);
+
+        if (recordFieldValues.contains(fieldId))
+        {
+            return recordFieldValues[fieldId];
+        }
+        else
+        {
+            return QVariant();
+        }
+    }
+}
+
 void RecordsController::reparentRecord(const QString& recordId, const QString& newParentId)
 {
     Record& record = *this->getRecordById(recordId);

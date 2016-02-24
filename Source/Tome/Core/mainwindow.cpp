@@ -468,6 +468,35 @@ void MainWindow::openRecentProject(QAction* recentProjectAction)
     this->openProject(path);
 }
 
+void MainWindow::revertFieldValue()
+{
+    // Get record to revert field of.
+    QString recordId = this->getSelectedRecordId();
+
+    // Get field to revert.
+    QModelIndexList selectedIndexes = this->tableWidget->selectionModel()->selectedRows(0);
+
+    if (selectedIndexes.empty())
+    {
+        return;
+    }
+
+    const RecordFieldValueMap fieldValues =
+            this->controller->getRecordsController().getRecordFieldValues(recordId);
+    const QString fieldId = fieldValues.keys()[selectedIndexes.first().row()];
+
+    // Update view.
+    QVariant inheritedValue = this->controller->getRecordsController().getInheritedFieldValue(recordId, fieldId);
+
+    if (inheritedValue != QVariant())
+    {
+        if (this->fieldValueWindow != 0)
+        {
+            this->fieldValueWindow->setFieldValue(inheritedValue);
+        }
+    }
+}
+
 void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
 {
     QString id = this->getSelectedRecordId();
@@ -488,6 +517,12 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
                 (this->controller->getRecordsController(),
                  this->controller->getTypesController(),
                  this);
+
+        connect(
+                    this->fieldValueWindow,
+                    SIGNAL(revert()),
+                    SLOT(revertFieldValue())
+                    );
     }
 
     // Update view.
