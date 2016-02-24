@@ -470,12 +470,12 @@ void MainWindow::openRecentProject(QAction* recentProjectAction)
 void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
 {
     QString id = this->getSelectedRecordId();
-    const Record& record =
-            this->controller->getRecordsController().getRecord(id);
+    const RecordFieldValueMap fieldValues =
+            this->controller->getRecordsController().getRecordFieldValues(id);
 
     // Get current field data.
-    const QString fieldId = record.fieldValues.keys()[index.row()];
-    const QVariant fieldValue = record.fieldValues[fieldId];
+    const QString fieldId = fieldValues.keys()[index.row()];
+    const QVariant fieldValue = fieldValues[fieldId];
 
     const FieldDefinition& field =
             this->controller->getFieldDefinitionsController().getFieldDefinition(fieldId);
@@ -503,7 +503,7 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
         QVariant fieldValue = this->fieldValueWindow->getFieldValue();
 
         // Update model.
-        this->controller->getRecordsController().updateRecordFieldValue(record.id, fieldId, fieldValue);
+        this->controller->getRecordsController().updateRecordFieldValue(id, fieldId, fieldValue);
 
         // Update view.
         this->updateRecordRow(index.row());
@@ -541,10 +541,11 @@ void MainWindow::treeWidgetSelectionChanged(const QItemSelection& selected, cons
     }
 
     // Get selected record.
-    const Record& record = this->controller->getRecordsController().getRecord(id);
+    const RecordFieldValueMap fieldValues =
+            this->controller->getRecordsController().getRecordFieldValues(id);
 
     // Update field table.
-    this->tableWidget->setRowCount(record.fieldValues.size());
+    this->tableWidget->setRowCount(fieldValues.size());
     this->refreshRecordTable();
 }
 
@@ -800,12 +801,14 @@ void MainWindow::updateRecordRow(int i)
 {
     // Get selected record.
     QString id = this->getSelectedRecordId();
-    const Record& record =
-            this->controller->getRecordsController().getRecord(id);
+
+    // Get record field values.
+    const RecordFieldValueMap fieldValues =
+            this->controller->getRecordsController().getRecordFieldValues(id);
 
     // Get selected record field key and value.
-    QString key = record.fieldValues.keys()[i];
-    QVariant value = record.fieldValues[key];
+    QString key = fieldValues.keys()[i];
+    QVariant value = fieldValues[key];
 
     // Get selected record field type.
     const FieldDefinition& field =

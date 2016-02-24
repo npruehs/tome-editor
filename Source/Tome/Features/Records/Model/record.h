@@ -5,6 +5,8 @@
 #include <QString>
 #include <QVariant>
 
+#include "recordfieldvaluemap.h"
+
 
 namespace Tome
 {
@@ -15,7 +17,7 @@ namespace Tome
 
             QString displayName;
             QString id;
-            QMap<QString, QVariant> fieldValues;
+            RecordFieldValueMap fieldValues;
             QString parentId;
     };
 

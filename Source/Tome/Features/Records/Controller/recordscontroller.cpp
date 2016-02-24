@@ -62,6 +62,42 @@ const QStringList RecordsController::getRecordNames() const
     return names;
 }
 
+const RecordFieldValueMap RecordsController::getRecordFieldValues(const QString& id) const
+{
+    Record* record = this->getRecordById(id);
+
+    // Resolve parents.
+    QList<Record*> ancestorsAndSelf;
+    ancestorsAndSelf.push_front(record);
+
+    QString parentId = record->parentId;
+
+    while (!parentId.isEmpty())
+    {
+        record = this->getRecordById(parentId);
+        ancestorsAndSelf.push_front(record);
+        parentId = record->parentId;
+    }
+
+    // Build field value map.
+    RecordFieldValueMap fieldValues;
+
+    for (int i = 0; i < ancestorsAndSelf.count(); ++i)
+    {
+        record = ancestorsAndSelf[i];
+
+        // Combine map.
+        for (RecordFieldValueMap::iterator it = record->fieldValues.begin();
+             it != record->fieldValues.end();
+             ++it)
+        {
+            fieldValues[it.key()] = it.value();
+        }
+    }
+
+    return fieldValues;
+}
+
 bool RecordsController::hasRecord(const QString& id) const
 {
     for (int i = 0; i < this->model->size(); ++i)

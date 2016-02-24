@@ -30,6 +30,8 @@ namespace Tome
              */
             const QStringList getRecordNames() const;
 
+            const RecordFieldValueMap getRecordFieldValues(const QString& id) const;
+
             bool hasRecord(const QString& id) const;
             int indexOf(const Record& record) const;
             void removeRecordAt(const int index);

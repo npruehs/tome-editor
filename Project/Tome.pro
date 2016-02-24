@@ -116,7 +116,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Util/memoryutils.h \
     ../Source/Tome/Util/stringutils.h \
     ../Source/Tome/Features/Records/View/recordtreewidgetitem.h \
-    ../Source/Tome/Features/Records/View/recordtreewidget.h
+    ../Source/Tome/Features/Records/View/recordtreewidget.h \
+    ../Source/Tome/Features/Records/Model/recordfieldvaluemap.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
