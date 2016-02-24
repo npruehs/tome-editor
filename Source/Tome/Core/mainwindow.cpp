@@ -518,6 +518,13 @@ void MainWindow::treeWidgetDoubleClicked(const QModelIndex &index)
 
 void MainWindow::treeWidgetRecordReparented(const QString& recordId, const QString& newParentId)
 {
+    // Check if allowed.
+    if (recordId == newParentId ||
+            this->controller->getRecordsController().isAncestorOf(recordId, newParentId))
+    {
+        return;
+    }
+
     // Update model.
     this->controller->getRecordsController().reparentRecord(recordId, newParentId);
 

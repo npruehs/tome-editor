@@ -34,6 +34,15 @@ namespace Tome
 
             bool hasRecord(const QString& id) const;
             int indexOf(const Record& record) const;
+
+            /**
+             * @brief isAncestorOf Checks whether the first record is an ancestor of the second one.
+             * @param possibleAncestor Record to check if it is an ancestor.
+             * @param recordId Record to check the ancestors of.
+             * @return true, if the first record is an ancestor of the second one, and false otherwise.
+             */
+            bool isAncestorOf(const QString& possibleAncestor, const QString& recordId) const;
+
             void removeRecordAt(const int index);
             void removeRecordField(const QString& recordId, const QString& fieldId);
             void reparentRecord(const QString& recordId, const QString& newParentId);

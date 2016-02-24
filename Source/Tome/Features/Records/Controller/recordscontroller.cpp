@@ -123,6 +123,35 @@ int RecordsController::indexOf(const Record& record) const
     return this->model->at(0).records.indexOf(record);
 }
 
+bool RecordsController::isAncestorOf(const QString& possibleAncestor, const QString& recordId) const
+{
+    // Check if both are valid records.
+    if (possibleAncestor.isEmpty() || recordId.isEmpty())
+    {
+        return false;
+    }
+
+    // Climb hierarchy.
+    Record* record = this->getRecordById(recordId);
+
+    QString parentId = record->parentId;
+
+    while (!parentId.isEmpty())
+    {
+        record = this->getRecordById(parentId);
+
+        // Check if ancestor found.
+        if (record->id == possibleAncestor)
+        {
+            return true;
+        }
+
+        parentId = record->parentId;
+    }
+
+    return false;
+}
+
 void RecordsController::removeRecordAt(const int index)
 {
     (*this->model)[0].records.removeAt(index);
