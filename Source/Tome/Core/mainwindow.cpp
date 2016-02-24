@@ -90,6 +90,12 @@ MainWindow::MainWindow(QWidget *parent) :
                 SLOT(treeWidgetSelectionChanged(const QItemSelection &, const QItemSelection &))
                 );
 
+    connect(
+                this->treeWidget,
+                SIGNAL(recordReparented(const QString&, const QString&)),
+                SLOT(treeWidgetRecordReparented(const QString&, const QString&))
+                );
+
     // Maximize window.
     this->showMaximized();
 
@@ -510,6 +516,16 @@ void MainWindow::treeWidgetDoubleClicked(const QModelIndex &index)
     this->on_actionEdit_Record_triggered();
 }
 
+void MainWindow::treeWidgetRecordReparented(const QString& recordId, const QString& newParentId)
+{
+    // Update model.
+    this->controller->getRecordsController().reparentRecord(recordId, newParentId);
+
+    // Update view.
+    this->resetRecords();
+    this->refreshRecordTree();
+}
+
 void MainWindow::treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
 {
     Q_UNUSED(selected);
@@ -618,6 +634,31 @@ void MainWindow::onProjectChanged()
     this->resetRecords();
     this->resetFields();
 
+    this->refreshRecordTree();
+
+    // Setup record exports.
+    this->ui->menuExport->clear();
+
+    const RecordExportTemplateMap& recordExportTemplateMap =
+            this->controller->getExportController().getRecordExportTemplates();
+
+    for (RecordExportTemplateMap::const_iterator it = recordExportTemplateMap.begin();
+         it != recordExportTemplateMap.end();
+         ++it)
+    {
+        QAction* exportAction = new QAction(it.key(), this);
+        this->ui->menuExport->addAction(exportAction);
+    }
+
+    // Update title.
+    this->updateWindowTitle();
+
+    // Update recent projects.
+    this->updateRecentProjects();
+}
+
+void MainWindow::refreshRecordTree()
+{
     // Create record tree items.
     QMap<QString, RecordTreeWidgetItem*> recordItems;
 
@@ -657,26 +698,6 @@ void MainWindow::onProjectChanged()
     // Fill tree widget.
     this->treeWidget->insertTopLevelItems(0, items);
     this->treeWidget->expandAll();
-
-    // Setup record exports.
-    this->ui->menuExport->clear();
-
-    const RecordExportTemplateMap& recordExportTemplateMap =
-            this->controller->getExportController().getRecordExportTemplates();
-
-    for (RecordExportTemplateMap::const_iterator it = recordExportTemplateMap.begin();
-         it != recordExportTemplateMap.end();
-         ++it)
-    {
-        QAction* exportAction = new QAction(it.key(), this);
-        this->ui->menuExport->addAction(exportAction);
-    }
-
-    // Update title.
-    this->updateWindowTitle();
-
-    // Update recent projects.
-    this->updateRecentProjects();
 }
 
 void MainWindow::refreshRecordTable()

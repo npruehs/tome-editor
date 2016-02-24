@@ -53,6 +53,7 @@ class MainWindow : public QMainWindow
         void openRecentProject(QAction* recentProjectAction);
         void tableWidgetDoubleClicked(const QModelIndex &index);
         void treeWidgetDoubleClicked(const QModelIndex &index);
+        void treeWidgetRecordReparented(const QString& recordId, const QString& newParentId);
         void treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
     private:
@@ -76,6 +77,7 @@ class MainWindow : public QMainWindow
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
         void onProjectChanged();
+        void refreshRecordTree();
         void refreshRecordTable();
         void resetFields();
         void resetRecords();

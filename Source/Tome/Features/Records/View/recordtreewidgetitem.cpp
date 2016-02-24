@@ -4,11 +4,11 @@ using namespace Tome;
 
 
 RecordTreeWidgetItem::RecordTreeWidgetItem(const QString& id, const QString& displayName, const QString& parentId)
-    : QTreeWidgetItem((QTreeWidget*)0, QStringList(displayName)),
-      id(id),
-      displayName(displayName),
-      parentId(parentId)
+    : QTreeWidgetItem((QTreeWidget*)0, QStringList(displayName))
 {
+    this->setId(id);
+    this->setDisplayName(displayName);
+    this->setParentId(parentId);
 }
 
 QString RecordTreeWidgetItem::getId() const
@@ -29,6 +29,7 @@ QString RecordTreeWidgetItem::getParentId() const
 void RecordTreeWidgetItem::setId(const QString& id)
 {
     this->id = id;
+    this->setData(0, Qt::UserRole, id);
 }
 
 void RecordTreeWidgetItem::setDisplayName(const QString& displayName)

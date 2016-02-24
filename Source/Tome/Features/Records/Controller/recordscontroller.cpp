@@ -98,6 +98,12 @@ void RecordsController::removeRecordField(const QString& recordId, const QString
     record.fieldValues.remove(fieldId);
 }
 
+void RecordsController::reparentRecord(const QString& recordId, const QString& newParentId)
+{
+    Record& record = *this->getRecordById(recordId);
+    record.parentId = newParentId;
+}
+
 void RecordsController::setRecordSets(RecordSetList& model)
 {
     this->model = &model;
