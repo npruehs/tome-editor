@@ -7,5 +7,6 @@ $RECORD_FIELDS$
       <ComponentTypes>
 $RECORD_COMPONENTS$
       </ComponentTypes>
+      <ParentId>$RECORD_PARENT$</ParentId>
     </Blueprint>
   </Entry>
