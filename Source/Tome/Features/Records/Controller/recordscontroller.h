@@ -15,6 +15,8 @@ namespace Tome
 
             const Record addRecord(const QString& id, const QString& displayName);
             void addRecordField(const QString& recordId, const QString& fieldId);
+
+            const RecordList getChildren(const QString& id) const;
             const RecordSetList& getRecordSets() const;
 
             /**
@@ -43,7 +45,7 @@ namespace Tome
              */
             bool isAncestorOf(const QString& possibleAncestor, const QString& recordId) const;
 
-            void removeRecordAt(const int index);
+            void removeRecord(const QString& recordId);
             void removeRecordField(const QString& recordId, const QString& fieldId);
             void reparentRecord(const QString& recordId, const QString& newParentId);
             void setRecordSets(RecordSetList& model);

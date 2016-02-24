@@ -374,27 +374,28 @@ void MainWindow::on_actionEdit_Record_triggered()
 
 void MainWindow::on_actionRemove_Record_triggered()
 {
-    QModelIndexList selectedIndexes = this->treeWidget->selectionModel()->selectedIndexes();
+    RecordTreeWidgetItem* recordItem = this->getSelectedRecordItem();
 
-    if (selectedIndexes.empty())
+    if (recordItem == 0)
     {
         return;
     }
-
-    QModelIndex currentIndex = selectedIndexes.first();
-
-    if (!currentIndex.isValid())
-    {
-        return;
-    }
-
-    int index = currentIndex.row();
 
     // Update model.
-    this->controller->getRecordsController().removeRecordAt(index);
+    this->controller->getRecordsController().removeRecord(recordItem->getId());
 
     // Update view.
-    this->treeWidget->takeTopLevelItem(index);
+    if (recordItem->parent() != 0)
+    {
+        recordItem->parent()->removeChild(recordItem);
+    }
+    else
+    {
+        int index = this->treeWidget->indexOfTopLevelItem(recordItem);
+        this->treeWidget->takeTopLevelItem(index);
+    }
+
+    delete recordItem;
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -583,15 +584,26 @@ void MainWindow::resetRecords()
 
 QString MainWindow::getSelectedRecordId() const
 {
-    QList<QTreeWidgetItem*> selectedItems = this->treeWidget->selectedItems();
+    RecordTreeWidgetItem* recordTreeItem = this->getSelectedRecordItem();
 
-    if (selectedItems.empty())
+    if (recordTreeItem == 0)
     {
         return QString();
     }
 
-    RecordTreeWidgetItem* recordTreeItem = static_cast<RecordTreeWidgetItem*>(selectedItems.first());
     return recordTreeItem->getId();
+}
+
+RecordTreeWidgetItem* MainWindow::getSelectedRecordItem() const
+{
+    QList<QTreeWidgetItem*> selectedItems = this->treeWidget->selectedItems();
+
+    if (selectedItems.empty())
+    {
+        return 0;
+    }
+
+    return static_cast<RecordTreeWidgetItem*>(selectedItems.first());
 }
 
 void MainWindow::openProject(QString path)

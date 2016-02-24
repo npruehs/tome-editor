@@ -34,6 +34,28 @@ void RecordsController::addRecordField(const QString& recordId, const QString& f
     record.fieldValues.insert(fieldId, field.defaultValue);
 }
 
+const RecordList RecordsController::getChildren(const QString& id) const
+{
+    RecordList children;
+
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        const RecordSet& recordSet = this->model->at(i);
+
+        for (int j = 0; j < recordSet.records.size(); ++j)
+        {
+            const Record& record = recordSet.records[j];
+
+            if (record.parentId == id)
+            {
+                children.append(record);
+            }
+        }
+    }
+
+    return children;
+}
+
 const RecordSetList& RecordsController::getRecordSets() const
 {
     return *this->model;
@@ -152,9 +174,32 @@ bool RecordsController::isAncestorOf(const QString& possibleAncestor, const QStr
     return false;
 }
 
-void RecordsController::removeRecordAt(const int index)
+void RecordsController::removeRecord(const QString& recordId)
 {
-    (*this->model)[0].records.removeAt(index);
+    // Remove children.
+    RecordList children = this->getChildren(recordId);
+
+    for (int i = 0; i < children.count(); ++i)
+    {
+        Record& record = children[i];
+        this->removeRecord(record.id);
+    }
+
+    // Remove record.
+    RecordList& records = (*this->model)[0].records;
+
+    for (RecordList::iterator it = records.begin();
+         it != records.end();
+         ++it)
+    {
+        Record& record = *it;
+
+        if (record.id == recordId)
+        {
+            records.erase(it);
+            return;
+        }
+    }
 }
 
 void RecordsController::removeRecordField(const QString& recordId, const QString& fieldId)

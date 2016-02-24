@@ -74,6 +74,7 @@ class MainWindow : public QMainWindow
 
         void addRecordField(const QString& fieldId);
         QString getSelectedRecordId() const;
+        Tome::RecordTreeWidgetItem* getSelectedRecordItem() const;
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
         void onProjectChanged();
