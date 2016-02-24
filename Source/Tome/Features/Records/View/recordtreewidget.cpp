@@ -33,8 +33,13 @@ bool RecordTreeWidget::dropMimeData(QTreeWidgetItem* parent, int index, const QM
         QString draggedRecordId = roleDataMap[Qt::UserRole].toString();
 
         // Get drop target record.
-        RecordTreeWidgetItem* dropTarget = static_cast<RecordTreeWidgetItem*>(parent);
-        QString dropTargetRecordId = dropTarget->getId();
+        QString dropTargetRecordId;
+
+        if (parent != 0)
+        {
+            RecordTreeWidgetItem* dropTarget = static_cast<RecordTreeWidgetItem*>(parent);
+            dropTargetRecordId = dropTarget->getId();
+        }
 
         // Emit signal.
         emit recordReparented(draggedRecordId, dropTargetRecordId);
