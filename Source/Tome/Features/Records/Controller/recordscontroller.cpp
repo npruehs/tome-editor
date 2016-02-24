@@ -34,6 +34,24 @@ void RecordsController::addRecordField(const QString& recordId, const QString& f
     record.fieldValues.insert(fieldId, field.defaultValue);
 }
 
+const RecordList RecordsController::getAncestors(const QString& id) const
+{
+    RecordList ancestors;
+
+    // Climb hierarchy.
+    Record* record = this->getRecordById(id);
+    QString parentId = record->parentId;
+
+    while (!parentId.isEmpty())
+    {
+        record = this->getRecordById(parentId);
+        ancestors.push_back(*record);
+        parentId = record->parentId;
+    }
+
+    return ancestors;
+}
+
 const RecordList RecordsController::getChildren(const QString& id) const
 {
     RecordList children;
@@ -54,6 +72,23 @@ const RecordList RecordsController::getChildren(const QString& id) const
     }
 
     return children;
+}
+
+const QVariant RecordsController::getInheritedFieldValue(const QString& id, const QString& fieldId) const
+{
+    RecordList ancestors = this->getAncestors(id);
+
+    for (int i = 0; i < ancestors.count(); ++i)
+    {
+        const Record& ancestor = ancestors.at(i);
+
+        if (ancestor.fieldValues.contains(fieldId))
+        {
+            return ancestor.fieldValues[fieldId];
+        }
+    }
+
+    return QVariant();
 }
 
 const RecordSetList& RecordsController::getRecordSets() const
@@ -153,22 +188,14 @@ bool RecordsController::isAncestorOf(const QString& possibleAncestor, const QStr
         return false;
     }
 
-    // Climb hierarchy.
-    Record* record = this->getRecordById(recordId);
+    RecordList ancestors = this->getAncestors(recordId);
 
-    QString parentId = record->parentId;
-
-    while (!parentId.isEmpty())
+    for (int i = 0; i < ancestors.count(); ++i)
     {
-        record = this->getRecordById(parentId);
-
-        // Check if ancestor found.
-        if (record->id == possibleAncestor)
+        if (ancestors[i].id == possibleAncestor)
         {
             return true;
         }
-
-        parentId = record->parentId;
     }
 
     return false;
@@ -237,7 +264,18 @@ void RecordsController::updateRecord(const QString& oldId, const QString& newId,
 void RecordsController::updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue)
 {
     Record& record = *this->getRecordById(recordId);
-    record.fieldValues[fieldId] = fieldValue;
+
+    // Check if equals inherited field value.
+    QVariant inheritedValue = this->getInheritedFieldValue(recordId, fieldId);
+
+    if (inheritedValue == fieldValue)
+    {
+        record.fieldValues.remove(fieldId);
+    }
+    else
+    {
+        record.fieldValues[fieldId] = fieldValue;
+    }
 }
 
 Record* RecordsController::getRecordById(const QString& id) const

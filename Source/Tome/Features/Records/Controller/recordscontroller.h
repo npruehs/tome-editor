@@ -16,7 +16,15 @@ namespace Tome
             const Record addRecord(const QString& id, const QString& displayName);
             void addRecordField(const QString& recordId, const QString& fieldId);
 
+            /**
+             * @brief getAncestors Gets the list of all ancestors of the record with the specified id, direct parent first.
+             * @param id Id of the record to get the ancestors of.
+             * @return List of all ancestors of the record with the specified id, direct parent first.
+             */
+            const RecordList getAncestors(const QString& id) const;
+
             const RecordList getChildren(const QString& id) const;
+            const QVariant getInheritedFieldValue(const QString& id, const QString& fieldId) const;
             const RecordSetList& getRecordSets() const;
 
             /**
