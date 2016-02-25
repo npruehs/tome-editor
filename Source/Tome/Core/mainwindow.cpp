@@ -261,12 +261,12 @@ void MainWindow::on_actionNew_Record_triggered()
         const QString& recordDisplayName = this->recordWindow->getRecordDisplayName();
 
         // Update model.
-        const Record& record = this->controller->getRecordsController().addRecord(recordId, recordDisplayName);
+        this->controller->getRecordsController().addRecord(recordId, recordDisplayName);
 
         // Update view.
-        int index = this->controller->getRecordsController().indexOf(record);
         QTreeWidgetItem* newItem = new RecordTreeWidgetItem(recordId, recordDisplayName, QString());
-        this->treeWidget->insertTopLevelItem(index, newItem);
+        this->treeWidget->insertTopLevelItem(0, newItem);
+        this->treeWidget->sortItems(0, Qt::AscendingOrder);
 
         // Select new record.
         this->treeWidget->setCurrentItem(newItem);
