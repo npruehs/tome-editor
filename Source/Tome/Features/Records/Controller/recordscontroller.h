@@ -24,6 +24,7 @@ namespace Tome
             const RecordList getAncestors(const QString& id) const;
 
             const RecordList getChildren(const QString& id) const;
+            const RecordList getDescendents(const QString& id) const;
             const QVariant getInheritedFieldValue(const QString& id, const QString& fieldId) const;
             const RecordFieldValueMap getInheritedFieldValues(const QString& id) const;
             const RecordSetList& getRecordSets() const;
@@ -34,6 +35,8 @@ namespace Tome
              * @return Record with the specified id.
              */
             const Record& getRecord(const QString& id) const;
+
+            const RecordList getRecords() const;
 
             /**
              * @brief getRecordNames Returns the list of the names of all records of this project.

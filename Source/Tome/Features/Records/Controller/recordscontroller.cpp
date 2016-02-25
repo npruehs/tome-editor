@@ -74,6 +74,36 @@ const RecordList RecordsController::getChildren(const QString& id) const
     return children;
 }
 
+const RecordList RecordsController::getDescendents(const QString& id) const
+{
+    RecordList descendents;
+
+    // Climb hierarchy.
+    RecordList records = this->getRecords();
+
+    for (int i = 0; i < records.count(); ++i)
+    {
+        // Check children.
+        const Record& record = records.at(i);
+
+        if (record.parentId == id)
+        {
+            descendents << record;
+
+            // Recursively check descendants.
+            RecordList childrenOfChild = this->getDescendents(record.id);
+
+            for (int j = 0; j < childrenOfChild.count(); ++j)
+            {
+                const Record& child = records.at(j);
+                descendents << child;
+            }
+        }
+    }
+
+    return descendents;
+}
+
 const QVariant RecordsController::getInheritedFieldValue(const QString& id, const QString& fieldId) const
 {
     RecordList ancestors = this->getAncestors(id);
@@ -125,9 +155,9 @@ const Record& RecordsController::getRecord(const QString& id) const
     return *this->getRecordById(id);
 }
 
-const QStringList RecordsController::getRecordNames() const
+const RecordList RecordsController::getRecords() const
 {
-    QStringList names;
+    RecordList records;
 
     for (int i = 0; i < this->model->size(); ++i)
     {
@@ -135,9 +165,22 @@ const QStringList RecordsController::getRecordNames() const
 
         for (int j = 0; j < recordSet.records.size(); ++j)
         {
-            const Record& record = recordSet.records[j];
-            names << record.displayName;
+            records << recordSet.records[j];
         }
+    }
+
+    return records;
+}
+
+const QStringList RecordsController::getRecordNames() const
+{
+    RecordList records = this->getRecords();
+    QStringList names;
+
+    for (int i = 0; i < records.size(); ++i)
+    {
+        const Record& record = records[i];
+        names << record.displayName;
     }
 
     return names;
@@ -239,6 +282,15 @@ void RecordsController::removeRecordField(const QString& recordId, const QString
 {
     Record& record = *this->getRecordById(recordId);
     record.fieldValues.remove(fieldId);
+
+    // Remove inherited fields.
+    RecordList descendants = this->getDescendents(recordId);
+
+    for (int i = 0; i < descendants.count(); ++i)
+    {
+        Record& record = descendants[i];
+        this->removeRecordField(record.id, fieldId);
+    }
 }
 
 QVariant RecordsController::revertFieldValue(const QString& recordId, const QString& fieldId)
