@@ -18,6 +18,7 @@ const QString ExportController::PlaceholderFieldValue = "$FIELD_VALUE$";
 const QString ExportController::PlaceholderListItem = "$LIST_ITEM$";
 const QString ExportController::PlaceholderRecordFields = "$RECORD_FIELDS$";
 const QString ExportController::PlaceholderRecordId = "$RECORD_ID$";
+const QString ExportController::PlaceholderRecordParentId = "$RECORD_PARENT$";
 const QString ExportController::PlaceholderRecords = "$RECORDS$";
 
 
@@ -177,6 +178,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             // Apply record template.
             QString recordString = exportTemplate.recordTemplate;
             recordString = recordString.replace(PlaceholderRecordId, record.id);
+            recordString = recordString.replace(PlaceholderRecordParentId, record.parentId);
             recordString = recordString.replace(PlaceholderRecordFields, fieldValuesString);
             recordString = recordString.replace(PlaceholderComponents, componentsString);
 

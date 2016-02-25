@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTableWidget>
 
 #include "controller.h"
 #include "../Features/Components/View/componentswindow.h"
@@ -10,6 +11,7 @@
 #include "../Features/Help/View/aboutwindow.h"
 #include "../Features/Projects/View/newprojectwindow.h"
 #include "../Features/Projects/Model/project.h"
+#include "../Features/Records/View/recordtreewidget.h"
 #include "../Features/Records/View/recordtreewidgetitem.h"
 #include "../Features/Records/View/recordwindow.h"
 #include "../Features/Types/View/customtypeswindow.h"
@@ -47,15 +49,19 @@ class MainWindow : public QMainWindow
         void on_actionReport_a_Bug_triggered();
         void on_actionReleases_triggered();
 
-        void on_treeWidget_doubleClicked(const QModelIndex &index);
-        void on_tableWidget_doubleClicked(const QModelIndex &index);
-
         void exportRecords(QAction* exportAction);
         void openRecentProject(QAction* recentProjectAction);
-        void treeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+        void revertFieldValue();
+        void tableWidgetDoubleClicked(const QModelIndex &index);
+        void treeWidgetDoubleClicked(const QModelIndex &index);
+        void treeWidgetRecordReparented(const QString& recordId, const QString& newParentId);
+        void treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
     private:
         Ui::MainWindow *ui;
+
+        Tome::RecordTreeWidget* treeWidget;
+        QTableWidget* tableWidget;
 
         Tome::Controller* controller;
 
@@ -69,9 +75,11 @@ class MainWindow : public QMainWindow
 
         void addRecordField(const QString& fieldId);
         QString getSelectedRecordId() const;
+        Tome::RecordTreeWidgetItem* getSelectedRecordItem() const;
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
         void onProjectChanged();
+        void refreshRecordTree();
         void refreshRecordTable();
         void resetFields();
         void resetRecords();

@@ -28,8 +28,14 @@ class FieldValueWindow : public QDialog
         void setFieldValue(const QVariant& fieldValue);
         void setFieldType(const QString& fieldType) const;
 
+    signals:
+        revert();
+
     protected:
         virtual void showEvent(QShowEvent* event);
+
+    private slots:
+        void on_toolButtonRevert_clicked();
 
     private:
         Ui::FieldValueWindow *ui;

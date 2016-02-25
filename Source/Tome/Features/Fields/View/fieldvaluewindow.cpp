@@ -14,8 +14,8 @@ FieldValueWindow::FieldValueWindow(RecordsController& recordsController, TypesCo
 
     // Add widget for specifying the field value.
     this->fieldValueWidget = new FieldValueWidget(this->recordsController, this->typesController, this);
-    QFormLayout* layout = static_cast<QFormLayout*>(this->layout());
-    layout->insertRow(2, tr("Value:"), this->fieldValueWidget);
+    QGridLayout* layout = static_cast<QGridLayout*>(this->layout());
+    layout->addWidget(this->fieldValueWidget, 3, 1);
 }
 
 FieldValueWindow::~FieldValueWindow()
@@ -55,4 +55,9 @@ void FieldValueWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
     this->fieldValueWidget->setFocus();
+}
+
+void FieldValueWindow::on_toolButtonRevert_clicked()
+{
+    emit revert();
 }

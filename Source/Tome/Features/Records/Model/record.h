@@ -5,6 +5,8 @@
 #include <QString>
 #include <QVariant>
 
+#include "recordfieldvaluemap.h"
+
 
 namespace Tome
 {
@@ -15,7 +17,8 @@ namespace Tome
 
             QString displayName;
             QString id;
-            QMap<QString, QVariant> fieldValues;
+            RecordFieldValueMap fieldValues;
+            QString parentId;
     };
 
     inline bool operator==(const Record& lhs, const Record& rhs){ return lhs.id == rhs.id; }

@@ -34,6 +34,7 @@ namespace Tome
             static const QString PlaceholderListItem;
             static const QString PlaceholderRecordFields;
             static const QString PlaceholderRecordId;
+            static const QString PlaceholderRecordParentId;
             static const QString PlaceholderRecords;
 
             const FieldDefinitionsController& fieldDefinitionsController;

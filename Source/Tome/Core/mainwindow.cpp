@@ -17,6 +17,7 @@
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
+#include "../Features/Records/Model/recordfieldstate.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
 #include "../Features/Types/Model/builtintype.h"
 #include "../Util/listutils.h"
@@ -40,6 +41,26 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Add record tree.
+    this->treeWidget = new RecordTreeWidget();
+    this->treeWidget->setDragEnabled(true);
+    this->treeWidget->viewport()->setAcceptDrops(true);
+    this->treeWidget->setDropIndicatorShown(true);
+    this->treeWidget->setHeaderHidden(true);
+
+    this->ui->splitter->addWidget(this->treeWidget);
+
+    // Add record table.
+    this->tableWidget = new QTableWidget();
+    this->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    this->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    this->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+    this->tableWidget->horizontalHeader()->setStretchLastSection(true);
+    this->tableWidget->verticalHeader()->setVisible(false);
+
+    this->ui->splitter->addWidget(this->tableWidget);
+
+    // Connect signals.
     connect(
                 this->ui->menuExport,
                 SIGNAL(triggered(QAction*)),
@@ -50,6 +71,30 @@ MainWindow::MainWindow(QWidget *parent) :
                 this->ui->menuRecent_Projects,
                 SIGNAL(triggered(QAction*)),
                 SLOT(openRecentProject(QAction*))
+                );
+
+    connect(
+                this->tableWidget,
+                SIGNAL(doubleClicked(const QModelIndex &)),
+                SLOT(tableWidgetDoubleClicked(const QModelIndex &))
+                );
+
+    connect(
+                this->treeWidget,
+                SIGNAL(doubleClicked(const QModelIndex &)),
+                SLOT(treeWidgetDoubleClicked(const QModelIndex &))
+                );
+
+    connect(
+                this->treeWidget->selectionModel(),
+                SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                SLOT(treeWidgetSelectionChanged(const QItemSelection &, const QItemSelection &))
+                );
+
+    connect(
+                this->treeWidget,
+                SIGNAL(recordReparented(const QString&, const QString&)),
+                SLOT(treeWidgetRecordReparented(const QString&, const QString&))
                 );
 
     // Maximize window.
@@ -69,7 +114,11 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete this->ui;
+
     delete this->controller;
+
+    delete this->treeWidget;
+    delete this->tableWidget;
 
     delete this->aboutWindow;
     delete this->componentsWindow;
@@ -200,7 +249,7 @@ void MainWindow::on_actionNew_Record_triggered()
         for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
         {
             const FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
-            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, false);
+            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, RecordFieldState::Disabled);
         }
     }
 
@@ -212,27 +261,27 @@ void MainWindow::on_actionNew_Record_triggered()
         const QString& recordDisplayName = this->recordWindow->getRecordDisplayName();
 
         // Update model.
-        const Record& record = this->controller->getRecordsController().addRecord(recordId, recordDisplayName);
+        this->controller->getRecordsController().addRecord(recordId, recordDisplayName);
 
         // Update view.
-        int index = this->controller->getRecordsController().indexOf(record);
-        QTreeWidgetItem* newItem = new RecordTreeWidgetItem(recordId, recordDisplayName);
-        this->ui->treeWidget->insertTopLevelItem(index, newItem);
+        QTreeWidgetItem* newItem = new RecordTreeWidgetItem(recordId, recordDisplayName, QString());
+        this->treeWidget->insertTopLevelItem(0, newItem);
+        this->treeWidget->sortItems(0, Qt::AscendingOrder);
 
         // Select new record.
-        this->ui->treeWidget->setCurrentItem(newItem);
+        this->treeWidget->setCurrentItem(newItem);
 
         // Add record fields.
-        const QMap<QString, bool> recordFields = this->recordWindow->getRecordFields();
+        const QMap<QString, RecordFieldState::RecordFieldState> recordFields = this->recordWindow->getRecordFields();
 
-        for (QMap<QString, bool>::const_iterator it = recordFields.begin();
+        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.begin();
              it != recordFields.end();
              ++it)
         {
             const QString& fieldId = it.key();
-            const bool fieldEnabled = it.value();
+            const RecordFieldState::RecordFieldState fieldState = it.value();
 
-            if (fieldEnabled)
+            if (fieldState == RecordFieldState::Enabled)
             {
                 this->addRecordField(fieldId);
             }
@@ -278,12 +327,24 @@ void MainWindow::on_actionEdit_Record_triggered()
         for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
         {
             const FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+            RecordFieldState::RecordFieldState fieldState = RecordFieldState::Disabled;
 
-            // Check if record contains field.
-            bool fieldEnabled = record.fieldValues.contains(fieldDefinition.id);
+            // Check if any parent contains field.
+            const RecordFieldValueMap inheritedFieldValues =
+                    this->controller->getRecordsController().getInheritedFieldValues(record.id);
+
+            if (inheritedFieldValues.contains(fieldDefinition.id))
+            {
+                fieldState = RecordFieldState::InheritedEnabled;
+            }
+            // Check if record itself contains field.
+            else if (record.fieldValues.contains(fieldDefinition.id))
+            {
+                fieldState = RecordFieldState::Enabled;
+            }
 
             // Add to view.
-            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldEnabled);
+            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldState);
         }
     }
 
@@ -297,17 +358,29 @@ void MainWindow::on_actionEdit_Record_triggered()
         // Update record.
         this->updateRecord(recordId, recordDisplayName);
 
-        // Update record fields.
-        const QMap<QString, bool> recordFields = this->recordWindow->getRecordFields();
+        // Get inherited fields.
+        const RecordFieldValueMap inheritedFieldValues =
+                this->controller->getRecordsController().getInheritedFieldValues(recordId);
 
-        for (QMap<QString, bool>::const_iterator it = recordFields.begin();
+        // Update record fields.
+        const QMap<QString, RecordFieldState::RecordFieldState> recordFields =
+                this->recordWindow->getRecordFields();
+
+        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.begin();
              it != recordFields.end();
              ++it)
         {
             const QString& fieldId = it.key();
 
+            // Skip inherited fields.
+            if (inheritedFieldValues.contains(fieldId))
+            {
+                continue;
+            }
+
+            // Check if field was added or removed.
             const bool fieldWasEnabled = record.fieldValues.contains(fieldId);
-            const bool fieldIsEnabled = it.value();
+            const bool fieldIsEnabled = it.value() == RecordFieldState::Enabled;
 
             if (fieldIsEnabled && !fieldWasEnabled)
             {
@@ -326,27 +399,28 @@ void MainWindow::on_actionEdit_Record_triggered()
 
 void MainWindow::on_actionRemove_Record_triggered()
 {
-    QModelIndexList selectedIndexes = this->ui->treeWidget->selectionModel()->selectedIndexes();
+    RecordTreeWidgetItem* recordItem = this->getSelectedRecordItem();
 
-    if (selectedIndexes.empty())
+    if (recordItem == 0)
     {
         return;
     }
-
-    QModelIndex currentIndex = selectedIndexes.first();
-
-    if (!currentIndex.isValid())
-    {
-        return;
-    }
-
-    int index = currentIndex.row();
 
     // Update model.
-    this->controller->getRecordsController().removeRecordAt(index);
+    this->controller->getRecordsController().removeRecord(recordItem->getId());
 
     // Update view.
-    this->ui->treeWidget->takeTopLevelItem(index);
+    if (recordItem->parent() != 0)
+    {
+        recordItem->parent()->removeChild(recordItem);
+    }
+    else
+    {
+        int index = this->treeWidget->indexOfTopLevelItem(recordItem);
+        this->treeWidget->takeTopLevelItem(index);
+    }
+
+    delete recordItem;
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -372,55 +446,6 @@ void MainWindow::on_actionReport_a_Bug_triggered()
 void MainWindow::on_actionReleases_triggered()
 {
     QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/releases"));
-}
-
-void MainWindow::on_treeWidget_doubleClicked(const QModelIndex &index)
-{
-    Q_UNUSED(index);
-    this->on_actionEdit_Record_triggered();
-}
-
-void MainWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
-{
-    QString id = this->getSelectedRecordId();
-    const Record& record =
-            this->controller->getRecordsController().getRecord(id);
-
-    // Get current field data.
-    const QString fieldId = record.fieldValues.keys()[index.row()];
-    const QVariant fieldValue = record.fieldValues[fieldId];
-
-    const FieldDefinition& field =
-            this->controller->getFieldDefinitionsController().getFieldDefinition(fieldId);
-
-    // Prepare window.
-    if (!this->fieldValueWindow)
-    {
-        this->fieldValueWindow = new FieldValueWindow
-                (this->controller->getRecordsController(),
-                 this->controller->getTypesController(),
-                 this);
-    }
-
-    // Update view.
-    this->fieldValueWindow->setFieldDisplayName(field.displayName);
-    this->fieldValueWindow->setFieldDescription(field.description);
-    this->fieldValueWindow->setFieldType(field.fieldType);
-    this->fieldValueWindow->setFieldValue(fieldValue);
-
-    // Show window.
-    int result = this->fieldValueWindow->exec();
-
-    if (result == QDialog::Accepted)
-    {
-        QVariant fieldValue = this->fieldValueWindow->getFieldValue();
-
-        // Update model.
-        this->controller->getRecordsController().updateRecordFieldValue(record.id, fieldId, fieldValue);
-
-        // Update view.
-        this->updateRecordRow(index.row());
-    }
 }
 
 void MainWindow::exportRecords(QAction* exportAction)
@@ -468,7 +493,108 @@ void MainWindow::openRecentProject(QAction* recentProjectAction)
     this->openProject(path);
 }
 
-void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
+void MainWindow::revertFieldValue()
+{
+    // Get record to revert field of.
+    QString recordId = this->getSelectedRecordId();
+
+    // Get field to revert.
+    QModelIndexList selectedIndexes = this->tableWidget->selectionModel()->selectedRows(0);
+
+    if (selectedIndexes.empty())
+    {
+        return;
+    }
+
+    const RecordFieldValueMap fieldValues =
+            this->controller->getRecordsController().getRecordFieldValues(recordId);
+    const QString fieldId = fieldValues.keys()[selectedIndexes.first().row()];
+
+    // Update view.
+    QVariant inheritedValue = this->controller->getRecordsController().getInheritedFieldValue(recordId, fieldId);
+
+    if (inheritedValue != QVariant())
+    {
+        if (this->fieldValueWindow != 0)
+        {
+            this->fieldValueWindow->setFieldValue(inheritedValue);
+        }
+    }
+}
+
+void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
+{
+    QString id = this->getSelectedRecordId();
+    const RecordFieldValueMap fieldValues =
+            this->controller->getRecordsController().getRecordFieldValues(id);
+
+    // Get current field data.
+    const QString fieldId = fieldValues.keys()[index.row()];
+    const QVariant fieldValue = fieldValues[fieldId];
+
+    const FieldDefinition& field =
+            this->controller->getFieldDefinitionsController().getFieldDefinition(fieldId);
+
+    // Prepare window.
+    if (!this->fieldValueWindow)
+    {
+        this->fieldValueWindow = new FieldValueWindow
+                (this->controller->getRecordsController(),
+                 this->controller->getTypesController(),
+                 this);
+
+        connect(
+                    this->fieldValueWindow,
+                    SIGNAL(revert()),
+                    SLOT(revertFieldValue())
+                    );
+    }
+
+    // Update view.
+    this->fieldValueWindow->setFieldDisplayName(field.displayName);
+    this->fieldValueWindow->setFieldDescription(field.description);
+    this->fieldValueWindow->setFieldType(field.fieldType);
+    this->fieldValueWindow->setFieldValue(fieldValue);
+
+    // Show window.
+    int result = this->fieldValueWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        QVariant fieldValue = this->fieldValueWindow->getFieldValue();
+
+        // Update model.
+        this->controller->getRecordsController().updateRecordFieldValue(id, fieldId, fieldValue);
+
+        // Update view.
+        this->updateRecordRow(index.row());
+    }
+}
+
+void MainWindow::treeWidgetDoubleClicked(const QModelIndex &index)
+{
+    Q_UNUSED(index);
+    this->on_actionEdit_Record_triggered();
+}
+
+void MainWindow::treeWidgetRecordReparented(const QString& recordId, const QString& newParentId)
+{
+    // Check if allowed.
+    if (recordId == newParentId ||
+            this->controller->getRecordsController().isAncestorOf(recordId, newParentId))
+    {
+        return;
+    }
+
+    // Update model.
+    this->controller->getRecordsController().reparentRecord(recordId, newParentId);
+
+    // Update view.
+    this->resetRecords();
+    this->refreshRecordTree();
+}
+
+void MainWindow::treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
 {
     Q_UNUSED(selected);
     Q_UNUSED(deselected);
@@ -478,15 +604,16 @@ void MainWindow::treeViewSelectionChanged(const QItemSelection& selected, const 
     if (id.isEmpty() || !this->controller->getRecordsController().hasRecord(id))
     {
         // Clear table.
-        this->ui->tableWidget->setRowCount(0);
+        this->tableWidget->setRowCount(0);
         return;
     }
 
     // Get selected record.
-    const Record& record = this->controller->getRecordsController().getRecord(id);
+    const RecordFieldValueMap fieldValues =
+            this->controller->getRecordsController().getRecordFieldValues(id);
 
     // Update field table.
-    this->ui->tableWidget->setRowCount(record.fieldValues.size());
+    this->tableWidget->setRowCount(fieldValues.size());
     this->refreshRecordTable();
 }
 
@@ -502,30 +629,41 @@ void MainWindow::addRecordField(const QString& fieldId)
     this->controller->getRecordsController().addRecordField(record.id, fieldId);
 
     // Update view.
-    this->ui->tableWidget->insertRow(index);
+    this->tableWidget->insertRow(index);
 }
 
 void MainWindow::resetRecords()
 {
-    this->ui->treeWidget->setColumnCount(1);
+    this->treeWidget->setColumnCount(1);
 
-    while (this->ui->treeWidget->topLevelItemCount() > 0)
+    while (this->treeWidget->topLevelItemCount() > 0)
     {
-        this->ui->treeWidget->takeTopLevelItem(0);
+        this->treeWidget->takeTopLevelItem(0);
     }
 }
 
 QString MainWindow::getSelectedRecordId() const
 {
-    QList<QTreeWidgetItem*> selectedItems = this->ui->treeWidget->selectedItems();
+    RecordTreeWidgetItem* recordTreeItem = this->getSelectedRecordItem();
 
-    if (selectedItems.empty())
+    if (recordTreeItem == 0)
     {
         return QString();
     }
 
-    RecordTreeWidgetItem* recordTreeItem = static_cast<RecordTreeWidgetItem*>(selectedItems.first());
     return recordTreeItem->getId();
+}
+
+RecordTreeWidgetItem* MainWindow::getSelectedRecordItem() const
+{
+    QList<QTreeWidgetItem*> selectedItems = this->treeWidget->selectedItems();
+
+    if (selectedItems.empty())
+    {
+        return 0;
+    }
+
+    return static_cast<RecordTreeWidgetItem*>(selectedItems.first());
 }
 
 void MainWindow::openProject(QString path)
@@ -564,7 +702,7 @@ void MainWindow::removeRecordField(const QString& fieldId)
 
     // Update view.
     int index = findInsertionIndex(record.fieldValues.keys(), fieldId, qStringLessThanLowerCase);
-    this->ui->tableWidget->removeRow(index);
+    this->tableWidget->removeRow(index);
 }
 
 void MainWindow::onProjectChanged()
@@ -576,30 +714,7 @@ void MainWindow::onProjectChanged()
     this->resetRecords();
     this->resetFields();
 
-    QList<QTreeWidgetItem *> items;
-
-    const RecordSetList& recordSetList = this->controller->getRecordsController().getRecordSets();
-
-    for (int i = 0; i < recordSetList.size(); ++i)
-    {
-        const RecordSet& recordSet = recordSetList[i];
-
-        for (int j = 0; j < recordSet.records.size(); ++j)
-        {
-            const Record& record = recordSet.records[j];
-            items.append(new RecordTreeWidgetItem(record.id, record.displayName));
-        }
-    }
-
-    this->ui->treeWidget->insertTopLevelItems(0, items);
-    this->ui->treeWidget->expandAll();
-
-    // Listen for selection changes.
-    connect(
-                this->ui->treeWidget->selectionModel(),
-                SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                SLOT(treeViewSelectionChanged(const QItemSelection &, const QItemSelection &))
-                );
+    this->refreshRecordTree();
 
     // Setup record exports.
     this->ui->menuExport->clear();
@@ -622,9 +737,52 @@ void MainWindow::onProjectChanged()
     this->updateRecentProjects();
 }
 
+void MainWindow::refreshRecordTree()
+{
+    // Create record tree items.
+    QMap<QString, RecordTreeWidgetItem*> recordItems;
+
+    const RecordSetList& recordSetList = this->controller->getRecordsController().getRecordSets();
+
+    for (int i = 0; i < recordSetList.size(); ++i)
+    {
+        const RecordSet& recordSet = recordSetList[i];
+
+        for (int j = 0; j < recordSet.records.size(); ++j)
+        {
+            const Record& record = recordSet.records[j];
+            RecordTreeWidgetItem* recordItem =
+                    new RecordTreeWidgetItem(record.id, record.displayName, record.parentId);
+            recordItems.insert(record.id, recordItem);
+        }
+    }
+
+    // Build hierarchy and prepare item list for tree widget.
+    QList<QTreeWidgetItem* > items;
+
+    for (QMap<QString, RecordTreeWidgetItem*>::iterator it = recordItems.begin();
+         it != recordItems.end();
+         ++it)
+    {
+        RecordTreeWidgetItem* recordItem = it.value();
+        QString recordItemParentId = recordItem->getParentId();
+        if (!recordItemParentId.isEmpty() && recordItems.contains(recordItemParentId))
+        {
+            RecordTreeWidgetItem* recordParent = recordItems[recordItemParentId];
+            recordParent->addChild(recordItem);
+        }
+
+        items.append(recordItem);
+    }
+
+    // Fill tree widget.
+    this->treeWidget->insertTopLevelItems(0, items);
+    this->treeWidget->expandAll();
+}
+
 void MainWindow::refreshRecordTable()
 {
-    for (int i = 0; i < this->ui->tableWidget->rowCount(); ++i)
+    for (int i = 0; i < this->tableWidget->rowCount(); ++i)
     {
         this->updateRecordRow(i);
     }
@@ -632,15 +790,15 @@ void MainWindow::refreshRecordTable()
 
 void MainWindow::resetFields()
 {
-    this->ui->tableWidget->clear();
+    this->tableWidget->clear();
 
-    this->ui->tableWidget->setRowCount(0);
-    this->ui->tableWidget->setColumnCount(2);
+    this->tableWidget->setRowCount(0);
+    this->tableWidget->setColumnCount(2);
 
     QStringList headers;
     headers << tr("Field");
     headers << tr("Value");
-    this->ui->tableWidget->setHorizontalHeaderLabels(headers);
+    this->tableWidget->setHorizontalHeaderLabels(headers);
 }
 
 void MainWindow::showWindow(QWidget* widget)
@@ -692,7 +850,7 @@ void MainWindow::updateRecord(const QString& id, const QString& displayName)
     this->controller->getRecordsController().updateRecord(record.id, id, displayName);
 
     // Update view.
-    QModelIndexList selectedIndexes = this->ui->treeWidget->selectionModel()->selectedIndexes();
+    QModelIndexList selectedIndexes = this->treeWidget->selectionModel()->selectedIndexes();
 
     if (selectedIndexes.empty())
     {
@@ -706,7 +864,7 @@ void MainWindow::updateRecord(const QString& id, const QString& displayName)
         return;
     }
 
-    QTreeWidgetItem* item = this->ui->treeWidget->topLevelItem(currentIndex.row());
+    QTreeWidgetItem* item = this->treeWidget->topLevelItem(currentIndex.row());
     RecordTreeWidgetItem* recordItem = static_cast<RecordTreeWidgetItem*>(item);
     recordItem->setId(id);
     recordItem->setDisplayName(displayName);
@@ -714,7 +872,7 @@ void MainWindow::updateRecord(const QString& id, const QString& displayName)
     // Sort by display name.
     if (needsSorting)
     {
-        this->ui->treeWidget->sortItems(0, Qt::AscendingOrder);
+        this->treeWidget->sortItems(0, Qt::AscendingOrder);
     }
 }
 
@@ -722,12 +880,14 @@ void MainWindow::updateRecordRow(int i)
 {
     // Get selected record.
     QString id = this->getSelectedRecordId();
-    const Record& record =
-            this->controller->getRecordsController().getRecord(id);
+
+    // Get record field values.
+    const RecordFieldValueMap fieldValues =
+            this->controller->getRecordsController().getRecordFieldValues(id);
 
     // Get selected record field key and value.
-    QString key = record.fieldValues.keys()[i];
-    QVariant value = record.fieldValues[key];
+    QString key = fieldValues.keys()[i];
+    QVariant value = fieldValues[key];
 
     // Get selected record field type.
     const FieldDefinition& field =
@@ -747,18 +907,18 @@ void MainWindow::updateRecordRow(int i)
     }
 
     // Show field and value.
-    this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(keyString));
-    this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(valueString));
+    this->tableWidget->setItem(i, 0, new QTableWidgetItem(keyString));
+    this->tableWidget->setItem(i, 1, new QTableWidgetItem(valueString));
 
     // Show field description as tooltip.
-    this->ui->tableWidget->item(i, 0)->setData(Qt::ToolTipRole, field.description);
-    this->ui->tableWidget->item(i, 1)->setData(Qt::ToolTipRole, field.description);
+    this->tableWidget->item(i, 0)->setData(Qt::ToolTipRole, field.description);
+    this->tableWidget->item(i, 1)->setData(Qt::ToolTipRole, field.description);
 
     // Show color preview.
     if (field.fieldType == BuiltInType::Color)
     {
         QColor color = value.value<QColor>();
-        this->ui->tableWidget->item(i, 1)->setData(Qt::DecorationRole, color);
+        this->tableWidget->item(i, 1)->setData(Qt::DecorationRole, color);
     }
 }
 

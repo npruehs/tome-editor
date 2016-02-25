@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+#include "../Model/recordfieldstate.h"
+
 namespace Ui {
     class RecordWindow;
 }
@@ -17,13 +19,13 @@ class RecordWindow : public QDialog
 
         QString getRecordDisplayName() const;
         QString getRecordId() const;
-        QMap<QString, bool> getRecordFields() const;
+        QMap<QString, Tome::RecordFieldState::RecordFieldState> getRecordFields() const;
 
         void clearRecordFields();
 
         void setRecordDisplayName(const QString& displayName);
         void setRecordId(const QString& id);
-        void setRecordField(const QString& fieldId, const QString& fieldComponent, const bool enabled);
+        void setRecordField(const QString& fieldId, const QString& fieldComponent, const Tome::RecordFieldState::RecordFieldState state);
 
     public slots:
         void accept();
