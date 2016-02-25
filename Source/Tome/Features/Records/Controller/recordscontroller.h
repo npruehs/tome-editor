@@ -25,6 +25,7 @@ namespace Tome
 
             const RecordList getChildren(const QString& id) const;
             const QVariant getInheritedFieldValue(const QString& id, const QString& fieldId) const;
+            const RecordFieldValueMap getInheritedFieldValues(const QString& id) const;
             const RecordSetList& getRecordSets() const;
 
             /**

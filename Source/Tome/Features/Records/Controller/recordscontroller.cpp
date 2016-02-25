@@ -91,6 +91,30 @@ const QVariant RecordsController::getInheritedFieldValue(const QString& id, cons
     return QVariant();
 }
 
+const RecordFieldValueMap RecordsController::getInheritedFieldValues(const QString& id) const
+{
+    // Resolve parents.
+    RecordList ancestors = this->getAncestors(id);
+
+    // Build field value map.
+    RecordFieldValueMap fieldValues;
+
+    for (int i = 0; i < ancestors.count(); ++i)
+    {
+        const Record& ancestor = ancestors.at(i);
+
+        // Combine map.
+        for (RecordFieldValueMap::const_iterator it = ancestor.fieldValues.begin();
+             it != ancestor.fieldValues.end();
+             ++it)
+        {
+            fieldValues[it.key()] = it.value();
+        }
+    }
+
+    return fieldValues;
+}
+
 const RecordSetList& RecordsController::getRecordSets() const
 {
     return *this->model;
@@ -123,33 +147,15 @@ const RecordFieldValueMap RecordsController::getRecordFieldValues(const QString&
 {
     Record* record = this->getRecordById(id);
 
-    // Resolve parents.
-    QList<Record*> ancestorsAndSelf;
-    ancestorsAndSelf.push_front(record);
+    // Get inherited values.
+    RecordFieldValueMap fieldValues = this->getInheritedFieldValues(id);
 
-    QString parentId = record->parentId;
-
-    while (!parentId.isEmpty())
+    // Override inherited values.
+    for (RecordFieldValueMap::iterator it = record->fieldValues.begin();
+         it != record->fieldValues.end();
+         ++it)
     {
-        record = this->getRecordById(parentId);
-        ancestorsAndSelf.push_front(record);
-        parentId = record->parentId;
-    }
-
-    // Build field value map.
-    RecordFieldValueMap fieldValues;
-
-    for (int i = 0; i < ancestorsAndSelf.count(); ++i)
-    {
-        record = ancestorsAndSelf[i];
-
-        // Combine map.
-        for (RecordFieldValueMap::iterator it = record->fieldValues.begin();
-             it != record->fieldValues.end();
-             ++it)
-        {
-            fieldValues[it.key()] = it.value();
-        }
+        fieldValues[it.key()] = it.value();
     }
 
     return fieldValues;

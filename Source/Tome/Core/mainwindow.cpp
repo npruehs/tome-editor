@@ -17,6 +17,7 @@
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
+#include "../Features/Records/Model/recordfieldstate.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
 #include "../Features/Types/Model/builtintype.h"
 #include "../Util/listutils.h"
@@ -248,7 +249,7 @@ void MainWindow::on_actionNew_Record_triggered()
         for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
         {
             const FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
-            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, false);
+            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, RecordFieldState::Disabled);
         }
     }
 
@@ -271,16 +272,16 @@ void MainWindow::on_actionNew_Record_triggered()
         this->treeWidget->setCurrentItem(newItem);
 
         // Add record fields.
-        const QMap<QString, bool> recordFields = this->recordWindow->getRecordFields();
+        const QMap<QString, RecordFieldState::RecordFieldState> recordFields = this->recordWindow->getRecordFields();
 
-        for (QMap<QString, bool>::const_iterator it = recordFields.begin();
+        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.begin();
              it != recordFields.end();
              ++it)
         {
             const QString& fieldId = it.key();
-            const bool fieldEnabled = it.value();
+            const RecordFieldState::RecordFieldState fieldState = it.value();
 
-            if (fieldEnabled)
+            if (fieldState == RecordFieldState::Enabled)
             {
                 this->addRecordField(fieldId);
             }
@@ -326,12 +327,24 @@ void MainWindow::on_actionEdit_Record_triggered()
         for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
         {
             const FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+            RecordFieldState::RecordFieldState fieldState = RecordFieldState::Disabled;
 
-            // Check if record contains field.
-            bool fieldEnabled = record.fieldValues.contains(fieldDefinition.id);
+            // Check if any parent contains field.
+            const RecordFieldValueMap inheritedFieldValues =
+                    this->controller->getRecordsController().getInheritedFieldValues(record.id);
+
+            if (inheritedFieldValues.contains(fieldDefinition.id))
+            {
+                fieldState = RecordFieldState::InheritedEnabled;
+            }
+            // Check if record itself contains field.
+            else if (record.fieldValues.contains(fieldDefinition.id))
+            {
+                fieldState = RecordFieldState::Enabled;
+            }
 
             // Add to view.
-            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldEnabled);
+            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldState);
         }
     }
 
@@ -345,17 +358,29 @@ void MainWindow::on_actionEdit_Record_triggered()
         // Update record.
         this->updateRecord(recordId, recordDisplayName);
 
-        // Update record fields.
-        const QMap<QString, bool> recordFields = this->recordWindow->getRecordFields();
+        // Get inherited fields.
+        const RecordFieldValueMap inheritedFieldValues =
+                this->controller->getRecordsController().getInheritedFieldValues(recordId);
 
-        for (QMap<QString, bool>::const_iterator it = recordFields.begin();
+        // Update record fields.
+        const QMap<QString, RecordFieldState::RecordFieldState> recordFields =
+                this->recordWindow->getRecordFields();
+
+        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.begin();
              it != recordFields.end();
              ++it)
         {
             const QString& fieldId = it.key();
 
+            // Skip inherited fields.
+            if (inheritedFieldValues.contains(fieldId))
+            {
+                continue;
+            }
+
+            // Check if field was added or removed.
             const bool fieldWasEnabled = record.fieldValues.contains(fieldId);
-            const bool fieldIsEnabled = it.value();
+            const bool fieldIsEnabled = it.value() == RecordFieldState::Enabled;
 
             if (fieldIsEnabled && !fieldWasEnabled)
             {

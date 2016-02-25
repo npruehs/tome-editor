@@ -4,6 +4,8 @@
 #include <QCheckBox>
 #include <QMessageBox>
 
+using namespace Tome;
+
 const QString RecordWindow::PropertyFieldComponent = "FieldComponent";
 const QString RecordWindow::PropertyFieldId = "FieldId";
 
@@ -39,9 +41,9 @@ QString RecordWindow::getRecordId() const
     return this->ui->lineEditId->text();
 }
 
-QMap<QString, bool> RecordWindow::getRecordFields() const
+QMap<QString, RecordFieldState::RecordFieldState> RecordWindow::getRecordFields() const
 {
-    QMap<QString, bool> fields;
+    QMap<QString, RecordFieldState::RecordFieldState> fields;
 
     for (int i = 0; i < this->ui->scrollAreaFieldsContents->layout()->count(); ++i)
     {
@@ -49,9 +51,23 @@ QMap<QString, bool> RecordWindow::getRecordFields() const
         QCheckBox* checkBox = static_cast<QCheckBox*>(item->widget());
 
         QString fieldId = checkBox->property(PropertyFieldId.toStdString().c_str()).toString();
-        bool fieldEnabled = checkBox->isChecked();
 
-        fields.insert(fieldId, fieldEnabled);
+        RecordFieldState::RecordFieldState fieldState;
+
+        if (!checkBox->isEnabled())
+        {
+            fieldState = RecordFieldState::InheritedEnabled;
+        }
+        else if (checkBox->isChecked())
+        {
+            fieldState = RecordFieldState::Enabled;
+        }
+        else
+        {
+            fieldState = RecordFieldState::Disabled;
+        }
+
+        fields.insert(fieldId, fieldState);
     }
 
     return fields;
@@ -77,7 +93,7 @@ void RecordWindow::setRecordId(const QString& id)
     this->ui->lineEditId->setText(id);
 }
 
-void RecordWindow::setRecordField(const QString& fieldId, const QString& fieldComponent, const bool enabled)
+void RecordWindow::setRecordField(const QString& fieldId, const QString& fieldComponent, const RecordFieldState::RecordFieldState state)
 {
     // Build check box text.
     QString checkBoxText = fieldId;
@@ -90,7 +106,18 @@ void RecordWindow::setRecordField(const QString& fieldId, const QString& fieldCo
     QCheckBox* checkBox = new QCheckBox(checkBoxText);
     checkBox->setProperty(PropertyFieldId.toStdString().c_str(), fieldId);
     checkBox->setProperty(PropertyFieldComponent.toStdString().c_str(), fieldComponent);
-    checkBox->setChecked(enabled);
+
+    // Setup checkbox.
+    if (state == RecordFieldState::Enabled || state == RecordFieldState::InheritedEnabled)
+    {
+        checkBox->setChecked(true);
+    }
+
+    if (state == RecordFieldState::InheritedEnabled)
+    {
+        checkBox->setEnabled(false);
+        checkBox->setToolTip(tr("This field is inherited."));
+    }
 
     // Connect to signal.
     connect(checkBox, SIGNAL(stateChanged(int)), this, SLOT(onCheckBoxStateChanged(int)) );
