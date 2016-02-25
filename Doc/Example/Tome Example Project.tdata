@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Records>
-    <Record Id="Archer" DisplayName="Archer">
+    <Record Id="Archer" DisplayName="Archer" Parent="Unit">
         <Acceleration Value="5"/>
         <AllowedTargets>
             <Item Value="Air"/>
@@ -25,17 +25,17 @@
         <Sprite Value="Sprites/Archer"/>
         <SpriteColor Value="#FFFFFFFF"/>
     </Record>
-    <Record Id="Arrow" DisplayName="Arrow">
+    <Record Id="Arrow" DisplayName="Arrow" Parent="Ability">
         <MovementSpeed Value="30"/>
         <Sprite Value="Sprites/Arrow"/>
         <SpriteColor Value="#FFFFFFFF"/>
     </Record>
-    <Record Id="Fireball" DisplayName="Fireball">
+    <Record Id="Fireball" DisplayName="Fireball" Parent="Ability">
         <MovementSpeed Value="25"/>
         <Sprite Value="Sprites/Fireball"/>
         <SpriteColor Value="#FFFF464A"/>
     </Record>
-    <Record Id="Knight" DisplayName="Knight">
+    <Record Id="Knight" DisplayName="Knight" Parent="Unit">
         <Acceleration Value="8"/>
         <AllowedTargets>
             <Item Value="Ground"/>
@@ -59,7 +59,7 @@
         <Sprite Value="Sprites/Knight"/>
         <SpriteColor Value="#FFFFFFFF"/>
     </Record>
-    <Record Id="Mage" DisplayName="Mage">
+    <Record Id="Mage" DisplayName="Mage" Parent="Unit">
         <Acceleration Value="4"/>
         <AllowedTargets>
             <Item Value="Air"/>
@@ -84,7 +84,7 @@
         <Sprite Value="Sprites/Mage"/>
         <SpriteColor Value="#FFFFFFFF"/>
     </Record>
-    <Record Id="Peasant" DisplayName="Peasant">
+    <Record Id="Peasant" DisplayName="Peasant" Parent="Unit">
         <Acceleration Value="4.5"/>
         <AllowedTargets>
             <Item Value="Ground"/>
@@ -108,23 +108,36 @@
         <Sprite Value="Sprites/Peasant"/>
         <SpriteColor Value="#FFFFFFFF"/>
     </Record>
-    <Record Id="TestUnit" DisplayName="TestUnit" Parent="Unit">
-        <MovementSpeed Value="14.750"/>
-    </Record>
-    <Record Id="TestUnit2" DisplayName="TestUnit2" Parent="TestUnit">
-        <MovementSpeed Value="12.750"/>
-    </Record>
     <Record Id="Unit" DisplayName="Unit">
         <Acceleration Value="4.500"/>
         <AllowedTargets>
             <Item Value="Ground"/>
         </AllowedTargets>
+        <ArmorType Value="Cloth"/>
         <AttackDamage Value="12"/>
+        <AttackRange Value="18.250"/>
         <Cooldown Value="1.200"/>
         <DamageType Value="Normal"/>
+        <Health Value="200"/>
+        <HealthRegeneration Value="0"/>
+        <Invulnerable Value="False"/>
+        <MP5 Value="3"/>
+        <Mana Value="100"/>
         <Mass Value="1.000"/>
         <MovementSpeed Value="12.750"/>
+        <Name/>
         <Projectile/>
         <RotationSpeed Value="360.000"/>
+        <SightRadius Value="25.000"/>
+        <Sprite/>
+        <SpriteColor Value="#ffffff"/>
+    </Record>
+    <Record Id="Ability" DisplayName="Ability">
+        <Acceleration Value="4.500"/>
+        <Mass Value="1.000"/>
+        <MovementSpeed Value="12.750"/>
+        <RotationSpeed Value="360.000"/>
+        <Sprite Value=""/>
+        <SpriteColor Value="#ffffff"/>
     </Record>
 </Records>
