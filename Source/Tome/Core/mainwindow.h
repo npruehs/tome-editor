@@ -47,6 +47,8 @@ class MainWindow : public QMainWindow
         void on_actionEdit_Record_triggered();
         void on_actionRemove_Record_triggered();
 
+        void on_actionRun_Integrity_Checks_triggered();
+
         void on_actionAbout_triggered();
         void on_actionManual_triggered();
         void on_actionReport_a_Bug_triggered();

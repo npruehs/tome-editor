@@ -30,6 +30,7 @@
 #include "../Features/Records/View/recordtreewidgetitem.h"
 #include "../Features/Records/View/recordwindow.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
+#include "../Features/Tasks/Controller/taskscontroller.h"
 #include "../Features/Types/Controller/typescontroller.h"
 #include "../Features/Types/Model/builtintype.h"
 #include "../Features/Types/View/customtypeswindow.h"
@@ -437,6 +438,27 @@ void MainWindow::on_actionRemove_Record_triggered()
     delete recordItem;
 }
 
+
+void MainWindow::on_actionRun_Integrity_Checks_triggered()
+{
+    // Run tasks.
+    const MessageList messages = this->controller->getTasksController().runAllTasks();
+
+    // Show results.
+    QString result = "Results:\n\n";
+
+    for (int i = 0; i < messages.count(); ++i)
+    {
+        const Message message = messages.at(i);
+
+        result += Severity::toString(message.severity).toUpper() + " - " +
+                message.targetSiteId + " - " +
+                message.content + "\n";
+    }
+
+    QMessageBox::information(this, "Integrity Checks", result, QMessageBox::Ok);
+}
+
 void MainWindow::on_actionAbout_triggered()
 {
     if (!this->aboutWindow)
@@ -835,6 +857,8 @@ void MainWindow::updateMenus()
     this->ui->actionNew_Record->setEnabled(projectLoaded);
     this->ui->actionEdit_Record->setEnabled(projectLoaded);
     this->ui->actionRemove_Record->setEnabled(projectLoaded);
+
+    this->ui->actionRun_Integrity_Checks->setEnabled(projectLoaded);
 }
 
 void MainWindow::updateRecentProjects()

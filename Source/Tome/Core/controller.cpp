@@ -11,11 +11,13 @@
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
+#include "../Features/Integrity/Controller/recordreferencedoesnotexisttask.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Records/Controller/recordscontroller.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
+#include "../Features/Tasks/Controller/taskscontroller.h"
 #include "../Features/Types/Controller/typescontroller.h"
 #include "../Util/pathutils.h"
 
@@ -43,8 +45,11 @@ Controller::Controller() :
     typesController(new TypesController()),
     recordsController(new RecordsController(*this->fieldDefinitionsController)),
     exportController(new ExportController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
-    settingsController(new SettingsController())
+    settingsController(new SettingsController()),
+    tasksController(new TasksController(*this->componentsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController))
 {
+    // Setup tasks.
+    this->tasksController->addTask(new RecordReferenceDoesNotExistTask());
 }
 
 Controller::~Controller()
@@ -55,6 +60,7 @@ Controller::~Controller()
     delete this->exportController;
     delete this->settingsController;
     delete this->typesController;
+    delete this->tasksController;
 }
 
 ComponentsController& Controller::getComponentsController()
@@ -80,6 +86,11 @@ ExportController& Controller::getExportController()
 SettingsController& Controller::getSettingsController()
 {
     return *this->settingsController;
+}
+
+TasksController& Controller::getTasksController()
+{
+    return *this->tasksController;
 }
 
 TypesController& Controller::getTypesController()
