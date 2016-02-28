@@ -182,7 +182,10 @@ void MainWindow::on_actionManage_Custom_Types_triggered()
 {
     if (!this->customTypesWindow)
     {
-        this->customTypesWindow = new CustomTypesWindow(this->controller->getTypesController(), this);
+        this->customTypesWindow = new CustomTypesWindow(
+                    this->controller->getTypesController(),
+                    this->controller->getFieldDefinitionsController(),
+                    this);
     }
 
     this->showWindow(this->customTypesWindow);

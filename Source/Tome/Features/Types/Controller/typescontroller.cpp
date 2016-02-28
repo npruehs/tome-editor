@@ -101,6 +101,25 @@ void TypesController::removeCustomTypeAt(const int index)
     this->model->removeAt(index);
 }
 
+void TypesController::renameType(const QString oldName, const QString newName)
+{
+    CustomType& type = *this->getCustomTypeByName(oldName);
+
+    // Rename type.
+    type.name = newName;
+
+    // Update list item type references.
+    for (int i = 0; i < this->model->count(); ++i)
+    {
+        CustomType& t = (*this->model)[i];
+
+        if (t.isList() && t.getItemType() == oldName)
+        {
+            t.setItemType(newName);
+        }
+    }
+}
+
 void TypesController::setCustomTypes(CustomTypeList& model)
 {
     this->model = &model;
@@ -112,7 +131,7 @@ void TypesController::updateEnumeration(const QString& oldName, const QString& n
 
     bool needsSorting = type.name != newName;
 
-    type.name = newName;
+    this->renameType(oldName, newName);
     type.setEnumeration(enumeration);
 
     if (needsSorting)
@@ -127,7 +146,7 @@ void TypesController::updateList(const QString& oldName, const QString& newName,
 
     bool needsSorting = type.name != newName;
 
-    type.name = newName;
+    this->renameType(oldName, newName);
     type.setItemType(itemType);
 
     if (needsSorting)

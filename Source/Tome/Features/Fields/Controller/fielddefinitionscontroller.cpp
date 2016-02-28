@@ -84,7 +84,7 @@ int FieldDefinitionsController::indexOf(const FieldDefinition& fieldDefinition) 
     return this->model->at(0).fieldDefinitions.indexOf(fieldDefinition);
 }
 
-void FieldDefinitionsController::removeFieldComponent(QString componentName)
+void FieldDefinitionsController::removeFieldComponent(const QString componentName)
 {
     for (int i = 0; i < this->model->size(); ++i)
     {
@@ -102,7 +102,7 @@ void FieldDefinitionsController::removeFieldComponent(QString componentName)
     }
 }
 
-void FieldDefinitionsController::removeFieldDefinition(QString& fieldId)
+void FieldDefinitionsController::removeFieldDefinition(const QString& fieldId)
 {
     for (int i = 0; i < this->model->size(); ++i)
     {
@@ -116,6 +116,24 @@ void FieldDefinitionsController::removeFieldDefinition(QString& fieldId)
             {
                 fieldDefinitionSet.fieldDefinitions.erase(it);
                 return;
+            }
+        }
+    }
+}
+
+void FieldDefinitionsController::renameFieldType(const QString oldTypeName, const QString newTypeName)
+{
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
+        {
+            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+
+            if (fieldDefinition.fieldType == oldTypeName)
+            {
+                fieldDefinition.fieldType = newTypeName;
             }
         }
     }

@@ -13,6 +13,7 @@ namespace Ui {
 namespace Tome
 {
     class CustomType;
+    class FieldDefinitionsController;
     class TypesController;
 }
 
@@ -21,7 +22,7 @@ class CustomTypesWindow : public QMainWindow
         Q_OBJECT
 
     public:
-        explicit CustomTypesWindow(Tome::TypesController& typesController, QWidget *parent = 0);
+        explicit CustomTypesWindow(Tome::TypesController& typesController, Tome::FieldDefinitionsController& fieldDefinitionsController, QWidget *parent = 0);
         ~CustomTypesWindow();
 
     private slots:
@@ -36,6 +37,7 @@ class CustomTypesWindow : public QMainWindow
     private:
         Ui::CustomTypesWindow *ui;
         Tome::TypesController& typesController;
+        Tome::FieldDefinitionsController& fieldDefinitionsController;
 
         EnumerationWindow* enumerationWindow;
         ListWindow* listWindow;
