@@ -377,6 +377,8 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
     for (int i = 0; i < records.count(); ++i)
     {
         const Record& record = records.at(i);
+
+        // Update references.
         const RecordFieldValueMap fieldValues = this->getRecordFieldValues(record.id);
 
         for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
@@ -395,6 +397,12 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
                     this->updateRecordFieldValue(record.id, fieldId, newReference);
                 }
             }
+        }
+
+        // Update parents.
+        if (record.parentId == oldReference)
+        {
+            this->reparentRecord(record.id, newReference);
         }
     }
 }
