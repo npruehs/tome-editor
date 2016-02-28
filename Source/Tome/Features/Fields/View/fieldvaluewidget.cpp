@@ -101,6 +101,13 @@ QVariant FieldValueWidget::getFieldValue() const
         return this->comboBox->currentText();
     }
 
+    // Custom type - or is it?
+    if (!this->typesController.isCustomType(this->fieldType))
+    {
+        // Fall back to string.
+        return this->lineEdit->text();
+    }
+
     // Check custom data types.
     const CustomType& customType = this->typesController.getCustomType(this->fieldType);
 
@@ -171,6 +178,14 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
         return;
     }
 
+    // Custom type - or is it?
+    if (!this->typesController.isCustomType(this->fieldType))
+    {
+        // Fall back to string.
+        this->setCurrentWidget(this->lineEdit);
+        return;
+    }
+
     // Update view - check custom types.
     const CustomType& customType = this->typesController.getCustomType(this->fieldType);
 
@@ -233,6 +248,15 @@ void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
     if (this->fieldType == BuiltInType::Reference)
     {
         this->comboBox->setCurrentText(fieldValue.toString());
+        return;
+    }
+
+    // Custom type - or is it?
+    if (!this->typesController.isCustomType(this->fieldType))
+    {
+        // Fall back to string.
+        QString value = fieldValue.toString();
+        this->lineEdit->setText(value);
         return;
     }
 
