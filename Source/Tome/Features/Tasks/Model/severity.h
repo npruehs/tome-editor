@@ -25,6 +25,8 @@ namespace Tome
                 case Severity::Error:
                     return "Error";
             }
+
+            return QString();
         }
     }
 }

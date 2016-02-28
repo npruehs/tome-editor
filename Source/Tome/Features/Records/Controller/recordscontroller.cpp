@@ -3,6 +3,8 @@
 #include <stdexcept>
 
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
+#include "../../Types/Model/builtintype.h"
 #include "../../../Util/listutils.h"
 
 
@@ -253,6 +255,9 @@ bool RecordsController::isAncestorOf(const QString& possibleAncestor, const QStr
 
 void RecordsController::removeRecord(const QString& recordId)
 {
+    // Remove references to record.
+    this->updateRecordReferences(recordId, QString());
+
     // Remove children.
     RecordList children = this->getChildren(recordId);
 
@@ -331,6 +336,10 @@ void RecordsController::setRecordSets(RecordSetList& model)
 
 void RecordsController::updateRecord(const QString& oldId, const QString& newId, const QString& displayName)
 {
+    // Update references to record.
+    this->updateRecordReferences(oldId, newId);
+
+    // Update record itself.
     Record& record = *this->getRecordById(oldId);
 
     bool needsSorting = record.displayName != displayName;
@@ -358,6 +367,35 @@ void RecordsController::updateRecordFieldValue(const QString& recordId, const QS
     else
     {
         record.fieldValues[fieldId] = fieldValue;
+    }
+}
+
+void RecordsController::updateRecordReferences(const QString oldReference, const QString newReference)
+{
+    RecordList records = this->getRecords();
+
+    for (int i = 0; i < records.count(); ++i)
+    {
+        const Record& record = records.at(i);
+        const RecordFieldValueMap fieldValues = this->getRecordFieldValues(record.id);
+
+        for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
+             it != fieldValues.end();
+             ++it)
+        {
+            const QString fieldId = it.key();
+            const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
+
+            if (field.fieldType == BuiltInType::Reference)
+            {
+                const QString reference = it.value().toString();
+
+                if (reference == oldReference)
+                {
+                    this->updateRecordFieldValue(record.id, fieldId, newReference);
+                }
+            }
+        }
     }
 }
 

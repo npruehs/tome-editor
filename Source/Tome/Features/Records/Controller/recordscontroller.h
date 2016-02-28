@@ -9,6 +9,7 @@
 namespace Tome
 {
     class FieldDefinitionsController;
+    class TypesController;
 
     class RecordsController
     {
@@ -66,6 +67,7 @@ namespace Tome
             void setRecordSets(RecordSetList& model);
             void updateRecord(const QString& oldId, const QString& newId, const QString& displayName);
             void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue);
+            void updateRecordReferences(const QString oldReference, const QString newReference);
 
         private:
             RecordSetList* model;
