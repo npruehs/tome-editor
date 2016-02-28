@@ -61,7 +61,9 @@ namespace Tome
             bool isAncestorOf(const QString& possibleAncestor, const QString& recordId) const;
 
             void removeRecord(const QString& recordId);
+            void removeRecordField(const QString fieldId);
             void removeRecordField(const QString& recordId, const QString& fieldId);
+            void renameRecordField(const QString oldFieldId, const QString newFieldId);
             QVariant revertFieldValue(const QString& recordId, const QString& fieldId);
             void reparentRecord(const QString& recordId, const QString& newParentId);
             void setRecordSets(RecordSetList& model);

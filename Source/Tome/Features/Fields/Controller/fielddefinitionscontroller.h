@@ -16,9 +16,10 @@ namespace Tome
             const FieldDefinitionSetList& getFieldDefinitionSets() const;
             bool hasFieldDefinition(const QString& id) const;
             int indexOf(const FieldDefinition& fieldDefinition) const;
+            void removeFieldDefinition(QString& fieldId);
             void removeFieldDefinitionAt(const int index);
             void setFieldDefinitionSets(FieldDefinitionSetList& model);
-            void updateFieldDefinition(const QString& oldId, const QString& newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& component, const QString& description);
+            void updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& component, const QString& description);
 
         private:
             FieldDefinitionSetList* model;

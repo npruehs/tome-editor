@@ -129,16 +129,16 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
 
 void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
 {
-    int index = getSelectedFieldIndex();
+    QString fieldId = getSelectedFieldId();
 
-    if (index < 0)
+    if (fieldId.isEmpty())
     {
         return;
     }
 
     // Get selected field definition.
     const FieldDefinition& fieldDefinition =
-            this->fieldDefinitionsController.getFieldDefinitionSets()[0].fieldDefinitions[index];
+            this->fieldDefinitionsController.getFieldDefinition(fieldId);
 
     // Show window.
     if (!this->fieldDefinitionWindow)
@@ -179,15 +179,19 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
 
 void FieldDefinitionsWindow::on_actionDelete_Field_triggered()
 {
-    int index = getSelectedFieldIndex();
+    QString fieldId = this->getSelectedFieldId();
 
-    if (index < 0)
+    if (fieldId.isEmpty())
     {
         return;
     }
 
+    const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
+    int index = this->fieldDefinitionsController.indexOf(field);
+
     // Update model.
-    this->fieldDefinitionsController.removeFieldDefinitionAt(index);
+    this->fieldDefinitionsController.removeFieldDefinition(fieldId);
+    this->recordsController.removeRecordField(fieldId);
 
     // Update view.
     this->ui->tableWidget->removeRow(index);
@@ -206,20 +210,26 @@ void FieldDefinitionsWindow::tableWidgetSelectionChanged(const QItemSelection& s
     this->updateMenus();
 }
 
-int FieldDefinitionsWindow::getSelectedFieldIndex() const
+QString FieldDefinitionsWindow::getSelectedFieldId() const
 {
-    return this->ui->tableWidget->currentRow();
+    QList<QTableWidgetItem*> selectedItems = this->ui->tableWidget->selectedItems();
+    if (selectedItems.isEmpty())
+    {
+        return QString();
+    }
+
+    return selectedItems[0]->data(Qt::DisplayRole).toString();
 }
 
 void FieldDefinitionsWindow::updateMenus()
 {
-    bool hasSelection = getSelectedFieldIndex() >= 0;
+    bool hasSelection = !this->getSelectedFieldId().isEmpty();
 
     this->ui->actionEdit_Field->setEnabled(hasSelection);
     this->ui->actionDelete_Field->setEnabled(hasSelection);
 }
 
-void FieldDefinitionsWindow::updateFieldDefinition(const QString& oldId, const QString& newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Component& component)
+void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Component& component)
 {
     const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(oldId);
 
@@ -227,6 +237,7 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString& oldId, const Q
 
     // Update model.
     this->fieldDefinitionsController.updateFieldDefinition(oldId, newId, displayName, fieldType, defaultValue, component, description);
+    this->recordsController.renameRecordField(oldId, newId);
 
     // Update view.
     int index = this->fieldDefinitionsController.indexOf(fieldDefinition);

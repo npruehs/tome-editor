@@ -284,6 +284,20 @@ void RecordsController::removeRecord(const QString& recordId)
     }
 }
 
+void RecordsController::removeRecordField(const QString fieldId)
+{
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        RecordSet& recordSet = (*this->model)[i];
+
+        for (int j = 0; j < recordSet.records.size(); ++j)
+        {
+            Record& record = recordSet.records[j];
+            record.fieldValues.remove(fieldId);
+        }
+    }
+}
+
 void RecordsController::removeRecordField(const QString& recordId, const QString& fieldId)
 {
     Record& record = *this->getRecordById(recordId);
@@ -296,6 +310,26 @@ void RecordsController::removeRecordField(const QString& recordId, const QString
     {
         Record& record = descendants[i];
         this->removeRecordField(record.id, fieldId);
+    }
+}
+
+void RecordsController::renameRecordField(const QString oldFieldId, const QString newFieldId)
+{
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        RecordSet& recordSet = (*this->model)[i];
+
+        for (int j = 0; j < recordSet.records.size(); ++j)
+        {
+            Record& record = recordSet.records[j];
+
+            if (record.fieldValues.contains(oldFieldId))
+            {
+                const QVariant fieldValue = record.fieldValues[oldFieldId];
+                record.fieldValues.remove(oldFieldId);
+                record.fieldValues.insert(newFieldId, fieldValue);
+            }
+        }
     }
 }
 

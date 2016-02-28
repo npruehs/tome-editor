@@ -53,10 +53,10 @@ class FieldDefinitionsWindow : public QMainWindow
 
         FieldDefinitionWindow* fieldDefinitionWindow;
 
-        int getSelectedFieldIndex() const;
+        QString getSelectedFieldId() const;
         void updateMenus();
 
-        void updateFieldDefinition(const QString& oldId, const QString& newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Tome::Component& component);
+        void updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Tome::Component& component);
         void updateRow(const int index);
 };
 

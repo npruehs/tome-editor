@@ -72,9 +72,23 @@ int FieldDefinitionsController::indexOf(const FieldDefinition& fieldDefinition) 
     return this->model->at(0).fieldDefinitions.indexOf(fieldDefinition);
 }
 
-void FieldDefinitionsController::removeFieldDefinitionAt(const int index)
+void FieldDefinitionsController::removeFieldDefinition(QString& fieldId)
 {
-    (*this->model)[0].fieldDefinitions.removeAt(index);
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (FieldDefinitionList::iterator it = fieldDefinitionSet.fieldDefinitions.begin();
+             it != fieldDefinitionSet.fieldDefinitions.end();
+             ++it)
+        {
+            if (it->id == fieldId)
+            {
+                fieldDefinitionSet.fieldDefinitions.erase(it);
+                return;
+            }
+        }
+    }
 }
 
 void FieldDefinitionsController::setFieldDefinitionSets(FieldDefinitionSetList& model)
@@ -82,7 +96,7 @@ void FieldDefinitionsController::setFieldDefinitionSets(FieldDefinitionSetList& 
     this->model = &model;
 }
 
-void FieldDefinitionsController::updateFieldDefinition(const QString& oldId, const QString& newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& component, const QString& description)
+void FieldDefinitionsController::updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& component, const QString& description)
 {
     FieldDefinition& fieldDefinition = *this->getFieldDefinitionById(oldId);
 
