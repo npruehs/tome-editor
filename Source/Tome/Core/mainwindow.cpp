@@ -897,22 +897,7 @@ void MainWindow::updateRecord(const QString& id, const QString& displayName)
     this->controller->getRecordsController().updateRecord(record.id, id, displayName);
 
     // Update view.
-    QModelIndexList selectedIndexes = this->treeWidget->selectionModel()->selectedIndexes();
-
-    if (selectedIndexes.empty())
-    {
-        return;
-    }
-
-    QModelIndex currentIndex = selectedIndexes.first();
-
-    if (!currentIndex.isValid())
-    {
-        return;
-    }
-
-    QTreeWidgetItem* item = this->treeWidget->topLevelItem(currentIndex.row());
-    RecordTreeWidgetItem* recordItem = static_cast<RecordTreeWidgetItem*>(item);
+    RecordTreeWidgetItem* recordItem = this->getSelectedRecordItem();
     recordItem->setId(id);
     recordItem->setDisplayName(displayName);
 
