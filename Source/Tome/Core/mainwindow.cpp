@@ -802,10 +802,19 @@ void MainWindow::refreshRecordTree()
     {
         RecordTreeWidgetItem* recordItem = it.value();
         QString recordItemParentId = recordItem->getParentId();
-        if (!recordItemParentId.isEmpty() && recordItems.contains(recordItemParentId))
+        if (!recordItemParentId.isEmpty())
         {
-            RecordTreeWidgetItem* recordParent = recordItems[recordItemParentId];
-            recordParent->addChild(recordItem);
+            if (recordItems.contains(recordItemParentId))
+            {
+                // Insert into tree.
+                RecordTreeWidgetItem* recordParent = recordItems[recordItemParentId];
+                recordParent->addChild(recordItem);
+            }
+            else
+            {
+                // Reset parent reference.
+                this->controller->getRecordsController().reparentRecord(recordItem->getId(), QString());
+            }
         }
 
         items.append(recordItem);
