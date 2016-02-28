@@ -32,7 +32,7 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
     ui->setupUi(this);
 
     // Setup view.
-    const FieldDefinitionList& fieldDefinitions = this->fieldDefinitionsController.getFieldDefinitionSets()[0].fieldDefinitions;
+    const FieldDefinitionList& fieldDefinitions = this->fieldDefinitionsController.getFieldDefinitions();
 
     this->ui->tableWidget->setRowCount(fieldDefinitions.size());
     this->ui->tableWidget->setColumnCount(6);
@@ -253,7 +253,7 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QS
 void FieldDefinitionsWindow::updateRow(const int i)
 {
     // Get field definition.
-    const FieldDefinitionList& fieldDefinitions = this->fieldDefinitionsController.getFieldDefinitionSets()[0].fieldDefinitions;
+    const FieldDefinitionList& fieldDefinitions = this->fieldDefinitionsController.getFieldDefinitions();
     const FieldDefinition& fieldDefinition = fieldDefinitions[i];
 
     // Convert default value to string.

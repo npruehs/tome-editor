@@ -1,5 +1,5 @@
-#ifndef RECORDREFERENCEDOESNOTEXISTTASK_H
-#define RECORDREFERENCEDOESNOTEXISTTASK_H
+#ifndef FIELDTYPEDOESNOTEXISTTASK_H
+#define FIELDTYPEDOESNOTEXISTTASK_H
 
 #include <QString>
 
@@ -10,14 +10,14 @@ namespace Tome
 {
     class TaskContext;
 
-    class RecordReferenceDoesNotExistTask : public Task
+    class FieldTypeDoesNotExistTask : public Task
     {
         public:
-            RecordReferenceDoesNotExistTask();
+            FieldTypeDoesNotExistTask();
 
             const QString getId() const;
             const MessageList execute(const TaskContext& context) const;
     };
 }
 
-#endif // RECORDREFERENCEDOESNOTEXISTTASK_H
+#endif // FIELDTYPEDOESNOTEXISTTASK_H

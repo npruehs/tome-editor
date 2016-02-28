@@ -42,9 +42,21 @@ const FieldDefinition& FieldDefinitionsController::getFieldDefinition(const QStr
     return *this->getFieldDefinitionById(id);
 }
 
-const FieldDefinitionSetList& FieldDefinitionsController::getFieldDefinitionSets() const
+const FieldDefinitionList FieldDefinitionsController::getFieldDefinitions() const
 {
-    return *this->model;
+    FieldDefinitionList fieldDefinitions;
+
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        const FieldDefinitionSet& fieldDefinitionSet = this->model->at(i);
+
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
+        {
+            fieldDefinitions << fieldDefinitionSet.fieldDefinitions.at(j);
+        }
+    }
+
+    return fieldDefinitions;
 }
 
 bool FieldDefinitionsController::hasFieldDefinition(const QString& id) const

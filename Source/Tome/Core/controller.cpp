@@ -11,7 +11,7 @@
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
-#include "../Features/Integrity/Controller/recordreferencedoesnotexisttask.h"
+#include "../Features/Integrity/Controller/fieldtypedoesnotexisttask.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Records/Controller/recordscontroller.h"
@@ -49,7 +49,7 @@ Controller::Controller() :
     tasksController(new TasksController(*this->componentsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController))
 {
     // Setup tasks.
-    this->tasksController->addTask(new RecordReferenceDoesNotExistTask());
+    this->tasksController->addTask(new FieldTypeDoesNotExistTask());
 }
 
 Controller::~Controller()

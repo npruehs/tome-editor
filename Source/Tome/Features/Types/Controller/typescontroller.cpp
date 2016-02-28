@@ -37,6 +37,18 @@ const CustomType TypesController::addList(const QString& name, const QString& it
     return newType;
 }
 
+const QStringList TypesController::getBuiltInTypes() const
+{
+    QStringList typeNames;
+    typeNames.push_back(BuiltInType::Boolean);
+    typeNames.push_back(BuiltInType::Color);
+    typeNames.push_back(BuiltInType::Integer);
+    typeNames.push_back(BuiltInType::Real);
+    typeNames.push_back(BuiltInType::Reference);
+    typeNames.push_back(BuiltInType::String);
+    return typeNames;
+}
+
 const CustomType& TypesController::getCustomType(const QString& name) const
 {
     return *this->getCustomTypeByName(name);
@@ -49,13 +61,7 @@ const CustomTypeList& TypesController::getCustomTypes() const
 
 const QStringList TypesController::getTypeNames() const
 {
-    QStringList typeNames;
-    typeNames.push_back(BuiltInType::Boolean);
-    typeNames.push_back(BuiltInType::Color);
-    typeNames.push_back(BuiltInType::Integer);
-    typeNames.push_back(BuiltInType::Real);
-    typeNames.push_back(BuiltInType::Reference);
-    typeNames.push_back(BuiltInType::String);
+    QStringList typeNames = this->getBuiltInTypes();
 
     for (int i = 0; i < this->model->size(); ++i)
     {
@@ -69,6 +75,11 @@ const QStringList TypesController::getTypeNames() const
 int TypesController::indexOf(const CustomType& customType) const
 {
     return this->model->indexOf(customType);
+}
+
+bool TypesController::isBuiltInType(const QString& name) const
+{
+    return this->getBuiltInTypes().contains(name);
 }
 
 bool TypesController::isCustomType(const QString& name) const

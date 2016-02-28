@@ -257,18 +257,13 @@ void MainWindow::on_actionNew_Record_triggered()
     // Add fields.
     this->recordWindow->clearRecordFields();
 
-    const FieldDefinitionSetList& fieldDefinitionSetList =
-            this->controller->getFieldDefinitionsController().getFieldDefinitionSets();
+    const FieldDefinitionList& fieldDefinitions =
+            this->controller->getFieldDefinitionsController().getFieldDefinitions();
 
-    for (int i = 0; i < fieldDefinitionSetList.size(); ++i)
+    for (int i = 0; i < fieldDefinitions.size(); ++i)
     {
-        const FieldDefinitionSet& fieldDefinitionSet = fieldDefinitionSetList[i];
-
-        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
-        {
-            const FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
-            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, RecordFieldState::Disabled);
-        }
+        const FieldDefinition& fieldDefinition = fieldDefinitions.at(i);
+        this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, RecordFieldState::Disabled);
     }
 
     int result = this->recordWindow->exec();
@@ -335,35 +330,30 @@ void MainWindow::on_actionEdit_Record_triggered()
 
     this->recordWindow->clearRecordFields();
 
-    const FieldDefinitionSetList& fieldDefinitionSets =
-            this->controller->getFieldDefinitionsController().getFieldDefinitionSets();
+    const FieldDefinitionList& fieldDefinitions =
+            this->controller->getFieldDefinitionsController().getFieldDefinitions();
 
-    for (int i = 0; i < fieldDefinitionSets.size(); ++i)
+    for (int i = 0; i < fieldDefinitions.size(); ++i)
     {
-        const FieldDefinitionSet& fieldDefinitionSet = fieldDefinitionSets[i];
+        const FieldDefinition& fieldDefinition = fieldDefinitions.at(i);
+        RecordFieldState::RecordFieldState fieldState = RecordFieldState::Disabled;
 
-        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
+        // Check if any parent contains field.
+        const RecordFieldValueMap inheritedFieldValues =
+                this->controller->getRecordsController().getInheritedFieldValues(record.id);
+
+        if (inheritedFieldValues.contains(fieldDefinition.id))
         {
-            const FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
-            RecordFieldState::RecordFieldState fieldState = RecordFieldState::Disabled;
-
-            // Check if any parent contains field.
-            const RecordFieldValueMap inheritedFieldValues =
-                    this->controller->getRecordsController().getInheritedFieldValues(record.id);
-
-            if (inheritedFieldValues.contains(fieldDefinition.id))
-            {
-                fieldState = RecordFieldState::InheritedEnabled;
-            }
-            // Check if record itself contains field.
-            else if (record.fieldValues.contains(fieldDefinition.id))
-            {
-                fieldState = RecordFieldState::Enabled;
-            }
-
-            // Add to view.
-            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldState);
+            fieldState = RecordFieldState::InheritedEnabled;
         }
+        // Check if record itself contains field.
+        else if (record.fieldValues.contains(fieldDefinition.id))
+        {
+            fieldState = RecordFieldState::Enabled;
+        }
+
+        // Add to view.
+        this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldState);
     }
 
     int result = this->recordWindow->exec();

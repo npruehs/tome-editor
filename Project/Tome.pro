@@ -71,7 +71,7 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Tasks/Controller/taskscontroller.cpp \
     ../Source/Tome/Features/Tasks/Model/message.cpp \
     ../Source/Tome/Features/Tasks/Model/taskcontext.cpp \
-    ../Source/Tome/Features/Integrity/Controller/recordreferencedoesnotexisttask.cpp
+    ../Source/Tome/Features/Integrity/Controller/fieldtypedoesnotexisttask.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -131,7 +131,7 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Tasks/Model/severity.h \
     ../Source/Tome/Features/Tasks/Model/targetsitetype.h \
     ../Source/Tome/Features/Tasks/Model/taskcontext.h \
-    ../Source/Tome/Features/Integrity/Controller/recordreferencedoesnotexisttask.h
+    ../Source/Tome/Features/Integrity/Controller/fieldtypedoesnotexisttask.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
