@@ -2,6 +2,7 @@
 
 #include <QXmlStreamWriter>
 
+#include "../Model/recordset.h"
 #include "../../../IO/xmlreader.h"
 
 using namespace Tome;

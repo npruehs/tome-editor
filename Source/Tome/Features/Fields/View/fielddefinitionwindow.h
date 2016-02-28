@@ -3,16 +3,20 @@
 
 #include <QDialog>
 
-#include "fieldvaluewidget.h"
-#include "../Controller/fielddefinitionscontroller.h"
-#include "../../Components/Controller/componentscontroller.h"
 #include "../../Components/Model/component.h"
-#include "../../Records/Controller/recordscontroller.h"
-#include "../../Types/Controller/typescontroller.h"
 
 
 namespace Ui {
     class FieldDefinitionWindow;
+}
+
+namespace Tome
+{
+    class ComponentsController;
+    class FieldDefinitionsController;
+    class FieldValueWidget;
+    class RecordsController;
+    class TypesController;
 }
 
 class FieldDefinitionWindow : public QDialog

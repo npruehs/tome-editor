@@ -5,6 +5,11 @@
 
 #include <QMessageBox>
 
+#include "fielddefinitionwindow.h"
+#include "../Controller/fielddefinitionscontroller.h"
+#include "../../Components/Controller/componentscontroller.h"
+#include "../../Records/Controller/recordscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/builtintype.h"
 #include "../../../Util/listutils.h"
 

@@ -3,6 +3,8 @@
 
 #include <QStringListModel>
 
+#include "enumerationmemberwindow.h"
+#include "../Model/customtype.h"
 #include "../../../Util/listutils.h"
 #include "../../../Util/stringutils.h"
 

@@ -3,13 +3,16 @@
 
 #include <QMainWindow>
 
-#include "componentwindow.h"
-#include "../Controller/componentscontroller.h"
+class ComponentWindow;
 
 namespace Ui {
     class ComponentsWindow;
 }
 
+namespace Tome
+{
+    class ComponentsController;
+}
 
 class ComponentsWindow : public QMainWindow
 {

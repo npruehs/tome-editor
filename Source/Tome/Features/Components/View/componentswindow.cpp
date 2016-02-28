@@ -1,6 +1,8 @@
 #include "componentswindow.h"
 #include "ui_componentswindow.h"
 
+#include "componentwindow.h"
+#include "../Controller/componentscontroller.h"
 #include "../Model/component.h"
 #include "../Model/componentlist.h"
 

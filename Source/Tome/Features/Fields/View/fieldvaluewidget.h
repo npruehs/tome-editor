@@ -12,14 +12,13 @@
 #include <QVector>
 #include <QWidget>
 
-#include "listwidget.h"
-#include "../../Records/Controller/recordscontroller.h"
-#include "../../Types/Controller/typescontroller.h"
-#include "../../Types/Model/customtype.h"
-
-
 namespace Tome
 {
+    class CustomType;
+    class ListWidget;
+    class RecordsController;
+    class TypesController;
+
     /**
      * @brief Changes its appearance depending on the specified type.
      */

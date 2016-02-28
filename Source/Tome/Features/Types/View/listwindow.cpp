@@ -2,6 +2,7 @@
 #include "ui_listwindow.h"
 
 #include <QMessageBox>
+#include "../Controller/typescontroller.h"
 
 
 ListWindow::ListWindow(Tome::TypesController& typesController, QWidget *parent) :

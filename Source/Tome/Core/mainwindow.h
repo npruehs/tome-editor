@@ -4,21 +4,24 @@
 #include <QMainWindow>
 #include <QTableWidget>
 
-#include "controller.h"
-#include "../Features/Components/View/componentswindow.h"
-#include "../Features/Fields/View/fielddefinitionswindow.h"
-#include "../Features/Fields/View/fieldvaluewindow.h"
-#include "../Features/Help/View/aboutwindow.h"
-#include "../Features/Projects/View/newprojectwindow.h"
-#include "../Features/Projects/Model/project.h"
-#include "../Features/Records/View/recordtreewidget.h"
-#include "../Features/Records/View/recordtreewidgetitem.h"
-#include "../Features/Records/View/recordwindow.h"
-#include "../Features/Types/View/customtypeswindow.h"
-
+class ComponentsWindow;
+class FieldDefinitionsWindow;
+class FieldValueWindow;
+class AboutWindow;
+class NewProjectWindow;
+class RecordWindow;
+class CustomTypesWindow;
 
 namespace Ui {
     class MainWindow;
+}
+
+namespace Tome
+{
+    class Controller;
+    class Project;
+    class RecordTreeWidget;
+    class RecordTreeWidgetItem;
 }
 
 class MainWindow : public QMainWindow

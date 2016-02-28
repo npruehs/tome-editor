@@ -1,7 +1,11 @@
 #include "customtypeswindow.h"
 #include "ui_customtypeswindow.h"
 
+#include "enumerationwindow.h"
+#include "listwindow.h"
+#include "../Controller/typescontroller.h"
 #include "../Model/builtintype.h"
+#include "../../Types/Model/customtype.h"
 #include "../../../Util/listutils.h"
 
 using namespace Tome;

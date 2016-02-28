@@ -4,10 +4,12 @@
 #include <QStringList>
 
 #include "../Model/recordsetlist.h"
-#include "../../Fields/Controller/fielddefinitionscontroller.h"
+
 
 namespace Tome
 {
+    class FieldDefinitionsController;
+
     class RecordsController
     {
         public:

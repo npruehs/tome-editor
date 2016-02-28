@@ -3,6 +3,10 @@
 #include <limits>
 #include <stdexcept>
 
+#include "listwidget.h"
+#include "../../Records/Controller/recordscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
+#include "../../Types/Model/customtype.h"
 #include "../../Types/Model/builtintype.h"
 #include "../../../Util/memoryutils.h"
 

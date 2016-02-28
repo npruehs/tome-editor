@@ -12,6 +12,7 @@
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
 #include "../Features/Projects/Controller/projectserializer.h"
+#include "../Features/Projects/Model/project.h"
 #include "../Features/Records/Controller/recordscontroller.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
 #include "../Features/Settings/Controller/settingscontroller.h"

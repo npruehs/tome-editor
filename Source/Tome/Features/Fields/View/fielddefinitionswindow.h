@@ -4,16 +4,20 @@
 #include <QItemSelection>
 #include <QMainWindow>
 
-#include "fielddefinitionwindow.h"
-#include "../Controller/fielddefinitionscontroller.h"
-#include "../../Components/Controller/componentscontroller.h"
 #include "../../Components/Model/component.h"
-#include "../../Records/Controller/recordscontroller.h"
-#include "../../Types/Controller/typescontroller.h"
 
+class FieldDefinitionWindow;
 
 namespace Ui {
     class FieldDefinitionsWindow;
+}
+
+namespace Tome
+{
+    class ComponentsController;
+    class FieldDefinitionsController;
+    class RecordsController;
+    class TypesController;
 }
 
 class FieldDefinitionsWindow : public QMainWindow

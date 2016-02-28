@@ -3,14 +3,17 @@
 
 #include <QMainWindow>
 
-#include "enumerationwindow.h"
-#include "listwindow.h"
-#include "../../Projects/Model/project.h"
-#include "../Controller/typescontroller.h"
-
+class EnumerationWindow;
+class ListWindow;
 
 namespace Ui {
     class CustomTypesWindow;
+}
+
+namespace Tome
+{
+    class CustomType;
+    class TypesController;
 }
 
 class CustomTypesWindow : public QMainWindow

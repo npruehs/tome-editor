@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 
+#include "../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../../Util/listutils.h"
 
 

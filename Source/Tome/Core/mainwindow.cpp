@@ -12,17 +12,31 @@
 #include <QTextStream>
 #include <QXmlStreamWriter>
 
+#include "controller.h"
+#include "../Features/Components/View/componentswindow.h"
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
+#include "../Features/Fields/Controller/fielddefinitionscontroller.h"
+#include "../Features/Fields/View/fielddefinitionswindow.h"
+#include "../Features/Fields/View/fieldvaluewindow.h"
+#include "../Features/Help/View/aboutwindow.h"
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Projects/Controller/projectserializer.h"
+#include "../Features/Projects/View/newprojectwindow.h"
+#include "../Features/Records/Controller/recordscontroller.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
 #include "../Features/Records/Model/recordfieldstate.h"
+#include "../Features/Records/View/recordtreewidget.h"
+#include "../Features/Records/View/recordtreewidgetitem.h"
+#include "../Features/Records/View/recordwindow.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
+#include "../Features/Types/Controller/typescontroller.h"
 #include "../Features/Types/Model/builtintype.h"
+#include "../Features/Types/View/customtypeswindow.h"
 #include "../Util/listutils.h"
 #include "../Util/pathutils.h"
 #include "../Util/stringutils.h"
+
 
 using namespace Tome;
 

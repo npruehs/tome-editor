@@ -6,7 +6,10 @@
 #include <QStringBuilder>
 #include <QTextStream>
 
+#include "../../Fields//Controller/fielddefinitionscontroller.h"
 #include "../../Fields/Model/fielddefinition.h"
+#include "../../Records/Controller/recordscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
 
 using namespace Tome;
 

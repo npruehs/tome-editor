@@ -3,7 +3,6 @@
 
 #include <QVector>
 
-#include "fielddefinition.h"
 #include "fielddefinitionlist.h"
 
 namespace Tome

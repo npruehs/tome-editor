@@ -3,14 +3,13 @@
 
 #include <QSharedPointer>
 
-#include "../Features/Projects/Model/project.h"
-
 
 namespace Tome
 {
     class ComponentsController;
     class ExportController;
     class FieldDefinitionsController;
+    class Project;
     class RecordsController;
     class SettingsController;
     class TypesController;
