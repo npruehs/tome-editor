@@ -14,7 +14,7 @@ namespace Tome
             const Component addComponent(const QString& componentName);
             const ComponentList& getComponents() const;
             int indexOf(const Component& component) const;
-            void removeComponentAt(const int index);
+            void removeComponent(const Component component);
             void setComponents(ComponentList& model);
 
         private:

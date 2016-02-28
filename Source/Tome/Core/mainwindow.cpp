@@ -169,7 +169,10 @@ void MainWindow::on_actionManage_Components_triggered()
 {
     if (!this->componentsWindow)
     {
-        this->componentsWindow = new ComponentsWindow(this->controller->getComponentsController(), this);
+        this->componentsWindow = new ComponentsWindow(
+                    this->controller->getComponentsController(),
+                    this->controller->getFieldDefinitionsController(),
+                    this);
     }
 
     this->showWindow(this->componentsWindow);

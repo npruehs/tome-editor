@@ -5,20 +5,22 @@
 #include "../Controller/componentscontroller.h"
 #include "../Model/component.h"
 #include "../Model/componentlist.h"
+#include "../../Fields/Controller/fielddefinitionscontroller.h"
 
 using namespace Tome;
 
 
-ComponentsWindow::ComponentsWindow(ComponentsController& controller, QWidget *parent) :
+ComponentsWindow::ComponentsWindow(ComponentsController& componentsController, FieldDefinitionsController& fieldDefinitionsController, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ComponentsWindow),
-    controller(controller),
+    componentsController(componentsController),
+    fieldDefinitionsController(fieldDefinitionsController),
     componentWindow(0)
 {
     ui->setupUi(this);
 
     // Setup view.
-    const ComponentList& components = this->controller.getComponents();
+    const ComponentList& components = this->componentsController.getComponents();
 
     for (int i = 0; i < components.size(); ++i)
     {
@@ -49,20 +51,29 @@ void ComponentsWindow::on_actionNew_Component_triggered()
         const QString& componentName = this->componentWindow->getComponentName();
 
         // Update model.
-        const Component& component = this->controller.addComponent(componentName);
+        const Component& component = this->componentsController.addComponent(componentName);
 
         // Update view.
-        int index = this->controller.indexOf(component);
+        int index = this->componentsController.indexOf(component);
         this->ui->listWidget->insertItem(index, componentName);
     }
 }
 
 void ComponentsWindow::on_actionDelete_Component_triggered()
 {
-    int index = this->ui->listWidget->currentRow();
+    QList<QListWidgetItem*> selectedItems = this->ui->listWidget->selectedItems();
+
+    if (selectedItems.isEmpty())
+    {
+        return;
+    }
+
+    Component component = selectedItems[0]->text();
+    int index = this->componentsController.indexOf(component);
 
     // Update model.
-    this->controller.removeComponentAt(index);
+    this->componentsController.removeComponent(component);
+    this->fieldDefinitionsController.removeFieldComponent(component);
 
     // Update view.
     this->ui->listWidget->takeItem(index);

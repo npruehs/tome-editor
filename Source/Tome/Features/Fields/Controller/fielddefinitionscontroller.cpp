@@ -72,6 +72,24 @@ int FieldDefinitionsController::indexOf(const FieldDefinition& fieldDefinition) 
     return this->model->at(0).fieldDefinitions.indexOf(fieldDefinition);
 }
 
+void FieldDefinitionsController::removeFieldComponent(QString componentName)
+{
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.count(); ++j)
+        {
+            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+
+            if (fieldDefinition.component == componentName)
+            {
+                fieldDefinition.component = QString();
+            }
+        }
+    }
+}
+
 void FieldDefinitionsController::removeFieldDefinition(QString& fieldId)
 {
     for (int i = 0; i < this->model->size(); ++i)
