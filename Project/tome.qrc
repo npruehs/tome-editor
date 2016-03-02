@@ -11,5 +11,6 @@
         <file alias="Warning">../Media/Icons/Warning.png</file>
         <file>../Media/Icons/StackedAreaSeries_12693.png</file>
         <file>../Media/Icons/StatusAnnotations_Help_and_inconclusive_32xLG_color.png</file>
+        <file>../Media/Icons/BuildErrorList_7237.png</file>
     </qresource>
 </RCC>

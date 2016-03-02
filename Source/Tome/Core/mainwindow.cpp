@@ -473,6 +473,11 @@ void MainWindow::on_actionReleases_triggered()
     QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/releases"));
 }
 
+void MainWindow::on_actionError_List_triggered()
+{
+    this->showWindow(this->ui->dockWidget);
+}
+
 void MainWindow::on_toolButtonErrors_toggled(bool checked)
 {
     Q_UNUSED(checked)

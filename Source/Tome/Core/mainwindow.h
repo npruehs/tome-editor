@@ -56,6 +56,8 @@ class MainWindow : public QMainWindow
         void on_actionReport_a_Bug_triggered();
         void on_actionReleases_triggered();
 
+        void on_actionError_List_triggered();
+
         void on_toolButtonErrors_toggled(bool checked);
         void on_toolButtonWarnings_toggled(bool checked);
         void on_toolButtonMessages_toggled(bool checked);
