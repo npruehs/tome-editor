@@ -148,10 +148,13 @@
          </property>
          <property name="icon">
           <iconset>
-           <normalon>:/Media/Icons/error.png</normalon>
+           <normalon>:/Error</normalon>
           </iconset>
          </property>
          <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
           <bool>true</bool>
          </property>
          <property name="toolButtonStyle">
@@ -166,10 +169,13 @@
          </property>
          <property name="icon">
           <iconset>
-           <normalon>:/Media/Icons/Warning.png</normalon>
+           <normalon>:/Warning</normalon>
           </iconset>
          </property>
          <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
           <bool>true</bool>
          </property>
          <property name="toolButtonStyle">
@@ -184,10 +190,13 @@
          </property>
          <property name="icon">
           <iconset>
-           <normalon>:/Media/Icons/info.png</normalon>
+           <normalon>:/Information</normalon>
           </iconset>
          </property>
          <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
           <bool>true</bool>
          </property>
          <property name="toolButtonStyle">

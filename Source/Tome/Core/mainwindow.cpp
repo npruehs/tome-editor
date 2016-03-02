@@ -439,67 +439,13 @@ void MainWindow::on_actionRemove_Record_triggered()
     delete recordItem;
 }
 
-
 void MainWindow::on_actionRun_Integrity_Checks_triggered()
 {
     // Run tasks.
-    const MessageList messages = this->controller->getTasksController().runAllTasks();
+    this->messages = this->controller->getTasksController().runAllTasks();
 
-    // Reset output window.
-    this->ui->tableWidgetErrorList->setRowCount(messages.count());
-    this->ui->tableWidgetErrorList->setColumnCount(4);
-
-    QStringList headers;
-    headers << tr("Severity");
-    headers << tr("Code");
-    headers << tr("Message");
-    headers << tr("Location");
-
-    this->ui->tableWidgetErrorList->setHorizontalHeaderLabels(headers);
-
-    // Show results.
-    for (int i = 0; i < messages.count(); ++i)
-    {
-        const Message message = messages.at(i);
-
-        // Show severity.
-        this->ui->tableWidgetErrorList->setItem(i, 0, new QTableWidgetItem(Severity::toString(message.severity)));
-
-        switch (message.severity)
-        {
-            case Severity::Error:
-                this->ui->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Error"));
-                break;
-
-            case Severity::Warning:
-                this->ui->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Warning"));
-                break;
-
-            case Severity::Information:
-                this->ui->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Information"));
-                break;
-
-            default:
-                break;
-        }
-
-        // Show help link.
-        QString helpLink = message.helpLink.isEmpty() ? "https://github.com/npruehs/tome-editor/wiki/" + message.messageCode : message.helpLink;
-        QLabel* helpLinkLabel = new QLabel("<a href=\"" + helpLink + "\">" + message.messageCode + "</a>");
-        helpLinkLabel->setOpenExternalLinks(true);
-
-        QModelIndex index = this->ui->tableWidgetErrorList->model()->index(i, 1);
-        this->ui->tableWidgetErrorList->setIndexWidget(index, helpLinkLabel);
-
-        // Show message.
-        this->ui->tableWidgetErrorList->setItem(i, 2, new QTableWidgetItem(message.content));
-
-        // Show location.
-        QString location = TargetSiteType::toString(message.targetSiteType) + " - " + message.targetSiteId;
-        this->ui->tableWidgetErrorList->setItem(i, 3, new QTableWidgetItem(location));
-    }
-
-    this->ui->tableWidgetErrorList->resizeColumnsToContents();
+    // Update view:
+    this->refreshErrorList();
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -525,6 +471,24 @@ void MainWindow::on_actionReport_a_Bug_triggered()
 void MainWindow::on_actionReleases_triggered()
 {
     QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/releases"));
+}
+
+void MainWindow::on_toolButtonErrors_toggled(bool checked)
+{
+    Q_UNUSED(checked)
+    this->refreshErrorList();
+}
+
+void MainWindow::on_toolButtonWarnings_toggled(bool checked)
+{
+    Q_UNUSED(checked)
+    this->refreshErrorList();
+}
+
+void MainWindow::on_toolButtonMessages_toggled(bool checked)
+{
+    Q_UNUSED(checked)
+    this->refreshErrorList();
 }
 
 void MainWindow::exportRecords(QAction* exportAction)
@@ -814,6 +778,99 @@ void MainWindow::onProjectChanged()
 
     // Update recent projects.
     this->updateRecentProjects();
+}
+
+void MainWindow::refreshErrorList()
+{
+    // Reset output window.
+    this->ui->tableWidgetErrorList->setRowCount(this->messages.count());
+    this->ui->tableWidgetErrorList->setColumnCount(4);
+
+    QStringList headers;
+    headers << tr("Severity");
+    headers << tr("Code");
+    headers << tr("Message");
+    headers << tr("Location");
+
+    this->ui->tableWidgetErrorList->setHorizontalHeaderLabels(headers);
+
+    // Show results.
+    int messagesShown = 0;
+
+    for (int i = 0; i < this->messages.count(); ++i)
+    {
+        const Message message = this->messages.at(i);
+
+        // Check filter.
+        switch (message.severity)
+        {
+            case Severity::Error:
+                if (!this->ui->toolButtonErrors->isChecked())
+                {
+                    continue;
+                }
+                break;
+
+            case Severity::Warning:
+                if (!this->ui->toolButtonWarnings->isChecked())
+                {
+                    continue;
+                }
+                break;
+
+            case Severity::Information:
+                if (!this->ui->toolButtonMessages->isChecked())
+                {
+                    continue;
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        // Show severity.
+        this->ui->tableWidgetErrorList->setItem(i, 0, new QTableWidgetItem(Severity::toString(message.severity)));
+
+        switch (message.severity)
+        {
+            case Severity::Error:
+                this->ui->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Error"));
+                break;
+
+            case Severity::Warning:
+                this->ui->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Warning"));
+                break;
+
+            case Severity::Information:
+                this->ui->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Information"));
+                break;
+
+            default:
+                break;
+        }
+
+        // Show help link.
+        QString helpLink = message.helpLink.isEmpty() ? "https://github.com/npruehs/tome-editor/wiki/" + message.messageCode : message.helpLink;
+        QLabel* helpLinkLabel = new QLabel("<a href=\"" + helpLink + "\">" + message.messageCode + "</a>");
+        helpLinkLabel->setOpenExternalLinks(true);
+
+        QModelIndex index = this->ui->tableWidgetErrorList->model()->index(i, 1);
+        this->ui->tableWidgetErrorList->setIndexWidget(index, helpLinkLabel);
+
+        // Show message.
+        this->ui->tableWidgetErrorList->setItem(i, 2, new QTableWidgetItem(message.content));
+
+        // Show location.
+        QString location = TargetSiteType::toString(message.targetSiteType) + " - " + message.targetSiteId;
+        this->ui->tableWidgetErrorList->setItem(i, 3, new QTableWidgetItem(location));
+
+        // Increase row counter.
+        ++messagesShown;
+    }
+
+    this->ui->tableWidgetErrorList->setRowCount(messagesShown);
+    this->ui->tableWidgetErrorList->resizeColumnsToContents();
 }
 
 void MainWindow::refreshRecordTree()

@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QTableWidget>
 
+#include "../Features/Tasks/Model/messagelist.h"
+
 class ComponentsWindow;
 class FieldDefinitionsWindow;
 class FieldValueWindow;
@@ -54,6 +56,10 @@ class MainWindow : public QMainWindow
         void on_actionReport_a_Bug_triggered();
         void on_actionReleases_triggered();
 
+        void on_toolButtonErrors_toggled(bool checked);
+        void on_toolButtonWarnings_toggled(bool checked);
+        void on_toolButtonMessages_toggled(bool checked);
+
         void exportRecords(QAction* exportAction);
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();
@@ -78,12 +84,15 @@ class MainWindow : public QMainWindow
         NewProjectWindow *newProjectWindow;
         RecordWindow* recordWindow;
 
+        Tome::MessageList messages;
+
         void addRecordField(const QString& fieldId);
         QString getSelectedRecordId() const;
         Tome::RecordTreeWidgetItem* getSelectedRecordItem() const;
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
         void onProjectChanged();
+        void refreshErrorList();
         void refreshRecordTree();
         void refreshRecordTable();
         void resetFields();
