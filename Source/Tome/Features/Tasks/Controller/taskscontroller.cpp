@@ -52,15 +52,7 @@ const MessageList TasksController::runAllTasks() const
         for (int j = 0; j < taskMessages.count(); ++j)
         {
             Message taskMessage = taskMessages.at(j);
-
-            Message message;
-            message.content = "[" + task->getId() + "] " + taskMessage.content;
-            message.helpLink = taskMessage.helpLink;
-            message.severity = taskMessage.severity;
-            message.targetSiteId = taskMessage.targetSiteId;
-            message.targetSiteType = taskMessage.targetSiteType;
-
-            messages.append(message);
+            messages.append(taskMessage);
         }
     }
 

@@ -7,13 +7,11 @@ using namespace Tome;
 #include "../../Types/Controller/typescontroller.h"
 
 
+const QString FieldTypeDoesNotExistTask::MessageCode = "TO0100";
+
+
 FieldTypeDoesNotExistTask::FieldTypeDoesNotExistTask()
 {
-}
-
-const QString FieldTypeDoesNotExistTask::getId() const
-{
-    return "TO0010";
 }
 
 const MessageList FieldTypeDoesNotExistTask::execute(const TaskContext& context) const
@@ -32,6 +30,7 @@ const MessageList FieldTypeDoesNotExistTask::execute(const TaskContext& context)
         {
             Message message;
             message.content = "Field type " + field.fieldType + " does not exist.";
+            message.messageCode = MessageCode;
             message.severity = Severity::Error;
             message.targetSiteId = field.id;
             message.targetSiteType = TargetSiteType::Field;

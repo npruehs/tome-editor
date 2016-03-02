@@ -6,13 +6,11 @@
 using namespace Tome;
 
 
+const QString ListItemTypeDoesNotExistTask::MessageCode = "TO0101";
+
+
 ListItemTypeDoesNotExistTask::ListItemTypeDoesNotExistTask()
 {
-}
-
-const QString ListItemTypeDoesNotExistTask::getId() const
-{
-    return "TO0011";
 }
 
 const MessageList ListItemTypeDoesNotExistTask::execute(const TaskContext& context) const
@@ -35,6 +33,7 @@ const MessageList ListItemTypeDoesNotExistTask::execute(const TaskContext& conte
             {
                 Message message;
                 message.content = "List item type " + itemType + " does not exist.";
+                message.messageCode = MessageCode;
                 message.severity = Severity::Error;
                 message.targetSiteId = type.name;
                 message.targetSiteType = TargetSiteType::Type;

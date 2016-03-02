@@ -12,8 +12,9 @@ namespace Tome
         public:
             ListItemTypeDoesNotExistTask();
 
-            const QString getId() const;
             const MessageList execute(const TaskContext& context) const;
+
+            static const QString MessageCode;
     };
 }
 

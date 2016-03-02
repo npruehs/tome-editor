@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QLabel>
 #include <QMessageBox>
 #include <QStandardPaths>
 #include <QTextStream>
@@ -31,6 +32,8 @@
 #include "../Features/Records/View/recordwindow.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
 #include "../Features/Tasks/Controller/taskscontroller.h"
+#include "../Features/Tasks/Model/severity.h"
+#include "../Features/Tasks/Model/targetsitetype.h"
 #include "../Features/Types/Controller/typescontroller.h"
 #include "../Features/Types/Model/builtintype.h"
 #include "../Features/Types/View/customtypeswindow.h"
@@ -64,6 +67,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->treeWidget->setHeaderHidden(true);
 
     this->ui->splitter->addWidget(this->treeWidget);
+
+    this->ui->horizontalLayout->addStretch(1);
 
     // Add record table.
     this->tableWidget = new QTableWidget();
@@ -440,19 +445,61 @@ void MainWindow::on_actionRun_Integrity_Checks_triggered()
     // Run tasks.
     const MessageList messages = this->controller->getTasksController().runAllTasks();
 
-    // Show results.
-    QString result = "Results:\n\n";
+    // Reset output window.
+    this->ui->tableWidgetErrorList->setRowCount(messages.count());
+    this->ui->tableWidgetErrorList->setColumnCount(4);
 
+    QStringList headers;
+    headers << tr("Severity");
+    headers << tr("Code");
+    headers << tr("Message");
+    headers << tr("Location");
+
+    this->ui->tableWidgetErrorList->setHorizontalHeaderLabels(headers);
+
+    // Show results.
     for (int i = 0; i < messages.count(); ++i)
     {
         const Message message = messages.at(i);
 
-        result += Severity::toString(message.severity).toUpper() + " - " +
-                message.targetSiteId + " - " +
-                message.content + "\n";
+        // Show severity.
+        this->ui->tableWidgetErrorList->setItem(i, 0, new QTableWidgetItem(Severity::toString(message.severity)));
+
+        switch (message.severity)
+        {
+            case Severity::Error:
+                this->ui->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Error"));
+                break;
+
+            case Severity::Warning:
+                this->ui->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Warning"));
+                break;
+
+            case Severity::Information:
+                this->ui->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Information"));
+                break;
+
+            default:
+                break;
+        }
+
+        // Show help link.
+        QString helpLink = message.helpLink.isEmpty() ? "https://github.com/npruehs/tome-editor/wiki/" + message.messageCode : message.helpLink;
+        QLabel* helpLinkLabel = new QLabel("<a href=\"" + helpLink + "\">" + message.messageCode + "</a>");
+        helpLinkLabel->setOpenExternalLinks(true);
+
+        QModelIndex index = this->ui->tableWidgetErrorList->model()->index(i, 1);
+        this->ui->tableWidgetErrorList->setIndexWidget(index, helpLinkLabel);
+
+        // Show message.
+        this->ui->tableWidgetErrorList->setItem(i, 2, new QTableWidgetItem(message.content));
+
+        // Show location.
+        QString location = TargetSiteType::toString(message.targetSiteType) + " - " + message.targetSiteId;
+        this->ui->tableWidgetErrorList->setItem(i, 3, new QTableWidgetItem(location));
     }
 
-    QMessageBox::information(this, "Integrity Checks", result, QMessageBox::Ok);
+    this->ui->tableWidgetErrorList->resizeColumnsToContents();
 }
 
 void MainWindow::on_actionAbout_triggered()

@@ -1,6 +1,8 @@
 #ifndef SEVERITY
 #define SEVERITY
 
+#include <QString>
+
 namespace Tome
 {
     namespace Severity

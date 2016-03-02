@@ -15,6 +15,7 @@ namespace Tome
 
             QString content;
             QString helpLink;
+            QString messageCode;
             Severity::Severity severity;
             QString targetSiteId;
             TargetSiteType::TargetSiteType targetSiteType;
