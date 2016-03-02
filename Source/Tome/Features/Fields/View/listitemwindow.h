@@ -5,17 +5,17 @@
 #include <QString>
 #include <QStringList>
 
-#include "../../Records/Controller/recordscontroller.h"
-#include "../../Types/Controller/typescontroller.h"
-#include "../../Types/Model/customtype.h"
-
 
 namespace Ui {
     class ListItemWindow;
 }
 
-namespace Tome {
+namespace Tome
+{
+    class CustomType;
     class FieldValueWidget;
+    class RecordsController;
+    class TypesController;
 }
 
 class ListItemWindow : public QDialog

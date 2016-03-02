@@ -1,6 +1,11 @@
 #include "fieldvaluewindow.h"
 #include "ui_fieldvaluewindow.h"
 
+#include "fieldvaluewidget.h"
+#include "../../Records/Controller/recordscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
+#include "../../Types/Model/customtype.h"
+
 using namespace Tome;
 
 

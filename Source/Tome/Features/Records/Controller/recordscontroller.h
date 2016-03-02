@@ -4,10 +4,13 @@
 #include <QStringList>
 
 #include "../Model/recordsetlist.h"
-#include "../../Fields/Controller/fielddefinitionscontroller.h"
+
 
 namespace Tome
 {
+    class FieldDefinitionsController;
+    class TypesController;
+
     class RecordsController
     {
         public:
@@ -58,12 +61,15 @@ namespace Tome
             bool isAncestorOf(const QString& possibleAncestor, const QString& recordId) const;
 
             void removeRecord(const QString& recordId);
+            void removeRecordField(const QString fieldId);
             void removeRecordField(const QString& recordId, const QString& fieldId);
+            void renameRecordField(const QString oldFieldId, const QString newFieldId);
             QVariant revertFieldValue(const QString& recordId, const QString& fieldId);
             void reparentRecord(const QString& recordId, const QString& newParentId);
             void setRecordSets(RecordSetList& model);
             void updateRecord(const QString& oldId, const QString& newId, const QString& displayName);
             void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue);
+            void updateRecordReferences(const QString oldReference, const QString newReference);
 
         private:
             RecordSetList* model;

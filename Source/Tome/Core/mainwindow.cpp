@@ -7,22 +7,40 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QLabel>
 #include <QMessageBox>
 #include <QStandardPaths>
 #include <QTextStream>
 #include <QXmlStreamWriter>
 
+#include "controller.h"
+#include "../Features/Components/View/componentswindow.h"
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
+#include "../Features/Fields/Controller/fielddefinitionscontroller.h"
+#include "../Features/Fields/View/fielddefinitionswindow.h"
+#include "../Features/Fields/View/fieldvaluewindow.h"
+#include "../Features/Help/View/aboutwindow.h"
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Projects/Controller/projectserializer.h"
+#include "../Features/Projects/View/newprojectwindow.h"
+#include "../Features/Records/Controller/recordscontroller.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
 #include "../Features/Records/Model/recordfieldstate.h"
+#include "../Features/Records/View/recordtreewidget.h"
+#include "../Features/Records/View/recordtreewidgetitem.h"
+#include "../Features/Records/View/recordwindow.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
+#include "../Features/Tasks/Controller/taskscontroller.h"
+#include "../Features/Tasks/Model/severity.h"
+#include "../Features/Tasks/Model/targetsitetype.h"
+#include "../Features/Types/Controller/typescontroller.h"
 #include "../Features/Types/Model/builtintype.h"
+#include "../Features/Types/View/customtypeswindow.h"
 #include "../Util/listutils.h"
 #include "../Util/pathutils.h"
 #include "../Util/stringutils.h"
+
 
 using namespace Tome;
 
@@ -49,6 +67,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->treeWidget->setHeaderHidden(true);
 
     this->ui->splitter->addWidget(this->treeWidget);
+
+    this->ui->horizontalLayout->addStretch(1);
 
     // Add record table.
     this->tableWidget = new QTableWidget();
@@ -154,7 +174,10 @@ void MainWindow::on_actionManage_Components_triggered()
 {
     if (!this->componentsWindow)
     {
-        this->componentsWindow = new ComponentsWindow(this->controller->getComponentsController(), this);
+        this->componentsWindow = new ComponentsWindow(
+                    this->controller->getComponentsController(),
+                    this->controller->getFieldDefinitionsController(),
+                    this);
     }
 
     this->showWindow(this->componentsWindow);
@@ -164,7 +187,10 @@ void MainWindow::on_actionManage_Custom_Types_triggered()
 {
     if (!this->customTypesWindow)
     {
-        this->customTypesWindow = new CustomTypesWindow(this->controller->getTypesController(), this);
+        this->customTypesWindow = new CustomTypesWindow(
+                    this->controller->getTypesController(),
+                    this->controller->getFieldDefinitionsController(),
+                    this);
     }
 
     this->showWindow(this->customTypesWindow);
@@ -239,18 +265,13 @@ void MainWindow::on_actionNew_Record_triggered()
     // Add fields.
     this->recordWindow->clearRecordFields();
 
-    const FieldDefinitionSetList& fieldDefinitionSetList =
-            this->controller->getFieldDefinitionsController().getFieldDefinitionSets();
+    const FieldDefinitionList& fieldDefinitions =
+            this->controller->getFieldDefinitionsController().getFieldDefinitions();
 
-    for (int i = 0; i < fieldDefinitionSetList.size(); ++i)
+    for (int i = 0; i < fieldDefinitions.size(); ++i)
     {
-        const FieldDefinitionSet& fieldDefinitionSet = fieldDefinitionSetList[i];
-
-        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
-        {
-            const FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
-            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, RecordFieldState::Disabled);
-        }
+        const FieldDefinition& fieldDefinition = fieldDefinitions.at(i);
+        this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, RecordFieldState::Disabled);
     }
 
     int result = this->recordWindow->exec();
@@ -317,35 +338,30 @@ void MainWindow::on_actionEdit_Record_triggered()
 
     this->recordWindow->clearRecordFields();
 
-    const FieldDefinitionSetList& fieldDefinitionSets =
-            this->controller->getFieldDefinitionsController().getFieldDefinitionSets();
+    const FieldDefinitionList& fieldDefinitions =
+            this->controller->getFieldDefinitionsController().getFieldDefinitions();
 
-    for (int i = 0; i < fieldDefinitionSets.size(); ++i)
+    for (int i = 0; i < fieldDefinitions.size(); ++i)
     {
-        const FieldDefinitionSet& fieldDefinitionSet = fieldDefinitionSets[i];
+        const FieldDefinition& fieldDefinition = fieldDefinitions.at(i);
+        RecordFieldState::RecordFieldState fieldState = RecordFieldState::Disabled;
 
-        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
+        // Check if any parent contains field.
+        const RecordFieldValueMap inheritedFieldValues =
+                this->controller->getRecordsController().getInheritedFieldValues(record.id);
+
+        if (inheritedFieldValues.contains(fieldDefinition.id))
         {
-            const FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
-            RecordFieldState::RecordFieldState fieldState = RecordFieldState::Disabled;
-
-            // Check if any parent contains field.
-            const RecordFieldValueMap inheritedFieldValues =
-                    this->controller->getRecordsController().getInheritedFieldValues(record.id);
-
-            if (inheritedFieldValues.contains(fieldDefinition.id))
-            {
-                fieldState = RecordFieldState::InheritedEnabled;
-            }
-            // Check if record itself contains field.
-            else if (record.fieldValues.contains(fieldDefinition.id))
-            {
-                fieldState = RecordFieldState::Enabled;
-            }
-
-            // Add to view.
-            this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldState);
+            fieldState = RecordFieldState::InheritedEnabled;
         }
+        // Check if record itself contains field.
+        else if (record.fieldValues.contains(fieldDefinition.id))
+        {
+            fieldState = RecordFieldState::Enabled;
+        }
+
+        // Add to view.
+        this->recordWindow->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldState);
     }
 
     int result = this->recordWindow->exec();
@@ -423,6 +439,15 @@ void MainWindow::on_actionRemove_Record_triggered()
     delete recordItem;
 }
 
+void MainWindow::on_actionRun_Integrity_Checks_triggered()
+{
+    // Run tasks.
+    this->messages = this->controller->getTasksController().runAllTasks();
+
+    // Update view:
+    this->refreshErrorList();
+}
+
 void MainWindow::on_actionAbout_triggered()
 {
     if (!this->aboutWindow)
@@ -446,6 +471,29 @@ void MainWindow::on_actionReport_a_Bug_triggered()
 void MainWindow::on_actionReleases_triggered()
 {
     QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/releases"));
+}
+
+void MainWindow::on_actionError_List_triggered()
+{
+    this->showWindow(this->ui->dockWidget);
+}
+
+void MainWindow::on_toolButtonErrors_toggled(bool checked)
+{
+    Q_UNUSED(checked)
+    this->refreshErrorList();
+}
+
+void MainWindow::on_toolButtonWarnings_toggled(bool checked)
+{
+    Q_UNUSED(checked)
+    this->refreshErrorList();
+}
+
+void MainWindow::on_toolButtonMessages_toggled(bool checked)
+{
+    Q_UNUSED(checked)
+    this->refreshErrorList();
 }
 
 void MainWindow::exportRecords(QAction* exportAction)
@@ -737,6 +785,99 @@ void MainWindow::onProjectChanged()
     this->updateRecentProjects();
 }
 
+void MainWindow::refreshErrorList()
+{
+    // Reset output window.
+    this->ui->tableWidgetErrorList->setRowCount(this->messages.count());
+    this->ui->tableWidgetErrorList->setColumnCount(4);
+
+    QStringList headers;
+    headers << tr("Severity");
+    headers << tr("Code");
+    headers << tr("Message");
+    headers << tr("Location");
+
+    this->ui->tableWidgetErrorList->setHorizontalHeaderLabels(headers);
+
+    // Show results.
+    int messagesShown = 0;
+
+    for (int i = 0; i < this->messages.count(); ++i)
+    {
+        const Message message = this->messages.at(i);
+
+        // Check filter.
+        switch (message.severity)
+        {
+            case Severity::Error:
+                if (!this->ui->toolButtonErrors->isChecked())
+                {
+                    continue;
+                }
+                break;
+
+            case Severity::Warning:
+                if (!this->ui->toolButtonWarnings->isChecked())
+                {
+                    continue;
+                }
+                break;
+
+            case Severity::Information:
+                if (!this->ui->toolButtonMessages->isChecked())
+                {
+                    continue;
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        // Show severity.
+        this->ui->tableWidgetErrorList->setItem(i, 0, new QTableWidgetItem(Severity::toString(message.severity)));
+
+        switch (message.severity)
+        {
+            case Severity::Error:
+                this->ui->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Error"));
+                break;
+
+            case Severity::Warning:
+                this->ui->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Warning"));
+                break;
+
+            case Severity::Information:
+                this->ui->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Information"));
+                break;
+
+            default:
+                break;
+        }
+
+        // Show help link.
+        QString helpLink = message.helpLink.isEmpty() ? "https://github.com/npruehs/tome-editor/wiki/" + message.messageCode : message.helpLink;
+        QLabel* helpLinkLabel = new QLabel("<a href=\"" + helpLink + "\">" + message.messageCode + "</a>");
+        helpLinkLabel->setOpenExternalLinks(true);
+
+        QModelIndex index = this->ui->tableWidgetErrorList->model()->index(i, 1);
+        this->ui->tableWidgetErrorList->setIndexWidget(index, helpLinkLabel);
+
+        // Show message.
+        this->ui->tableWidgetErrorList->setItem(i, 2, new QTableWidgetItem(message.content));
+
+        // Show location.
+        QString location = TargetSiteType::toString(message.targetSiteType) + " - " + message.targetSiteId;
+        this->ui->tableWidgetErrorList->setItem(i, 3, new QTableWidgetItem(location));
+
+        // Increase row counter.
+        ++messagesShown;
+    }
+
+    this->ui->tableWidgetErrorList->setRowCount(messagesShown);
+    this->ui->tableWidgetErrorList->resizeColumnsToContents();
+}
+
 void MainWindow::refreshRecordTree()
 {
     // Create record tree items.
@@ -766,10 +907,19 @@ void MainWindow::refreshRecordTree()
     {
         RecordTreeWidgetItem* recordItem = it.value();
         QString recordItemParentId = recordItem->getParentId();
-        if (!recordItemParentId.isEmpty() && recordItems.contains(recordItemParentId))
+        if (!recordItemParentId.isEmpty())
         {
-            RecordTreeWidgetItem* recordParent = recordItems[recordItemParentId];
-            recordParent->addChild(recordItem);
+            if (recordItems.contains(recordItemParentId))
+            {
+                // Insert into tree.
+                RecordTreeWidgetItem* recordParent = recordItems[recordItemParentId];
+                recordParent->addChild(recordItem);
+            }
+            else
+            {
+                // Reset parent reference.
+                this->controller->getRecordsController().reparentRecord(recordItem->getId(), QString());
+            }
         }
 
         items.append(recordItem);
@@ -821,6 +971,8 @@ void MainWindow::updateMenus()
     this->ui->actionNew_Record->setEnabled(projectLoaded);
     this->ui->actionEdit_Record->setEnabled(projectLoaded);
     this->ui->actionRemove_Record->setEnabled(projectLoaded);
+
+    this->ui->actionRun_Integrity_Checks->setEnabled(projectLoaded);
 }
 
 void MainWindow::updateRecentProjects()
@@ -850,22 +1002,7 @@ void MainWindow::updateRecord(const QString& id, const QString& displayName)
     this->controller->getRecordsController().updateRecord(record.id, id, displayName);
 
     // Update view.
-    QModelIndexList selectedIndexes = this->treeWidget->selectionModel()->selectedIndexes();
-
-    if (selectedIndexes.empty())
-    {
-        return;
-    }
-
-    QModelIndex currentIndex = selectedIndexes.first();
-
-    if (!currentIndex.isValid())
-    {
-        return;
-    }
-
-    QTreeWidgetItem* item = this->treeWidget->topLevelItem(currentIndex.row());
-    RecordTreeWidgetItem* recordItem = static_cast<RecordTreeWidgetItem*>(item);
+    RecordTreeWidgetItem* recordItem = this->getSelectedRecordItem();
     recordItem->setId(id);
     recordItem->setDisplayName(displayName);
 

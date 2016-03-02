@@ -3,10 +3,10 @@
 
 #include <QIODevice>
 
-#include "../Model/fielddefinitionset.h"
-
 namespace Tome
 {
+    class FieldDefinitionSet;
+
     class FieldDefinitionSetSerializer
     {
         public:

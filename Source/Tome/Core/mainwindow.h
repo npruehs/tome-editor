@@ -4,21 +4,26 @@
 #include <QMainWindow>
 #include <QTableWidget>
 
-#include "controller.h"
-#include "../Features/Components/View/componentswindow.h"
-#include "../Features/Fields/View/fielddefinitionswindow.h"
-#include "../Features/Fields/View/fieldvaluewindow.h"
-#include "../Features/Help/View/aboutwindow.h"
-#include "../Features/Projects/View/newprojectwindow.h"
-#include "../Features/Projects/Model/project.h"
-#include "../Features/Records/View/recordtreewidget.h"
-#include "../Features/Records/View/recordtreewidgetitem.h"
-#include "../Features/Records/View/recordwindow.h"
-#include "../Features/Types/View/customtypeswindow.h"
+#include "../Features/Tasks/Model/messagelist.h"
 
+class ComponentsWindow;
+class FieldDefinitionsWindow;
+class FieldValueWindow;
+class AboutWindow;
+class NewProjectWindow;
+class RecordWindow;
+class CustomTypesWindow;
 
 namespace Ui {
     class MainWindow;
+}
+
+namespace Tome
+{
+    class Controller;
+    class Project;
+    class RecordTreeWidget;
+    class RecordTreeWidgetItem;
 }
 
 class MainWindow : public QMainWindow
@@ -44,10 +49,18 @@ class MainWindow : public QMainWindow
         void on_actionEdit_Record_triggered();
         void on_actionRemove_Record_triggered();
 
+        void on_actionRun_Integrity_Checks_triggered();
+
         void on_actionAbout_triggered();
         void on_actionManual_triggered();
         void on_actionReport_a_Bug_triggered();
         void on_actionReleases_triggered();
+
+        void on_actionError_List_triggered();
+
+        void on_toolButtonErrors_toggled(bool checked);
+        void on_toolButtonWarnings_toggled(bool checked);
+        void on_toolButtonMessages_toggled(bool checked);
 
         void exportRecords(QAction* exportAction);
         void openRecentProject(QAction* recentProjectAction);
@@ -73,12 +86,15 @@ class MainWindow : public QMainWindow
         NewProjectWindow *newProjectWindow;
         RecordWindow* recordWindow;
 
+        Tome::MessageList messages;
+
         void addRecordField(const QString& fieldId);
         QString getSelectedRecordId() const;
         Tome::RecordTreeWidgetItem* getSelectedRecordItem() const;
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
         void onProjectChanged();
+        void refreshErrorList();
         void refreshRecordTree();
         void refreshRecordTable();
         void resetFields();

@@ -3,14 +3,16 @@
 
 #include <QDialog>
 
-#include "fieldvaluewidget.h"
-#include "../../Records/Controller/recordscontroller.h"
-#include "../../Types/Controller/typescontroller.h"
-#include "../../Types/Model/customtype.h"
-
-
 namespace Ui {
     class FieldValueWindow;
+}
+
+namespace Tome
+{
+    class CustomType;
+    class FieldValueWidget;
+    class RecordsController;
+    class TypesController;
 }
 
 class FieldValueWindow : public QDialog

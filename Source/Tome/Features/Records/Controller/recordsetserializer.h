@@ -3,10 +3,10 @@
 
 #include <QIODevice>
 
-#include "../Model/recordset.h"
-
 namespace Tome
 {
+    class RecordSet;
+
     class RecordSetSerializer
     {
         public:

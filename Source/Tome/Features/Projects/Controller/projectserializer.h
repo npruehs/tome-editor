@@ -4,10 +4,10 @@
 #include <QIODevice>
 #include <QSharedPointer>
 
-#include "../Model/project.h"
-
 namespace Tome
 {
+    class Project;
+
     class ProjectSerializer
     {
         public:

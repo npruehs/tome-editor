@@ -3,11 +3,15 @@
 
 #include <QDialog>
 
-#include "../Model/customtype.h"
-#include "enumerationmemberwindow.h"
+class EnumerationMemberWindow;
 
 namespace Ui {
     class EnumerationWindow;
+}
+
+namespace Tome
+{
+    class CustomType;
 }
 
 class EnumerationWindow : public QDialog

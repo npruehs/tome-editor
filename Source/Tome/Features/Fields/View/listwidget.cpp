@@ -1,5 +1,8 @@
 #include "listwidget.h"
 
+#include "listitemwindow.h"
+#include "../../Records/Controller/recordscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
 #include "../../../Util/memoryutils.h"
 
 

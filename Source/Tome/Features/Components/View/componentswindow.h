@@ -3,20 +3,24 @@
 
 #include <QMainWindow>
 
-#include "componentwindow.h"
-#include "../Controller/componentscontroller.h"
+class ComponentWindow;
 
 namespace Ui {
     class ComponentsWindow;
 }
 
+namespace Tome
+{
+    class ComponentsController;
+    class FieldDefinitionsController;
+}
 
 class ComponentsWindow : public QMainWindow
 {
         Q_OBJECT
 
     public:
-        explicit ComponentsWindow(Tome::ComponentsController& controller, QWidget *parent = 0);
+        explicit ComponentsWindow(Tome::ComponentsController& componentsController, Tome::FieldDefinitionsController& fieldDefinitionsController, QWidget *parent = 0);
         ~ComponentsWindow();
 
     private slots:
@@ -26,7 +30,8 @@ class ComponentsWindow : public QMainWindow
     private:
         Ui::ComponentsWindow *ui;
 
-        Tome::ComponentsController& controller;
+        Tome::ComponentsController& componentsController;
+        Tome::FieldDefinitionsController& fieldDefinitionsController;
 
         ComponentWindow* componentWindow;
 };

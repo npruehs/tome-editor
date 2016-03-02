@@ -3,16 +3,16 @@
 
 #include <QSharedPointer>
 
-#include "../Features/Projects/Model/project.h"
-
 
 namespace Tome
 {
     class ComponentsController;
     class ExportController;
     class FieldDefinitionsController;
+    class Project;
     class RecordsController;
     class SettingsController;
+    class TasksController;
     class TypesController;
 
     class Controller
@@ -26,6 +26,7 @@ namespace Tome
             RecordsController& getRecordsController();
             ExportController& getExportController();
             SettingsController& getSettingsController();
+            TasksController& getTasksController();
             TypesController& getTypesController();
 
             void createProject(const QString& projectName, const QString& projectPath);
@@ -59,6 +60,7 @@ namespace Tome
             RecordsController* recordsController;
             ExportController* exportController;
             SettingsController* settingsController;
+            TasksController* tasksController;
 
             const QString getFullProjectPath(QSharedPointer<Project> project) const;
             void saveProject(QSharedPointer<Project> project);

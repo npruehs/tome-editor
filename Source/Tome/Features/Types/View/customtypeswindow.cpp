@@ -1,16 +1,22 @@
 #include "customtypeswindow.h"
 #include "ui_customtypeswindow.h"
 
+#include "enumerationwindow.h"
+#include "listwindow.h"
+#include "../Controller/typescontroller.h"
 #include "../Model/builtintype.h"
+#include "../../Fields/Controller/fielddefinitionscontroller.h"
+#include "../../Types/Model/customtype.h"
 #include "../../../Util/listutils.h"
 
 using namespace Tome;
 
 
-CustomTypesWindow::CustomTypesWindow(TypesController& typesController, QWidget *parent) :
+CustomTypesWindow::CustomTypesWindow(TypesController& typesController, FieldDefinitionsController& fieldDefinitionsController, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::CustomTypesWindow),
     typesController(typesController),
+    fieldDefinitionsController(fieldDefinitionsController),
     enumerationWindow(0),
     listWindow(0)
 {
@@ -215,6 +221,7 @@ void CustomTypesWindow::updateEnumeration(const QString& oldName, const QString&
     bool needsSorting = type.name != newName;
 
     // Update model.
+    this->fieldDefinitionsController.renameFieldType(oldName, newName);
     this->typesController.updateEnumeration(oldName, newName, enumeration);
 
     // Update view.
@@ -235,6 +242,7 @@ void CustomTypesWindow::updateList(const QString& oldName, const QString& newNam
     bool needsSorting = type.name != newName;
 
     // Update model.
+    this->fieldDefinitionsController.renameFieldType(oldName, newName);
     this->typesController.updateList(oldName, newName, itemType);
 
     // Update view.

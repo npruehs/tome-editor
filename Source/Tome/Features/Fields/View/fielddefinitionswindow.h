@@ -4,16 +4,20 @@
 #include <QItemSelection>
 #include <QMainWindow>
 
-#include "fielddefinitionwindow.h"
-#include "../Controller/fielddefinitionscontroller.h"
-#include "../../Components/Controller/componentscontroller.h"
 #include "../../Components/Model/component.h"
-#include "../../Records/Controller/recordscontroller.h"
-#include "../../Types/Controller/typescontroller.h"
 
+class FieldDefinitionWindow;
 
 namespace Ui {
     class FieldDefinitionsWindow;
+}
+
+namespace Tome
+{
+    class ComponentsController;
+    class FieldDefinitionsController;
+    class RecordsController;
+    class TypesController;
 }
 
 class FieldDefinitionsWindow : public QMainWindow
@@ -49,10 +53,10 @@ class FieldDefinitionsWindow : public QMainWindow
 
         FieldDefinitionWindow* fieldDefinitionWindow;
 
-        int getSelectedFieldIndex() const;
+        QString getSelectedFieldId() const;
         void updateMenus();
 
-        void updateFieldDefinition(const QString& oldId, const QString& newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Tome::Component& component);
+        void updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Tome::Component& component);
         void updateRow(const int index);
 };
 

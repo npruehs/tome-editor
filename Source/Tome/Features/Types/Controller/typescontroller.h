@@ -14,6 +14,8 @@ namespace Tome
             const CustomType addEnumeration(const QString& name, const QStringList& enumeration);
             const CustomType addList(const QString& name, const QString& itemType);
 
+            const QStringList getBuiltInTypes() const;
+
             /**
              * @brief getCustomType Returns the custom type with the specified name.
              * @param name Name of the type to get.
@@ -30,8 +32,10 @@ namespace Tome
             const QStringList getTypeNames() const;
 
             int indexOf(const CustomType& customType) const;
+            bool isBuiltInType(const QString& name) const;
             bool isCustomType(const QString& name) const;
             void removeCustomTypeAt(const int index);
+            void renameType(const QString oldName, const QString newName);
             void setCustomTypes(CustomTypeList& model);
             void updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration);
             void updateList(const QString& oldName, const QString& newName, const QString& itemType);
