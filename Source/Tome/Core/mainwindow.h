@@ -21,7 +21,9 @@ namespace Ui {
 namespace Tome
 {
     class Controller;
+    class ErrorListDockWidget;
     class Project;
+    class RecordFieldsTableWidget;
     class RecordTreeWidget;
     class RecordTreeWidgetItem;
 }
@@ -58,10 +60,6 @@ class MainWindow : public QMainWindow
 
         void on_actionError_List_triggered();
 
-        void on_toolButtonErrors_toggled(bool checked);
-        void on_toolButtonWarnings_toggled(bool checked);
-        void on_toolButtonMessages_toggled(bool checked);
-
         void exportRecords(QAction* exportAction);
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();
@@ -73,8 +71,9 @@ class MainWindow : public QMainWindow
     private:
         Ui::MainWindow *ui;
 
-        Tome::RecordTreeWidget* treeWidget;
-        QTableWidget* tableWidget;
+        Tome::RecordTreeWidget* recordTreeWidget;
+        Tome::RecordFieldsTableWidget* recordFieldTableWidget;
+        Tome::ErrorListDockWidget* errorListDockWidget;
 
         Tome::Controller* controller;
 
@@ -89,16 +88,12 @@ class MainWindow : public QMainWindow
         Tome::MessageList messages;
 
         void addRecordField(const QString& fieldId);
-        QString getSelectedRecordId() const;
-        Tome::RecordTreeWidgetItem* getSelectedRecordItem() const;
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
         void onProjectChanged();
         void refreshErrorList();
         void refreshRecordTree();
         void refreshRecordTable();
-        void resetFields();
-        void resetRecords();
         void showWindow(QWidget* widget);
         void updateMenus();
         void updateRecentProjects();

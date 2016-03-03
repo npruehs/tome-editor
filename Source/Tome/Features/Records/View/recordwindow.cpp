@@ -126,6 +126,46 @@ void RecordWindow::setRecordField(const QString& fieldId, const QString& fieldCo
     this->ui->scrollAreaFieldsContents->layout()->addWidget(checkBox);
 }
 
+void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions)
+{
+    // Clear current fields.
+    this->clearRecordFields();
+
+    // Add all passed fields.
+    for (int i = 0; i < fieldDefinitions.size(); ++i)
+    {
+        const FieldDefinition& fieldDefinition = fieldDefinitions.at(i);
+        this->setRecordField(fieldDefinition.id, fieldDefinition.component, RecordFieldState::Disabled);
+    }
+}
+
+void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, const RecordFieldValueMap& ownFieldValues, const RecordFieldValueMap& inheritedFieldValues)
+{
+    // Clear current fields.
+    this->clearRecordFields();
+
+    // Add all passed fields.
+    for (int i = 0; i < fieldDefinitions.size(); ++i)
+    {
+        const FieldDefinition& fieldDefinition = fieldDefinitions.at(i);
+        RecordFieldState::RecordFieldState fieldState = RecordFieldState::Disabled;
+
+        // Check if any parent contains field.
+        if (inheritedFieldValues.contains(fieldDefinition.id))
+        {
+            fieldState = RecordFieldState::InheritedEnabled;
+        }
+        // Check if record itself contains field.
+        else if (ownFieldValues.contains(fieldDefinition.id))
+        {
+            fieldState = RecordFieldState::Enabled;
+        }
+
+        // Add to view.
+        this->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldState);
+    }
+}
+
 void RecordWindow::on_lineEditDisplayName_textEdited(const QString& displayName)
 {
     this->setRecordId(displayName);

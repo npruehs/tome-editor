@@ -4,6 +4,8 @@
 #include <QDialog>
 
 #include "../Model/recordfieldstate.h"
+#include "../../Fields/Model/fielddefinitionlist.h"
+#include "../../Records/Model/recordfieldvaluemap.h"
 
 namespace Ui {
     class RecordWindow;
@@ -26,6 +28,8 @@ class RecordWindow : public QDialog
         void setRecordDisplayName(const QString& displayName);
         void setRecordId(const QString& id);
         void setRecordField(const QString& fieldId, const QString& fieldComponent, const Tome::RecordFieldState::RecordFieldState state);
+        void setRecordFields(const Tome::FieldDefinitionList& fieldDefinitions);
+        void setRecordFields(const Tome::FieldDefinitionList& fieldDefinitions, const Tome::RecordFieldValueMap& ownFieldValues, const Tome::RecordFieldValueMap& inheritedFieldValues);
 
     public slots:
         void accept();
