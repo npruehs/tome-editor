@@ -83,6 +83,11 @@ void RecordWindow::clearRecordFields()
     }
 }
 
+void RecordWindow::setDisallowedRecordIds(const QStringList disallowedRecordIds)
+{
+    this->disallowedRecordIds = disallowedRecordIds;
+}
+
 void RecordWindow::setRecordDisplayName(const QString& displayName)
 {
     this->ui->lineEditDisplayName->setText(displayName);
@@ -216,6 +221,18 @@ bool RecordWindow::validate()
                     this,
                     tr("Missing data"),
                     tr("Please specify a name for the record."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return false;
+    }
+
+    // Record ids must be unique.
+    if (this->disallowedRecordIds.contains(this->getRecordId()))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Duplicate record id"),
+                    tr("Please specify another id for the record."),
                     QMessageBox::Close,
                     QMessageBox::Close);
         return false;

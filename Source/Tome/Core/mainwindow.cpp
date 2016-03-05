@@ -265,8 +265,15 @@ void MainWindow::on_actionNew_Record_triggered()
     // Add fields.
     const FieldDefinitionList& fieldDefinitions =
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
+    const QStringList recordIds = this->controller->getRecordsController().getRecordIds();
 
+    // Disallow all existing record ids.
+    this->recordWindow->setDisallowedRecordIds(recordIds);
+
+    // Set fields.
     this->recordWindow->setRecordFields(fieldDefinitions);
+
+    // Show window.
     int result = this->recordWindow->exec();
 
     if (result == QDialog::Accepted)
@@ -319,10 +326,17 @@ void MainWindow::on_actionEdit_Record_triggered()
         this->recordWindow = new RecordWindow(this);
     }
 
-    // Update view.
+    // Set record id and name.
     this->recordWindow->setRecordId(record.id);
     this->recordWindow->setRecordDisplayName(record.displayName);
 
+    // Disallow all other record ids.
+    QStringList recordIds = this->controller->getRecordsController().getRecordIds();
+    recordIds.removeOne(record.id);
+
+    this->recordWindow->setDisallowedRecordIds(recordIds);
+
+    // Set fields.
     const FieldDefinitionList& fieldDefinitions =
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
     const RecordFieldValueMap inheritedFieldValues =
