@@ -117,6 +117,8 @@
    <addaction name="separator"/>
    <addaction name="actionNew_Record"/>
    <addaction name="actionRemove_Record"/>
+   <addaction name="separator"/>
+   <addaction name="actionRun_Integrity_Checks"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
