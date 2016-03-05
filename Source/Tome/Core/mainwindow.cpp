@@ -506,15 +506,22 @@ void MainWindow::revertFieldValue()
             this->controller->getRecordsController().getRecordFieldValues(recordId);
     const QString fieldId = fieldValues.keys()[selectedIndexes.first().row()];
 
-    // Update view.
-    QVariant inheritedValue = this->controller->getRecordsController().getInheritedFieldValue(recordId, fieldId);
+    // Get inherited field value.
+    QVariant valueToRevertTo = this->controller->getRecordsController().getInheritedFieldValue(recordId, fieldId);
 
-    if (inheritedValue != QVariant())
+    if (valueToRevertTo == QVariant())
     {
-        if (this->fieldValueWindow != 0)
-        {
-            this->fieldValueWindow->setFieldValue(inheritedValue);
-        }
+        // Get default field value.
+        const FieldDefinition& field =
+                this->controller->getFieldDefinitionsController().getFieldDefinition(fieldId);
+
+        valueToRevertTo = field.defaultValue;
+    }
+
+    // Update view.
+    if (this->fieldValueWindow != 0)
+    {
+        this->fieldValueWindow->setFieldValue(valueToRevertTo);
     }
 }
 
