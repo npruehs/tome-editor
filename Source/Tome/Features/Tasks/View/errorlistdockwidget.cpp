@@ -57,15 +57,6 @@ ErrorListDockWidget::ErrorListDockWidget(QWidget* parent) :
     // Finish layout.
     this->widget->setLayout(this->verticalLayout);
     this->setWidget(this->widget);
-
-    // Add headers.
-    QStringList headers;
-    headers << tr("Severity");
-    headers << tr("Code");
-    headers << tr("Message");
-    headers << tr("Location");
-
-    this->tableWidgetErrorList->setHorizontalHeaderLabels(headers);
 }
 
 ErrorListDockWidget::~ErrorListDockWidget()
@@ -190,5 +181,14 @@ void ErrorListDockWidget::refreshMessages()
     }
 
     this->tableWidgetErrorList->setRowCount(messagesShown);
+
+    // Add headers.
+    QStringList headers;
+    headers << tr("Severity");
+    headers << tr("Code");
+    headers << tr("Message");
+    headers << tr("Location");
+
+    this->tableWidgetErrorList->setHorizontalHeaderLabels(headers);
     this->tableWidgetErrorList->resizeColumnsToContents();
 }
