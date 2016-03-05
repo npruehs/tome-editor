@@ -30,6 +30,7 @@ namespace Tome
         private:
             static const QString AttributeBaseType;
             static const QString AttributeExportedType;
+            static const QString AttributeExportAsTable;
             static const QString AttributeKey;
             static const QString AttributeTomeType;
             static const QString AttributeValue;
