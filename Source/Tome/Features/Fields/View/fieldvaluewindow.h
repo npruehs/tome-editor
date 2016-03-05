@@ -31,7 +31,7 @@ class FieldValueWindow : public QDialog
         void setFieldType(const QString& fieldType) const;
 
     signals:
-        revert();
+        void revert();
 
     protected:
         virtual void showEvent(QShowEvent* event);

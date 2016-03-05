@@ -34,7 +34,7 @@ class FieldDefinitionsWindow : public QMainWindow
         ~FieldDefinitionsWindow();
 
     signals:
-        fieldChanged();
+        void fieldChanged();
 
     private slots:
         void on_actionNew_Field_triggered();
