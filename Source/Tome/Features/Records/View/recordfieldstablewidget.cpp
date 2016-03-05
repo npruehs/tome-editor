@@ -75,4 +75,8 @@ void RecordFieldsTableWidget::setRecord(int i, const QString recordId)
         QColor color = value.value<QColor>();
         this->item(i, 1)->setData(Qt::DecorationRole, color);
     }
+
+    // Resize columns.
+    this->resizeColumnsToContents();
+    this->horizontalHeader()->setStretchLastSection(true);
 }

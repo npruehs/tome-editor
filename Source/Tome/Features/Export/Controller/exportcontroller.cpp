@@ -63,6 +63,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
     QString recordsString;
 
     const RecordSetList& recordSets = this->recordsController.getRecordSets();
+    const FieldDefinitionList& fields = this->fieldDefinitionsController.getFieldDefinitions();
 
     for (int i = 0; i < recordSets.size(); ++i)
     {
@@ -75,8 +76,33 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             // Build field values string.
             QString fieldValuesString;
 
-            for (QMap<QString, QVariant>::const_iterator itFields = record.fieldValues.begin();
-                 itFields != record.fieldValues.end();
+            // Get fields to export.
+            RecordFieldValueMap fieldValues;
+
+            if (exportTemplate.exportAsTable)
+            {
+                // Build field table, filling up with empty values.
+                for (int k = 0; k < fields.count(); ++k)
+                {
+                    const FieldDefinition& field = fields[k];
+
+                    if (record.fieldValues.contains(field.id))
+                    {
+                        fieldValues[field.id] = record.fieldValues[field.id];
+                    }
+                    else
+                    {
+                        fieldValues[field.id] = "";
+                    }
+                }
+            }
+            else
+            {
+                fieldValues = recordsController.getRecordFieldValues(record.id);
+            }
+
+            for (RecordFieldValueMap::iterator itFields = fieldValues.begin();
+                 itFields != fieldValues.end();
                  ++itFields)
             {
                 QString fieldId = itFields.key();

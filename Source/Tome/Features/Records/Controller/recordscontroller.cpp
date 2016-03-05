@@ -175,6 +175,20 @@ const RecordList RecordsController::getRecords() const
     return records;
 }
 
+const QStringList RecordsController::getRecordIds() const
+{
+    RecordList records = this->getRecords();
+    QStringList ids;
+
+    for (int i = 0; i < records.size(); ++i)
+    {
+        const Record& record = records[i];
+        ids << record.id;
+    }
+
+    return ids;
+}
+
 const QStringList RecordsController::getRecordNames() const
 {
     RecordList records = this->getRecords();

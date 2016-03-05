@@ -41,6 +41,8 @@ namespace Tome
 
             const RecordList getRecords() const;
 
+            const QStringList getRecordIds() const;
+
             /**
              * @brief getRecordNames Returns the list of the names of all records of this project.
              * @return List containing the names of all records of this project.

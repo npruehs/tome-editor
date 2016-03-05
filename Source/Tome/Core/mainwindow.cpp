@@ -159,6 +159,12 @@ void MainWindow::on_actionField_Definions_triggered()
                     this->controller->getRecordsController(),
                     this->controller->getTypesController(),
                     this);
+
+        connect(
+                    this->fieldDefinitionsWindow,
+                    SIGNAL(fieldChanged()),
+                    SLOT(onFieldChanged())
+                    );
     }
 
     this->showWindow(this->fieldDefinitionsWindow);
@@ -259,8 +265,15 @@ void MainWindow::on_actionNew_Record_triggered()
     // Add fields.
     const FieldDefinitionList& fieldDefinitions =
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
+    const QStringList recordIds = this->controller->getRecordsController().getRecordIds();
 
+    // Disallow all existing record ids.
+    this->recordWindow->setDisallowedRecordIds(recordIds);
+
+    // Set fields.
     this->recordWindow->setRecordFields(fieldDefinitions);
+
+    // Show window.
     int result = this->recordWindow->exec();
 
     if (result == QDialog::Accepted)
@@ -313,10 +326,17 @@ void MainWindow::on_actionEdit_Record_triggered()
         this->recordWindow = new RecordWindow(this);
     }
 
-    // Update view.
+    // Set record id and name.
     this->recordWindow->setRecordId(record.id);
     this->recordWindow->setRecordDisplayName(record.displayName);
 
+    // Disallow all other record ids.
+    QStringList recordIds = this->controller->getRecordsController().getRecordIds();
+    recordIds.removeOne(record.id);
+
+    this->recordWindow->setDisallowedRecordIds(recordIds);
+
+    // Set fields.
     const FieldDefinitionList& fieldDefinitions =
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
     const RecordFieldValueMap inheritedFieldValues =
@@ -404,7 +424,8 @@ void MainWindow::on_actionRun_Integrity_Checks_triggered()
     // Run tasks.
     this->messages = this->controller->getTasksController().runAllTasks();
 
-    // Update view:
+    // Update view.
+    this->showWindow(this->errorListDockWidget);
     this->refreshErrorList();
 }
 
@@ -500,15 +521,22 @@ void MainWindow::revertFieldValue()
             this->controller->getRecordsController().getRecordFieldValues(recordId);
     const QString fieldId = fieldValues.keys()[selectedIndexes.first().row()];
 
-    // Update view.
-    QVariant inheritedValue = this->controller->getRecordsController().getInheritedFieldValue(recordId, fieldId);
+    // Get inherited field value.
+    QVariant valueToRevertTo = this->controller->getRecordsController().getInheritedFieldValue(recordId, fieldId);
 
-    if (inheritedValue != QVariant())
+    if (valueToRevertTo == QVariant())
     {
-        if (this->fieldValueWindow != 0)
-        {
-            this->fieldValueWindow->setFieldValue(inheritedValue);
-        }
+        // Get default field value.
+        const FieldDefinition& field =
+                this->controller->getFieldDefinitionsController().getFieldDefinition(fieldId);
+
+        valueToRevertTo = field.defaultValue;
+    }
+
+    // Update view.
+    if (this->fieldValueWindow != 0)
+    {
+        this->fieldValueWindow->setFieldValue(valueToRevertTo);
     }
 }
 
@@ -589,21 +617,7 @@ void MainWindow::treeWidgetSelectionChanged(const QItemSelection& selected, cons
     Q_UNUSED(selected);
     Q_UNUSED(deselected);
 
-    const QString& id = this->recordTreeWidget->getSelectedRecordId();
-
-    if (id.isEmpty() || !this->controller->getRecordsController().hasRecord(id))
-    {
-        // Clear table.
-        this->recordFieldTableWidget->setRowCount(0);
-        return;
-    }
-
-    // Get selected record.
-    const RecordFieldValueMap fieldValues =
-            this->controller->getRecordsController().getRecordFieldValues(id);
-
     // Update field table.
-    this->recordFieldTableWidget->setRowCount(fieldValues.size());
     this->refreshRecordTable();
 }
 
@@ -661,6 +675,11 @@ void MainWindow::removeRecordField(const QString& fieldId)
     this->recordFieldTableWidget->removeRow(index);
 }
 
+void MainWindow::onFieldChanged()
+{
+    this->refreshRecordTable();
+}
+
 void MainWindow::onProjectChanged()
 {
     // Enable project-specific buttons.
@@ -705,6 +724,22 @@ void MainWindow::refreshRecordTree()
 
 void MainWindow::refreshRecordTable()
 {
+    const QString& id = this->recordTreeWidget->getSelectedRecordId();
+
+    if (id.isEmpty() || !this->controller->getRecordsController().hasRecord(id))
+    {
+        // Clear table.
+        this->recordFieldTableWidget->setRowCount(0);
+        return;
+    }
+
+    // Get selected record.
+    const RecordFieldValueMap fieldValues =
+            this->controller->getRecordsController().getRecordFieldValues(id);
+
+    // Update table.
+    this->recordFieldTableWidget->setRowCount(fieldValues.size());
+
     for (int i = 0; i < this->recordFieldTableWidget->rowCount(); ++i)
     {
         this->updateRecordRow(i);

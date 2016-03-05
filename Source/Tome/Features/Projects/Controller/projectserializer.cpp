@@ -10,6 +10,7 @@ using namespace Tome;
 
 const QString ProjectSerializer::AttributeBaseType = "BaseType";
 const QString ProjectSerializer::AttributeExportedType = "ExportedType";
+const QString ProjectSerializer::AttributeExportAsTable = "ExportAsTable";
 const QString ProjectSerializer::AttributeKey = "Key";
 const QString ProjectSerializer::AttributeTomeType = "TomeType";
 const QString ProjectSerializer::AttributeValue = "Value";
@@ -100,6 +101,11 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
                     writer.writeStartElement(ElementTemplate);
                     {
                         const RecordExportTemplate& exportTemplate = it.value();
+
+                        if (exportTemplate.exportAsTable)
+                        {
+                            writer.writeAttribute(AttributeExportAsTable, "true");
+                        }
 
                         writer.writeTextElement(ElementName, exportTemplate.name);
                         writer.writeTextElement(ElementFileExtension, exportTemplate.fileExtension);
@@ -219,10 +225,13 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             {
                 while (reader.isAtElement(ElementTemplate))
                 {
+                    bool exportAsTable = reader.readAttribute(AttributeExportAsTable) == "true";
+
                     reader.readStartElement(ElementTemplate);
                     {
                         RecordExportTemplate exportTemplate = RecordExportTemplate();
 
+                        exportTemplate.exportAsTable = exportAsTable;
                         exportTemplate.name = reader.readTextElement(ElementName);
                         exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);
 

@@ -25,6 +25,7 @@ class RecordWindow : public QDialog
 
         void clearRecordFields();
 
+        void setDisallowedRecordIds(const QStringList disallowedRecordIds);
         void setRecordDisplayName(const QString& displayName);
         void setRecordId(const QString& id);
         void setRecordField(const QString& fieldId, const QString& fieldComponent, const Tome::RecordFieldState::RecordFieldState state);
@@ -44,6 +45,8 @@ class RecordWindow : public QDialog
         static const QString PropertyFieldId;
 
         Ui::RecordWindow *ui;
+
+        QStringList disallowedRecordIds;
 
         bool validate();
 };

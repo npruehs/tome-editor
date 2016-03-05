@@ -51,6 +51,9 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
         this->updateRow(i);
     }
 
+    this->ui->tableWidget->resizeColumnsToContents();
+    this->ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
+
     // Listen for selection changes.
     connect(
                 this->ui->tableWidget->selectionModel(),
@@ -174,6 +177,9 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
                  this->fieldDefinitionWindow->getDefaultValue(),
                  this->fieldDefinitionWindow->getFieldDescription(),
                  this->fieldDefinitionWindow->getFieldComponent());
+
+        // Notify listeners.
+        emit fieldChanged();
     }
 }
 
@@ -195,6 +201,9 @@ void FieldDefinitionsWindow::on_actionDelete_Field_triggered()
 
     // Update view.
     this->ui->tableWidget->removeRow(index);
+
+    // Notify listeners.
+    emit fieldChanged();
 }
 
 void FieldDefinitionsWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
@@ -235,18 +244,32 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QS
 
     bool needsSorting = fieldDefinition.displayName != displayName;
 
-    // Update model.
-    this->fieldDefinitionsController.updateFieldDefinition(oldId, newId, displayName, fieldType, defaultValue, component, description);
-    this->recordsController.renameRecordField(oldId, newId);
-
-    // Update view.
-    int index = this->fieldDefinitionsController.indexOf(fieldDefinition);
-    this->updateRow(index);
-
-    // Sort by display name.
-    if (needsSorting)
+    try
     {
-        this->ui->tableWidget->sortItems(1);
+        // Update model.
+        this->fieldDefinitionsController.updateFieldDefinition(oldId, newId, displayName, fieldType, defaultValue, component, description);
+        this->recordsController.renameRecordField(oldId, newId);
+
+        // Update view.
+        int index = this->fieldDefinitionsController.indexOf(fieldDefinition);
+        this->updateRow(index);
+
+        // Sort by display name.
+        if (needsSorting)
+        {
+            this->ui->tableWidget->sortItems(1);
+        }
+    }
+    catch (std::out_of_range& e)
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to edit field"),
+                    e.what(),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+
+        this->on_actionNew_Field_triggered();
     }
 }
 
