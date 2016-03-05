@@ -21,6 +21,11 @@
     </Records>
     <RecordExportTemplates>
         <Template ExportAsTable="true">
+            <Name>CSV</Name>
+            <FileExtension>.csv</FileExtension>
+            <TypeMap/>
+        </Template>
+        <Template ExportAsTable="true">
             <Name>HTML</Name>
             <FileExtension>.html</FileExtension>
             <TypeMap/>
