@@ -241,18 +241,32 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QS
 
     bool needsSorting = fieldDefinition.displayName != displayName;
 
-    // Update model.
-    this->fieldDefinitionsController.updateFieldDefinition(oldId, newId, displayName, fieldType, defaultValue, component, description);
-    this->recordsController.renameRecordField(oldId, newId);
-
-    // Update view.
-    int index = this->fieldDefinitionsController.indexOf(fieldDefinition);
-    this->updateRow(index);
-
-    // Sort by display name.
-    if (needsSorting)
+    try
     {
-        this->ui->tableWidget->sortItems(1);
+        // Update model.
+        this->fieldDefinitionsController.updateFieldDefinition(oldId, newId, displayName, fieldType, defaultValue, component, description);
+        this->recordsController.renameRecordField(oldId, newId);
+
+        // Update view.
+        int index = this->fieldDefinitionsController.indexOf(fieldDefinition);
+        this->updateRow(index);
+
+        // Sort by display name.
+        if (needsSorting)
+        {
+            this->ui->tableWidget->sortItems(1);
+        }
+    }
+    catch (std::out_of_range& e)
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to edit field"),
+                    e.what(),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+
+        this->on_actionNew_Field_triggered();
     }
 }
 

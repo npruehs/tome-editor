@@ -146,6 +146,13 @@ void FieldDefinitionsController::setFieldDefinitionSets(FieldDefinitionSetList& 
 
 void FieldDefinitionsController::updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& component, const QString& description)
 {
+    // Check if already exists.
+    if (oldId != newId && this->hasFieldDefinition(newId))
+    {
+        const QString errorMessage = "Field with the specified id already exists: " + newId;
+        throw std::out_of_range(errorMessage.toStdString());
+    }
+
     FieldDefinition& fieldDefinition = *this->getFieldDefinitionById(oldId);
 
     bool needsSorting = fieldDefinition.displayName != displayName;
