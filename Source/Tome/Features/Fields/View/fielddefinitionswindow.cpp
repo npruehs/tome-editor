@@ -174,6 +174,9 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
                  this->fieldDefinitionWindow->getDefaultValue(),
                  this->fieldDefinitionWindow->getFieldDescription(),
                  this->fieldDefinitionWindow->getFieldComponent());
+
+        // Notify listeners.
+        emit fieldChanged();
     }
 }
 
@@ -195,6 +198,9 @@ void FieldDefinitionsWindow::on_actionDelete_Field_triggered()
 
     // Update view.
     this->ui->tableWidget->removeRow(index);
+
+    // Notify listeners.
+    emit fieldChanged();
 }
 
 void FieldDefinitionsWindow::on_tableWidget_doubleClicked(const QModelIndex &index)

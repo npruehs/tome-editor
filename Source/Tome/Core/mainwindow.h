@@ -61,6 +61,7 @@ class MainWindow : public QMainWindow
         void on_actionError_List_triggered();
 
         void exportRecords(QAction* exportAction);
+        void onFieldChanged();
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();
         void tableWidgetDoubleClicked(const QModelIndex &index);

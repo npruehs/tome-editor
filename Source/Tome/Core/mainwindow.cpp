@@ -159,6 +159,12 @@ void MainWindow::on_actionField_Definions_triggered()
                     this->controller->getRecordsController(),
                     this->controller->getTypesController(),
                     this);
+
+        connect(
+                    this->fieldDefinitionsWindow,
+                    SIGNAL(fieldChanged()),
+                    SLOT(onFieldChanged())
+                    );
     }
 
     this->showWindow(this->fieldDefinitionsWindow);
@@ -589,21 +595,7 @@ void MainWindow::treeWidgetSelectionChanged(const QItemSelection& selected, cons
     Q_UNUSED(selected);
     Q_UNUSED(deselected);
 
-    const QString& id = this->recordTreeWidget->getSelectedRecordId();
-
-    if (id.isEmpty() || !this->controller->getRecordsController().hasRecord(id))
-    {
-        // Clear table.
-        this->recordFieldTableWidget->setRowCount(0);
-        return;
-    }
-
-    // Get selected record.
-    const RecordFieldValueMap fieldValues =
-            this->controller->getRecordsController().getRecordFieldValues(id);
-
     // Update field table.
-    this->recordFieldTableWidget->setRowCount(fieldValues.size());
     this->refreshRecordTable();
 }
 
@@ -661,6 +653,11 @@ void MainWindow::removeRecordField(const QString& fieldId)
     this->recordFieldTableWidget->removeRow(index);
 }
 
+void MainWindow::onFieldChanged()
+{
+    this->refreshRecordTable();
+}
+
 void MainWindow::onProjectChanged()
 {
     // Enable project-specific buttons.
@@ -705,6 +702,22 @@ void MainWindow::refreshRecordTree()
 
 void MainWindow::refreshRecordTable()
 {
+    const QString& id = this->recordTreeWidget->getSelectedRecordId();
+
+    if (id.isEmpty() || !this->controller->getRecordsController().hasRecord(id))
+    {
+        // Clear table.
+        this->recordFieldTableWidget->setRowCount(0);
+        return;
+    }
+
+    // Get selected record.
+    const RecordFieldValueMap fieldValues =
+            this->controller->getRecordsController().getRecordFieldValues(id);
+
+    // Update table.
+    this->recordFieldTableWidget->setRowCount(fieldValues.size());
+
     for (int i = 0; i < this->recordFieldTableWidget->rowCount(); ++i)
     {
         this->updateRecordRow(i);

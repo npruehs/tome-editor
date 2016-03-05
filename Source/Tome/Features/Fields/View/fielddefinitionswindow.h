@@ -33,6 +33,9 @@ class FieldDefinitionsWindow : public QMainWindow
                 QWidget *parent = 0);
         ~FieldDefinitionsWindow();
 
+    signals:
+        fieldChanged();
+
     private slots:
         void on_actionNew_Field_triggered();
         void on_actionEdit_Field_triggered();
