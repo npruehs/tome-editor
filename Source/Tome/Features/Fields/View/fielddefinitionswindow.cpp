@@ -51,6 +51,9 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
         this->updateRow(i);
     }
 
+    this->ui->tableWidget->resizeColumnsToContents();
+    this->ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
+
     // Listen for selection changes.
     connect(
                 this->ui->tableWidget->selectionModel(),
