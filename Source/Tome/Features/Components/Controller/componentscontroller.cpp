@@ -29,8 +29,9 @@ int ComponentsController::indexOf(const Component& component) const
     return this->model->indexOf(component);
 }
 
-void ComponentsController::removeComponentAt(const int index)
+void ComponentsController::removeComponent(const Component component)
 {
+    int index = this->model->indexOf(component);
     this->model->removeAt(index);
 }
 

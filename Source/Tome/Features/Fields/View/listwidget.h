@@ -9,13 +9,13 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "listitemwindow.h"
-
-#include "../../Records/Controller/recordscontroller.h"
-#include "../../Types/Controller/typescontroller.h"
+class ListItemWindow;
 
 namespace Tome
 {
+    class RecordsController;
+    class TypesController;
+
     /**
      * @brief Allows adding, editing, re-ordering and removing list items.
      */

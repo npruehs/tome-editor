@@ -6,7 +6,10 @@
 #include <QStringBuilder>
 #include <QTextStream>
 
+#include "../../Fields//Controller/fielddefinitionscontroller.h"
 #include "../../Fields/Model/fielddefinition.h"
+#include "../../Records/Controller/recordscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
 
 using namespace Tome;
 
@@ -18,6 +21,7 @@ const QString ExportController::PlaceholderFieldValue = "$FIELD_VALUE$";
 const QString ExportController::PlaceholderListItem = "$LIST_ITEM$";
 const QString ExportController::PlaceholderRecordFields = "$RECORD_FIELDS$";
 const QString ExportController::PlaceholderRecordId = "$RECORD_ID$";
+const QString ExportController::PlaceholderRecordParentId = "$RECORD_PARENT$";
 const QString ExportController::PlaceholderRecords = "$RECORDS$";
 
 
@@ -59,6 +63,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
     QString recordsString;
 
     const RecordSetList& recordSets = this->recordsController.getRecordSets();
+    const FieldDefinitionList& fields = this->fieldDefinitionsController.getFieldDefinitions();
 
     for (int i = 0; i < recordSets.size(); ++i)
     {
@@ -71,8 +76,33 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             // Build field values string.
             QString fieldValuesString;
 
-            for (QMap<QString, QVariant>::const_iterator itFields = record.fieldValues.begin();
-                 itFields != record.fieldValues.end();
+            // Get fields to export.
+            RecordFieldValueMap fieldValues;
+
+            if (exportTemplate.exportAsTable)
+            {
+                // Build field table, filling up with empty values.
+                for (int k = 0; k < fields.count(); ++k)
+                {
+                    const FieldDefinition& field = fields[k];
+
+                    if (record.fieldValues.contains(field.id))
+                    {
+                        fieldValues[field.id] = record.fieldValues[field.id];
+                    }
+                    else
+                    {
+                        fieldValues[field.id] = "";
+                    }
+                }
+            }
+            else
+            {
+                fieldValues = recordsController.getRecordFieldValues(record.id);
+            }
+
+            for (RecordFieldValueMap::iterator itFields = fieldValues.begin();
+                 itFields != fieldValues.end();
                  ++itFields)
             {
                 QString fieldId = itFields.key();
@@ -177,6 +207,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             // Apply record template.
             QString recordString = exportTemplate.recordTemplate;
             recordString = recordString.replace(PlaceholderRecordId, record.id);
+            recordString = recordString.replace(PlaceholderRecordParentId, record.parentId);
             recordString = recordString.replace(PlaceholderRecordFields, fieldValuesString);
             recordString = recordString.replace(PlaceholderComponents, componentsString);
 

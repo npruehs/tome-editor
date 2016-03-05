@@ -1,9 +1,16 @@
 <RCC>
-  <qresource>
-    <file>../Media/Icons/AddUsingNamespace_6782.png</file>
-    <file>../Media/Icons/NewFile_6276.png</file>
-    <file>../Media/Icons/Open_6529.png</file>
-    <file>../Media/Icons/RemoveUsingNamespace_10480.png</file>
-    <file>../Media/Icons/Saveall_6518.png</file>
-  </qresource>
+    <qresource prefix="/">
+        <file>../Media/Icons/AddUsingNamespace_6782.png</file>
+        <file>../Media/Icons/NewFile_6276.png</file>
+        <file>../Media/Icons/Open_6529.png</file>
+        <file>../Media/Icons/RemoveUsingNamespace_10480.png</file>
+        <file>../Media/Icons/Saveall_6518.png</file>
+        <file>../Media/Icons/Restart_6322.png</file>
+        <file alias="Error">../Media/Icons/error.png</file>
+        <file alias="Information">../Media/Icons/info.png</file>
+        <file alias="Warning">../Media/Icons/Warning.png</file>
+        <file>../Media/Icons/StackedAreaSeries_12693.png</file>
+        <file>../Media/Icons/StatusAnnotations_Help_and_inconclusive_32xLG_color.png</file>
+        <file>../Media/Icons/BuildErrorList_7237.png</file>
+    </qresource>
 </RCC>

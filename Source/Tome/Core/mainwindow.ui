@@ -20,31 +20,6 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QTreeWidget" name="treeWidget">
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <property name="headerHidden">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QTableWidget" name="tableWidget">
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <property name="selectionMode">
-        <enum>QAbstractItemView::SingleSelection</enum>
-       </property>
-       <property name="selectionBehavior">
-        <enum>QAbstractItemView::SelectRows</enum>
-       </property>
-       <attribute name="horizontalHeaderStretchLastSection">
-        <bool>true</bool>
-       </attribute>
-       <attribute name="verticalHeaderVisible">
-        <bool>false</bool>
-       </attribute>
-      </widget>
      </widget>
     </item>
    </layout>
@@ -109,10 +84,24 @@
      <string>Export</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuAnalyze">
+    <property name="title">
+     <string>Analyze</string>
+    </property>
+    <addaction name="actionRun_Integrity_Checks"/>
+   </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+    <addaction name="actionError_List"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuRecords"/>
    <addaction name="menuFields"/>
    <addaction name="menuExport"/>
+   <addaction name="menuAnalyze"/>
+   <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -128,6 +117,8 @@
    <addaction name="separator"/>
    <addaction name="actionNew_Record"/>
    <addaction name="actionRemove_Record"/>
+   <addaction name="separator"/>
+   <addaction name="actionRun_Integrity_Checks"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
@@ -232,6 +223,11 @@
    </property>
   </action>
   <action name="actionManual">
+   <property name="icon">
+    <iconset resource="../../../Project/tome.qrc">
+     <normaloff>:/Media/Icons/StatusAnnotations_Help_and_inconclusive_32xLG_color.png</normaloff>
+     <normalon>:/Media/Icons/StatusAnnotations_Help_and_inconclusive_32xSM_color.png</normalon>:/Media/Icons/StatusAnnotations_Help_and_inconclusive_32xLG_color.png</iconset>
+   </property>
    <property name="text">
     <string>Manual</string>
    </property>
@@ -249,8 +245,33 @@
     <string>Releases</string>
    </property>
   </action>
+  <action name="actionRun_Integrity_Checks">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/StackedAreaSeries_12693.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Run Integrity Checks...</string>
+   </property>
+   <property name="shortcut">
+    <string>F6</string>
+   </property>
+  </action>
+  <action name="actionError_List">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/BuildErrorList_7237.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Error List</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../../../Project/tome.qrc"/>
+ </resources>
  <connections/>
 </ui>

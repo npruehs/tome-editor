@@ -4,6 +4,8 @@
 #include <QCheckBox>
 #include <QMessageBox>
 
+using namespace Tome;
+
 const QString RecordWindow::PropertyFieldComponent = "FieldComponent";
 const QString RecordWindow::PropertyFieldId = "FieldId";
 
@@ -39,9 +41,9 @@ QString RecordWindow::getRecordId() const
     return this->ui->lineEditId->text();
 }
 
-QMap<QString, bool> RecordWindow::getRecordFields() const
+QMap<QString, RecordFieldState::RecordFieldState> RecordWindow::getRecordFields() const
 {
-    QMap<QString, bool> fields;
+    QMap<QString, RecordFieldState::RecordFieldState> fields;
 
     for (int i = 0; i < this->ui->scrollAreaFieldsContents->layout()->count(); ++i)
     {
@@ -49,9 +51,23 @@ QMap<QString, bool> RecordWindow::getRecordFields() const
         QCheckBox* checkBox = static_cast<QCheckBox*>(item->widget());
 
         QString fieldId = checkBox->property(PropertyFieldId.toStdString().c_str()).toString();
-        bool fieldEnabled = checkBox->isChecked();
 
-        fields.insert(fieldId, fieldEnabled);
+        RecordFieldState::RecordFieldState fieldState;
+
+        if (!checkBox->isEnabled())
+        {
+            fieldState = RecordFieldState::InheritedEnabled;
+        }
+        else if (checkBox->isChecked())
+        {
+            fieldState = RecordFieldState::Enabled;
+        }
+        else
+        {
+            fieldState = RecordFieldState::Disabled;
+        }
+
+        fields.insert(fieldId, fieldState);
     }
 
     return fields;
@@ -67,6 +83,11 @@ void RecordWindow::clearRecordFields()
     }
 }
 
+void RecordWindow::setDisallowedRecordIds(const QStringList disallowedRecordIds)
+{
+    this->disallowedRecordIds = disallowedRecordIds;
+}
+
 void RecordWindow::setRecordDisplayName(const QString& displayName)
 {
     this->ui->lineEditDisplayName->setText(displayName);
@@ -77,7 +98,7 @@ void RecordWindow::setRecordId(const QString& id)
     this->ui->lineEditId->setText(id);
 }
 
-void RecordWindow::setRecordField(const QString& fieldId, const QString& fieldComponent, const bool enabled)
+void RecordWindow::setRecordField(const QString& fieldId, const QString& fieldComponent, const RecordFieldState::RecordFieldState state)
 {
     // Build check box text.
     QString checkBoxText = fieldId;
@@ -90,13 +111,64 @@ void RecordWindow::setRecordField(const QString& fieldId, const QString& fieldCo
     QCheckBox* checkBox = new QCheckBox(checkBoxText);
     checkBox->setProperty(PropertyFieldId.toStdString().c_str(), fieldId);
     checkBox->setProperty(PropertyFieldComponent.toStdString().c_str(), fieldComponent);
-    checkBox->setChecked(enabled);
+
+    // Setup checkbox.
+    if (state == RecordFieldState::Enabled || state == RecordFieldState::InheritedEnabled)
+    {
+        checkBox->setChecked(true);
+    }
+
+    if (state == RecordFieldState::InheritedEnabled)
+    {
+        checkBox->setEnabled(false);
+        checkBox->setToolTip(tr("This field is inherited."));
+    }
 
     // Connect to signal.
     connect(checkBox, SIGNAL(stateChanged(int)), this, SLOT(onCheckBoxStateChanged(int)) );
 
     // Add to layout.
     this->ui->scrollAreaFieldsContents->layout()->addWidget(checkBox);
+}
+
+void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions)
+{
+    // Clear current fields.
+    this->clearRecordFields();
+
+    // Add all passed fields.
+    for (int i = 0; i < fieldDefinitions.size(); ++i)
+    {
+        const FieldDefinition& fieldDefinition = fieldDefinitions.at(i);
+        this->setRecordField(fieldDefinition.id, fieldDefinition.component, RecordFieldState::Disabled);
+    }
+}
+
+void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, const RecordFieldValueMap& ownFieldValues, const RecordFieldValueMap& inheritedFieldValues)
+{
+    // Clear current fields.
+    this->clearRecordFields();
+
+    // Add all passed fields.
+    for (int i = 0; i < fieldDefinitions.size(); ++i)
+    {
+        const FieldDefinition& fieldDefinition = fieldDefinitions.at(i);
+        RecordFieldState::RecordFieldState fieldState = RecordFieldState::Disabled;
+
+        // Check if any parent contains field.
+        if (inheritedFieldValues.contains(fieldDefinition.id))
+        {
+            fieldState = RecordFieldState::InheritedEnabled;
+        }
+        // Check if record itself contains field.
+        else if (ownFieldValues.contains(fieldDefinition.id))
+        {
+            fieldState = RecordFieldState::Enabled;
+        }
+
+        // Add to view.
+        this->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldState);
+    }
 }
 
 void RecordWindow::on_lineEditDisplayName_textEdited(const QString& displayName)
@@ -149,6 +221,18 @@ bool RecordWindow::validate()
                     this,
                     tr("Missing data"),
                     tr("Please specify a name for the record."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return false;
+    }
+
+    // Record ids must be unique.
+    if (this->disallowedRecordIds.contains(this->getRecordId()))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Duplicate record id"),
+                    tr("Please specify another id for the record."),
                     QMessageBox::Close,
                     QMessageBox::Close);
         return false;

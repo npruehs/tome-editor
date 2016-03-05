@@ -2,21 +2,30 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTableWidget>
 
-#include "controller.h"
-#include "../Features/Components/View/componentswindow.h"
-#include "../Features/Fields/View/fielddefinitionswindow.h"
-#include "../Features/Fields/View/fieldvaluewindow.h"
-#include "../Features/Help/View/aboutwindow.h"
-#include "../Features/Projects/View/newprojectwindow.h"
-#include "../Features/Projects/Model/project.h"
-#include "../Features/Records/View/recordtreewidgetitem.h"
-#include "../Features/Records/View/recordwindow.h"
-#include "../Features/Types/View/customtypeswindow.h"
+#include "../Features/Tasks/Model/messagelist.h"
 
+class ComponentsWindow;
+class FieldDefinitionsWindow;
+class FieldValueWindow;
+class AboutWindow;
+class NewProjectWindow;
+class RecordWindow;
+class CustomTypesWindow;
 
 namespace Ui {
     class MainWindow;
+}
+
+namespace Tome
+{
+    class Controller;
+    class ErrorListDockWidget;
+    class Project;
+    class RecordFieldsTableWidget;
+    class RecordTreeWidget;
+    class RecordTreeWidgetItem;
 }
 
 class MainWindow : public QMainWindow
@@ -42,20 +51,30 @@ class MainWindow : public QMainWindow
         void on_actionEdit_Record_triggered();
         void on_actionRemove_Record_triggered();
 
+        void on_actionRun_Integrity_Checks_triggered();
+
         void on_actionAbout_triggered();
         void on_actionManual_triggered();
         void on_actionReport_a_Bug_triggered();
         void on_actionReleases_triggered();
 
-        void on_treeWidget_doubleClicked(const QModelIndex &index);
-        void on_tableWidget_doubleClicked(const QModelIndex &index);
+        void on_actionError_List_triggered();
 
         void exportRecords(QAction* exportAction);
+        void onFieldChanged();
         void openRecentProject(QAction* recentProjectAction);
-        void treeViewSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+        void revertFieldValue();
+        void tableWidgetDoubleClicked(const QModelIndex &index);
+        void treeWidgetDoubleClicked(const QModelIndex &index);
+        void treeWidgetRecordReparented(const QString& recordId, const QString& newParentId);
+        void treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
     private:
         Ui::MainWindow *ui;
+
+        Tome::RecordTreeWidget* recordTreeWidget;
+        Tome::RecordFieldsTableWidget* recordFieldTableWidget;
+        Tome::ErrorListDockWidget* errorListDockWidget;
 
         Tome::Controller* controller;
 
@@ -67,14 +86,15 @@ class MainWindow : public QMainWindow
         NewProjectWindow *newProjectWindow;
         RecordWindow* recordWindow;
 
+        Tome::MessageList messages;
+
         void addRecordField(const QString& fieldId);
-        QString getSelectedRecordId() const;
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
         void onProjectChanged();
+        void refreshErrorList();
+        void refreshRecordTree();
         void refreshRecordTable();
-        void resetFields();
-        void resetRecords();
         void showWindow(QWidget* widget);
         void updateMenus();
         void updateRecentProjects();

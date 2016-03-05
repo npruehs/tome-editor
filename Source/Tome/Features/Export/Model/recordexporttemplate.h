@@ -13,6 +13,7 @@ namespace Tome
 
             QString componentDelimiter;
             QString componentTemplate;
+            bool exportAsTable;
             QString fieldValueDelimiter;
             QString fieldValueTemplate;
             QString fileExtension;

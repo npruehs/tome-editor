@@ -13,8 +13,8 @@ TEMPLATE = app
 
 # Expose application version in Windows property window and in application code.
 # http://www.openguru.com/2009/11/qt-best-way-to-set-application-version.html
-VERSION = 0.3
-VERSION_NAME = Basilisk
+VERSION = 0.4
+VERSION_NAME = Chimera
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 DEFINES += APP_VERSION_NAME=\\\"$$VERSION_NAME\\\"
 
@@ -65,7 +65,16 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Fields/Controller/fielddefinitionscontroller.cpp \
     ../Source/Tome/Features/Types/Controller/typescontroller.cpp \
     ../Source/Tome/Features/Settings/Controller/settingscontroller.cpp \
-    ../Source/Tome/Features/Records/View/recordtreewidgetitem.cpp
+    ../Source/Tome/Features/Records/View/recordtreewidgetitem.cpp \
+    ../Source/Tome/Features/Records/View/recordtreewidget.cpp \
+    ../Source/Tome/Features/Tasks/Controller/task.cpp \
+    ../Source/Tome/Features/Tasks/Controller/taskscontroller.cpp \
+    ../Source/Tome/Features/Tasks/Model/message.cpp \
+    ../Source/Tome/Features/Tasks/Model/taskcontext.cpp \
+    ../Source/Tome/Features/Integrity/Controller/fieldtypedoesnotexisttask.cpp \
+    ../Source/Tome/Features/Integrity/Controller/listitemtypedoesnotexisttask.cpp \
+    ../Source/Tome/Features/Tasks/View/errorlistdockwidget.cpp \
+    ../Source/Tome/Features/Records/View/recordfieldstablewidget.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -114,7 +123,21 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Export/Model/recordexporttemplatemap.h \
     ../Source/Tome/Util/memoryutils.h \
     ../Source/Tome/Util/stringutils.h \
-    ../Source/Tome/Features/Records/View/recordtreewidgetitem.h
+    ../Source/Tome/Features/Records/View/recordtreewidgetitem.h \
+    ../Source/Tome/Features/Records/View/recordtreewidget.h \
+    ../Source/Tome/Features/Records/Model/recordfieldvaluemap.h \
+    ../Source/Tome/Features/Records/Model/recordfieldstate.h \
+    ../Source/Tome/Features/Tasks/Controller/task.h \
+    ../Source/Tome/Features/Tasks/Controller/taskscontroller.h \
+    ../Source/Tome/Features/Tasks/Model/message.h \
+    ../Source/Tome/Features/Tasks/Model/messagelist.h \
+    ../Source/Tome/Features/Tasks/Model/severity.h \
+    ../Source/Tome/Features/Tasks/Model/targetsitetype.h \
+    ../Source/Tome/Features/Tasks/Model/taskcontext.h \
+    ../Source/Tome/Features/Integrity/Controller/fieldtypedoesnotexisttask.h \
+    ../Source/Tome/Features/Integrity/Controller/listitemtypedoesnotexisttask.h \
+    ../Source/Tome/Features/Tasks/View/errorlistdockwidget.h \
+    ../Source/Tome/Features/Records/View/recordfieldstablewidget.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

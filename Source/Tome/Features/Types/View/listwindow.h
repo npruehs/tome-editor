@@ -3,11 +3,14 @@
 
 #include <QDialog>
 
-#include "../Controller/typescontroller.h"
-
 
 namespace Ui {
     class ListWindow;
+}
+
+namespace Tome
+{
+    class TypesController;
 }
 
 class ListWindow : public QDialog

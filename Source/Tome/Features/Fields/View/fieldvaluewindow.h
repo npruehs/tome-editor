@@ -3,14 +3,16 @@
 
 #include <QDialog>
 
-#include "fieldvaluewidget.h"
-#include "../../Records/Controller/recordscontroller.h"
-#include "../../Types/Controller/typescontroller.h"
-#include "../../Types/Model/customtype.h"
-
-
 namespace Ui {
     class FieldValueWindow;
+}
+
+namespace Tome
+{
+    class CustomType;
+    class FieldValueWidget;
+    class RecordsController;
+    class TypesController;
 }
 
 class FieldValueWindow : public QDialog
@@ -28,8 +30,14 @@ class FieldValueWindow : public QDialog
         void setFieldValue(const QVariant& fieldValue);
         void setFieldType(const QString& fieldType) const;
 
+    signals:
+        revert();
+
     protected:
         virtual void showEvent(QShowEvent* event);
+
+    private slots:
+        void on_toolButtonRevert_clicked();
 
     private:
         Ui::FieldValueWindow *ui;

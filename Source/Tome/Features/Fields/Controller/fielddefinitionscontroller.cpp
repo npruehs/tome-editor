@@ -42,9 +42,21 @@ const FieldDefinition& FieldDefinitionsController::getFieldDefinition(const QStr
     return *this->getFieldDefinitionById(id);
 }
 
-const FieldDefinitionSetList& FieldDefinitionsController::getFieldDefinitionSets() const
+const FieldDefinitionList FieldDefinitionsController::getFieldDefinitions() const
 {
-    return *this->model;
+    FieldDefinitionList fieldDefinitions;
+
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        const FieldDefinitionSet& fieldDefinitionSet = this->model->at(i);
+
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
+        {
+            fieldDefinitions << fieldDefinitionSet.fieldDefinitions.at(j);
+        }
+    }
+
+    return fieldDefinitions;
 }
 
 bool FieldDefinitionsController::hasFieldDefinition(const QString& id) const
@@ -72,9 +84,59 @@ int FieldDefinitionsController::indexOf(const FieldDefinition& fieldDefinition) 
     return this->model->at(0).fieldDefinitions.indexOf(fieldDefinition);
 }
 
-void FieldDefinitionsController::removeFieldDefinitionAt(const int index)
+void FieldDefinitionsController::removeFieldComponent(const QString componentName)
 {
-    (*this->model)[0].fieldDefinitions.removeAt(index);
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.count(); ++j)
+        {
+            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+
+            if (fieldDefinition.component == componentName)
+            {
+                fieldDefinition.component = QString();
+            }
+        }
+    }
+}
+
+void FieldDefinitionsController::removeFieldDefinition(const QString& fieldId)
+{
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (FieldDefinitionList::iterator it = fieldDefinitionSet.fieldDefinitions.begin();
+             it != fieldDefinitionSet.fieldDefinitions.end();
+             ++it)
+        {
+            if (it->id == fieldId)
+            {
+                fieldDefinitionSet.fieldDefinitions.erase(it);
+                return;
+            }
+        }
+    }
+}
+
+void FieldDefinitionsController::renameFieldType(const QString oldTypeName, const QString newTypeName)
+{
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
+        {
+            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+
+            if (fieldDefinition.fieldType == oldTypeName)
+            {
+                fieldDefinition.fieldType = newTypeName;
+            }
+        }
+    }
 }
 
 void FieldDefinitionsController::setFieldDefinitionSets(FieldDefinitionSetList& model)
@@ -82,8 +144,15 @@ void FieldDefinitionsController::setFieldDefinitionSets(FieldDefinitionSetList& 
     this->model = &model;
 }
 
-void FieldDefinitionsController::updateFieldDefinition(const QString& oldId, const QString& newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& component, const QString& description)
+void FieldDefinitionsController::updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& component, const QString& description)
 {
+    // Check if already exists.
+    if (oldId != newId && this->hasFieldDefinition(newId))
+    {
+        const QString errorMessage = "Field with the specified id already exists: " + newId;
+        throw std::out_of_range(errorMessage.toStdString());
+    }
+
     FieldDefinition& fieldDefinition = *this->getFieldDefinitionById(oldId);
 
     bool needsSorting = fieldDefinition.displayName != displayName;

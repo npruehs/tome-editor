@@ -5,12 +5,13 @@
 #include <QString>
 
 #include "../Model/recordexporttemplatemap.h"
-#include "../../Fields//Controller/fielddefinitionscontroller.h"
-#include "../../Records/Controller/recordscontroller.h"
-#include "../../Types/Controller/typescontroller.h"
 
 namespace Tome
 {
+    class FieldDefinitionsController;
+    class RecordsController;
+    class TypesController;
+
     class ExportController
     {
         public:
@@ -34,6 +35,7 @@ namespace Tome
             static const QString PlaceholderListItem;
             static const QString PlaceholderRecordFields;
             static const QString PlaceholderRecordId;
+            static const QString PlaceholderRecordParentId;
             static const QString PlaceholderRecords;
 
             const FieldDefinitionsController& fieldDefinitionsController;

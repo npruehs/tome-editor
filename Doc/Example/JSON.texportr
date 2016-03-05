@@ -5,5 +5,6 @@ $RECORD_FIELDS$
       },
       "components": [
 $RECORD_COMPONENTS$
-      ]
+      ],
+      "parent_id": "$RECORD_PARENT$"
     }

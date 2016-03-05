@@ -4,10 +4,10 @@
 #include <QIODevice>
 #include <QSharedPointer>
 
-#include "../Model/project.h"
-
 namespace Tome
 {
+    class Project;
+
     class ProjectSerializer
     {
         public:
@@ -30,6 +30,7 @@ namespace Tome
         private:
             static const QString AttributeBaseType;
             static const QString AttributeExportedType;
+            static const QString AttributeExportAsTable;
             static const QString AttributeKey;
             static const QString AttributeTomeType;
             static const QString AttributeValue;

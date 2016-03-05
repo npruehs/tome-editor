@@ -2,6 +2,9 @@
 #include "ui_listitemwindow.h"
 
 #include "fieldvaluewidget.h"
+#include "../../Records/Controller/recordscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
+#include "../../Types/Model/customtype.h"
 
 
 using namespace Tome;
