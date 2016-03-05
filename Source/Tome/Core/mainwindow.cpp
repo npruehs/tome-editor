@@ -424,7 +424,8 @@ void MainWindow::on_actionRun_Integrity_Checks_triggered()
     // Run tasks.
     this->messages = this->controller->getTasksController().runAllTasks();
 
-    // Update view:
+    // Update view.
+    this->showWindow(this->errorListDockWidget);
     this->refreshErrorList();
 }
 
