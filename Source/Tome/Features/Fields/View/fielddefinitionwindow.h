@@ -51,6 +51,9 @@ class FieldDefinitionWindow : public QDialog
     public slots:
         void accept();
 
+    protected:
+        void showEvent(QShowEvent * event);
+
     private slots:
         void on_comboBoxType_currentIndexChanged(const QString &fieldType);
         void on_lineEditDisplayName_textEdited(const QString &displayName);

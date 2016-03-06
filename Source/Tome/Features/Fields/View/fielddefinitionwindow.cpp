@@ -51,6 +51,12 @@ void FieldDefinitionWindow::accept()
     }
 }
 
+void FieldDefinitionWindow::showEvent(QShowEvent* event)
+{
+    QDialog::showEvent(event);
+    this->ui->lineEditDisplayName->setFocus();
+}
+
 Component FieldDefinitionWindow::getFieldComponent() const
 {
     return this->ui->comboBoxComponent->currentText();

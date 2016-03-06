@@ -35,6 +35,9 @@ class RecordWindow : public QDialog
     public slots:
         void accept();
 
+    protected:
+        void showEvent(QShowEvent* event);
+
     private slots:
         void on_lineEditDisplayName_textEdited(const QString &arg1);
 

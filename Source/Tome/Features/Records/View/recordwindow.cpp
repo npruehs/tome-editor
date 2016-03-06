@@ -31,6 +31,12 @@ void RecordWindow::accept()
     }
 }
 
+void RecordWindow::showEvent(QShowEvent* event)
+{
+    QDialog::showEvent(event);
+    this->ui->lineEditDisplayName->setFocus();
+}
+
 QString RecordWindow::getRecordDisplayName() const
 {
     return this->ui->lineEditDisplayName->text();
