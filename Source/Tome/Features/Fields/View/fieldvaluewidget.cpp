@@ -36,7 +36,7 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
     this->addWidget(this->spinBox);
 
     this->doubleSpinBox = new QDoubleSpinBox();
-    this->doubleSpinBox->setMinimum(std::numeric_limits<float>::min());
+    this->doubleSpinBox->setMinimum(-std::numeric_limits<float>::max());
     this->doubleSpinBox->setMaximum(std::numeric_limits<float>::max());
     this->doubleSpinBox->setDecimals(3);
     this->addWidget(this->doubleSpinBox);

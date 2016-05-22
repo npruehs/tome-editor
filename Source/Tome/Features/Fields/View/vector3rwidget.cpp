@@ -16,19 +16,19 @@ Vector3RWidget::Vector3RWidget(QWidget* parent)
 
     // Add widgets.
     this->spinBoxX = new QDoubleSpinBox();
-    this->spinBoxX->setMinimum(std::numeric_limits<float>::min());
+    this->spinBoxX->setMinimum(-std::numeric_limits<float>::max());
     this->spinBoxX->setMaximum(std::numeric_limits<float>::max());
     this->spinBoxX->setDecimals(3);
     this->layout->addWidget(this->spinBoxX);
 
     this->spinBoxY = new QDoubleSpinBox();
-    this->spinBoxY->setMinimum(std::numeric_limits<float>::min());
+    this->spinBoxY->setMinimum(-std::numeric_limits<float>::max());
     this->spinBoxY->setMaximum(std::numeric_limits<float>::max());
     this->spinBoxY->setDecimals(3);
     this->layout->addWidget(this->spinBoxY);
 
     this->spinBoxZ = new QDoubleSpinBox();
-    this->spinBoxZ->setMinimum(std::numeric_limits<float>::min());
+    this->spinBoxZ->setMinimum(-std::numeric_limits<float>::max());
     this->spinBoxZ->setMaximum(std::numeric_limits<float>::max());
     this->spinBoxZ->setDecimals(3);
     this->layout->addWidget(this->spinBoxZ);
