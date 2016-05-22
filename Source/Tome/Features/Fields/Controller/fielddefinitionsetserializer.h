@@ -32,6 +32,7 @@ namespace Tome
             static const QString AttributeDescription;
             static const QString AttributeDisplayName;
             static const QString AttributeId;
+            static const QString AttributeKey;
             static const QString AttributeType;
             static const QString AttributeValue;
 

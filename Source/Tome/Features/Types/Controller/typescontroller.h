@@ -40,6 +40,9 @@ namespace Tome
             void updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration);
             void updateList(const QString& oldName, const QString& newName, const QString& itemType);
 
+            QString valueToString(const QVariant& value, const QString& typeName);
+
+
         private:
             CustomTypeList* model;
 

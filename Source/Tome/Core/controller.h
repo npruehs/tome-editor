@@ -45,6 +45,9 @@ namespace Tome
             static const QString RecordExportListTemplateExtension;
             static const QString RecordExportListItemTemplateExtension;
             static const QString RecordExportListItemDelimiterExtension;
+            static const QString RecordExportMapTemplateExtension;
+            static const QString RecordExportMapItemTemplateExtension;
+            static const QString RecordExportMapItemDelimiterExtension;
             static const QString RecordExportRecordFileTemplateExtension;
             static const QString RecordExportRecordTemplateExtension;
             static const QString RecordExportRecordDelimiterExtension;

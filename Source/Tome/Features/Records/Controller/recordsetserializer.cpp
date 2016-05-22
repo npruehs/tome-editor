@@ -11,6 +11,7 @@ using namespace Tome;
 const QString RecordSetSerializer::ElementDisplayName = "DisplayName";
 const QString RecordSetSerializer::ElementId = "Id";
 const QString RecordSetSerializer::ElementItem = "Item";
+const QString RecordSetSerializer::ElementKey = "Key";
 const QString RecordSetSerializer::ElementParentId = "Parent";
 const QString RecordSetSerializer::ElementRecord = "Record";
 const QString RecordSetSerializer::ElementRecords = "Records";
@@ -57,27 +58,42 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
                     {
                         QVariant value = it.value();
 
-                        if (value.canConvert<QVariantList>())
+                        // Write key.
+                        stream.writeStartElement(it.key());
+
+                        // Write value.
                         {
-                            QVariantList list = value.toList();
-
-                            stream.writeStartElement(it.key());
-
-                            for (int i = 0; i < list.size(); ++i)
+                            if (value.canConvert<QVariantList>())
                             {
-                                stream.writeStartElement(ElementItem);
-                                stream.writeAttribute(ElementValue, list[i].toString());
-                                stream.writeEndElement();
-                            }
+                                QVariantList list = value.toList();
 
-                            stream.writeEndElement();
+                                for (int i = 0; i < list.size(); ++i)
+                                {
+                                    stream.writeStartElement(ElementItem);
+                                    stream.writeAttribute(ElementValue, list[i].toString());
+                                    stream.writeEndElement();
+                                }
+                            }
+                            else if (value.canConvert<QVariantMap>())
+                            {
+                                QVariantMap map = value.toMap();
+
+                                for (QVariantMap::iterator it = map.begin(); it != map.end(); ++it)
+                                {
+                                    stream.writeStartElement(ElementItem);
+                                    stream.writeAttribute(ElementKey, it.key());
+                                    stream.writeAttribute(ElementValue, it.value().toString());
+                                    stream.writeEndElement();
+                                }
+                            }
+                            else
+                            {
+                                stream.writeAttribute(ElementValue, it.value().toString());
+                            }
                         }
-                        else
-                        {
-                            stream.writeStartElement(it.key());
-                            stream.writeAttribute(ElementValue, it.value().toString());
-                            stream.writeEndElement();
-                        }
+
+                        stream.writeEndElement();
+
                     }
                 }
                 // End record.
@@ -126,18 +142,36 @@ void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) c
                     {
                         reader.readStartElement(key);
                         {
-                            // Begin list.
-                            QVariantList list = QVariantList();
+                            // Begin list or map.
+                            QVariantList list;
+                            QVariantMap map;
 
                             while (reader.isAtElement(ElementItem))
                             {
-                                // Read list item.
-                                QVariant item = reader.readAttribute(ElementValue);
-                                list.append(item);
+                                // Read item.
+                                QString key = reader.readAttribute(ElementKey);
+                                QVariant value = reader.readAttribute(ElementValue);
+
+                                if (!key.isEmpty())
+                                {
+                                    map[key] = value;
+                                }
+                                else
+                                {
+                                    list.append(value);
+                                }
+
                                 reader.readEmptyElement(ElementItem);
                             }
 
-                            value = list;
+                            if (!map.isEmpty())
+                            {
+                                value = map;
+                            }
+                            else if (!list.isEmpty())
+                            {
+                                value = list;
+                            }
                         }
                         reader.readEndElement();
                     }

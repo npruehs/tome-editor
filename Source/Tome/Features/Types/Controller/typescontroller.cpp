@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "../Model/builtintype.h"
+#include "../Model/vector.h"
 #include "../../../Util/listutils.h"
 
 
@@ -46,6 +47,10 @@ const QStringList TypesController::getBuiltInTypes() const
     typeNames.push_back(BuiltInType::Real);
     typeNames.push_back(BuiltInType::Reference);
     typeNames.push_back(BuiltInType::String);
+    typeNames.push_back(BuiltInType::Vector2I);
+    typeNames.push_back(BuiltInType::Vector2R);
+    typeNames.push_back(BuiltInType::Vector3I);
+    typeNames.push_back(BuiltInType::Vector3R);
     return typeNames;
 }
 
@@ -153,6 +158,50 @@ void TypesController::updateList(const QString& oldName, const QString& newName,
     {
         std::sort(this->model->begin(), this->model->end(), customTypeLessThanName);
     }
+}
+
+QString TypesController::valueToString(const QVariant& value, const QString& typeName)
+{
+    // Vector2I.
+    if (typeName == BuiltInType::Vector2I || typeName == BuiltInType::Vector2R ||
+        typeName == BuiltInType::Vector3I || typeName == BuiltInType::Vector3R)
+    {
+        QVariantMap map = value.toMap();
+
+        QVariant x = map[BuiltInType::Vector::X];
+        QVariant y = map[BuiltInType::Vector::Y];
+
+        QString string = "(";
+        string += x.toString();
+        string += ", ";
+        string += y.toString();
+
+        if (typeName == BuiltInType::Vector3I || typeName == BuiltInType::Vector3R)
+        {
+            QVariant z = map[BuiltInType::Vector::Z];
+
+            string += ", ";
+            string += z.toString();
+        }
+
+        string += ")";
+
+        return string;
+    }
+
+    // Custom list.
+    if (this->isCustomType(typeName))
+    {
+        const CustomType& customType = this->getCustomType(typeName);
+
+        if (customType.isList())
+        {
+            return toString(value.toList());
+        }
+    }
+
+    // Default.
+    return value.toString();
 }
 
 CustomType* TypesController::getCustomTypeByName(const QString& name) const

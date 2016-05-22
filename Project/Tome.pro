@@ -74,7 +74,12 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Integrity/Controller/fieldtypedoesnotexisttask.cpp \
     ../Source/Tome/Features/Integrity/Controller/listitemtypedoesnotexisttask.cpp \
     ../Source/Tome/Features/Tasks/View/errorlistdockwidget.cpp \
-    ../Source/Tome/Features/Records/View/recordfieldstablewidget.cpp
+    ../Source/Tome/Features/Records/View/recordfieldstablewidget.cpp \
+    ../Source/Tome/Features/Fields/View/vector2iwidget.cpp \
+    ../Source/Tome/Features/Fields/View/vector3iwidget.cpp \
+    ../Source/Tome/Features/Fields/View/vector2rwidget.cpp \
+    ../Source/Tome/Features/Fields/View/vector3rwidget.cpp \
+    ../Source/Tome/Features/Integrity/Controller/listitemtypenotsupportedtask.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -137,7 +142,13 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Integrity/Controller/fieldtypedoesnotexisttask.h \
     ../Source/Tome/Features/Integrity/Controller/listitemtypedoesnotexisttask.h \
     ../Source/Tome/Features/Tasks/View/errorlistdockwidget.h \
-    ../Source/Tome/Features/Records/View/recordfieldstablewidget.h
+    ../Source/Tome/Features/Records/View/recordfieldstablewidget.h \
+    ../Source/Tome/Features/Types/Model/vector.h \
+    ../Source/Tome/Features/Fields/View/vector2iwidget.h \
+    ../Source/Tome/Features/Fields/View/vector3iwidget.h \
+    ../Source/Tome/Features/Fields/View/vector2rwidget.h \
+    ../Source/Tome/Features/Fields/View/vector3rwidget.h \
+    ../Source/Tome/Features/Integrity/Controller/listitemtypenotsupportedtask.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

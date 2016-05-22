@@ -4,6 +4,10 @@
 #include <stdexcept>
 
 #include "listwidget.h"
+#include "vector2iwidget.h"
+#include "vector2rwidget.h"
+#include "vector3iwidget.h"
+#include "vector3rwidget.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/customtype.h"
@@ -32,7 +36,7 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
     this->addWidget(this->spinBox);
 
     this->doubleSpinBox = new QDoubleSpinBox();
-    this->doubleSpinBox->setMinimum(std::numeric_limits<float>::min());
+    this->doubleSpinBox->setMinimum(-std::numeric_limits<float>::max());
     this->doubleSpinBox->setMaximum(std::numeric_limits<float>::max());
     this->doubleSpinBox->setDecimals(3);
     this->addWidget(this->doubleSpinBox);
@@ -49,6 +53,18 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
 
     this->listWidget = new ListWidget(this->recordsController, this->typesController);
     this->addWidget(this->listWidget);
+
+    this->vector2IWidget = new Vector2IWidget();
+    this->addWidget(this->vector2IWidget);
+
+    this->vector2RWidget = new Vector2RWidget();
+    this->addWidget(this->vector2RWidget);
+
+    this->vector3IWidget = new Vector3IWidget();
+    this->addWidget(this->vector3IWidget);
+
+    this->vector3RWidget = new Vector3RWidget();
+    this->addWidget(this->vector3RWidget);
 
     // Set layout.
     this->setLayout(this->layout);
@@ -99,6 +115,26 @@ QVariant FieldValueWidget::getFieldValue() const
     if (this->fieldType == BuiltInType::Reference)
     {
         return this->comboBox->currentText();
+    }
+
+    if (this->fieldType == BuiltInType::Vector2I)
+    {
+        return this->vector2IWidget->getValue();
+    }
+
+    if (this->fieldType == BuiltInType::Vector2R)
+    {
+        return this->vector2RWidget->getValue();
+    }
+
+    if (this->fieldType == BuiltInType::Vector3I)
+    {
+        return this->vector3IWidget->getValue();
+    }
+
+    if (this->fieldType == BuiltInType::Vector3R)
+    {
+        return this->vector3RWidget->getValue();
     }
 
     // Custom type - or is it?
@@ -178,6 +214,30 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
         return;
     }
 
+    if (this->fieldType == BuiltInType::Vector2I)
+    {
+        this->setCurrentWidget(this->vector2IWidget);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector2R)
+    {
+        this->setCurrentWidget(this->vector2RWidget);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector3I)
+    {
+        this->setCurrentWidget(this->vector3IWidget);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector3R)
+    {
+        this->setCurrentWidget(this->vector3RWidget);
+        return;
+    }
+
     // Custom type - or is it?
     if (!this->typesController.isCustomType(this->fieldType))
     {
@@ -248,6 +308,30 @@ void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
     if (this->fieldType == BuiltInType::Reference)
     {
         this->comboBox->setCurrentText(fieldValue.toString());
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector2I)
+    {
+        this->vector2IWidget->setValue(fieldValue);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector2R)
+    {
+        this->vector2RWidget->setValue(fieldValue);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector3I)
+    {
+        this->vector3IWidget->setValue(fieldValue);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector3R)
+    {
+        this->vector3RWidget->setValue(fieldValue);
         return;
     }
 

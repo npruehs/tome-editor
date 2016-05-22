@@ -13,6 +13,7 @@ const QString FieldDefinitionSetSerializer::AttributeDefaultValue = "DefaultValu
 const QString FieldDefinitionSetSerializer::AttributeDescription = "Description";
 const QString FieldDefinitionSetSerializer::AttributeDisplayName = "DisplayName";
 const QString FieldDefinitionSetSerializer::AttributeId = "Id";
+const QString FieldDefinitionSetSerializer::AttributeKey = "Key";
 const QString FieldDefinitionSetSerializer::AttributeType = "Type";
 const QString FieldDefinitionSetSerializer::AttributeValue = "Value";
 const QString FieldDefinitionSetSerializer::ElementField = "Field";
@@ -60,6 +61,18 @@ void FieldDefinitionSetSerializer::serialize(QIODevice& device, const FieldDefin
                     {
                         stream.writeStartElement(AttributeDefaultValue);
                         stream.writeAttribute(AttributeValue, list[i].toString());
+                        stream.writeEndElement();
+                    }
+                }
+                else if (fieldDefinition.defaultValue.canConvert<QVariantMap>())
+                {
+                    QVariantMap map = fieldDefinition.defaultValue.toMap();
+
+                    for (QVariantMap::iterator it = map.begin(); it != map.end(); ++it)
+                    {
+                        stream.writeStartElement(AttributeDefaultValue);
+                        stream.writeAttribute(AttributeKey, it.key());
+                        stream.writeAttribute(AttributeValue, it.value().toString());
                         stream.writeEndElement();
                     }
                 }
@@ -114,15 +127,30 @@ void FieldDefinitionSetSerializer::deserialize(QIODevice& device, FieldDefinitio
 
                 // Check for list default value.
                 QVariantList list;
+                QVariantMap map;
 
                 while (reader.isAtElement(AttributeDefaultValue))
                 {
-                    QVariant item = reader.readAttribute(AttributeValue);
-                    list.append(item);
+                    QString key = reader.readAttribute(AttributeKey);
+                    QVariant value = reader.readAttribute(AttributeValue);
+
+                    if (!key.isEmpty())
+                    {
+                        map[key] = value;
+                    }
+                    else
+                    {
+                        list.append(value);
+                    }
+
                     reader.readEmptyElement(AttributeDefaultValue);
                 }
 
-                if (!list.isEmpty())
+                if (!map.isEmpty())
+                {
+                    fieldDefinition.defaultValue = map;
+                }
+                else if (!list.isEmpty())
                 {
                     fieldDefinition.defaultValue = list;
                 }
