@@ -30,6 +30,12 @@ void EnumerationMemberWindow::accept()
     }
 }
 
+void EnumerationMemberWindow::showEvent(QShowEvent* event)
+{
+    QDialog::showEvent(event);
+    this->ui->lineEdit->setFocus();
+}
+
 bool EnumerationMemberWindow::validate()
 {
     // Name must not be empty.
