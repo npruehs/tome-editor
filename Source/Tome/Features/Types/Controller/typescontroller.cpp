@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "../Model/builtintype.h"
+#include "../Model/vector.h"
 #include "../../../Util/listutils.h"
 
 
@@ -46,6 +47,7 @@ const QStringList TypesController::getBuiltInTypes() const
     typeNames.push_back(BuiltInType::Real);
     typeNames.push_back(BuiltInType::Reference);
     typeNames.push_back(BuiltInType::String);
+    typeNames.push_back(BuiltInType::Vector2I);
     return typeNames;
 }
 
@@ -157,6 +159,17 @@ void TypesController::updateList(const QString& oldName, const QString& newName,
 
 QString TypesController::valueToString(const QVariant& value, const QString& typeName)
 {
+    // Vector2I.
+    if (typeName == BuiltInType::Vector2I)
+    {
+        QVariantMap map = value.toMap();
+
+        QVariant x = map[BuiltInType::Vector::X];
+        QVariant y = map[BuiltInType::Vector::Y];
+
+        return "(" + x.toString() + ", " + y.toString() + ")";
+    }
+
     // Custom list.
     if (this->isCustomType(typeName))
     {

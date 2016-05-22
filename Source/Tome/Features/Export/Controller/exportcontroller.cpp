@@ -10,12 +10,15 @@
 #include "../../Fields/Model/fielddefinition.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
+#include "../../Types/Model/builtintype.h"
+#include "../../Types/Model/vector.h"
 
 using namespace Tome;
 
 const QString ExportController::PlaceholderComponents = "$RECORD_COMPONENTS$";
 const QString ExportController::PlaceholderComponentName = "$COMPONENT_NAME$";
 const QString ExportController::PlaceholderFieldId = "$FIELD_ID$";
+const QString ExportController::PlaceholderFieldKey = "$FIELD_KEY$";
 const QString ExportController::PlaceholderFieldType = "$FIELD_TYPE$";
 const QString ExportController::PlaceholderFieldValue = "$FIELD_VALUE$";
 const QString ExportController::PlaceholderListItem = "$LIST_ITEM$";
@@ -151,6 +154,34 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                             }
                         }
                     }
+                }
+                // Check if vector.
+                else if (fieldType == BuiltInType::Vector2I)
+                {
+                    // Use other template.
+                    fieldValueString = exportTemplate.mapTemplate;
+                    fieldValueText = QString();
+
+                    // Build vector string.
+                    QVariantMap vector = fieldValue.toMap();
+
+                    QVariant x = vector[BuiltInType::Vector::X];
+                    QVariant y = vector[BuiltInType::Vector::Y];
+
+                    // X.
+                    QString vectorComponent = exportTemplate.mapItemTemplate;
+                    vectorComponent = vectorComponent.replace(PlaceholderFieldId, fieldId);
+                    vectorComponent = vectorComponent.replace(PlaceholderFieldKey, "X");
+                    vectorComponent = vectorComponent.replace(PlaceholderFieldValue, x.toString());
+                    fieldValueText.append(vectorComponent);
+                    fieldValueText.append(exportTemplate.mapItemDelimiter);
+
+                    // Y.
+                    vectorComponent = exportTemplate.mapItemTemplate;
+                    vectorComponent = vectorComponent.replace(PlaceholderFieldId, fieldId);
+                    vectorComponent = vectorComponent.replace(PlaceholderFieldKey, "Y");
+                    vectorComponent = vectorComponent.replace(PlaceholderFieldValue, y.toString());
+                    fieldValueText.append(vectorComponent);
                 }
 
                 fieldValueString = fieldValueString.replace(PlaceholderFieldId, fieldId);

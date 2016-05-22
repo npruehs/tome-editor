@@ -20,6 +20,9 @@ namespace Tome
             QString listTemplate;
             QString listItemTemplate;
             QString listItemDelimiter;
+            QString mapTemplate;
+            QString mapItemTemplate;
+            QString mapItemDelimiter;
             QString name;
             QString recordDelimiter;
             QString recordFileTemplate;

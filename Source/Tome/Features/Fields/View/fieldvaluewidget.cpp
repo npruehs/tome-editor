@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include "listwidget.h"
+#include "vectorwidget.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/customtype.h"
@@ -49,6 +50,9 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
 
     this->listWidget = new ListWidget(this->recordsController, this->typesController);
     this->addWidget(this->listWidget);
+
+    this->vectorWidget = new VectorWidget();
+    this->addWidget(this->vectorWidget);
 
     // Set layout.
     this->setLayout(this->layout);
@@ -99,6 +103,11 @@ QVariant FieldValueWidget::getFieldValue() const
     if (this->fieldType == BuiltInType::Reference)
     {
         return this->comboBox->currentText();
+    }
+
+    if (this->fieldType == BuiltInType::Vector2I)
+    {
+        return this->vectorWidget->getValue();
     }
 
     // Custom type - or is it?
@@ -178,6 +187,12 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
         return;
     }
 
+    if (this->fieldType == BuiltInType::Vector2I)
+    {
+        this->setCurrentWidget(this->vectorWidget);
+        return;
+    }
+
     // Custom type - or is it?
     if (!this->typesController.isCustomType(this->fieldType))
     {
@@ -248,6 +263,12 @@ void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
     if (this->fieldType == BuiltInType::Reference)
     {
         this->comboBox->setCurrentText(fieldValue.toString());
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector2I)
+    {
+        this->vectorWidget->setValue(fieldValue);
         return;
     }
 

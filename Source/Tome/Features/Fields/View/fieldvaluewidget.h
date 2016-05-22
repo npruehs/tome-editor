@@ -18,6 +18,7 @@ namespace Tome
     class ListWidget;
     class RecordsController;
     class TypesController;
+    class VectorWidget;
 
     /**
      * @brief Changes its appearance depending on the specified type.
@@ -48,9 +49,10 @@ namespace Tome
             QDoubleSpinBox* doubleSpinBox;
             QVBoxLayout* layout;
             QLineEdit* lineEdit;
+            ListWidget* listWidget;
             QComboBox* comboBox;
             QSpinBox* spinBox;
-            ListWidget* listWidget;
+            VectorWidget* vectorWidget;
 
             RecordsController& recordsController;
             TypesController& typesController;

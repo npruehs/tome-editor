@@ -33,6 +33,9 @@ const QString Controller::RecordExportComponentDelimiterExtension = ".texportcd"
 const QString Controller::RecordExportListTemplateExtension = ".texportl";
 const QString Controller::RecordExportListItemTemplateExtension = ".texportli";
 const QString Controller::RecordExportListItemDelimiterExtension = ".texportld";
+const QString Controller::RecordExportMapTemplateExtension = ".texportm";
+const QString Controller::RecordExportMapItemTemplateExtension = ".texportmi";
+const QString Controller::RecordExportMapItemDelimiterExtension = ".texportmd";
 const QString Controller::RecordExportRecordFileTemplateExtension = ".texportf";
 const QString Controller::RecordExportRecordTemplateExtension = ".texportr";
 const QString Controller::RecordExportRecordDelimiterExtension = ".texportrd";
@@ -258,6 +261,12 @@ void Controller::openProject(const QString& projectFileName)
                         this->readFile(projectPath, exportTemplate.name + RecordExportListItemTemplateExtension);
                 exportTemplate.listItemDelimiter =
                         this->readFile(projectPath, exportTemplate.name + RecordExportListItemDelimiterExtension);
+                exportTemplate.mapTemplate =
+                        this->readFile(projectPath, exportTemplate.name + RecordExportMapTemplateExtension);
+                exportTemplate.mapItemTemplate =
+                        this->readFile(projectPath, exportTemplate.name + RecordExportMapItemTemplateExtension);
+                exportTemplate.mapItemDelimiter =
+                        this->readFile(projectPath, exportTemplate.name + RecordExportMapItemDelimiterExtension);
             }
             catch (const std::runtime_error& e)
             {
