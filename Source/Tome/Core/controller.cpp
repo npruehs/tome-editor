@@ -13,6 +13,7 @@
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
 #include "../Features/Integrity/Controller/fieldtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypedoesnotexisttask.h"
+#include "../Features/Integrity/Controller/listitemtypenotsupportedtask.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Records/Controller/recordscontroller.h"
@@ -55,6 +56,7 @@ Controller::Controller() :
     // Setup tasks.
     this->tasksController->addTask(new FieldTypeDoesNotExistTask());
     this->tasksController->addTask(new ListItemTypeDoesNotExistTask());
+    this->tasksController->addTask(new ListItemTypeNotSupportedTask());
 }
 
 Controller::~Controller()
