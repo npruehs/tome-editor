@@ -49,17 +49,7 @@ void RecordFieldsTableWidget::setRecord(int i, const QString recordId)
             this->fieldDefinitionsController.getFieldDefinition(key);
 
     QString keyString = field.displayName;
-    QString valueString = value.toString();
-
-    if (this->typesController.isCustomType(field.fieldType))
-    {
-        const CustomType& customType = this->typesController.getCustomType(field.fieldType);
-
-        if (customType.isList())
-        {
-            valueString = toString(value.toList());
-        }
-    }
+    QString valueString = this->typesController.valueToString(value, field.fieldType);
 
     // Show field and value.
     this->setItem(i, 0, new QTableWidgetItem(keyString));

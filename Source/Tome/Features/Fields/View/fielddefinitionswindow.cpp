@@ -280,17 +280,7 @@ void FieldDefinitionsWindow::updateRow(const int i)
     const FieldDefinition& fieldDefinition = fieldDefinitions[i];
 
     // Convert default value to string.
-    QString defaultValueString = fieldDefinition.defaultValue.toString();
-
-    if (this->typesController.isCustomType(fieldDefinition.fieldType))
-    {
-        const CustomType& customType = this->typesController.getCustomType(fieldDefinition.fieldType);
-
-        if (customType.isList())
-        {
-            defaultValueString = toString(fieldDefinition.defaultValue.toList());
-        }
-    }
+    QString defaultValueString = this->typesController.valueToString(fieldDefinition.defaultValue, fieldDefinition.fieldType);
 
     this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(fieldDefinition.id));
     this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(fieldDefinition.displayName));

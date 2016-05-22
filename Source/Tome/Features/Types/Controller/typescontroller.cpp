@@ -155,6 +155,23 @@ void TypesController::updateList(const QString& oldName, const QString& newName,
     }
 }
 
+QString TypesController::valueToString(const QVariant& value, const QString& typeName)
+{
+    // Custom list.
+    if (this->isCustomType(typeName))
+    {
+        const CustomType& customType = this->getCustomType(typeName);
+
+        if (customType.isList())
+        {
+            return toString(value.toList());
+        }
+    }
+
+    // Default.
+    return value.toString();
+}
+
 CustomType* TypesController::getCustomTypeByName(const QString& name) const
 {
     for (int i = 0; i < this->model->size(); ++i)
