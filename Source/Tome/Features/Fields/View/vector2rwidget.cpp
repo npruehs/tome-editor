@@ -1,4 +1,4 @@
-#include "vectorwidget.h"
+#include "vector2rwidget.h"
 
 #include <limits>
 
@@ -8,21 +8,23 @@
 using namespace Tome;
 
 
-VectorWidget::VectorWidget(QWidget* parent)
+Vector2RWidget::Vector2RWidget(QWidget* parent)
     : QWidget(parent)
 {
     // Create layout.
     this->layout = new QHBoxLayout();
 
     // Add widgets.
-    this->spinBoxX = new QSpinBox();
-    this->spinBoxX->setMinimum(std::numeric_limits<int>::min());
-    this->spinBoxX->setMaximum(std::numeric_limits<int>::max());
+    this->spinBoxX = new QDoubleSpinBox();
+    this->spinBoxX->setMinimum(std::numeric_limits<float>::min());
+    this->spinBoxX->setMaximum(std::numeric_limits<float>::max());
+    this->spinBoxX->setDecimals(3);
     this->layout->addWidget(this->spinBoxX);
 
-    this->spinBoxY = new QSpinBox();
-    this->spinBoxY->setMinimum(std::numeric_limits<int>::min());
-    this->spinBoxY->setMaximum(std::numeric_limits<int>::max());
+    this->spinBoxY = new QDoubleSpinBox();
+    this->spinBoxY->setMinimum(std::numeric_limits<float>::min());
+    this->spinBoxY->setMaximum(std::numeric_limits<float>::max());
+    this->spinBoxY->setDecimals(3);
     this->layout->addWidget(this->spinBoxY);
 
     // Set layout.
@@ -30,12 +32,12 @@ VectorWidget::VectorWidget(QWidget* parent)
     this->layout->setContentsMargins(0, 0, 0, 0);
 }
 
-VectorWidget::~VectorWidget()
+Vector2RWidget::~Vector2RWidget()
 {
     deleteLayout(this->layout);
 }
 
-QVariant VectorWidget::getValue() const
+QVariant Vector2RWidget::getValue() const
 {
     QVariantMap map = QVariantMap();
     map[BuiltInType::Vector::X] = this->spinBoxX->value();
@@ -43,13 +45,13 @@ QVariant VectorWidget::getValue() const
     return map;
 }
 
-void VectorWidget::setValue(const QVariant& v)
+void Vector2RWidget::setValue(const QVariant& v)
 {
     QVariantMap map = v.toMap();
 
     QVariant x = map[BuiltInType::Vector::X];
     QVariant y = map[BuiltInType::Vector::Y];
 
-    this->spinBoxX->setValue(x.toInt());
-    this->spinBoxY->setValue(y.toInt());
+    this->spinBoxX->setValue(x.toDouble());
+    this->spinBoxY->setValue(y.toDouble());
 }

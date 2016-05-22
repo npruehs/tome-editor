@@ -156,7 +156,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                     }
                 }
                 // Check if vector.
-                else if (fieldType == BuiltInType::Vector2I)
+                else if (fieldType == BuiltInType::Vector2I || fieldType == BuiltInType::Vector2R ||
+                         fieldType == BuiltInType::Vector3I || fieldType == BuiltInType::Vector3R)
                 {
                     // Use other template.
                     fieldValueString = exportTemplate.mapTemplate;
@@ -182,6 +183,20 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                     vectorComponent = vectorComponent.replace(PlaceholderFieldKey, "Y");
                     vectorComponent = vectorComponent.replace(PlaceholderFieldValue, y.toString());
                     fieldValueText.append(vectorComponent);
+
+                    if (fieldType == BuiltInType::Vector3I || fieldType == BuiltInType::Vector3R)
+                    {
+                        QVariant z = vector[BuiltInType::Vector::Z];
+
+                        // Z.
+                        fieldValueText.append(exportTemplate.mapItemDelimiter);
+
+                        vectorComponent = exportTemplate.mapItemTemplate;
+                        vectorComponent = vectorComponent.replace(PlaceholderFieldId, fieldId);
+                        vectorComponent = vectorComponent.replace(PlaceholderFieldKey, "Z");
+                        vectorComponent = vectorComponent.replace(PlaceholderFieldValue, z.toString());
+                        fieldValueText.append(vectorComponent);
+                    }
                 }
 
                 fieldValueString = fieldValueString.replace(PlaceholderFieldId, fieldId);

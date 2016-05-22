@@ -48,6 +48,9 @@ const QStringList TypesController::getBuiltInTypes() const
     typeNames.push_back(BuiltInType::Reference);
     typeNames.push_back(BuiltInType::String);
     typeNames.push_back(BuiltInType::Vector2I);
+    typeNames.push_back(BuiltInType::Vector2R);
+    typeNames.push_back(BuiltInType::Vector3I);
+    typeNames.push_back(BuiltInType::Vector3R);
     return typeNames;
 }
 
@@ -160,14 +163,30 @@ void TypesController::updateList(const QString& oldName, const QString& newName,
 QString TypesController::valueToString(const QVariant& value, const QString& typeName)
 {
     // Vector2I.
-    if (typeName == BuiltInType::Vector2I)
+    if (typeName == BuiltInType::Vector2I || typeName == BuiltInType::Vector2R ||
+        typeName == BuiltInType::Vector3I || typeName == BuiltInType::Vector3R)
     {
         QVariantMap map = value.toMap();
 
         QVariant x = map[BuiltInType::Vector::X];
         QVariant y = map[BuiltInType::Vector::Y];
 
-        return "(" + x.toString() + ", " + y.toString() + ")";
+        QString string = "(";
+        string += x.toString();
+        string += ", ";
+        string += y.toString();
+
+        if (typeName == BuiltInType::Vector3I || typeName == BuiltInType::Vector3R)
+        {
+            QVariant z = map[BuiltInType::Vector::Z];
+
+            string += ", ";
+            string += z.toString();
+        }
+
+        string += ")";
+
+        return string;
     }
 
     // Custom list.

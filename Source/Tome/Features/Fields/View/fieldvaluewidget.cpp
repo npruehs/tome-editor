@@ -4,7 +4,10 @@
 #include <stdexcept>
 
 #include "listwidget.h"
-#include "vectorwidget.h"
+#include "vector2iwidget.h"
+#include "vector2rwidget.h"
+#include "vector3iwidget.h"
+#include "vector3rwidget.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/customtype.h"
@@ -51,8 +54,17 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
     this->listWidget = new ListWidget(this->recordsController, this->typesController);
     this->addWidget(this->listWidget);
 
-    this->vectorWidget = new VectorWidget();
-    this->addWidget(this->vectorWidget);
+    this->vector2IWidget = new Vector2IWidget();
+    this->addWidget(this->vector2IWidget);
+
+    this->vector2RWidget = new Vector2RWidget();
+    this->addWidget(this->vector2RWidget);
+
+    this->vector3IWidget = new Vector3IWidget();
+    this->addWidget(this->vector3IWidget);
+
+    this->vector3RWidget = new Vector3RWidget();
+    this->addWidget(this->vector3RWidget);
 
     // Set layout.
     this->setLayout(this->layout);
@@ -107,7 +119,22 @@ QVariant FieldValueWidget::getFieldValue() const
 
     if (this->fieldType == BuiltInType::Vector2I)
     {
-        return this->vectorWidget->getValue();
+        return this->vector2IWidget->getValue();
+    }
+
+    if (this->fieldType == BuiltInType::Vector2R)
+    {
+        return this->vector2RWidget->getValue();
+    }
+
+    if (this->fieldType == BuiltInType::Vector3I)
+    {
+        return this->vector3IWidget->getValue();
+    }
+
+    if (this->fieldType == BuiltInType::Vector3R)
+    {
+        return this->vector3RWidget->getValue();
     }
 
     // Custom type - or is it?
@@ -189,7 +216,25 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
 
     if (this->fieldType == BuiltInType::Vector2I)
     {
-        this->setCurrentWidget(this->vectorWidget);
+        this->setCurrentWidget(this->vector2IWidget);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector2R)
+    {
+        this->setCurrentWidget(this->vector2RWidget);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector3I)
+    {
+        this->setCurrentWidget(this->vector3IWidget);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector3R)
+    {
+        this->setCurrentWidget(this->vector3RWidget);
         return;
     }
 
@@ -268,7 +313,25 @@ void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
 
     if (this->fieldType == BuiltInType::Vector2I)
     {
-        this->vectorWidget->setValue(fieldValue);
+        this->vector2IWidget->setValue(fieldValue);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector2R)
+    {
+        this->vector2RWidget->setValue(fieldValue);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector3I)
+    {
+        this->vector3IWidget->setValue(fieldValue);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector3R)
+    {
+        this->vector3RWidget->setValue(fieldValue);
         return;
     }
 

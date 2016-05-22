@@ -1,5 +1,5 @@
-#ifndef VECTORWIDGET_H
-#define VECTORWIDGET_H
+#ifndef VECTOR3IWIDGET_H
+#define VECTOR3IWIDGET_H
 
 #include <QHBoxLayout>
 #include <QSpinBox>
@@ -9,13 +9,13 @@
 
 namespace Tome
 {
-    class VectorWidget : public QWidget
+    class Vector3IWidget : public QWidget
     {
             Q_OBJECT
 
         public:
-            explicit VectorWidget(QWidget* parent = 0);
-            ~VectorWidget();
+            explicit Vector3IWidget(QWidget* parent = 0);
+            ~Vector3IWidget();
 
             QVariant getValue() const;
             void setValue(const QVariant& v);
@@ -25,7 +25,8 @@ namespace Tome
 
             QSpinBox* spinBoxX;
             QSpinBox* spinBoxY;
+            QSpinBox* spinBoxZ;
     };
 }
 
-#endif // VECTORWIDGET_H
+#endif // VECTOR3IWIDGET_H

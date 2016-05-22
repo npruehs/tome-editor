@@ -16,6 +16,9 @@ namespace Tome
         const QString Reference = "Reference";
         const QString String = "String";
         const QString Vector2I = "Vector (2D Integer)";
+        const QString Vector2R = "Vector (2D Real)";
+        const QString Vector3I = "Vector (3D Integer)";
+        const QString Vector3R = "Vector (3D Real)";
     }
 }
 
