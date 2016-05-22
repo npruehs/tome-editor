@@ -52,6 +52,12 @@ void EnumerationWindow::setEnumerationMembers(const QStringList enumeration)
     this->ui->listWidget->insertItems(0, enumeration);
 }
 
+void EnumerationWindow::showEvent(QShowEvent* event)
+{
+    QDialog::showEvent(event);
+    this->ui->lineEdit->setFocus();
+}
+
 void EnumerationWindow::on_actionNew_Member_triggered()
 {
     // Show window.

@@ -56,6 +56,9 @@ void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
         this->enumerationWindow = new EnumerationWindow(this);
     }
 
+    this->enumerationWindow->setEnumerationName("");
+    this->enumerationWindow->setEnumerationMembers(QStringList());
+
     int result = this->enumerationWindow->exec();
 
     if (result == QDialog::Accepted)
