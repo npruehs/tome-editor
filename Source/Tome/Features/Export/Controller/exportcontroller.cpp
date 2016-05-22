@@ -160,7 +160,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 fieldValuesString.append(fieldValueString);
 
                 // Add delimiter, if necessary.
-                if (itFields != record.fieldValues.end() - 1)
+                if (itFields != fieldValues.end() - 1)
                 {
                     fieldValuesString.append(exportTemplate.fieldValueDelimiter);
                 }
