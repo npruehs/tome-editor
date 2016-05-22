@@ -32,7 +32,7 @@ FieldDefinitionWindow::FieldDefinitionWindow(
     // Add widget for specifying the default field value.
     this->fieldValueWidget = new FieldValueWidget(this->recordsController, this->typesController, this);
     QFormLayout* layout = static_cast<QFormLayout*>(this->layout());
-    layout->insertRow(2, tr("Default Value:"), this->fieldValueWidget);
+    layout->insertRow(3, tr("Default Value:"), this->fieldValueWidget);
 }
 
 FieldDefinitionWindow::~FieldDefinitionWindow()
