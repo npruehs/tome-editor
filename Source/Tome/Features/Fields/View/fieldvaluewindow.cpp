@@ -1,6 +1,8 @@
 #include "fieldvaluewindow.h"
 #include "ui_fieldvaluewindow.h"
 
+#include <QPushButton>
+
 #include "fieldvaluewidget.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
@@ -59,7 +61,14 @@ void FieldValueWindow::setFieldType(const QString& fieldType) const
 void FieldValueWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
+
+    // Enable user to input data immediately.
     this->fieldValueWidget->setFocus();
+
+    // Set OK as default button (instead of Cancel).
+    QPushButton* okButton = this->ui->buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setAutoDefault(true);
+    okButton->setDefault(true);
 }
 
 void FieldValueWindow::on_toolButtonRevert_clicked()
