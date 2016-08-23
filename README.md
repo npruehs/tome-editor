@@ -12,6 +12,9 @@ The tool is pretty self-explanatory. However, to give you a headstart, feel free
 
 * Creating data field definitions including constraints
 * Editing record values conveniently with tooltips and validation
+* Creating custom data types such as enumerations and lists
+* Combining fields into components
+* Hierarchical record structure with inherited fields
 * Arbitrary output data formats through templates
 * Splitting data up into multiple files for improved collaboration
 
