@@ -61,7 +61,7 @@ You might also take a look at our [development wiki](https://github.com/npruehs/
 
 ### Step 4: Open a pull request
 
-Finally, [open a pull request](https://help.github.com/articles/using-pull-requests/) so we can review your changes together, and finally integrate it into the next release.
+Finally, [open a pull request](https://help.github.com/articles/creating-a-pull-request/) so we can review your changes together, and finally integrate it into the next release.
 
 ## License
 
