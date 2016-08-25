@@ -8,6 +8,7 @@ using namespace Tome;
 
 const QString RecordWindow::PropertyFieldComponent = "FieldComponent";
 const QString RecordWindow::PropertyFieldId = "FieldId";
+const QString RecordWindow::PropertyComponentId = "ComponentId";
 
 
 RecordWindow::RecordWindow(QWidget *parent) :
@@ -150,10 +151,14 @@ void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions)
     }
 }
 
-void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, const RecordFieldValueMap& ownFieldValues, const RecordFieldValueMap& inheritedFieldValues)
+void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, const ComponentList &componentDefinitions, const RecordFieldValueMap& ownFieldValues, const RecordFieldValueMap& inheritedFieldValues) // [pg-0003]
 {
     // Clear current fields.
     this->clearRecordFields();
+
+    // [pg-0003] Add all components.
+    setRecordComponents( componentDefinitions );
+
 
     // Add all passed fields.
     for (int i = 0; i < fieldDefinitions.size(); ++i)
@@ -174,6 +179,26 @@ void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, 
 
         // Add to view.
         this->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldState);
+
+        // [pg-0003] Modify state of component checkboxes based on fieldState
+        for (int i = 0; i < this->ui->scrollAreaComponentsContents->layout()->count(); ++i)
+        {
+            QCheckBox* component_cb = static_cast<QCheckBox*>(this->ui->scrollAreaComponentsContents->layout()->itemAt(i)->widget());
+            QString component_id = component_cb->property(PropertyComponentId.toStdString().c_str()).toString();
+            if (fieldDefinition.component == component_id)
+            {
+                if ( RecordFieldState::InheritedEnabled == fieldState )
+                {
+                    component_cb->setCheckState( Qt::CheckState::Checked );
+                    component_cb->setEnabled( false );
+                }
+                else
+                {
+                    component_cb->setCheckState( RecordFieldState::Enabled == fieldState ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
+                }
+                break;
+            }
+        }
     }
 }
 
@@ -191,6 +216,18 @@ void RecordWindow::onCheckBoxStateChanged(int state)
     if (fieldComponent.isEmpty())
     {
         return;
+    }
+
+    // [pg-0003] Apply state to component checkbox of fieldComponent type.
+    for (int i = 0; i < this->ui->scrollAreaComponentsContents->layout()->count(); ++i)
+    {
+        QCheckBox* component_cb = static_cast<QCheckBox*>(this->ui->scrollAreaComponentsContents->layout()->itemAt(i)->widget());
+        QString component_id = component_cb->property(PropertyComponentId.toStdString().c_str()).toString();
+        if (fieldComponent == component_id)
+        {
+            component_cb->setCheckState((Qt::CheckState)state);
+            break;
+        }
     }
 
     // Apply state to all checkboxes of same field component.
@@ -245,4 +282,78 @@ bool RecordWindow::validate()
     }
 
     return true;
+}
+
+// [pg-0003]
+void RecordWindow::clearRecordComponents()
+{
+    while (!this->ui->scrollAreaComponentsContents->layout()->isEmpty())
+    {
+        QLayoutItem* item = this->ui->scrollAreaComponentsContents->layout()->takeAt(0);
+        delete item->widget();
+        delete item;
+    }
+}
+
+// [pg-0003]
+void RecordWindow::setRecordComponents(const Tome::ComponentList& components)
+{
+    // Clear current fields.
+    this->clearRecordComponents();
+
+    // Add all passed fields.
+    for (int i = 0; i < components.size(); ++i)
+    {
+        const Component& component = components.at(i);
+        this->setRecordComponent(component, RecordFieldState::Disabled);
+    }
+}
+
+// [pg-0003]
+void RecordWindow::setRecordComponent(const QString& componentId, const Tome::RecordFieldState::RecordFieldState state)
+{
+    // Build check box text.
+    QString checkBoxText = componentId;
+
+    // Create checkbox.
+    QCheckBox* checkBox = new QCheckBox(checkBoxText);
+    checkBox->setProperty(PropertyComponentId.toStdString().c_str(), componentId);
+
+    // Setup checkbox.
+    if (state == RecordFieldState::Enabled || state == RecordFieldState::InheritedEnabled)
+    {
+        checkBox->setChecked(true);
+    }
+
+    if (state == RecordFieldState::InheritedEnabled)
+    {
+        checkBox->setEnabled(false);
+        checkBox->setToolTip(tr("This field is inherited."));
+    }
+
+    // Connect to signal.
+    connect(checkBox, SIGNAL(stateChanged(int)), this, SLOT(onComponentCheckBoxStateChanged(int)) );
+
+    // Add to layout.
+    this->ui->scrollAreaComponentsContents->layout()->addWidget(checkBox);
+}
+
+// [pg-0003]
+void RecordWindow::onComponentCheckBoxStateChanged(int state)
+{
+    // Get field id.
+    QObject* checkbox = sender();
+    QString component_id = checkbox->property(PropertyComponentId.toStdString().c_str()).toString();
+
+    // Apply state to all checkboxes of same field component.
+    for (int i = 0; i < this->ui->scrollAreaFieldsContents->layout()->count(); ++i)
+    {
+        QCheckBox* otherCheckBox = static_cast<QCheckBox*>(this->ui->scrollAreaFieldsContents->layout()->itemAt(i)->widget());
+        QString otherFieldComponent = otherCheckBox->property(PropertyFieldComponent.toStdString().c_str()).toString();
+
+        if (otherFieldComponent == component_id)
+        {
+            otherCheckBox->setCheckState((Qt::CheckState)state);
+        }
+    }
 }

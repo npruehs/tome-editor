@@ -3,6 +3,7 @@
 
 #include "../Model/customtypelist.h"
 
+#include <qvariant.h>
 
 namespace Tome
 {
