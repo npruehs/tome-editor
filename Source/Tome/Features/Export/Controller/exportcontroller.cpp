@@ -76,6 +76,12 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
         {
             const Record& record = recordSet.records[j];
 
+            // [pg-0001]
+            if (record.fieldValues.empty())
+            {
+                continue;
+            }
+
             // Build field values string.
             QString fieldValuesString;
 

@@ -40,6 +40,7 @@ namespace Tome
             static const QString ElementFileExtension;
             static const QString ElementMapping;
             static const QString ElementName;
+            static const QString ElementLocale; // [pg-0000]
             static const QString ElementPath;
             static const QString ElementRecords;
             static const QString ElementRecordExportTemplates;
