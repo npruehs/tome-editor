@@ -108,17 +108,8 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
                         this->fieldDefinitionWindow->getFieldDescription());
 
             // Update view.
-            int index = this->fieldDefinitionsController.indexOf(fieldDefinition);
-
-            this->ui->tableWidget->insertRow(index);
-            this->updateFieldDefinition(
-                        fieldDefinition.id,
-                        fieldDefinition.id,
-                        fieldDefinition.displayName,
-                        fieldDefinition.fieldType,
-                        fieldDefinition.defaultValue,
-                        fieldDefinition.description,
-                        fieldDefinition.component);
+            this->ui->tableWidget->insertRow(0);
+            this->updateRow(0, fieldDefinition);
         }
         catch (std::out_of_range& e)
         {
@@ -196,8 +187,7 @@ void FieldDefinitionsWindow::on_actionDelete_Field_triggered()
         return;
     }
 
-    const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
-    int index = this->fieldDefinitionsController.indexOf(field);
+    const int index = this->getFieldRow(fieldId);
 
     // Update model.
     this->fieldDefinitionsController.removeFieldDefinition(fieldId);
@@ -221,6 +211,19 @@ void FieldDefinitionsWindow::tableWidgetSelectionChanged(const QItemSelection& s
     Q_UNUSED(selected);
     Q_UNUSED(deselected);
     this->updateMenus();
+}
+
+int FieldDefinitionsWindow::getFieldRow(const QString& fieldId) const
+{
+    for (int i = 0; i < this->ui->tableWidget->rowCount(); ++i)
+    {
+        if (this->ui->tableWidget->item(i, 0)->data(Qt::DisplayRole) == fieldId)
+        {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 QString FieldDefinitionsWindow::getSelectedFieldId() const
@@ -253,14 +256,8 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QS
         this->recordsController.renameRecordField(oldId, newId);
 
         // Update view.
-        for (int i = 0; i < this->ui->tableWidget->rowCount(); ++i)
-        {
-            if (this->ui->tableWidget->item(i, 0)->data(Qt::DisplayRole) == oldId)
-            {
-                this->updateRow(i, fieldDefinition);
-                break;
-            }
-        }
+        const int i = this->getFieldRow(oldId);
+        this->updateRow(i, fieldDefinition);
     }
     catch (std::out_of_range& e)
     {

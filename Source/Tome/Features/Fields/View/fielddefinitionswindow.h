@@ -57,6 +57,7 @@ class FieldDefinitionsWindow : public QMainWindow
 
         FieldDefinitionWindow* fieldDefinitionWindow;
 
+        int getFieldRow(const QString& fieldId) const;
         QString getSelectedFieldId() const;
         void updateMenus();
 
