@@ -72,8 +72,9 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionFind_Usages"/>
    <addaction name="actionDelete_Custom_Type"/>
+   <addaction name="separator"/>
+   <addaction name="actionFind_Usages"/>
   </widget>
   <action name="actionNew_Custom_Type">
    <property name="text">
@@ -121,6 +122,9 @@
    </property>
    <property name="text">
     <string>Find Usages...</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F7</string>
    </property>
   </action>
  </widget>

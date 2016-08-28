@@ -18,6 +18,7 @@ namespace Tome
         public:
             FindUsagesController(const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController, const TypesController& typesController);
 
+            const SearchResultList findUsagesOfField(const QString& fieldId);
             const SearchResultList findUsagesOfType(const QString& typeName);
 
         signals:

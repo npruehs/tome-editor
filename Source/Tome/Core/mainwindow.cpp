@@ -174,6 +174,7 @@ void MainWindow::on_actionField_Definions_triggered()
                     this->controller->getComponentsController(),
                     this->controller->getRecordsController(),
                     this->controller->getTypesController(),
+                    this->controller->getFindUsagesController(),
                     this);
 
         connect(

@@ -14,6 +14,41 @@ FindUsagesController::FindUsagesController(const FieldDefinitionsController& fie
 {
 }
 
+const SearchResultList FindUsagesController::findUsagesOfField(const QString& fieldId)
+{
+    // Build search result list.
+    SearchResultList results;
+
+    // Find all record references.
+    const RecordList& records = this->recordsController.getRecords();
+
+    for (int i = 0; i < records.length(); ++i)
+    {
+        const Record& record = records[i];
+        const RecordFieldValueMap& fieldValues = this->recordsController.getRecordFieldValues(record.id);
+
+        for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
+             it != fieldValues.end();
+             ++it)
+        {
+            const QString& recordFieldId = it.key();
+
+            if (recordFieldId == fieldId)
+            {
+                SearchResult result;
+                result.content = recordFieldId;
+                result.targetSiteId = record.id;
+                result.targetSiteType = TargetSiteType::Record;
+
+                results.append(result);
+            }
+        }
+    }
+
+    emit searchResultChanged("Usages of " + fieldId, results);
+    return results;
+}
+
 const SearchResultList FindUsagesController::findUsagesOfType(const QString& typeName)
 {
     // Build search result list.
