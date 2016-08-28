@@ -437,6 +437,14 @@ void MainWindow::on_actionRemove_Record_triggered()
     delete recordItem;
 }
 
+void MainWindow::on_actionFind_Usages_triggered()
+{
+    // Find usages.
+    const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
+    this->controller->getFindUsagesController().findUsagesOfRecord(recordId);
+}
+
+
 void MainWindow::on_actionRun_Integrity_Checks_triggered()
 {
     // Run tasks.

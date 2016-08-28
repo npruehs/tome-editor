@@ -19,6 +19,7 @@ namespace Tome
             FindUsagesController(const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController, const TypesController& typesController);
 
             const SearchResultList findUsagesOfField(const QString& fieldId);
+            const SearchResultList findUsagesOfRecord(const QString& recordId);
             const SearchResultList findUsagesOfType(const QString& typeName);
 
         signals:

@@ -53,6 +53,8 @@ class MainWindow : public QMainWindow
         void on_actionEdit_Record_triggered();
         void on_actionRemove_Record_triggered();
 
+        void on_actionFind_Usages_triggered();
+
         void on_actionRun_Integrity_Checks_triggered();
 
         void on_actionAbout_triggered();
@@ -71,6 +73,7 @@ class MainWindow : public QMainWindow
         void treeWidgetDoubleClicked(const QModelIndex &index);
         void treeWidgetRecordReparented(const QString& recordId, const QString& newParentId);
         void treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+
 
     private:
         Ui::MainWindow *ui;
