@@ -46,13 +46,17 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
     headers << tr("Description");
     this->ui->tableWidget->setHorizontalHeaderLabels(headers);
 
+    // Add all fields.
     for (int i = 0; i < fieldDefinitions.size(); ++i)
     {
-        this->updateRow(i);
+        this->updateRow(i, fieldDefinitions[i]);
     }
 
     this->ui->tableWidget->resizeColumnsToContents();
     this->ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
+
+    // Enable sorting.
+    this->ui->tableWidget->setSortingEnabled(true);
 
     // Listen for selection changes.
     connect(
@@ -242,8 +246,6 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QS
 {
     const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(oldId);
 
-    bool needsSorting = fieldDefinition.displayName != displayName;
-
     try
     {
         // Update model.
@@ -251,13 +253,13 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QS
         this->recordsController.renameRecordField(oldId, newId);
 
         // Update view.
-        int index = this->fieldDefinitionsController.indexOf(fieldDefinition);
-        this->updateRow(index);
-
-        // Sort by display name.
-        if (needsSorting)
+        for (int i = 0; i < this->ui->tableWidget->rowCount(); ++i)
         {
-            this->ui->tableWidget->sortItems(1);
+            if (this->ui->tableWidget->item(i, 0)->data(Qt::DisplayRole) == oldId)
+            {
+                this->updateRow(i, fieldDefinition);
+                break;
+            }
         }
     }
     catch (std::out_of_range& e)
@@ -273,14 +275,13 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QS
     }
 }
 
-void FieldDefinitionsWindow::updateRow(const int i)
+void FieldDefinitionsWindow::updateRow(const int i, const FieldDefinition& fieldDefinition)
 {
-    // Get field definition.
-    const FieldDefinitionList& fieldDefinitions = this->fieldDefinitionsController.getFieldDefinitions();
-    const FieldDefinition& fieldDefinition = fieldDefinitions[i];
-
     // Convert default value to string.
     QString defaultValueString = this->typesController.valueToString(fieldDefinition.defaultValue, fieldDefinition.fieldType);
+
+    // Disable sorting before upading data (see http://doc.qt.io/qt-5.7/qtablewidget.html#setItem)
+    this->ui->tableWidget->setSortingEnabled(false);
 
     this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(fieldDefinition.id));
     this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(fieldDefinition.displayName));
@@ -295,4 +296,7 @@ void FieldDefinitionsWindow::updateRow(const int i)
         QColor color = fieldDefinition.defaultValue.value<QColor>();
         this->ui->tableWidget->item(i, 3)->setData(Qt::DecorationRole, color);
     }
+
+    // Enable sorting again.
+    this->ui->tableWidget->setSortingEnabled(true);
 }

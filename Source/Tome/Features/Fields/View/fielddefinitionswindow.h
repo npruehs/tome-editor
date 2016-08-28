@@ -15,6 +15,7 @@ namespace Ui {
 namespace Tome
 {
     class ComponentsController;
+    class FieldDefinition;
     class FieldDefinitionsController;
     class RecordsController;
     class TypesController;
@@ -60,7 +61,7 @@ class FieldDefinitionsWindow : public QMainWindow
         void updateMenus();
 
         void updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Tome::Component& component);
-        void updateRow(const int index);
+        void updateRow(const int index, const Tome::FieldDefinition& fieldDefinition);
 };
 
 #endif // FIELDDEFINITIONSWINDOW_H
