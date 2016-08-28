@@ -15,6 +15,7 @@
 
 #include "controller.h"
 #include "../Features/Components/View/componentswindow.h"
+#include "../Features/Components/Controller/componentscontroller.h" // [pg-0003]
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
@@ -267,11 +268,17 @@ void MainWindow::on_actionNew_Record_triggered()
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
     const QStringList recordIds = this->controller->getRecordsController().getRecordIds();
 
+    // [pg-0003]
+    const ComponentList& componentDefinitions =
+            this->controller->getComponentsController().getComponents();
+
     // Disallow all existing record ids.
     this->recordWindow->setDisallowedRecordIds(recordIds);
 
     // Set fields.
     this->recordWindow->setRecordFields(fieldDefinitions);
+    // [pg-0003] Set components.
+    this->recordWindow->setRecordComponents(componentDefinitions);
 
     // Show window.
     int result = this->recordWindow->exec();
@@ -341,8 +348,11 @@ void MainWindow::on_actionEdit_Record_triggered()
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
     const RecordFieldValueMap inheritedFieldValues =
             this->controller->getRecordsController().getInheritedFieldValues(record.id);
+    // [pg-0003]
+    const ComponentList& componentDefinitions =
+            this->controller->getComponentsController().getComponents();
 
-    this->recordWindow->setRecordFields(fieldDefinitions, record.fieldValues, inheritedFieldValues);
+    this->recordWindow->setRecordFields(fieldDefinitions, componentDefinitions, record.fieldValues, inheritedFieldValues);
 
     int result = this->recordWindow->exec();
 
