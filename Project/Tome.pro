@@ -79,7 +79,10 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Fields/View/vector3iwidget.cpp \
     ../Source/Tome/Features/Fields/View/vector2rwidget.cpp \
     ../Source/Tome/Features/Fields/View/vector3rwidget.cpp \
-    ../Source/Tome/Features/Integrity/Controller/listitemtypenotsupportedtask.cpp
+    ../Source/Tome/Features/Integrity/Controller/listitemtypenotsupportedtask.cpp \
+    ../Source/Tome/Features/Search/Controller/findusagescontroller.cpp \
+    ../Source/Tome/Features/Search/View/searchresultsdockwidget.cpp \
+    ../Source/Tome/Features/Search/Model/searchresult.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -148,7 +151,11 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Fields/View/vector3iwidget.h \
     ../Source/Tome/Features/Fields/View/vector2rwidget.h \
     ../Source/Tome/Features/Fields/View/vector3rwidget.h \
-    ../Source/Tome/Features/Integrity/Controller/listitemtypenotsupportedtask.h
+    ../Source/Tome/Features/Integrity/Controller/listitemtypenotsupportedtask.h \
+    ../Source/Tome/Features/Search/Controller/findusagescontroller.h \
+    ../Source/Tome/Features/Search/Model/searchresult.h \
+    ../Source/Tome/Features/Search/Model/searchresultlist.h \
+    ../Source/Tome/Features/Search/View/searchresultsdockwidget.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

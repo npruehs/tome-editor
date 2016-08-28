@@ -6,17 +6,19 @@
 #include "../Controller/typescontroller.h"
 #include "../Model/builtintype.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
+#include "../../Search/Controller/findusagescontroller.h"
 #include "../../Types/Model/customtype.h"
 #include "../../../Util/listutils.h"
 
 using namespace Tome;
 
 
-CustomTypesWindow::CustomTypesWindow(TypesController& typesController, FieldDefinitionsController& fieldDefinitionsController, QWidget *parent) :
+CustomTypesWindow::CustomTypesWindow(TypesController& typesController, FieldDefinitionsController& fieldDefinitionsController, FindUsagesController& findUsagesController, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::CustomTypesWindow),
     typesController(typesController),
     fieldDefinitionsController(fieldDefinitionsController),
+    findUsagesController(findUsagesController),
     enumerationWindow(0),
     listWindow(0)
 {
@@ -142,6 +144,13 @@ void CustomTypesWindow::on_actionDelete_Custom_Type_triggered()
     // Update view.
     const int index = this->getSelectedTypeIndex();
     this->ui->tableWidget->removeRow(index);
+}
+
+void CustomTypesWindow::on_actionFind_Usages_triggered()
+{
+    // Find usages.
+    const QString& typeName = this->getSelectedTypeName();
+    this->findUsagesController.findUsagesOfType(typeName);
 }
 
 void CustomTypesWindow::on_tableWidget_doubleClicked(const QModelIndex &index)

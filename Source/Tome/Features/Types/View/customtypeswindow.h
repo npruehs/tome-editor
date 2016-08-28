@@ -14,6 +14,7 @@ namespace Tome
 {
     class CustomType;
     class FieldDefinitionsController;
+    class FindUsagesController;
     class TypesController;
 }
 
@@ -22,7 +23,7 @@ class CustomTypesWindow : public QMainWindow
         Q_OBJECT
 
     public:
-        explicit CustomTypesWindow(Tome::TypesController& typesController, Tome::FieldDefinitionsController& fieldDefinitionsController, QWidget *parent = 0);
+        explicit CustomTypesWindow(Tome::TypesController& typesController, Tome::FieldDefinitionsController& fieldDefinitionsController, Tome::FindUsagesController& findUsagesController, QWidget *parent = 0);
         ~CustomTypesWindow();
 
     private slots:
@@ -32,12 +33,15 @@ class CustomTypesWindow : public QMainWindow
         void on_actionEdit_Custom_Type_triggered();
         void on_actionDelete_Custom_Type_triggered();
 
+        void on_actionFind_Usages_triggered();
+
         void on_tableWidget_doubleClicked(const QModelIndex &index);
 
     private:
         Ui::CustomTypesWindow *ui;
         Tome::TypesController& typesController;
         Tome::FieldDefinitionsController& fieldDefinitionsController;
+        Tome::FindUsagesController& findUsagesController;
 
         EnumerationWindow* enumerationWindow;
         ListWindow* listWindow;
