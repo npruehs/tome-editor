@@ -50,7 +50,7 @@ class CustomTypesWindow : public QMainWindow
 
         void updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration);
         void updateList(const QString& oldName, const QString& name, const QString& itemType);
-        void updateRow(const int index);
+        void updateRow(const int index, const Tome::CustomType& type);
 };
 
 #endif // CUSTOMTYPESWINDOW_H
