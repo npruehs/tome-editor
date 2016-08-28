@@ -55,6 +55,8 @@
     <addaction name="actionEdit_Custom_Type"/>
     <addaction name="actionDelete_Custom_Type"/>
     <addaction name="separator"/>
+    <addaction name="actionFind_Usages"/>
+    <addaction name="separator"/>
     <addaction name="actionClose"/>
    </widget>
    <addaction name="menuCustom_Types"/>
@@ -71,6 +73,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionDelete_Custom_Type"/>
+   <addaction name="separator"/>
+   <addaction name="actionFind_Usages"/>
   </widget>
   <action name="actionNew_Custom_Type">
    <property name="text">
@@ -111,8 +115,22 @@
     <string>New List...</string>
    </property>
   </action>
+  <action name="actionFind_Usages">
+   <property name="icon">
+    <iconset resource="../../../../../Project/tome.qrc">
+     <normaloff>:/Media/Icons/FindSymbol_6263.png</normaloff>:/Media/Icons/FindSymbol_6263.png</iconset>
+   </property>
+   <property name="text">
+    <string>Find Usages...</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F7</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../../../Project/tome.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionClose</sender>

@@ -9,6 +9,7 @@
 #include "../Controller/fielddefinitionscontroller.h"
 #include "../../Components/Controller/componentscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
+#include "../../Search/Controller/findusagescontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/builtintype.h"
 #include "../../../Util/listutils.h"
@@ -20,6 +21,7 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
         ComponentsController& componentsController,
         RecordsController& recordsController,
         TypesController& typesController,
+        FindUsagesController& findUsagesController,
         QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::FieldDefinitionsWindow),
@@ -27,6 +29,7 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
     componentsController(componentsController),
     recordsController(recordsController),
     typesController(typesController),
+    findUsagesController(findUsagesController),
     fieldDefinitionWindow(0)
 {
     ui->setupUi(this);
@@ -198,6 +201,13 @@ void FieldDefinitionsWindow::on_actionDelete_Field_triggered()
 
     // Notify listeners.
     emit fieldChanged();
+}
+
+void FieldDefinitionsWindow::on_actionFind_Usages_triggered()
+{
+    // Find usages.
+    const QString& fieldId = this->getSelectedFieldId();
+    this->findUsagesController.findUsagesOfField(fieldId);
 }
 
 void FieldDefinitionsWindow::on_tableWidget_doubleClicked(const QModelIndex &index)

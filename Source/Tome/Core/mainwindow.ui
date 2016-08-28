@@ -78,6 +78,8 @@
     <addaction name="actionNew_Record"/>
     <addaction name="actionEdit_Record"/>
     <addaction name="actionRemove_Record"/>
+    <addaction name="separator"/>
+    <addaction name="actionFind_Usages"/>
    </widget>
    <widget class="QMenu" name="menuExport">
     <property name="title">
@@ -117,6 +119,8 @@
    <addaction name="separator"/>
    <addaction name="actionNew_Record"/>
    <addaction name="actionRemove_Record"/>
+   <addaction name="separator"/>
+   <addaction name="actionFind_Usages"/>
    <addaction name="separator"/>
    <addaction name="actionRun_Integrity_Checks"/>
   </widget>
@@ -266,6 +270,19 @@
    </property>
    <property name="text">
     <string>Error List</string>
+   </property>
+  </action>
+  <action name="actionFind_Usages">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/FindSymbol_6263.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Find Usages...</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F7</string>
    </property>
   </action>
  </widget>

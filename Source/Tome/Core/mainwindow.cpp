@@ -31,6 +31,8 @@
 #include "../Features/Records/View/recordtreewidget.h"
 #include "../Features/Records/View/recordtreewidgetitem.h"
 #include "../Features/Records/View/recordwindow.h"
+#include "../Features/Search/Controller/findusagescontroller.h"
+#include "../Features/Search/View/searchresultsdockwidget.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
 #include "../Features/Tasks/Controller/taskscontroller.h"
 #include "../Features/Tasks/Model/severity.h"
@@ -73,9 +75,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->ui->splitter->addWidget(this->recordFieldTableWidget);
 
+    // Add search results.
+    this->searchResultsDockWidget = new SearchResultsDockWidget(this);
+    this->addDockWidget(Qt::BottomDockWidgetArea, this->searchResultsDockWidget, Qt::Vertical);
+
     // Add error list.
     this->errorListDockWidget = new ErrorListDockWidget(this);
-    this->addDockWidget(Qt::BottomDockWidgetArea, this->errorListDockWidget, Qt::Horizontal);
+    this->addDockWidget(Qt::BottomDockWidgetArea, this->errorListDockWidget, Qt::Vertical);
+
+    // Hide all dock widgets until required.
+    this->searchResultsDockWidget->close();
+    this->errorListDockWidget->close();
 
     // Connect signals.
     connect(
@@ -112,6 +122,12 @@ MainWindow::MainWindow(QWidget *parent) :
                 this->recordTreeWidget,
                 SIGNAL(recordReparented(const QString&, const QString&)),
                 SLOT(treeWidgetRecordReparented(const QString&, const QString&))
+                );
+
+    connect(
+                &this->controller->getFindUsagesController(),
+                SIGNAL(searchResultChanged(const QString&, const Tome::SearchResultList)),
+                SLOT(searchResultChanged(const QString&, const Tome::SearchResultList))
                 );
 
     // Maximize window.
@@ -158,6 +174,7 @@ void MainWindow::on_actionField_Definions_triggered()
                     this->controller->getComponentsController(),
                     this->controller->getRecordsController(),
                     this->controller->getTypesController(),
+                    this->controller->getFindUsagesController(),
                     this);
 
         connect(
@@ -190,6 +207,7 @@ void MainWindow::on_actionManage_Custom_Types_triggered()
         this->customTypesWindow = new CustomTypesWindow(
                     this->controller->getTypesController(),
                     this->controller->getFieldDefinitionsController(),
+                    this->controller->getFindUsagesController(),
                     this);
     }
 
@@ -419,6 +437,14 @@ void MainWindow::on_actionRemove_Record_triggered()
     delete recordItem;
 }
 
+void MainWindow::on_actionFind_Usages_triggered()
+{
+    // Find usages.
+    const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
+    this->controller->getFindUsagesController().findUsagesOfRecord(recordId);
+}
+
+
 void MainWindow::on_actionRun_Integrity_Checks_triggered()
 {
     // Run tasks.
@@ -538,6 +564,13 @@ void MainWindow::revertFieldValue()
     {
         this->fieldValueWindow->setFieldValue(valueToRevertTo);
     }
+}
+
+void MainWindow::searchResultChanged(const QString& title, const SearchResultList results)
+{
+    // Update view.
+    this->showWindow(this->searchResultsDockWidget);
+    this->searchResultsDockWidget->showResults(title, results);
 }
 
 void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
