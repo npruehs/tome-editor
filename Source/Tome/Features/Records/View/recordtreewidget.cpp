@@ -52,7 +52,12 @@ RecordTreeWidgetItem* RecordTreeWidget::getSelectedRecordItem() const
     return static_cast<RecordTreeWidgetItem*>(selectedItems.first());
 }
 
-void RecordTreeWidget::updateRecordIcon( RecordTreeWidgetItem *recordTreeItem )
+void RecordTreeWidget::updateRecordIcon()
+{
+    this->updateRecordIcon(this->getSelectedRecordItem());
+}
+
+void RecordTreeWidget::updateRecordIcon(RecordTreeWidgetItem *recordTreeItem)
 {
     if ( nullptr != recordTreeItem )
     {

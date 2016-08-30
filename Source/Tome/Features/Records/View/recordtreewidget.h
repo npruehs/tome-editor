@@ -22,7 +22,9 @@ namespace Tome
 
             QString getSelectedRecordId() const;
             RecordTreeWidgetItem* getSelectedRecordItem() const;
-            void updateRecordIcon( RecordTreeWidgetItem *recordTreeItem );
+
+            void updateRecordIcon();
+            void updateRecordIcon(RecordTreeWidgetItem *recordTreeItem);
 
             void setRecords(const RecordList& records);
 
