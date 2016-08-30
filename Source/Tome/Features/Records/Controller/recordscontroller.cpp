@@ -267,7 +267,6 @@ bool RecordsController::isAncestorOf(const QString& possibleAncestor, const QStr
     return false;
 }
 
-// [pg-0000]
 const QLocale* RecordsController::getLocale() const
 {
     return locale;
@@ -388,7 +387,6 @@ void RecordsController::setRecordSets(RecordSetList& model)
     this->model = &model;
 }
 
-// [pg-0000]
 void RecordsController::setLocale(const QLocale *projLocale)
 {
     locale = projLocale;

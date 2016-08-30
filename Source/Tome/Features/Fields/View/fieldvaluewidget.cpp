@@ -38,8 +38,7 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
     this->doubleSpinBox = new QDoubleSpinBox();
     this->doubleSpinBox->setMinimum(-std::numeric_limits<float>::max());
     this->doubleSpinBox->setMaximum(std::numeric_limits<float>::max());
-    this->doubleSpinBox->setDecimals(4); // [pg-0002]
-    // [pg-0000]
+    this->doubleSpinBox->setDecimals(4);
     if ( nullptr != recordsController.getLocale() )
     {
         this->doubleSpinBox->setLocale( *recordsController.getLocale() );

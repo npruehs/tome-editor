@@ -4,7 +4,7 @@
 #include <QString>
 #include <QStringList>
 #include <QVector>
-#include <QLocale> // [pg-0000]
+#include <QLocale>
 
 #include "../../Components/Model/componentlist.h"
 #include "../../Export/Model/recordexporttemplatemap.h"
@@ -22,7 +22,7 @@ namespace Tome
 
             QString name;
             QString path;
-            QLocale locale; // [pg-0000]
+            QLocale locale;
 
             ComponentList components;
             FieldDefinitionSetList fieldDefinitionSets;
