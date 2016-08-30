@@ -248,10 +248,23 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 }
             }
 
+            // Only export record parent if that parent isn't empty.
+            QString recordParent;
+
+            if (!record.parentId.isEmpty())
+            {
+                RecordFieldValueMap parentFieldValues = recordsController.getRecordFieldValues(record.parentId);
+
+                if (!parentFieldValues.empty())
+                {
+                    recordParent = record.parentId;
+                }
+            }
+
             // Apply record template.
             QString recordString = exportTemplate.recordTemplate;
             recordString = recordString.replace(PlaceholderRecordId, record.id);
-            recordString = recordString.replace(PlaceholderRecordParentId, record.parentId);
+            recordString = recordString.replace(PlaceholderRecordParentId, recordParent);
             recordString = recordString.replace(PlaceholderRecordFields, fieldValuesString);
             recordString = recordString.replace(PlaceholderComponents, componentsString);
 
