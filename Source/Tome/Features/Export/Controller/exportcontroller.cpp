@@ -89,7 +89,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 {
                     const FieldDefinition& field = fields[k];
 
-                    if (!record.fieldValues.contains(field.id))
+                    if (!fieldValues.contains(field.id))
                     {
                         fieldValues[field.id] = "";
                     }
@@ -213,8 +213,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             // Collect components.
             QStringList components;
 
-            for (QMap<QString, QVariant>::const_iterator itFields = record.fieldValues.begin();
-                 itFields != record.fieldValues.end();
+            for (QMap<QString, QVariant>::const_iterator itFields = fieldValues.begin();
+                 itFields != fieldValues.end();
                  ++itFields)
             {
                 QString fieldId = itFields.key();
