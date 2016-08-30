@@ -151,12 +151,12 @@ void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions)
     }
 }
 
-void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, const ComponentList &componentDefinitions, const RecordFieldValueMap& ownFieldValues, const RecordFieldValueMap& inheritedFieldValues) // [pg-0003]
+void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, const ComponentList &componentDefinitions, const RecordFieldValueMap& ownFieldValues, const RecordFieldValueMap& inheritedFieldValues)
 {
     // Clear current fields.
     this->clearRecordFields();
 
-    // [pg-0003] Add all components.
+    // Add all components.
     setRecordComponents( componentDefinitions );
 
 
@@ -180,7 +180,7 @@ void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, 
         // Add to view.
         this->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldState);
 
-        // [pg-0003] Modify state of component checkboxes based on fieldState
+        // Modify state of component checkboxes based on fieldState
         for (int i = 0; i < this->ui->scrollAreaComponentsContents->layout()->count(); ++i)
         {
             QCheckBox* component_cb = static_cast<QCheckBox*>(this->ui->scrollAreaComponentsContents->layout()->itemAt(i)->widget());
@@ -218,7 +218,7 @@ void RecordWindow::onCheckBoxStateChanged(int state)
         return;
     }
 
-    // [pg-0003] Apply state to component checkbox of fieldComponent type.
+    // Apply state to component checkbox of fieldComponent type.
     for (int i = 0; i < this->ui->scrollAreaComponentsContents->layout()->count(); ++i)
     {
         QCheckBox* component_cb = static_cast<QCheckBox*>(this->ui->scrollAreaComponentsContents->layout()->itemAt(i)->widget());
@@ -284,7 +284,6 @@ bool RecordWindow::validate()
     return true;
 }
 
-// [pg-0003]
 void RecordWindow::clearRecordComponents()
 {
     while (!this->ui->scrollAreaComponentsContents->layout()->isEmpty())
@@ -295,7 +294,6 @@ void RecordWindow::clearRecordComponents()
     }
 }
 
-// [pg-0003]
 void RecordWindow::setRecordComponents(const Tome::ComponentList& components)
 {
     // Clear current fields.
@@ -309,7 +307,6 @@ void RecordWindow::setRecordComponents(const Tome::ComponentList& components)
     }
 }
 
-// [pg-0003]
 void RecordWindow::setRecordComponent(const QString& componentId, const Tome::RecordFieldState::RecordFieldState state)
 {
     // Build check box text.
@@ -338,12 +335,11 @@ void RecordWindow::setRecordComponent(const QString& componentId, const Tome::Re
     this->ui->scrollAreaComponentsContents->layout()->addWidget(checkBox);
 }
 
-// [pg-0003]
 void RecordWindow::onComponentCheckBoxStateChanged(int state)
 {
     // Get field id.
     QObject* checkbox = sender();
-    QString component_id = checkbox->property(PropertyComponentId.toStdString().c_str()).toString();
+    QString componentId = checkbox->property(PropertyComponentId.toStdString().c_str()).toString();
 
     // Apply state to all checkboxes of same field component.
     for (int i = 0; i < this->ui->scrollAreaFieldsContents->layout()->count(); ++i)
@@ -351,7 +347,7 @@ void RecordWindow::onComponentCheckBoxStateChanged(int state)
         QCheckBox* otherCheckBox = static_cast<QCheckBox*>(this->ui->scrollAreaFieldsContents->layout()->itemAt(i)->widget());
         QString otherFieldComponent = otherCheckBox->property(PropertyFieldComponent.toStdString().c_str()).toString();
 
-        if (otherFieldComponent == component_id)
+        if (otherFieldComponent == componentId)
         {
             otherCheckBox->setCheckState((Qt::CheckState)state);
         }

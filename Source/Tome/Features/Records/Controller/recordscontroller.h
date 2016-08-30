@@ -2,7 +2,7 @@
 #define RECORDSCONTROLLER_H
 
 #include <QStringList>
-#include <QLocale> // [pg-0000]
+#include <QLocale>
 
 #include "../Model/recordsetlist.h"
 
@@ -63,7 +63,7 @@ namespace Tome
              */
             bool isAncestorOf(const QString& possibleAncestor, const QString& recordId) const;
 
-            const QLocale* getLocale() const; // [pg-0000]
+            const QLocale* getLocale() const;
 
             void removeRecord(const QString& recordId);
             void removeRecordField(const QString fieldId);
@@ -72,14 +72,14 @@ namespace Tome
             QVariant revertFieldValue(const QString& recordId, const QString& fieldId);
             void reparentRecord(const QString& recordId, const QString& newParentId);
             void setRecordSets(RecordSetList& model);
-            void setLocale(const QLocale *projLocale); // [pg-0000]
+            void setLocale(const QLocale *projLocale);
             void updateRecord(const QString& oldId, const QString& newId, const QString& displayName);
             void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue);
             void updateRecordReferences(const QString oldReference, const QString newReference);
 
         private:
             RecordSetList* model;
-            const QLocale *locale = nullptr; // [pg-0000]
+            const QLocale *locale = nullptr;
 
             const FieldDefinitionsController& fieldDefinitionsController;
 

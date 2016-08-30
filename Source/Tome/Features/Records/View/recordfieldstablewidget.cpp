@@ -26,12 +26,12 @@ RecordFieldsTableWidget::RecordFieldsTableWidget(FieldDefinitionsController& fie
     this->verticalHeader()->setVisible(false);
 
     // Set headers.
-    this->setColumnCount(3); // [pg-0004]
+    this->setColumnCount(3);
 
     QStringList headers;
     headers << tr("Field");
     headers << tr("Value");    
-    headers << tr("Description"); // [pg-0004]
+    headers << tr("Description");
     this->setHorizontalHeaderLabels(headers);
 }
 
@@ -55,11 +55,7 @@ void RecordFieldsTableWidget::setRecord(int i, const QString recordId)
     // Show field and value.
     this->setItem(i, 0, new QTableWidgetItem(keyString));
     this->setItem(i, 1, new QTableWidgetItem(valueString));
-    this->setItem(i, 2, new QTableWidgetItem(field.description)); // [pg-0004]
-
-    // Show field description as tooltip.
-    // [pg-0004] this->item(i, 0)->setData(Qt::ToolTipRole, field.description);
-    // [pg-0004] this->item(i, 1)->setData(Qt::ToolTipRole, field.description);
+    this->setItem(i, 2, new QTableWidgetItem(field.description));
 
     // Show color preview.
     if (field.fieldType == BuiltInType::Color)

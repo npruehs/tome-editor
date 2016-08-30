@@ -20,7 +20,7 @@ const QString ProjectSerializer::ElementFieldDefinitions = "FieldDefinitions";
 const QString ProjectSerializer::ElementFileExtension = "FileExtension";
 const QString ProjectSerializer::ElementMapping = "Mapping";
 const QString ProjectSerializer::ElementName = "Name";
-const QString ProjectSerializer::ElementLocale = "Locale"; // [pg-0000]
+const QString ProjectSerializer::ElementLocale = "Locale";
 const QString ProjectSerializer::ElementPath = "Path";
 const QString ProjectSerializer::ElementRestriction = "Restriction";
 const QString ProjectSerializer::ElementRestrictions = "Restrictions";
@@ -57,7 +57,7 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
             // Write project name.
             writer.writeTextElement(ElementName, project->name);
 
-            // [pg-0000] Write project locale.
+            // Write project locale.
             writer.writeTextElement(ElementLocale, project->locale.name());
 
             // Write components.
@@ -187,7 +187,7 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             // Read project name.
             project->name = reader.readTextElement(ElementName);
 
-            // [pg-0000] Read project locale.
+            // Read project locale.
             project->locale.swap( QLocale( reader.readTextElement(ElementLocale) ) );
 
             // Read components.
