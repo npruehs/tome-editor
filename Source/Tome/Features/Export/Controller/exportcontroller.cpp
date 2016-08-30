@@ -76,16 +76,11 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
         {
             const Record& record = recordSet.records[j];
 
-//            if (record.fieldValues.empty())
-//            {
-//                continue;
-//            }
-
             // Build field values string.
             QString fieldValuesString;
 
             // Get fields to export.
-            RecordFieldValueMap fieldValues;
+            RecordFieldValueMap fieldValues = recordsController.getRecordFieldValues(record.id);
 
             if (exportTemplate.exportAsTable)
             {
@@ -94,19 +89,17 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 {
                     const FieldDefinition& field = fields[k];
 
-                    if (record.fieldValues.contains(field.id))
-                    {
-                        fieldValues[field.id] = record.fieldValues[field.id];
-                    }
-                    else
+                    if (!record.fieldValues.contains(field.id))
                     {
                         fieldValues[field.id] = "";
                     }
                 }
             }
-            else
+
+            // Do not export empty records.
+            if (fieldValues.empty())
             {
-                fieldValues = recordsController.getRecordFieldValues(record.id);
+                continue;
             }
 
             for (RecordFieldValueMap::iterator itFields = fieldValues.begin();
