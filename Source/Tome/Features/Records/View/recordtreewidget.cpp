@@ -21,10 +21,6 @@ void RecordTreeWidget::addRecord(const QString& id, const QString& displayName)
 {
     QTreeWidgetItem* newItem = new RecordTreeWidgetItem(id, displayName, QString());
 
-    // [pg-0005]
-    const Record &record_data = this->recordsController.getRecord( id );
-    newItem->setIcon( 0, QIcon( record_data.fieldValues.empty() ? ":/Media/Icons/gmTome_empty_record.png" : ":/Media/Icons/gmTome_record.png") );
-
     this->insertTopLevelItem(0, newItem);
     this->sortItems(0, Qt::AscendingOrder);
 
@@ -56,6 +52,16 @@ RecordTreeWidgetItem* RecordTreeWidget::getSelectedRecordItem() const
     return static_cast<RecordTreeWidgetItem*>(selectedItems.first());
 }
 
+void RecordTreeWidget::updateRecordIcon( RecordTreeWidgetItem *recordTreeItem )
+{
+    if ( nullptr != recordTreeItem )
+    {
+        const Record &recordData = this->recordsController.getRecord( recordTreeItem->getId() );
+        recordTreeItem->setIcon( 0, QIcon( recordData.fieldValues.empty() ? ":/Media/Icons/gmTome_empty_record.png" : ":/Media/Icons/gmTome_record.png") );
+    }
+}
+
+
 void RecordTreeWidget::setRecords(const RecordList& records)
 {
     // Create record tree items.
@@ -67,9 +73,7 @@ void RecordTreeWidget::setRecords(const RecordList& records)
         RecordTreeWidgetItem* recordItem =
                 new RecordTreeWidgetItem(record.id, record.displayName, record.parentId);
         recordItems.insert(record.id, recordItem);
-        // [pg-0005]
-        const Record &record_data = this->recordsController.getRecord( record.id );
-        recordItem->setIcon( 0, QIcon( record_data.fieldValues.empty() ? ":/Media/Icons/gmTome_empty_record.png" : ":/Media/Icons/gmTome_record.png") );
+        updateRecordIcon( recordItem );
     }
 
     // Build hierarchy and prepare item list for tree widget.

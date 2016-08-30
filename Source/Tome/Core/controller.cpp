@@ -400,6 +400,7 @@ void Controller::setProject(QSharedPointer<Project> project)
     this->exportController->setRecordExportTemplates(project->recordExportTemplates);
     this->fieldDefinitionsController->setFieldDefinitionSets(project->fieldDefinitionSets);
     this->recordsController->setRecordSets(project->recordSets);
+    this->recordsController->setLocale(&project->locale);
     this->typesController->setCustomTypes(project->types);
 
     // Add to recent projects.
