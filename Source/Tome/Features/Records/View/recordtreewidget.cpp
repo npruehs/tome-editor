@@ -57,7 +57,18 @@ void RecordTreeWidget::updateRecordIcon( RecordTreeWidgetItem *recordTreeItem )
     if ( nullptr != recordTreeItem )
     {
         const Record &recordData = this->recordsController.getRecord( recordTreeItem->getId() );
-        recordTreeItem->setIcon( 0, QIcon( recordData.fieldValues.empty() ? ":/Media/Icons/gmTome_empty_record.png" : ":/Media/Icons/gmTome_record.png") );
+        // If the record and all ancestors have no fields, use a folder style icon
+        // else use a file style icon
+        bool recordIsEmtpy = recordData.fieldValues.empty();
+        if ( recordIsEmtpy )
+        {
+            const RecordList ancestors = this->recordsController.getAncestors( recordTreeItem->getId() );
+            for ( int i = 0; ancestors.size() > i && recordIsEmtpy; ++i )
+            {
+                recordIsEmtpy &= ancestors[ i ].fieldValues.empty();
+            }
+        }
+        recordTreeItem->setIcon( 0, QIcon( recordIsEmtpy ? ":/Media/Icons/gmTome_empty_record.png" : ":/Media/Icons/gmTome_record.png") );
     }
 }
 
