@@ -22,6 +22,7 @@ namespace Tome
 
             QString getSelectedRecordId() const;
             RecordTreeWidgetItem* getSelectedRecordItem() const;
+            void updateRecordIcon( RecordTreeWidgetItem *recordTreeItem );
 
             void setRecords(const RecordList& records);
 
@@ -32,6 +33,7 @@ namespace Tome
             bool dropMimeData(QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action);
 
         private:
+
             RecordsController& recordsController;
     };
 }

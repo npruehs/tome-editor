@@ -754,6 +754,8 @@ void MainWindow::refreshRecordTable()
     {
         this->updateRecordRow(i);
     }
+
+    this->recordTreeWidget->updateRecordIcon( this->recordTreeWidget->getSelectedRecordItem() );
 }
 
 void MainWindow::showWindow(QWidget* widget)

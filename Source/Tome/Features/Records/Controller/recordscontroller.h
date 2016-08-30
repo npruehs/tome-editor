@@ -72,7 +72,7 @@ namespace Tome
             QVariant revertFieldValue(const QString& recordId, const QString& fieldId);
             void reparentRecord(const QString& recordId, const QString& newParentId);
             void setRecordSets(RecordSetList& model);
-            void setLocale(const QLocale *_locale); // [pg-0000]
+            void setLocale(const QLocale *projLocale); // [pg-0000]
             void updateRecord(const QString& oldId, const QString& newId, const QString& displayName);
             void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue);
             void updateRecordReferences(const QString oldReference, const QString newReference);

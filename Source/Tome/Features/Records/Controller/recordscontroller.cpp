@@ -389,9 +389,9 @@ void RecordsController::setRecordSets(RecordSetList& model)
 }
 
 // [pg-0000]
-void RecordsController::setLocale(const QLocale *_locale)
+void RecordsController::setLocale(const QLocale *projLocale)
 {
-    locale = _locale;
+    locale = projLocale;
 }
 
 void RecordsController::updateRecord(const QString& oldId, const QString& newId, const QString& displayName)
