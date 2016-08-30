@@ -267,11 +267,6 @@ bool RecordsController::isAncestorOf(const QString& possibleAncestor, const QStr
     return false;
 }
 
-const QLocale* RecordsController::getLocale() const
-{
-    return locale;
-}
-
 void RecordsController::removeRecord(const QString& recordId)
 {
     // Remove references to record.
@@ -385,11 +380,6 @@ void RecordsController::reparentRecord(const QString& recordId, const QString& n
 void RecordsController::setRecordSets(RecordSetList& model)
 {
     this->model = &model;
-}
-
-void RecordsController::setLocale(const QLocale *projLocale)
-{
-    locale = projLocale;
 }
 
 void RecordsController::updateRecord(const QString& oldId, const QString& newId, const QString& displayName)
