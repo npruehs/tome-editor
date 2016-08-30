@@ -72,6 +72,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionFind_Usages"/>
    <addaction name="actionDelete_Custom_Type"/>
    <addaction name="separator"/>
    <addaction name="actionFind_Usages"/>
