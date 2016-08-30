@@ -7,7 +7,6 @@
         <Name>AttackComponent</Name>
         <Name>InvulnerabilityComponent</Name>
         <Name>ManaComponent</Name>
-        <Name>MovementComponent</Name>
         <Name>NameComponent</Name>
         <Name>PhysicsComponent</Name>
         <Name>RangeComponent</Name>
