@@ -76,10 +76,10 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
         {
             const Record& record = recordSet.records[j];
 
-            if (record.fieldValues.empty())
-            {
-                continue;
-            }
+//            if (record.fieldValues.empty())
+//            {
+//                continue;
+//            }
 
             // Build field values string.
             QString fieldValuesString;

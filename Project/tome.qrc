@@ -12,7 +12,7 @@
         <file>../Media/Icons/StackedAreaSeries_12693.png</file>
         <file>../Media/Icons/StatusAnnotations_Help_and_inconclusive_32xLG_color.png</file>
         <file>../Media/Icons/BuildErrorList_7237.png</file>
-        <file>../Media/Icons/gmTome_empty_record.png</file>
-        <file>../Media/Icons/gmTome_record.png</file>
+        <file>../Media/Icons/record_default.png</file>
+        <file>../Media/Icons/record_empty_default.png</file>
     </qresource>
 </RCC>

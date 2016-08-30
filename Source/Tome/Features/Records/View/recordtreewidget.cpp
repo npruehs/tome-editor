@@ -68,7 +68,7 @@ void RecordTreeWidget::updateRecordIcon( RecordTreeWidgetItem *recordTreeItem )
                 recordIsEmtpy &= ancestors[ i ].fieldValues.empty();
             }
         }
-        recordTreeItem->setIcon( 0, QIcon( recordIsEmtpy ? ":/Media/Icons/gmTome_empty_record.png" : ":/Media/Icons/gmTome_record.png") );
+        recordTreeItem->setIcon( 0, QIcon( recordIsEmtpy ? ":/Media/Icons/record_empty_default.png" : ":/Media/Icons/record_default.png") );
     }
 }
 
