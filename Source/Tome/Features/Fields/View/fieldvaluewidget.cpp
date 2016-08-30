@@ -39,10 +39,7 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
     this->doubleSpinBox->setMinimum(-std::numeric_limits<float>::max());
     this->doubleSpinBox->setMaximum(std::numeric_limits<float>::max());
     this->doubleSpinBox->setDecimals(4);
-    if ( nullptr != recordsController.getLocale() )
-    {
-        this->doubleSpinBox->setLocale( *recordsController.getLocale() );
-    }
+    this->doubleSpinBox->setLocale(QLocale());
     this->addWidget(this->doubleSpinBox);
 
     this->checkBox = new QCheckBox("Value");

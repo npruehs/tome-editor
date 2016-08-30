@@ -68,8 +68,6 @@ namespace Tome
              */
             bool isAncestorOf(const QString& possibleAncestor, const QString& recordId) const;
 
-            const QLocale* getLocale() const;
-
             void removeRecord(const QString& recordId);
             void removeRecordField(const QString fieldId);
             void removeRecordField(const QString& recordId, const QString& fieldId);
@@ -77,7 +75,6 @@ namespace Tome
             QVariant revertFieldValue(const QString& recordId, const QString& fieldId);
             void reparentRecord(const QString& recordId, const QString& newParentId);
             void setRecordSets(RecordSetList& model);
-            void setLocale(const QLocale *projLocale);
             void updateRecord(const QString& oldId, const QString& newId, const QString& displayName);
             void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue);
             void updateRecordReferences(const QString oldReference, const QString newReference);
