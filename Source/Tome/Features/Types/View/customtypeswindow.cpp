@@ -6,26 +6,28 @@
 #include "../Controller/typescontroller.h"
 #include "../Model/builtintype.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
+#include "../../Search/Controller/findusagescontroller.h"
 #include "../../Types/Model/customtype.h"
 #include "../../../Util/listutils.h"
 
 using namespace Tome;
 
 
-CustomTypesWindow::CustomTypesWindow(TypesController& typesController, FieldDefinitionsController& fieldDefinitionsController, QWidget *parent) :
+CustomTypesWindow::CustomTypesWindow(TypesController& typesController, FieldDefinitionsController& fieldDefinitionsController, FindUsagesController& findUsagesController, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::CustomTypesWindow),
     typesController(typesController),
     fieldDefinitionsController(fieldDefinitionsController),
+    findUsagesController(findUsagesController),
     enumerationWindow(0),
     listWindow(0)
 {
     ui->setupUi(this);
 
     // Setup view.
-    int typeCount = this->typesController.getCustomTypes().size();
+    const CustomTypeList& types = this->typesController.getCustomTypes();
 
-    this->ui->tableWidget->setRowCount(typeCount);
+    this->ui->tableWidget->setRowCount(types.length());
     this->ui->tableWidget->setColumnCount(3);
 
     QStringList headers;
@@ -34,10 +36,14 @@ CustomTypesWindow::CustomTypesWindow(TypesController& typesController, FieldDefi
     headers << tr("Details");
     this->ui->tableWidget->setHorizontalHeaderLabels(headers);
 
-    for (int i = 0; i < typeCount; ++i)
+    // Add all types.
+    for (int i = 0; i < types.length(); ++i)
     {
-        this->updateRow(i);
+        this->updateRow(i, types[i]);
     }
+
+    // Enable sorting.
+    this->ui->tableWidget->setSortingEnabled(true);
 }
 
 CustomTypesWindow::~CustomTypesWindow()
@@ -70,9 +76,8 @@ void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
                     this->enumerationWindow->getEnumerationMembers());
 
         // Update view.
-        int index = this->typesController.indexOf(newType);
-        this->ui->tableWidget->insertRow(index);
-        this->updateRow(index);
+        this->ui->tableWidget->insertRow(0);
+        this->updateRow(0, newType);
     }
 }
 
@@ -96,10 +101,8 @@ void CustomTypesWindow::on_actionNew_List_triggered()
                     this->listWindow->getListItemType());
 
         // Update view.
-        int index = this->typesController.indexOf(newType);
-
-        this->ui->tableWidget->insertRow(index);
-        this->updateRow(index);
+        this->ui->tableWidget->insertRow(0);
+        this->updateRow(0, newType);
     }
 }
 
@@ -128,19 +131,26 @@ void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
 
 void CustomTypesWindow::on_actionDelete_Custom_Type_triggered()
 {
-    // Get selected type.
-    int index = this->getSelectedTypeIndex();
+    // Update model.
+    QString typeName = this->getSelectedTypeName();
 
-    if (index < 0)
+    if (typeName.isEmpty())
     {
         return;
     }
 
-    // Update model.
-    this->typesController.removeCustomTypeAt(index);
+    this->typesController.removeCustomType(typeName);
 
     // Update view.
+    const int index = this->getSelectedTypeIndex();
     this->ui->tableWidget->removeRow(index);
+}
+
+void CustomTypesWindow::on_actionFind_Usages_triggered()
+{
+    // Find usages.
+    const QString& typeName = this->getSelectedTypeName();
+    this->findUsagesController.findUsagesOfType(typeName);
 }
 
 void CustomTypesWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
@@ -221,49 +231,34 @@ void CustomTypesWindow::updateEnumeration(const QString& oldName, const QString&
 {
     const CustomType& type = this->typesController.getCustomType(oldName);
 
-    bool needsSorting = type.name != newName;
-
     // Update model.
     this->fieldDefinitionsController.renameFieldType(oldName, newName);
     this->typesController.updateEnumeration(oldName, newName, enumeration);
 
     // Update view.
-    int index = this->typesController.indexOf(type);
-    this->updateRow(index);
-
-    // Sort by display name.
-    if (needsSorting)
-    {
-        this->ui->tableWidget->sortItems(0);
-    }
+    int index = this->getSelectedTypeIndex();
+    this->updateRow(index, type);
 }
 
 void CustomTypesWindow::updateList(const QString& oldName, const QString& newName, const QString& itemType)
 {
     const CustomType& type = this->typesController.getCustomType(oldName);
 
-    bool needsSorting = type.name != newName;
-
     // Update model.
     this->fieldDefinitionsController.renameFieldType(oldName, newName);
     this->typesController.updateList(oldName, newName, itemType);
 
     // Update view.
-    int index = this->typesController.indexOf(type);
-    this->updateRow(index);
-
-    // Sort by display name.
-    if (needsSorting)
-    {
-        this->ui->tableWidget->sortItems(0);
-    }
+    int index = this->getSelectedTypeIndex();
+    this->updateRow(index, type);
 }
 
-void CustomTypesWindow::updateRow(const int index)
+void CustomTypesWindow::updateRow(const int index, const CustomType& type)
 {
-    const CustomTypeList& types = this->typesController.getCustomTypes();
-    const CustomType& type = types[index];
+    // Disable sorting before upading data (see http://doc.qt.io/qt-5.7/qtablewidget.html#setItem)
+    this->ui->tableWidget->setSortingEnabled(false);
 
+    // Update view.
     this->ui->tableWidget->setItem(index, 0, new QTableWidgetItem(type.name));
 
     if (type.isEnumeration())
@@ -276,4 +271,7 @@ void CustomTypesWindow::updateRow(const int index)
         this->ui->tableWidget->setItem(index, 1, new QTableWidgetItem("List"));
         this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(type.getItemType()));
     }
+
+    // Enable sorting again.
+    this->ui->tableWidget->setSortingEnabled(true);
 }

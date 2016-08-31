@@ -1,9 +1,9 @@
 #ifndef TYPESCONTROLLER_H
 #define TYPESCONTROLLER_H
 
-#include "../Model/customtypelist.h"
+#include <QVariant>
 
-#include <qvariant.h>
+#include "../Model/customtypelist.h"
 
 namespace Tome
 {
@@ -35,6 +35,7 @@ namespace Tome
             int indexOf(const CustomType& customType) const;
             bool isBuiltInType(const QString& name) const;
             bool isCustomType(const QString& name) const;
+            void removeCustomType(const QString& typeName);
             void removeCustomTypeAt(const int index);
             void renameType(const QString oldName, const QString newName);
             void setCustomTypes(CustomTypeList& model);

@@ -12,7 +12,8 @@
         <file>../Media/Icons/StackedAreaSeries_12693.png</file>
         <file>../Media/Icons/StatusAnnotations_Help_and_inconclusive_32xLG_color.png</file>
         <file>../Media/Icons/BuildErrorList_7237.png</file>
-        <file>../Media/Icons/record_default.png</file>
-        <file>../Media/Icons/record_empty_default.png</file>
+        <file>../Media/Icons/FindSymbol_6263.png</file>
+        <file>../Media/Icons/Folder_6221.png</file>
+        <file>../Media/Icons/Textfile_818_16x.png</file>
     </qresource>
 </RCC>

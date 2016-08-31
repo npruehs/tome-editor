@@ -18,6 +18,7 @@
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Records/Controller/recordscontroller.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
+#include "../Features/Search/Controller/findusagescontroller.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
 #include "../Features/Tasks/Controller/taskscontroller.h"
 #include "../Features/Types/Controller/typescontroller.h"
@@ -51,7 +52,8 @@ Controller::Controller() :
     recordsController(new RecordsController(*this->fieldDefinitionsController)),
     exportController(new ExportController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     settingsController(new SettingsController()),
-    tasksController(new TasksController(*this->componentsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController))
+    tasksController(new TasksController(*this->componentsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
+    findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController))
 {
     // Setup tasks.
     this->tasksController->addTask(new FieldTypeDoesNotExistTask());
@@ -68,6 +70,7 @@ Controller::~Controller()
     delete this->settingsController;
     delete this->typesController;
     delete this->tasksController;
+    delete this->findUsagesController;
 }
 
 ComponentsController& Controller::getComponentsController()
@@ -103,6 +106,11 @@ TasksController& Controller::getTasksController()
 TypesController& Controller::getTypesController()
 {
     return *this->typesController;
+}
+
+FindUsagesController& Controller::getFindUsagesController()
+{
+    return *this->findUsagesController;
 }
 
 void Controller::createProject(const QString& projectName, const QString& projectPath)

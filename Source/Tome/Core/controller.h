@@ -9,6 +9,7 @@ namespace Tome
     class ComponentsController;
     class ExportController;
     class FieldDefinitionsController;
+    class FindUsagesController;
     class Project;
     class RecordsController;
     class SettingsController;
@@ -28,6 +29,7 @@ namespace Tome
             SettingsController& getSettingsController();
             TasksController& getTasksController();
             TypesController& getTypesController();
+            FindUsagesController& getFindUsagesController();
 
             void createProject(const QString& projectName, const QString& projectPath);
             const QString getFullProjectPath() const;
@@ -64,6 +66,7 @@ namespace Tome
             ExportController* exportController;
             SettingsController* settingsController;
             TasksController* tasksController;
+            FindUsagesController* findUsagesController;
 
             const QString getFullProjectPath(QSharedPointer<Project> project) const;
             void saveProject(QSharedPointer<Project> project);

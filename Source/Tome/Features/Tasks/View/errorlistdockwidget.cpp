@@ -51,6 +51,7 @@ ErrorListDockWidget::ErrorListDockWidget(QWidget* parent) :
     this->tableWidgetErrorList->setSelectionBehavior(QTableWidget::SelectRows);
     this->tableWidgetErrorList->horizontalHeader()->setStretchLastSection(true);
     this->tableWidgetErrorList->verticalHeader()->setVisible(false);
+    this->tableWidgetErrorList->setSortingEnabled(true);
 
     this->verticalLayout->addWidget(this->tableWidgetErrorList);
 

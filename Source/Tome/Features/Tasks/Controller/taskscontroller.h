@@ -19,8 +19,6 @@ namespace Tome
     {
         public:
             TasksController(const ComponentsController& componentsController, const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController, const TypesController& typesController);
-            TasksController();
-
             ~TasksController();
 
             void addTask(Task* task);

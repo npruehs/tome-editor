@@ -101,6 +101,20 @@ bool TypesController::isCustomType(const QString& name) const
     return false;
 }
 
+void TypesController::removeCustomType(const QString& typeName)
+{
+    for (CustomTypeList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if (it->name == typeName)
+        {
+            this->model->erase(it);
+            return;
+        }
+    }
+}
+
 void TypesController::removeCustomTypeAt(const int index)
 {
     this->model->removeAt(index);

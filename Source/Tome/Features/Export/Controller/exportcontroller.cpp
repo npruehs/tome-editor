@@ -89,7 +89,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 {
                     const FieldDefinition& field = fields[k];
 
-                    if (!record.fieldValues.contains(field.id))
+                    if (!fieldValues.contains(field.id))
                     {
                         fieldValues[field.id] = "";
                     }
@@ -213,8 +213,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             // Collect components.
             QStringList components;
 
-            for (QMap<QString, QVariant>::const_iterator itFields = record.fieldValues.begin();
-                 itFields != record.fieldValues.end();
+            for (QMap<QString, QVariant>::const_iterator itFields = fieldValues.begin();
+                 itFields != fieldValues.end();
                  ++itFields)
             {
                 QString fieldId = itFields.key();
@@ -248,10 +248,23 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 }
             }
 
+            // Only export record parent if that parent isn't empty.
+            QString recordParent;
+
+            if (!record.parentId.isEmpty())
+            {
+                RecordFieldValueMap parentFieldValues = recordsController.getRecordFieldValues(record.parentId);
+
+                if (!parentFieldValues.empty())
+                {
+                    recordParent = record.parentId;
+                }
+            }
+
             // Apply record template.
             QString recordString = exportTemplate.recordTemplate;
             recordString = recordString.replace(PlaceholderRecordId, record.id);
-            recordString = recordString.replace(PlaceholderRecordParentId, record.parentId);
+            recordString = recordString.replace(PlaceholderRecordParentId, recordParent);
             recordString = recordString.replace(PlaceholderRecordFields, fieldValuesString);
             recordString = recordString.replace(PlaceholderComponents, componentsString);
 

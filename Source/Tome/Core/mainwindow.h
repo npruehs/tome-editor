@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTableWidget>
 
+#include "../Features/Search/Model/searchresultlist.h"
 #include "../Features/Tasks/Model/messagelist.h"
 
 class ComponentsWindow;
@@ -26,6 +27,7 @@ namespace Tome
     class RecordFieldsTableWidget;
     class RecordTreeWidget;
     class RecordTreeWidgetItem;
+    class SearchResultsDockWidget;
 }
 
 class MainWindow : public QMainWindow
@@ -51,6 +53,8 @@ class MainWindow : public QMainWindow
         void on_actionEdit_Record_triggered();
         void on_actionRemove_Record_triggered();
 
+        void on_actionFind_Usages_triggered();
+
         void on_actionRun_Integrity_Checks_triggered();
 
         void on_actionAbout_triggered();
@@ -64,10 +68,12 @@ class MainWindow : public QMainWindow
         void onFieldChanged();
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();
+        void searchResultChanged(const QString& title, const Tome::SearchResultList results);
         void tableWidgetDoubleClicked(const QModelIndex &index);
         void treeWidgetDoubleClicked(const QModelIndex &index);
         void treeWidgetRecordReparented(const QString& recordId, const QString& newParentId);
         void treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+
 
     private:
         Ui::MainWindow *ui;
@@ -75,6 +81,7 @@ class MainWindow : public QMainWindow
         Tome::RecordTreeWidget* recordTreeWidget;
         Tome::RecordFieldsTableWidget* recordFieldTableWidget;
         Tome::ErrorListDockWidget* errorListDockWidget;
+        Tome::SearchResultsDockWidget* searchResultsDockWidget;
 
         Tome::Controller* controller;
 

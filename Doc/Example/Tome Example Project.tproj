@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TomeProject Version="1">
+<TomeProject Version="2">
     <Name>Tome Example Project</Name>
+    <Locale>en_US</Locale>
     <Components>
         <Name>ArmorComponent</Name>
         <Name>AttackComponent</Name>
         <Name>InvulnerabilityComponent</Name>
         <Name>ManaComponent</Name>
-        <Name>MovementComponent</Name>
         <Name>NameComponent</Name>
         <Name>PhysicsComponent</Name>
         <Name>RangeComponent</Name>

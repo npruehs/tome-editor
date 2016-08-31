@@ -32,7 +32,7 @@ const QString ProjectSerializer::ElementType = "Type";
 const QString ProjectSerializer::ElementTypes = "Types";
 const QString ProjectSerializer::ElementTypeMap = "TypeMap";
 
-const int ProjectSerializer::Version = 1;
+const int ProjectSerializer::Version = 2;
 
 
 ProjectSerializer::ProjectSerializer()
@@ -181,6 +181,9 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
     // Begin document.
     reader.readStartDocument();
     {
+        // Read version.
+        int version = reader.readAttribute(AttributeVersion).toInt();
+
         // Begin project.
         reader.readStartElement(ElementTomeProject);
         {
@@ -188,7 +191,10 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             project->name = reader.readTextElement(ElementName);
 
             // Read project locale.
-            project->locale.swap( QLocale( reader.readTextElement(ElementLocale) ) );
+            if (version > 1)
+            {
+                project->locale = QLocale(reader.readTextElement(ElementLocale));
+            }
 
             // Read components.
             reader.readStartElement(ElementComponents);

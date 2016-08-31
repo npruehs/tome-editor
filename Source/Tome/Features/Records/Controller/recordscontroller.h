@@ -50,6 +50,11 @@ namespace Tome
              */
             const QStringList getRecordNames() const;
 
+            /**
+             * @brief getRecordFieldValues Returns the map of actual field values of the record with the specified id, including all inherited values.
+             * @param id Id of the record the get the map of field values of.
+             * @return Map of actual field values of the record with the specified id.
+             */
             const RecordFieldValueMap getRecordFieldValues(const QString& id) const;
 
             bool hasRecord(const QString& id) const;
