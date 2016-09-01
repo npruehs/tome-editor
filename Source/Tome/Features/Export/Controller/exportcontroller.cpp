@@ -297,12 +297,13 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             recordString = recordString.replace(PlaceholderRecordFields, fieldValuesString);
             recordString = recordString.replace(PlaceholderComponents, componentsString);
 
-            recordsString.append(recordString);
-
-            if (j < recordSet.records.size() - 1 || i < recordSets.size() - 1)
+            if (!recordsString.isEmpty())
             {
+                // Any previous record export succeeded (e.g. wasn't skipped). Add delimiter.
                 recordsString.append(exportTemplate.recordDelimiter);
             }
+
+            recordsString.append(recordString);
         }
     }
 
