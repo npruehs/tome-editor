@@ -26,6 +26,7 @@ namespace Tome
             void updateRecordIcon();
             void updateRecordIcon(RecordTreeWidgetItem *recordTreeItem);
 
+            void selectRecord(const QString& id);
             void setRecords(const RecordList& records);
 
         signals:
