@@ -76,6 +76,35 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
         {
             const Record& record = recordSet.records[j];
 
+            // Check if should export.
+            if (record.parentId.isEmpty())
+            {
+                // Root node.
+                if (!exportTemplate.exportRoots)
+                {
+                    continue;
+                }
+            }
+            else
+            {
+                if (this->recordsController.getChildren(record.id).empty())
+                {
+                    // Leaf node.
+                    if (!exportTemplate.exportLeafs)
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    // Inner node.
+                    if (!exportTemplate.exportInnerNodes)
+                    {
+                        continue;
+                    }
+                }
+            }
+
             // Build field values string.
             QString fieldValuesString;
 

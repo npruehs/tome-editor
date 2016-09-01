@@ -31,6 +31,9 @@ namespace Tome
             static const QString AttributeBaseType;
             static const QString AttributeExportedType;
             static const QString AttributeExportAsTable;
+            static const QString AttributeExportRoots;
+            static const QString AttributeExportInnerNodes;
+            static const QString AttributeExportLeafs;
             static const QString AttributeKey;
             static const QString AttributeTomeType;
             static const QString AttributeValue;
