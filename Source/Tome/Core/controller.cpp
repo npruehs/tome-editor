@@ -220,7 +220,16 @@ void Controller::openProject(const QString& projectFileName)
             RecordSet& recordSet = project->recordSets[i];
 
             // Open record file.
-            const QString fullRecordSetPath = combinePaths(projectPath, recordSet.name + RecordFileExtension);
+            QString fullRecordSetPath;
+            if ( recordSet.useProjectPath )
+            {
+                fullRecordSetPath = combinePaths(projectPath, recordSet.name + RecordFileExtension);
+            }
+            else
+            {
+                fullRecordSetPath = recordSet.name + RecordFileExtension;
+            }
+
             QFile recordFile(fullRecordSetPath);
 
             if (recordFile.open(QIODevice::ReadOnly))

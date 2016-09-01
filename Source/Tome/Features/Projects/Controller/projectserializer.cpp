@@ -15,6 +15,7 @@ const QString ProjectSerializer::AttributeKey = "Key";
 const QString ProjectSerializer::AttributeTomeType = "TomeType";
 const QString ProjectSerializer::AttributeValue = "Value";
 const QString ProjectSerializer::AttributeVersion = "Version";
+const QString ProjectSerializer::AttributeRelativePath = "RelativePath";
 const QString ProjectSerializer::ElementComponents = "Components";
 const QString ProjectSerializer::ElementFieldDefinitions = "FieldDefinitions";
 const QString ProjectSerializer::ElementFileExtension = "FileExtension";
@@ -90,7 +91,11 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
                 for (int i = 0; i < project->recordSets.size(); ++i)
                 {
                     const RecordSet& recordSet = project->recordSets[i];
-                    writer.writeTextElement(ElementPath, recordSet.name);
+
+                    writer.writeStartElement(ElementPath);
+                    writer.writeAttribute(AttributeRelativePath, QString::number( recordSet.useProjectPath ? 1 : 0 ));
+                    writer.writeCharacters( recordSet.name );
+                    writer.writeEndElement();
                 }
             }
             writer.writeEndElement();
@@ -225,9 +230,10 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             {
                 while (reader.isAtElement(ElementPath))
                 {
-                    const QString name = reader.readTextElement(ElementPath);
+                    QString attr = reader.readAttribute(AttributeRelativePath);
                     RecordSet recordSet = RecordSet();
-                    recordSet.name = name;
+                    recordSet.name = reader.readTextElement(ElementPath);
+                    recordSet.useProjectPath = attr.isEmpty() ? true : 0 != attr.toInt();
                     project->recordSets.push_back(recordSet);
                 }
             }
