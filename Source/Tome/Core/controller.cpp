@@ -220,15 +220,7 @@ void Controller::openProject(const QString& projectFileName)
             RecordSet& recordSet = project->recordSets[i];
 
             // Open record file.
-            QString fullRecordSetPath;
-            if ( recordSet.useProjectPath )
-            {
-                fullRecordSetPath = combinePaths(projectPath, recordSet.name + RecordFileExtension);
-            }
-            else
-            {
-                fullRecordSetPath = recordSet.name + RecordFileExtension;
-            }
+            QString fullRecordSetPath = combinePaths(projectPath, recordSet.name + RecordFileExtension);
 
             QFile recordFile(fullRecordSetPath);
 
@@ -260,32 +252,41 @@ void Controller::openProject(const QString& projectFileName)
 
             try
             {
+                QString templatePath;
+                if ( !exportTemplate.path.isEmpty() )
+                {
+                    templatePath = combinePaths( projectPath, exportTemplate.path );
+                }
+                else
+                {
+                    templatePath = projectPath;
+                }
                 exportTemplate.fieldValueDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportFieldValueDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportFieldValueDelimiterExtension);
                 exportTemplate.fieldValueTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportFieldValueTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportFieldValueTemplateExtension);
                 exportTemplate.recordDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportRecordDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportRecordDelimiterExtension);
                 exportTemplate.recordFileTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportRecordFileTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportRecordFileTemplateExtension);
                 exportTemplate.recordTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportRecordTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportRecordTemplateExtension);
                 exportTemplate.componentDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportComponentDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportComponentDelimiterExtension);
                 exportTemplate.componentTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportComponentTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportComponentTemplateExtension);
                 exportTemplate.listTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportListTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportListTemplateExtension);
                 exportTemplate.listItemTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportListItemTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportListItemTemplateExtension);
                 exportTemplate.listItemDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportListItemDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportListItemDelimiterExtension);
                 exportTemplate.mapTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportMapTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportMapTemplateExtension);
                 exportTemplate.mapItemTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportMapItemTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportMapItemTemplateExtension);
                 exportTemplate.mapItemDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportMapItemDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportMapItemDelimiterExtension);
             }
             catch (const std::runtime_error& e)
             {

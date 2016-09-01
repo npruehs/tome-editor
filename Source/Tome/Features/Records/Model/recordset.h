@@ -11,7 +11,7 @@ namespace Tome
             RecordSet();
 
             QString name;
-            bool useProjectPath = true;
+            bool external = false;
             RecordList records;
     };
 }

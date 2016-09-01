@@ -31,11 +31,12 @@ namespace Tome
             static const QString AttributeBaseType;
             static const QString AttributeExportedType;
             static const QString AttributeExportAsTable;
+            static const QString AttributeExternal;
             static const QString AttributeKey;
+            static const QString AttributePath;
             static const QString AttributeTomeType;
             static const QString AttributeValue;
             static const QString AttributeVersion;
-            static const QString AttributeRelativePath;
             static const QString ElementComponents;
             static const QString ElementFieldDefinitions;
             static const QString ElementFileExtension;

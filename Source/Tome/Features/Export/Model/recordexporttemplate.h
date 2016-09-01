@@ -28,6 +28,7 @@ namespace Tome
             QString recordFileTemplate;
             QString recordTemplate;
             QMap<QString, QString> typeMap;
+            QString path;
     };
 }
 

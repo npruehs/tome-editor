@@ -11,11 +11,12 @@ using namespace Tome;
 const QString ProjectSerializer::AttributeBaseType = "BaseType";
 const QString ProjectSerializer::AttributeExportedType = "ExportedType";
 const QString ProjectSerializer::AttributeExportAsTable = "ExportAsTable";
+const QString ProjectSerializer::AttributeExternal = "External";
 const QString ProjectSerializer::AttributeKey = "Key";
+const QString ProjectSerializer::AttributePath = "Path";
 const QString ProjectSerializer::AttributeTomeType = "TomeType";
 const QString ProjectSerializer::AttributeValue = "Value";
 const QString ProjectSerializer::AttributeVersion = "Version";
-const QString ProjectSerializer::AttributeRelativePath = "RelativePath";
 const QString ProjectSerializer::ElementComponents = "Components";
 const QString ProjectSerializer::ElementFieldDefinitions = "FieldDefinitions";
 const QString ProjectSerializer::ElementFileExtension = "FileExtension";
@@ -33,7 +34,7 @@ const QString ProjectSerializer::ElementType = "Type";
 const QString ProjectSerializer::ElementTypes = "Types";
 const QString ProjectSerializer::ElementTypeMap = "TypeMap";
 
-const int ProjectSerializer::Version = 2;
+const int ProjectSerializer::Version = 3;
 
 
 ProjectSerializer::ProjectSerializer()
@@ -80,7 +81,13 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
                 for (int i = 0; i < project->fieldDefinitionSets.size(); ++i)
                 {
                     const FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
-                    writer.writeTextElement(ElementPath, fieldDefinitionSet.name);
+                    writer.writeStartElement(ElementPath);
+                    if (fieldDefinitionSet.external)
+                    {
+                        writer.writeAttribute(AttributeExternal, "true");
+                    }
+                    writer.writeCharacters(fieldDefinitionSet.name);
+                    writer.writeEndElement();
                 }
             }
             writer.writeEndElement();
@@ -91,10 +98,12 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
                 for (int i = 0; i < project->recordSets.size(); ++i)
                 {
                     const RecordSet& recordSet = project->recordSets[i];
-
                     writer.writeStartElement(ElementPath);
-                    writer.writeAttribute(AttributeRelativePath, QString::number( recordSet.useProjectPath ? 1 : 0 ));
-                    writer.writeCharacters( recordSet.name );
+                    if (recordSet.external)
+                    {
+                        writer.writeAttribute(AttributeExternal, "true");
+                    }
+                    writer.writeCharacters(recordSet.name);
                     writer.writeEndElement();
                 }
             }
@@ -114,6 +123,10 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
                         if (exportTemplate.exportAsTable)
                         {
                             writer.writeAttribute(AttributeExportAsTable, "true");
+                        }
+                        if (!exportTemplate.path.isEmpty())
+                        {
+                            writer.writeAttribute(AttributePath, exportTemplate.path);
                         }
 
                         writer.writeTextElement(ElementName, exportTemplate.name);
@@ -217,9 +230,9 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             {
                 while (reader.isAtElement(ElementPath))
                 {
-                    const QString name = reader.readTextElement(ElementPath);
                     FieldDefinitionSet fieldDefinitionSet = FieldDefinitionSet();
-                    fieldDefinitionSet.name = name;
+                    fieldDefinitionSet.name = reader.readTextElement(ElementPath);;
+                    fieldDefinitionSet.external = reader.readAttribute(AttributeExternal) == "true";
                     project->fieldDefinitionSets.push_back(fieldDefinitionSet);
                 }
             }
@@ -230,10 +243,9 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             {
                 while (reader.isAtElement(ElementPath))
                 {
-                    QString attr = reader.readAttribute(AttributeRelativePath);
                     RecordSet recordSet = RecordSet();
                     recordSet.name = reader.readTextElement(ElementPath);
-                    recordSet.useProjectPath = attr.isEmpty() ? true : 0 != attr.toInt();
+                    recordSet.external = reader.readAttribute(AttributeExternal) == "true";
                     project->recordSets.push_back(recordSet);
                 }
             }
@@ -245,12 +257,14 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
                 while (reader.isAtElement(ElementTemplate))
                 {
                     bool exportAsTable = reader.readAttribute(AttributeExportAsTable) == "true";
+                    QString templatePath = reader.readAttribute(AttributePath);
 
                     reader.readStartElement(ElementTemplate);
                     {
                         RecordExportTemplate exportTemplate = RecordExportTemplate();
 
                         exportTemplate.exportAsTable = exportAsTable;
+                        exportTemplate.path = templatePath;
                         exportTemplate.name = reader.readTextElement(ElementName);
                         exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);
 
