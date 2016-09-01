@@ -14,6 +14,7 @@ class AboutWindow;
 class NewProjectWindow;
 class RecordWindow;
 class CustomTypesWindow;
+class DuplicateRecordWindow;
 
 namespace Ui {
     class MainWindow;
@@ -51,6 +52,7 @@ class MainWindow : public QMainWindow
 
         void on_actionNew_Record_triggered();
         void on_actionEdit_Record_triggered();
+        void on_actionDuplicate_Record_triggered();
         void on_actionRevert_Record_triggered();
         void on_actionRemove_Record_triggered();
 
@@ -93,6 +95,7 @@ class MainWindow : public QMainWindow
         FieldValueWindow* fieldValueWindow;
         NewProjectWindow *newProjectWindow;
         RecordWindow* recordWindow;
+        DuplicateRecordWindow* duplicateRecordWindow;
 
         Tome::MessageList messages;
 

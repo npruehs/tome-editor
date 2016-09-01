@@ -82,7 +82,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Integrity/Controller/listitemtypenotsupportedtask.cpp \
     ../Source/Tome/Features/Search/Controller/findusagescontroller.cpp \
     ../Source/Tome/Features/Search/View/searchresultsdockwidget.cpp \
-    ../Source/Tome/Features/Search/Model/searchresult.cpp
+    ../Source/Tome/Features/Search/Model/searchresult.cpp \
+    ../Source/Tome/Features/Records/View/duplicaterecordwindow.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -155,7 +156,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Search/Controller/findusagescontroller.h \
     ../Source/Tome/Features/Search/Model/searchresult.h \
     ../Source/Tome/Features/Search/Model/searchresultlist.h \
-    ../Source/Tome/Features/Search/View/searchresultsdockwidget.h
+    ../Source/Tome/Features/Search/View/searchresultsdockwidget.h \
+    ../Source/Tome/Features/Records/View/duplicaterecordwindow.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
@@ -170,7 +172,8 @@ FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Types/View/enumerationwindow.ui \
     ../Source/Tome/Features/Types/View/enumerationmemberwindow.ui \
     ../Source/Tome/Features/Types/View/listwindow.ui \
-    ../Source/Tome/Features/Fields/View/listitemwindow.ui
+    ../Source/Tome/Features/Fields/View/listitemwindow.ui \
+    ../Source/Tome/Features/Records/View/duplicaterecordwindow.ui
 
 RESOURCES += \
     tome.qrc

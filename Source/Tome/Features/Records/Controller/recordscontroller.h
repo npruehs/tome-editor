@@ -19,6 +19,8 @@ namespace Tome
             const Record addRecord(const QString& id, const QString& displayName);
             void addRecordField(const QString& recordId, const QString& fieldId);
 
+            const Record duplicateRecord(const QString& existingRecordId, const QString& newRecordid);
+
             /**
              * @brief getAncestors Gets the list of all ancestors of the record with the specified id, direct parent first.
              * @param id Id of the record to get the ancestors of.

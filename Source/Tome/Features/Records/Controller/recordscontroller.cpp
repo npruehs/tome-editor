@@ -37,6 +37,26 @@ void RecordsController::addRecordField(const QString& recordId, const QString& f
     record.fieldValues.insert(fieldId, field.defaultValue);
 }
 
+const Record RecordsController::duplicateRecord(const QString& existingRecordId, const QString& newRecordid)
+{
+    // Get record to duplicate.
+    const Record& existingRecord = this->getRecord(existingRecordId);
+
+    // Create duplicate.
+    Record newRecord = Record();
+    newRecord.id = newRecordid;
+    newRecord.displayName = newRecordid;
+    newRecord.parentId = existingRecord.parentId;
+    newRecord.fieldValues = existingRecord.fieldValues;
+
+    // Add new record.
+    RecordList& records = (*this->model)[0].records;
+    int index = findInsertionIndex(records, newRecord, recordLessThanDisplayName);
+    records.insert(index, newRecord);
+
+    return newRecord;
+}
+
 const RecordList RecordsController::getAncestors(const QString& id) const
 {
     RecordList ancestors;
