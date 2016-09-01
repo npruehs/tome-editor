@@ -77,6 +77,7 @@
     </property>
     <addaction name="actionNew_Record"/>
     <addaction name="actionEdit_Record"/>
+    <addaction name="actionRevert_Record"/>
     <addaction name="actionRemove_Record"/>
     <addaction name="separator"/>
     <addaction name="actionFind_Usages"/>
@@ -283,6 +284,16 @@
    </property>
    <property name="shortcut">
     <string>Alt+F7</string>
+   </property>
+  </action>
+  <action name="actionRevert_Record">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/Restart_6322.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Revert Record</string>
    </property>
   </action>
  </widget>

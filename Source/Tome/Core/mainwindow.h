@@ -51,6 +51,7 @@ class MainWindow : public QMainWindow
 
         void on_actionNew_Record_triggered();
         void on_actionEdit_Record_triggered();
+        void on_actionRevert_Record_triggered();
         void on_actionRemove_Record_triggered();
 
         void on_actionFind_Usages_triggered();

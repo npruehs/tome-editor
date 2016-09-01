@@ -71,7 +71,10 @@ namespace Tome
             void removeRecordField(const QString fieldId);
             void removeRecordField(const QString& recordId, const QString& fieldId);
             void renameRecordField(const QString oldFieldId, const QString newFieldId);
+
             QVariant revertFieldValue(const QString& recordId, const QString& fieldId);
+            void revertRecord(const QString& recordId);
+
             void reparentRecord(const QString& recordId, const QString& newParentId);
             void setRecordSets(RecordSetList& model);
             void updateRecord(const QString& oldId, const QString& newId, const QString& displayName);

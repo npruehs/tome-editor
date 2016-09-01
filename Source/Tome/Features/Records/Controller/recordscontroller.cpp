@@ -349,15 +349,20 @@ void RecordsController::renameRecordField(const QString oldFieldId, const QStrin
 
 QVariant RecordsController::revertFieldValue(const QString& recordId, const QString& fieldId)
 {
+    // Check if there's anything to revert to.
     QVariant inheritedValue = this->getInheritedFieldValue(recordId, fieldId);
 
     if (inheritedValue != QVariant())
     {
+        // Revert field value.
         this->updateRecordFieldValue(recordId, fieldId, inheritedValue);
+
+        // Return reverted value.
         return inheritedValue;
     }
     else
     {
+        // Return current value.
         RecordFieldValueMap recordFieldValues = this->getRecordFieldValues(recordId);
 
         if (recordFieldValues.contains(fieldId))
@@ -368,6 +373,20 @@ QVariant RecordsController::revertFieldValue(const QString& recordId, const QStr
         {
             return QVariant();
         }
+    }
+}
+
+void RecordsController::revertRecord(const QString& recordId)
+{
+    const RecordFieldValueMap& fields = this->getRecordFieldValues(recordId);
+
+    // Revert all fields.
+    for (RecordFieldValueMap::const_iterator it = fields.begin();
+         it != fields.end();
+         ++it)
+    {
+        const QString& fieldId = it.key();
+        this->revertFieldValue(recordId, fieldId);
     }
 }
 

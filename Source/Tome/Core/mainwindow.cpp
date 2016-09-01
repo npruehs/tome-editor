@@ -421,6 +421,33 @@ void MainWindow::on_actionEdit_Record_triggered()
     }
 }
 
+void MainWindow::on_actionRevert_Record_triggered()
+{
+    // Get record to revert.
+    const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
+
+    // Show question.
+    const QString& question = QString(tr("Are you sure you want to revert %1 to its original state?")).arg(recordId);
+
+    int answer = QMessageBox::question(
+                this,
+                tr("Revert Record"),
+                question,
+                QMessageBox::Yes,
+                QMessageBox::No);
+
+    if (answer != QMessageBox::Yes)
+    {
+        return;
+    }
+
+    // Revert record.
+    this->controller->getRecordsController().revertRecord(recordId);
+
+    // Update view.
+    this->refreshRecordTable();
+}
+
 void MainWindow::on_actionRemove_Record_triggered()
 {
     RecordTreeWidgetItem* recordItem = this->recordTreeWidget->getSelectedRecordItem();
