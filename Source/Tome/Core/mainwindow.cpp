@@ -32,6 +32,7 @@
 #include "../Features/Records/View/recordtreewidget.h"
 #include "../Features/Records/View/recordtreewidgetitem.h"
 #include "../Features/Records/View/recordwindow.h"
+#include "../Features/Records/View/duplicaterecordwindow.h"
 #include "../Features/Search/Controller/findusagescontroller.h"
 #include "../Features/Search/View/searchresultsdockwidget.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
@@ -60,7 +61,8 @@ MainWindow::MainWindow(QWidget *parent) :
     fieldDefinitionsWindow(0),
     fieldValueWindow(0),
     newProjectWindow(0),
-    recordWindow(0)
+    recordWindow(0),
+    duplicateRecordWindow(0)
 {
     ui->setupUi(this);
 
@@ -421,6 +423,67 @@ void MainWindow::on_actionEdit_Record_triggered()
         this->refreshRecordTable();
         this->recordTreeWidget->updateRecordIcon();
     }
+}
+
+void MainWindow::on_actionDuplicate_Record_triggered()
+{
+    if (!this->duplicateRecordWindow)
+    {
+        this->duplicateRecordWindow = new DuplicateRecordWindow(this);
+    }
+
+    const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
+    const QStringList recordIds = this->controller->getRecordsController().getRecordIds();
+
+    // Disallow all existing record ids.
+    this->duplicateRecordWindow->setRecordId(recordId);
+    this->duplicateRecordWindow->setDisallowedRecordIds(recordIds);
+
+    // Show window.
+    int result = this->duplicateRecordWindow->exec();
+
+    if (result != QDialog::Accepted)
+    {
+        return;
+    }
+
+    const QString& newRecordId = this->duplicateRecordWindow->getRecordId();
+
+    // Update model.
+    this->controller->getRecordsController().duplicateRecord(recordId, newRecordId);
+
+    // Update view.
+    this->recordTreeWidget->clear();
+    this->refreshRecordTree();
+
+    this->recordTreeWidget->selectRecord(newRecordId);
+}
+
+void MainWindow::on_actionRevert_Record_triggered()
+{
+    // Get record to revert.
+    const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
+
+    // Show question.
+    const QString& question = QString(tr("Are you sure you want to revert %1 to its original state?")).arg(recordId);
+
+    int answer = QMessageBox::question(
+                this,
+                tr("Revert Record"),
+                question,
+                QMessageBox::Yes,
+                QMessageBox::No);
+
+    if (answer != QMessageBox::Yes)
+    {
+        return;
+    }
+
+    // Revert record.
+    this->controller->getRecordsController().revertRecord(recordId);
+
+    // Update view.
+    this->refreshRecordTable();
 }
 
 void MainWindow::on_actionRemove_Record_triggered()

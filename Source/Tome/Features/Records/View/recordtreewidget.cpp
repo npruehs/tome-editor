@@ -77,6 +77,21 @@ void RecordTreeWidget::updateRecordIcon(RecordTreeWidgetItem *recordTreeItem)
     }
 }
 
+void RecordTreeWidget::selectRecord(const QString& id)
+{
+    QTreeWidgetItemIterator it(this);
+
+    while (*it)
+    {
+      if ((*it)->text(0) == id)
+      {
+          this->setCurrentItem((*it));
+          break;
+      }
+
+      ++it;
+    }
+}
 
 void RecordTreeWidget::setRecords(const RecordList& records)
 {

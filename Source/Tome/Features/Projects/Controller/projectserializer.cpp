@@ -11,6 +11,9 @@ using namespace Tome;
 const QString ProjectSerializer::AttributeBaseType = "BaseType";
 const QString ProjectSerializer::AttributeExportedType = "ExportedType";
 const QString ProjectSerializer::AttributeExportAsTable = "ExportAsTable";
+const QString ProjectSerializer::AttributeExportRoots = "ExportRoots";
+const QString ProjectSerializer::AttributeExportInnerNodes = "ExportInnerNodes";
+const QString ProjectSerializer::AttributeExportLeafs = "ExportLeafs";
 const QString ProjectSerializer::AttributeExternal = "External";
 const QString ProjectSerializer::AttributeKey = "Key";
 const QString ProjectSerializer::AttributePath = "Path";
@@ -127,6 +130,21 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
                         if (!exportTemplate.path.isEmpty())
                         {
                             writer.writeAttribute(AttributePath, exportTemplate.path);
+                        }
+
+                        if (exportTemplate.exportRoots)
+                        {
+                            writer.writeAttribute(AttributeExportRoots, "true");
+                        }
+
+                        if (exportTemplate.exportInnerNodes)
+                        {
+                            writer.writeAttribute(AttributeExportInnerNodes, "true");
+                        }
+
+                        if (exportTemplate.exportLeafs)
+                        {
+                            writer.writeAttribute(AttributeExportLeafs, "true");
                         }
 
                         writer.writeTextElement(ElementName, exportTemplate.name);
@@ -257,6 +275,9 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
                 while (reader.isAtElement(ElementTemplate))
                 {
                     bool exportAsTable = reader.readAttribute(AttributeExportAsTable) == "true";
+                    bool exportRoots = reader.readAttribute(AttributeExportRoots) == "true";
+                    bool exportInnerNodes = reader.readAttribute(AttributeExportInnerNodes) == "true";
+                    bool exportLeafs = reader.readAttribute(AttributeExportLeafs) == "true";
                     QString templatePath = reader.readAttribute(AttributePath);
 
                     reader.readStartElement(ElementTemplate);
@@ -264,6 +285,10 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
                         RecordExportTemplate exportTemplate = RecordExportTemplate();
 
                         exportTemplate.exportAsTable = exportAsTable;
+                        exportTemplate.exportRoots = exportRoots;
+                        exportTemplate.exportInnerNodes = exportInnerNodes;
+                        exportTemplate.exportLeafs = exportLeafs;
+
                         exportTemplate.path = templatePath;
                         exportTemplate.name = reader.readTextElement(ElementName);
                         exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);

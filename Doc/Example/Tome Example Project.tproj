@@ -20,22 +20,22 @@
         <Path>Tome Example Project</Path>
     </Records>
     <RecordExportTemplates>
-        <Template ExportAsTable="true">
+        <Template ExportAsTable="true" ExportLeafs="true">
             <Name>CSV</Name>
             <FileExtension>.csv</FileExtension>
             <TypeMap/>
         </Template>
-        <Template ExportAsTable="true">
+        <Template ExportAsTable="true" ExportLeafs="true">
             <Name>HTML</Name>
             <FileExtension>.html</FileExtension>
             <TypeMap/>
         </Template>
-        <Template>
+        <Template ExportLeafs="true">
             <Name>JSON</Name>
             <FileExtension>.json</FileExtension>
             <TypeMap/>
         </Template>
-        <Template>
+        <Template ExportLeafs="true">
             <Name>Slash XML</Name>
             <FileExtension>.blueprints.xml</FileExtension>
             <TypeMap>
@@ -50,7 +50,7 @@
                 <Mapping TomeType="String" ExportedType="System.String"/>
             </TypeMap>
         </Template>
-        <Template>
+        <Template ExportLeafs="true">
             <Name>StarCraft II XML</Name>
             <FileExtension>.xml</FileExtension>
             <TypeMap/>

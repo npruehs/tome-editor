@@ -76,6 +76,35 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
         {
             const Record& record = recordSet.records[j];
 
+            // Check if should export.
+            if (record.parentId.isEmpty())
+            {
+                // Root node.
+                if (!exportTemplate.exportRoots)
+                {
+                    continue;
+                }
+            }
+            else
+            {
+                if (this->recordsController.getChildren(record.id).empty())
+                {
+                    // Leaf node.
+                    if (!exportTemplate.exportLeafs)
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    // Inner node.
+                    if (!exportTemplate.exportInnerNodes)
+                    {
+                        continue;
+                    }
+                }
+            }
+
             // Build field values string.
             QString fieldValuesString;
 
@@ -268,12 +297,13 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             recordString = recordString.replace(PlaceholderRecordFields, fieldValuesString);
             recordString = recordString.replace(PlaceholderComponents, componentsString);
 
-            recordsString.append(recordString);
-
-            if (j < recordSet.records.size() - 1 || i < recordSets.size() - 1)
+            if (!recordsString.isEmpty())
             {
+                // Any previous record export succeeded (e.g. wasn't skipped). Add delimiter.
                 recordsString.append(exportTemplate.recordDelimiter);
             }
+
+            recordsString.append(recordString);
         }
     }
 
