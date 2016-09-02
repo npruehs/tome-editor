@@ -295,8 +295,6 @@ void MainWindow::on_actionNew_Record_triggered()
 
     // Set fields.
     this->recordWindow->setRecordFields(fieldDefinitions);
-    // Set components.
-    this->recordWindow->setRecordComponents(componentDefinitions);
 
     // Set components.
     this->recordWindow->setRecordComponents(componentDefinitions);
@@ -852,8 +850,6 @@ void MainWindow::refreshRecordTable()
     {
         this->updateRecordRow(i);
     }
-
-    this->recordTreeWidget->updateRecordIcon( this->recordTreeWidget->getSelectedRecordItem() );
 }
 
 void MainWindow::showWindow(QWidget* widget)

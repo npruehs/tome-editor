@@ -2,7 +2,6 @@
 #define RECORDSCONTROLLER_H
 
 #include <QStringList>
-#include <QLocale>
 
 #include "../Model/recordsetlist.h"
 
@@ -86,7 +85,6 @@ namespace Tome
 
         private:
             RecordSetList* model;
-            const QLocale *locale = nullptr;
 
             const FieldDefinitionsController& fieldDefinitionsController;
 
