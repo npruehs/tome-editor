@@ -190,9 +190,18 @@ void Controller::openProject(const QString& projectFileName)
             FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
 
             // Open field definition file.
-            const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSet.name + FieldDefinitionFileExtension);
-            QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
+            QString fullFieldDefinitionSetPath;
+            const QString fieldDefinitionSetFilePath = fieldDefinitionSet.name + FieldDefinitionFileExtension;
+            if (QDir::isRelativePath(fieldDefinitionSetFilePath))
+            {
+                fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSetFilePath);
+            }
+            else
+            {
+                fullFieldDefinitionSetPath = fieldDefinitionSetFilePath;
+            }
 
+            QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
             if (fieldDefinitionFile.open(QIODevice::ReadOnly))
             {
                 try
@@ -220,7 +229,17 @@ void Controller::openProject(const QString& projectFileName)
             RecordSet& recordSet = project->recordSets[i];
 
             // Open record file.
-            QString fullRecordSetPath = combinePaths(projectPath, recordSet.name + RecordFileExtension);
+            QString fullRecordSetPath;
+            const QString recordSetFilePath = recordSet.name + RecordFileExtension;
+            if (QDir::isRelativePath(recordSetFilePath))
+            {
+                fullRecordSetPath = combinePaths(projectPath, recordSetFilePath);
+            }
+            else
+            {
+                fullRecordSetPath = recordSetFilePath;
+            }
+
 
             QFile recordFile(fullRecordSetPath);
 
@@ -255,7 +274,14 @@ void Controller::openProject(const QString& projectFileName)
                 QString templatePath;
                 if ( !exportTemplate.path.isEmpty() )
                 {
-                    templatePath = combinePaths( projectPath, exportTemplate.path );
+                    if (QDir::isRelativePath(exportTemplate.path))
+                    {
+                        templatePath = combinePaths( projectPath, exportTemplate.path );
+                    }
+                    else
+                    {
+                        templatePath = exportTemplate.path;
+                    }
                 }
                 else
                 {
@@ -343,8 +369,16 @@ void Controller::saveProject(QSharedPointer<Project> project)
         const FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
 
         // Build file name.
+        QString fullFieldDefinitionSetPath;
         const QString fieldDefinitionSetFileName = fieldDefinitionSet.name + FieldDefinitionFileExtension;
-        const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSetFileName);
+        if (QDir::isRelativePath(fieldDefinitionSetFileName))
+        {
+            fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSetFileName);
+        }
+        else
+        {
+            fullFieldDefinitionSetPath = fieldDefinitionSetFileName;
+        }
 
         // Write file.
         QFile fieldDefinitionSetFile(fullFieldDefinitionSetPath);
@@ -368,8 +402,16 @@ void Controller::saveProject(QSharedPointer<Project> project)
         const RecordSet& recordSet = project->recordSets[i];
 
         // Build file name.
+        QString fullRecordSetPath;
         const QString recordSetFileName = recordSet.name + RecordFileExtension;
-        const QString fullRecordSetPath = Tome::combinePaths(projectPath, recordSetFileName);
+        if (QDir::isRelativePath(recordSetFileName))
+        {
+            fullRecordSetPath = combinePaths(projectPath, recordSetFileName);
+        }
+        else
+        {
+            fullRecordSetPath = recordSetFileName;
+        }
 
         // Write file.
         QFile recordSetFile(fullRecordSetPath);
