@@ -30,11 +30,11 @@ namespace Tome
             QString mapItemTemplate;
             QString mapItemDelimiter;
             QString name;
+            QString path;
             QString recordDelimiter;
             QString recordFileTemplate;
             QString recordTemplate;
             QMap<QString, QString> typeMap;
-            QString path;
     };
 }
 

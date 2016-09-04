@@ -13,7 +13,6 @@ namespace Tome
             FieldDefinitionSet();
 
             QString name;
-            bool external = false;
             FieldDefinitionList fieldDefinitions;
     };
 }
