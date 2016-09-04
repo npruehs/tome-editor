@@ -190,9 +190,18 @@ void Controller::openProject(const QString& projectFileName)
             FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
 
             // Open field definition file.
-            const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSet.name + FieldDefinitionFileExtension);
-            QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
+            QString fullFieldDefinitionSetPath;
+            const QString fieldDefinitionSetFilePath = fieldDefinitionSet.name + FieldDefinitionFileExtension;
+            if (QDir::isRelativePath(fieldDefinitionSetFilePath))
+            {
+                fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSetFilePath);
+            }
+            else
+            {
+                fullFieldDefinitionSetPath = fieldDefinitionSetFilePath;
+            }
 
+            QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
             if (fieldDefinitionFile.open(QIODevice::ReadOnly))
             {
                 try
@@ -220,7 +229,18 @@ void Controller::openProject(const QString& projectFileName)
             RecordSet& recordSet = project->recordSets[i];
 
             // Open record file.
-            const QString fullRecordSetPath = combinePaths(projectPath, recordSet.name + RecordFileExtension);
+            QString fullRecordSetPath;
+            const QString recordSetFilePath = recordSet.name + RecordFileExtension;
+            if (QDir::isRelativePath(recordSetFilePath))
+            {
+                fullRecordSetPath = combinePaths(projectPath, recordSetFilePath);
+            }
+            else
+            {
+                fullRecordSetPath = recordSetFilePath;
+            }
+
+
             QFile recordFile(fullRecordSetPath);
 
             if (recordFile.open(QIODevice::ReadOnly))
@@ -251,32 +271,48 @@ void Controller::openProject(const QString& projectFileName)
 
             try
             {
+                QString templatePath;
+                if ( !exportTemplate.path.isEmpty() )
+                {
+                    if (QDir::isRelativePath(exportTemplate.path))
+                    {
+                        templatePath = combinePaths( projectPath, exportTemplate.path );
+                    }
+                    else
+                    {
+                        templatePath = exportTemplate.path;
+                    }
+                }
+                else
+                {
+                    templatePath = projectPath;
+                }
                 exportTemplate.fieldValueDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportFieldValueDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportFieldValueDelimiterExtension);
                 exportTemplate.fieldValueTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportFieldValueTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportFieldValueTemplateExtension);
                 exportTemplate.recordDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportRecordDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportRecordDelimiterExtension);
                 exportTemplate.recordFileTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportRecordFileTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportRecordFileTemplateExtension);
                 exportTemplate.recordTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportRecordTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportRecordTemplateExtension);
                 exportTemplate.componentDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportComponentDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportComponentDelimiterExtension);
                 exportTemplate.componentTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportComponentTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportComponentTemplateExtension);
                 exportTemplate.listTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportListTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportListTemplateExtension);
                 exportTemplate.listItemTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportListItemTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportListItemTemplateExtension);
                 exportTemplate.listItemDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportListItemDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportListItemDelimiterExtension);
                 exportTemplate.mapTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportMapTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportMapTemplateExtension);
                 exportTemplate.mapItemTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportMapItemTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportMapItemTemplateExtension);
                 exportTemplate.mapItemDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportMapItemDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportMapItemDelimiterExtension);
             }
             catch (const std::runtime_error& e)
             {
@@ -333,8 +369,16 @@ void Controller::saveProject(QSharedPointer<Project> project)
         const FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
 
         // Build file name.
+        QString fullFieldDefinitionSetPath;
         const QString fieldDefinitionSetFileName = fieldDefinitionSet.name + FieldDefinitionFileExtension;
-        const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSetFileName);
+        if (QDir::isRelativePath(fieldDefinitionSetFileName))
+        {
+            fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSetFileName);
+        }
+        else
+        {
+            fullFieldDefinitionSetPath = fieldDefinitionSetFileName;
+        }
 
         // Write file.
         QFile fieldDefinitionSetFile(fullFieldDefinitionSetPath);
@@ -358,8 +402,16 @@ void Controller::saveProject(QSharedPointer<Project> project)
         const RecordSet& recordSet = project->recordSets[i];
 
         // Build file name.
+        QString fullRecordSetPath;
         const QString recordSetFileName = recordSet.name + RecordFileExtension;
-        const QString fullRecordSetPath = Tome::combinePaths(projectPath, recordSetFileName);
+        if (QDir::isRelativePath(recordSetFileName))
+        {
+            fullRecordSetPath = combinePaths(projectPath, recordSetFileName);
+        }
+        else
+        {
+            fullRecordSetPath = recordSetFileName;
+        }
 
         // Write file.
         QFile recordSetFile(fullRecordSetPath);

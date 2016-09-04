@@ -11,6 +11,7 @@ namespace Tome
             RecordSet();
 
             QString name;
+            bool external = false;
             RecordList records;
     };
 }

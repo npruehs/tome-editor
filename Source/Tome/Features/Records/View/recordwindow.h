@@ -44,11 +44,12 @@ class RecordWindow : public QDialog
 
     private slots:
         void on_lineEditDisplayName_textEdited(const QString &arg1);
+        void on_lineEditId_textEdited(const QString &arg1);
 
         void onCheckBoxStateChanged(int state);
         void onComponentCheckBoxStateChanged(int state);
 
-    private:
+private:
         static const QString PropertyFieldComponent;
         static const QString PropertyFieldId;
         static const QString PropertyComponentId;
@@ -56,6 +57,8 @@ class RecordWindow : public QDialog
         Ui::RecordWindow *ui;
 
         QStringList disallowedRecordIds;
+
+        bool recordIdLocked = false;
 
         bool validate();
 };
