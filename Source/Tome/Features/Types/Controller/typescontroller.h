@@ -14,6 +14,7 @@ namespace Tome
 
             const CustomType addEnumeration(const QString& name, const QStringList& enumeration);
             const CustomType addList(const QString& name, const QString& itemType);
+            const CustomType addMap(const QString& name, const QString& keyType, const QString& valueType);
 
             const QStringList getBuiltInTypes() const;
 
@@ -41,6 +42,7 @@ namespace Tome
             void setCustomTypes(CustomTypeList& model);
             void updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration);
             void updateList(const QString& oldName, const QString& newName, const QString& itemType);
+            void updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType);
 
             QString valueToString(const QVariant& value, const QString& typeName);
 

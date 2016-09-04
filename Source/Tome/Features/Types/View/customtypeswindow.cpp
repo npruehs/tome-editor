@@ -3,6 +3,7 @@
 
 #include "enumerationwindow.h"
 #include "listwindow.h"
+#include "mapwindow.h"
 #include "../Controller/typescontroller.h"
 #include "../Model/builtintype.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
@@ -20,7 +21,8 @@ CustomTypesWindow::CustomTypesWindow(TypesController& typesController, FieldDefi
     fieldDefinitionsController(fieldDefinitionsController),
     findUsagesController(findUsagesController),
     enumerationWindow(0),
-    listWindow(0)
+    listWindow(0),
+    mapWindow(0)
 {
     ui->setupUi(this);
 
@@ -52,6 +54,7 @@ CustomTypesWindow::~CustomTypesWindow()
 
     delete this->enumerationWindow;
     delete this->listWindow;
+    delete this->mapWindow;
 }
 
 void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
@@ -106,6 +109,33 @@ void CustomTypesWindow::on_actionNew_List_triggered()
     }
 }
 
+void CustomTypesWindow::on_actionNew_Map_triggered()
+{
+    // Show window.
+    if (!this->mapWindow)
+    {
+        this->mapWindow = new MapWindow(this->typesController, this);
+    }
+
+    this->mapWindow->init();
+    int result = this->mapWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        // Update model.
+        CustomType newType =
+                this->typesController.addMap(
+                    this->mapWindow->getMapName(),
+                    this->mapWindow->getMapKeyType(),
+                    this->mapWindow->getMapValueType());
+
+        // Update view.
+        this->ui->tableWidget->insertRow(0);
+        this->updateRow(0, newType);
+    }
+}
+
+
 void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
 {
     // Get selected type.
@@ -126,6 +156,10 @@ void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
     else if (type.isList())
     {
         this->editList(typeName, type);
+    }
+    else if (type.isMap())
+    {
+        this->editMap(typeName, type);
     }
 }
 
@@ -233,6 +267,34 @@ void CustomTypesWindow::editList(QString typeName, const CustomType& type)
     }
 }
 
+void CustomTypesWindow::editMap(QString typeName, const CustomType& type)
+{
+    // Show window.
+    if (!this->mapWindow)
+    {
+        this->mapWindow = new MapWindow(this->typesController, this);
+    }
+
+    this->mapWindow->init();
+
+    // Update view.
+    this->mapWindow->setMapName(type.name);
+    this->mapWindow->setMapKeyType(type.getKeyType());
+    this->mapWindow->setMapValueType(type.getValueType());
+
+    int result = this->mapWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        // Update type.
+        this->updateMap(
+                    typeName,
+                    this->mapWindow->getMapName(),
+                    this->mapWindow->getMapKeyType(),
+                    this->mapWindow->getMapValueType());
+    }
+}
+
 void CustomTypesWindow::updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration)
 {
     const CustomType& type = this->typesController.getCustomType(oldName);
@@ -259,6 +321,19 @@ void CustomTypesWindow::updateList(const QString& oldName, const QString& newNam
     this->updateRow(index, type);
 }
 
+void CustomTypesWindow::updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType)
+{
+    const CustomType& type = this->typesController.getCustomType(oldName);
+
+    // Update model.
+    this->fieldDefinitionsController.renameFieldType(oldName, newName);
+    this->typesController.updateMap(oldName, newName, keyType, valueType);
+
+    // Update view.
+    int index = this->getSelectedTypeIndex();
+    this->updateRow(index, type);
+}
+
 void CustomTypesWindow::updateRow(const int index, const CustomType& type)
 {
     // Disable sorting before upading data (see http://doc.qt.io/qt-5.7/qtablewidget.html#setItem)
@@ -276,6 +351,11 @@ void CustomTypesWindow::updateRow(const int index, const CustomType& type)
     {
         this->ui->tableWidget->setItem(index, 1, new QTableWidgetItem("List"));
         this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(type.getItemType()));
+    }
+    else if (type.isMap())
+    {
+        this->ui->tableWidget->setItem(index, 1, new QTableWidgetItem("Map"));
+        this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(type.getKeyType() + " -> " + type.getValueType()));
     }
 
     // Enable sorting again.
