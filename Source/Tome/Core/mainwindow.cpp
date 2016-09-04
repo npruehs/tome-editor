@@ -51,10 +51,10 @@
 using namespace Tome;
 
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    controller(new Controller()),
+    controller(controller),
     aboutWindow(0),
     componentsWindow(0),
     customTypesWindow(0),
@@ -147,8 +147,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete this->ui;
-
-    delete this->controller;
 
     delete this->recordTreeWidget;
     delete this->recordFieldTableWidget;

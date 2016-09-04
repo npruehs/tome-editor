@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QTextStream>
 
+#include "mainwindow.h"
 #include "../Features/Components/Controller/componentscontroller.h"
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
@@ -53,7 +54,8 @@ Controller::Controller() :
     exportController(new ExportController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     settingsController(new SettingsController()),
     tasksController(new TasksController(*this->componentsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
-    findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController))
+    findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
+    mainWindow(0)
 {
     // Setup tasks.
     this->tasksController->addTask(new FieldTypeDoesNotExistTask());
@@ -63,6 +65,11 @@ Controller::Controller() :
 
 Controller::~Controller()
 {
+    if (this->mainWindow != 0)
+    {
+        delete this->mainWindow;
+    }
+
     delete this->componentsController;
     delete this->fieldDefinitionsController;
     delete this->recordsController;
@@ -111,6 +118,13 @@ TypesController& Controller::getTypesController()
 FindUsagesController& Controller::getFindUsagesController()
 {
     return *this->findUsagesController;
+}
+
+void Controller::init()
+{
+    // Setup view.
+    this->mainWindow = new MainWindow(this);
+    this->mainWindow->show();
 }
 
 void Controller::createProject(const QString& projectName, const QString& projectPath)

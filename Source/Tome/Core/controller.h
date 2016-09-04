@@ -3,6 +3,7 @@
 
 #include <QSharedPointer>
 
+class MainWindow;
 
 namespace Tome
 {
@@ -30,6 +31,8 @@ namespace Tome
             TasksController& getTasksController();
             TypesController& getTypesController();
             FindUsagesController& getFindUsagesController();
+
+            void init();
 
             void createProject(const QString& projectName, const QString& projectPath);
             const QString getFullProjectPath() const;
@@ -67,6 +70,8 @@ namespace Tome
             SettingsController* settingsController;
             TasksController* tasksController;
             FindUsagesController* findUsagesController;
+
+            MainWindow* mainWindow;
 
             const QString getFullProjectPath(QSharedPointer<Project> project) const;
             void saveProject(QSharedPointer<Project> project);
