@@ -1,6 +1,6 @@
-[![AppVeyor](https://img.shields.io/appveyor/ci/npruehs/tome-editor.svg?maxAge=2592000)]()
-[![GitHub tag](https://img.shields.io/github/tag/npruehs/tome-editor.svg?maxAge=2592000)]()
-[![license](https://img.shields.io/github/license/npruehs/tome-editor.svg?maxAge=2592000)]()
+[![AppVeyor](https://img.shields.io/appveyor/ci/npruehs/tome-editor.svg?maxAge=2592000)](https://ci.appveyor.com/project/npruehs/tome-editor)
+[![GitHub tag](https://img.shields.io/github/tag/npruehs/tome-editor.svg?maxAge=2592000)](https://github.com/npruehs/tome-editor/releases)
+[![license](https://img.shields.io/github/license/npruehs/tome-editor.svg?maxAge=2592000)](https://github.com/npruehs/tome-editor/blob/develop/LICENSE)
 
 # Tome
 
