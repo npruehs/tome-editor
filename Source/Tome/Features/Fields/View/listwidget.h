@@ -1,7 +1,6 @@
 #ifndef LISTWIDGET_H
 #define LISTWIDGET_H
 
-#include <QAction>
 #include <QHBoxLayout>
 #include <QListWidget>
 #include <QString>

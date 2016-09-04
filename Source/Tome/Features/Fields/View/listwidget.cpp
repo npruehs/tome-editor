@@ -40,30 +40,30 @@ ListWidget::ListWidget(RecordsController& recordsController, TypesController& ty
     buttonLayout->addWidget(addButton);
 
     QToolButton* removeButton = new QToolButton(this);
+    removeButton->setArrowType(Qt::RightArrow);
     connect(
                 removeButton,
                 SIGNAL(clicked()),
                 SLOT(removeItem())
                 );
-    removeButton->setArrowType(Qt::RightArrow);
     buttonLayout->addWidget(removeButton);
 
     QToolButton* upButton = new QToolButton(this);
+    upButton->setArrowType(Qt::UpArrow);
     connect(
                 upButton,
                 SIGNAL(clicked()),
                 SLOT(moveItemUp())
                 );
-    upButton->setArrowType(Qt::UpArrow);
     buttonLayout->addWidget(upButton);
 
     QToolButton* downButton = new QToolButton(this);
+    downButton->setArrowType(Qt::DownArrow);
     connect(
                 downButton,
                 SIGNAL(clicked()),
                 SLOT(moveItemDown())
                 );
-    downButton->setArrowType(Qt::DownArrow);
     buttonLayout->addWidget(downButton);
 
     this->layout->addLayout(buttonLayout);

@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include "listwidget.h"
+#include "mapwidget.h"
 #include "vector2iwidget.h"
 #include "vector2rwidget.h"
 #include "vector3iwidget.h"
@@ -66,6 +67,9 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
 
     this->vector3RWidget = new Vector3RWidget();
     this->addWidget(this->vector3RWidget);
+
+    this->mapWidget = new MapWidget(this->recordsController, this->typesController);
+    this->addWidget(this->mapWidget);
 
     // Set layout.
     this->setLayout(this->layout);
@@ -156,6 +160,11 @@ QVariant FieldValueWidget::getFieldValue() const
     if (customType.isList())
     {
         return this->listWidget->getItems();
+    }
+
+    if (customType.isMap())
+    {
+        return this->mapWidget->getMap();
     }
 
     const QString errorMessage = "Unknown field type: " + this->fieldType;
@@ -264,6 +273,14 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
         return;
     }
 
+    if (customType.isMap())
+    {
+        this->mapWidget->setKeyType(customType.getKeyType());
+        this->mapWidget->setValueType(customType.getValueType());
+        this->setCurrentWidget(this->mapWidget);
+        return;
+    }
+
     const QString errorMessage = "Unknown field type: " + this->fieldType;
     throw std::runtime_error(errorMessage.toStdString());
 }
@@ -357,6 +374,12 @@ void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
     if (customType.isList())
     {
         this->listWidget->setItems(fieldValue.toList());
+        return;
+    }
+
+    if (customType.isMap())
+    {
+        this->mapWidget->setMap(fieldValue.toMap());
         return;
     }
 
