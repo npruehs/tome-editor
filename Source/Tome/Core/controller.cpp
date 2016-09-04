@@ -229,17 +229,17 @@ void Controller::openProject(const QString& projectFileName)
             RecordSet& recordSet = project->recordSets[i];
 
             // Open record file.
-            QString fullRecordSetPath;
-            const QString recordSetFilePath = recordSet.name + RecordFileExtension;
-            if (QDir::isRelativePath(recordSetFilePath))
+            QString fullRecordSetPath = recordSet.name;
+
+            if (!fullRecordSetPath.endsWith(RecordFileExtension))
             {
-                fullRecordSetPath = combinePaths(projectPath, recordSetFilePath);
-            }
-            else
-            {
-                fullRecordSetPath = recordSetFilePath;
+                fullRecordSetPath = fullRecordSetPath + RecordFileExtension;
             }
 
+            if (QDir::isRelativePath(fullRecordSetPath))
+            {
+                fullRecordSetPath = combinePaths(projectPath, fullRecordSetPath);
+            }
 
             QFile recordFile(fullRecordSetPath);
 
