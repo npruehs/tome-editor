@@ -255,15 +255,16 @@ void Controller::openProject(const QString& projectFileName)
             FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
 
             // Open field definition file.
-            QString fullFieldDefinitionSetPath;
-            const QString fieldDefinitionSetFilePath = fieldDefinitionSet.name + FieldDefinitionFileExtension;
-            if (QDir::isRelativePath(fieldDefinitionSetFilePath))
+            QString fullFieldDefinitionSetPath = fieldDefinitionSet.name;
+
+            if (!fullFieldDefinitionSetPath.endsWith(FieldDefinitionFileExtension))
             {
-                fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSetFilePath);
+                fullFieldDefinitionSetPath = fullFieldDefinitionSetPath + FieldDefinitionFileExtension;
             }
-            else
+
+            if (QDir::isRelativePath(fullFieldDefinitionSetPath))
             {
-                fullFieldDefinitionSetPath = fieldDefinitionSetFilePath;
+                fullFieldDefinitionSetPath = combinePaths(projectPath, fullFieldDefinitionSetPath);
             }
 
             QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
@@ -434,15 +435,16 @@ void Controller::saveProject(QSharedPointer<Project> project)
         const FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
 
         // Build file name.
-        QString fullFieldDefinitionSetPath;
-        const QString fieldDefinitionSetFileName = fieldDefinitionSet.name + FieldDefinitionFileExtension;
-        if (QDir::isRelativePath(fieldDefinitionSetFileName))
+        QString fullFieldDefinitionSetPath = fieldDefinitionSet.name;
+
+        if (!fullFieldDefinitionSetPath.endsWith(FieldDefinitionFileExtension))
         {
-            fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSetFileName);
+            fullFieldDefinitionSetPath = fullFieldDefinitionSetPath + FieldDefinitionFileExtension;
         }
-        else
+
+        if (QDir::isRelativePath(fullFieldDefinitionSetPath))
         {
-            fullFieldDefinitionSetPath = fieldDefinitionSetFileName;
+            fullFieldDefinitionSetPath = combinePaths(projectPath, fullFieldDefinitionSetPath);
         }
 
         // Write file.
@@ -467,15 +469,16 @@ void Controller::saveProject(QSharedPointer<Project> project)
         const RecordSet& recordSet = project->recordSets[i];
 
         // Build file name.
-        QString fullRecordSetPath;
-        const QString recordSetFileName = recordSet.name + RecordFileExtension;
-        if (QDir::isRelativePath(recordSetFileName))
+        QString fullRecordSetPath = recordSet.name;
+
+        if (!fullRecordSetPath.endsWith(RecordFileExtension))
         {
-            fullRecordSetPath = combinePaths(projectPath, recordSetFileName);
+            fullRecordSetPath = fullRecordSetPath + RecordFileExtension;
         }
-        else
+
+        if (QDir::isRelativePath(fullRecordSetPath))
         {
-            fullRecordSetPath = recordSetFileName;
+            fullRecordSetPath = combinePaths(projectPath, fullRecordSetPath);
         }
 
         // Write file.
