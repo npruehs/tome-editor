@@ -36,6 +36,7 @@ void RecordWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
     this->ui->lineEditDisplayName->setFocus();
+    this->recordIdLocked = false;
 }
 
 QString RecordWindow::getRecordDisplayName() const
@@ -202,12 +203,6 @@ void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, 
     }
 }
 
-void RecordWindow::on_lineEditId_textEdited(const QString &arg1)
-{
-    // If the user manually changed the record id we must not change it when the display name changes.
-    recordIdLocked = !arg1.isEmpty();
-}
-
 void RecordWindow::on_lineEditDisplayName_textEdited(const QString& displayName)
 {
     // If the user manually changed the record id we must not change it when the display name changes.
@@ -215,6 +210,12 @@ void RecordWindow::on_lineEditDisplayName_textEdited(const QString& displayName)
     {
         this->setRecordId(displayName);
     }
+}
+
+void RecordWindow::on_lineEditId_textEdited(const QString &arg1)
+{
+    // If the user manually changed the record id we must not change it when the display name changes.
+    recordIdLocked = !arg1.isEmpty();
 }
 
 void RecordWindow::onCheckBoxStateChanged(int state)

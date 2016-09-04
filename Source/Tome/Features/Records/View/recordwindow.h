@@ -49,7 +49,7 @@ class RecordWindow : public QDialog
         void onCheckBoxStateChanged(int state);
         void onComponentCheckBoxStateChanged(int state);
 
-private:
+    private:
         static const QString PropertyFieldComponent;
         static const QString PropertyFieldId;
         static const QString PropertyComponentId;
@@ -58,7 +58,8 @@ private:
 
         QStringList disallowedRecordIds;
 
-        bool recordIdLocked = false;
+        // Whether to automatically update the record id to reflect the display name, or not.
+        bool recordIdLocked;
 
         bool validate();
 };
