@@ -92,6 +92,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     // Connect signals.
     connect(
+                this->controller,
+                SIGNAL(projectChanged(QSharedPointer<Tome::Project>)),
+                SLOT(onProjectChanged(QSharedPointer<Tome::Project>))
+                );
+
+    connect(
                 this->ui->menuExport,
                 SIGNAL(triggered(QAction*)),
                 SLOT(exportRecords(QAction*))
@@ -232,7 +238,6 @@ void MainWindow::on_actionNew_Project_triggered()
         try
         {
             this->controller->createProject(projectName, projectPath);
-            this->onProjectChanged();
         }
         catch (std::runtime_error& e)
         {
@@ -750,7 +755,6 @@ void MainWindow::openProject(QString path)
     try
     {
         this->controller->openProject(path);
-        this->onProjectChanged();
     }
     catch (std::runtime_error& e)
     {
@@ -784,8 +788,10 @@ void MainWindow::onFieldChanged()
     this->refreshRecordTable();
 }
 
-void MainWindow::onProjectChanged()
+void MainWindow::onProjectChanged(QSharedPointer<Project> project)
 {
+    Q_UNUSED(project);
+
     // Enable project-specific buttons.
     this->updateMenus();
 

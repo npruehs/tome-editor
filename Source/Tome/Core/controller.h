@@ -7,6 +7,7 @@ class MainWindow;
 
 namespace Tome
 {
+    class CommandLineOptions;
     class ComponentsController;
     class ExportController;
     class FieldDefinitionsController;
@@ -17,10 +18,12 @@ namespace Tome
     class TasksController;
     class TypesController;
 
-    class Controller
+    class Controller : public QObject
     {
+        Q_OBJECT
+
         public:
-            Controller();
+            Controller(Tome::CommandLineOptions* options);
             ~Controller();
 
             ComponentsController& getComponentsController();
@@ -32,7 +35,7 @@ namespace Tome
             TypesController& getTypesController();
             FindUsagesController& getFindUsagesController();
 
-            void init();
+            int start();
 
             void createProject(const QString& projectName, const QString& projectPath);
             const QString getFullProjectPath() const;
@@ -41,6 +44,9 @@ namespace Tome
             bool isProjectLoaded() const;
             void openProject(const QString& projectFileName);
             void saveProject();
+
+        signals:
+            void projectChanged(QSharedPointer<Tome::Project> project);
 
         private:
             static const QString FieldDefinitionFileExtension;
@@ -59,6 +65,8 @@ namespace Tome
             static const QString RecordExportFieldValueTemplateExtension;
             static const QString RecordExportFieldValueDelimiterExtension;
             static const QString RecordFileExtension;
+
+            CommandLineOptions* options;
 
             QSharedPointer<Project> project;
 

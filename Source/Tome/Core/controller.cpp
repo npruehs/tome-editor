@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QTextStream>
 
+#include "commandlineoptions.h"
 #include "mainwindow.h"
 #include "../Features/Components/Controller/componentscontroller.h"
 #include "../Features/Export/Controller/exportcontroller.h"
@@ -46,7 +47,8 @@ const QString Controller::RecordExportFieldValueTemplateExtension = ".texportv";
 const QString Controller::RecordExportFieldValueDelimiterExtension = ".texportvd";
 
 
-Controller::Controller() :
+Controller::Controller(CommandLineOptions* options) :
+    options(options),
     componentsController(new ComponentsController()),
     fieldDefinitionsController(new FieldDefinitionsController()),
     typesController(new TypesController()),
@@ -78,6 +80,8 @@ Controller::~Controller()
     delete this->typesController;
     delete this->tasksController;
     delete this->findUsagesController;
+
+    delete this->options;
 }
 
 ComponentsController& Controller::getComponentsController()
@@ -120,11 +124,58 @@ FindUsagesController& Controller::getFindUsagesController()
     return *this->findUsagesController;
 }
 
-void Controller::init()
+int Controller::start()
 {
-    // Setup view.
-    this->mainWindow = new MainWindow(this);
-    this->mainWindow->show();
+    if (!this->options->noGui)
+    {
+        // Setup view.
+        this->mainWindow = new MainWindow(this);
+        this->mainWindow->show();
+    }
+
+    if (!this->options->projectPath.isEmpty())
+    {
+        try
+        {
+            this->openProject(this->options->projectPath);
+        }
+        catch (std::runtime_error&)
+        {
+            // TODO(np): Write error log.
+            return 1;
+        }
+    }
+
+    if (!this->options->exportTemplateName.isEmpty() &&
+            !this->options->exportPath.isEmpty() &&
+            this->isProjectLoaded())
+    {
+        if (!this->exportController->hasRecordExportTemplate(this->options->exportTemplateName))
+        {
+            // TODO(np): Write error log.
+            return 1;
+        }
+
+        // Get export template.
+        const Tome::RecordExportTemplate& exportTemplate =
+                this->exportController->getRecordExportTemplate(this->options->exportTemplateName);
+
+        // Build export file path.
+        const QString filePath = this->options->exportPath + exportTemplate.fileExtension;
+
+        // Export records.
+        try
+        {
+            this->exportController->exportRecords(exportTemplate, filePath);
+        }
+        catch (std::runtime_error&)
+        {
+            // TODO(np): Write error log.
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 void Controller::createProject(const QString& projectName, const QString& projectPath)
@@ -474,6 +525,9 @@ void Controller::setProject(QSharedPointer<Project> project)
 
     // Set the default locale.
     QLocale::setDefault(project->locale);
+
+    // Notify listeners.
+    emit projectChanged(this->project);
 }
 
 const QString Controller::getFullProjectPath() const

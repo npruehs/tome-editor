@@ -83,7 +83,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Search/Controller/findusagescontroller.cpp \
     ../Source/Tome/Features/Search/View/searchresultsdockwidget.cpp \
     ../Source/Tome/Features/Search/Model/searchresult.cpp \
-    ../Source/Tome/Features/Records/View/duplicaterecordwindow.cpp
+    ../Source/Tome/Features/Records/View/duplicaterecordwindow.cpp \
+    ../Source/Tome/Core/commandlineoptions.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -157,7 +158,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Search/Model/searchresult.h \
     ../Source/Tome/Features/Search/Model/searchresultlist.h \
     ../Source/Tome/Features/Search/View/searchresultsdockwidget.h \
-    ../Source/Tome/Features/Records/View/duplicaterecordwindow.h
+    ../Source/Tome/Features/Records/View/duplicaterecordwindow.h \
+    ../Source/Tome/Core/commandlineoptions.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

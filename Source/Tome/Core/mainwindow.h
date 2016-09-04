@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSharedPointer>
 #include <QTableWidget>
 
 #include "../Features/Search/Model/searchresultlist.h"
@@ -69,6 +70,7 @@ class MainWindow : public QMainWindow
 
         void exportRecords(QAction* exportAction);
         void onFieldChanged();
+        void onProjectChanged(QSharedPointer<Tome::Project> project);
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();
         void searchResultChanged(const QString& title, const Tome::SearchResultList results);
@@ -102,7 +104,6 @@ class MainWindow : public QMainWindow
         void addRecordField(const QString& fieldId);
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
-        void onProjectChanged();
         void refreshErrorList();
         void refreshRecordTree();
         void refreshRecordTable();

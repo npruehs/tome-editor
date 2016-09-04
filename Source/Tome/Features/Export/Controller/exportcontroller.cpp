@@ -45,6 +45,11 @@ const RecordExportTemplateMap&ExportController::getRecordExportTemplates() const
     return *this->model;
 }
 
+bool ExportController::hasRecordExportTemplate(const QString& name) const
+{
+    return this->model->contains(name);
+}
+
 void ExportController::exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath)
 {
     QFile file(filePath);
