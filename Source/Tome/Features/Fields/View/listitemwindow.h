@@ -2,9 +2,6 @@
 #define LISTITEMWINDOW_H
 
 #include <QDialog>
-#include <QString>
-#include <QStringList>
-
 
 namespace Ui {
     class ListItemWindow;

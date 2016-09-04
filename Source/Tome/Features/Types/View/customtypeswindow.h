@@ -5,6 +5,7 @@
 
 class EnumerationWindow;
 class ListWindow;
+class MapWindow;
 
 namespace Ui {
     class CustomTypesWindow;
@@ -29,6 +30,7 @@ class CustomTypesWindow : public QMainWindow
     private slots:
         void on_actionNew_Custom_Type_triggered();
         void on_actionNew_List_triggered();
+        void on_actionNew_Map_triggered();
 
         void on_actionEdit_Custom_Type_triggered();
         void on_actionDelete_Custom_Type_triggered();
@@ -36,6 +38,7 @@ class CustomTypesWindow : public QMainWindow
         void on_actionFind_Usages_triggered();
 
         void on_tableWidget_doubleClicked(const QModelIndex &index);
+
 
     private:
         Ui::CustomTypesWindow *ui;
@@ -45,15 +48,19 @@ class CustomTypesWindow : public QMainWindow
 
         EnumerationWindow* enumerationWindow;
         ListWindow* listWindow;
+        MapWindow* mapWindow;
 
         int getSelectedTypeIndex() const;
         QString getSelectedTypeName() const;
 
         void editEnumeration(QString typeName, const Tome::CustomType& type);
         void editList(QString typeName, const Tome::CustomType& type);
+        void editMap(QString typeName, const Tome::CustomType& type);
 
         void updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration);
         void updateList(const QString& oldName, const QString& name, const QString& itemType);
+        void updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType);
+
         void updateRow(const int index, const Tome::CustomType& type);
 };
 

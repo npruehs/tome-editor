@@ -84,7 +84,14 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Search/View/searchresultsdockwidget.cpp \
     ../Source/Tome/Features/Search/Model/searchresult.cpp \
     ../Source/Tome/Features/Records/View/duplicaterecordwindow.cpp \
-    ../Source/Tome/Core/commandlineoptions.cpp
+    ../Source/Tome/Core/commandlineoptions.cpp \
+    ../Source/Tome/Features/Types/View/mapwindow.cpp \
+    ../Source/Tome/Features/Fields/View/mapitemwindow.cpp \
+    ../Source/Tome/Features/Fields/View/mapwidget.cpp \
+    ../Source/Tome/Features/Integrity/Controller/mapkeytypedoesnotexisttask.cpp \
+    ../Source/Tome/Features/Integrity/Controller/mapkeytypenotsupportedtask.cpp \
+    ../Source/Tome/Features/Integrity/Controller/mapvaluetypedoesnotexisttask.cpp \
+    ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -159,7 +166,14 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Search/Model/searchresultlist.h \
     ../Source/Tome/Features/Search/View/searchresultsdockwidget.h \
     ../Source/Tome/Features/Records/View/duplicaterecordwindow.h \
-    ../Source/Tome/Core/commandlineoptions.h
+    ../Source/Tome/Core/commandlineoptions.h \
+    ../Source/Tome/Features/Types/View/mapwindow.h \
+    ../Source/Tome/Features/Fields/View/mapitemwindow.h \
+    ../Source/Tome/Features/Fields/View/mapwidget.h \
+    ../Source/Tome/Features/Integrity/Controller/mapkeytypedoesnotexisttask.h \
+    ../Source/Tome/Features/Integrity/Controller/mapkeytypenotsupportedtask.h \
+    ../Source/Tome/Features/Integrity/Controller/mapvaluetypedoesnotexisttask.h \
+    ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
@@ -175,7 +189,9 @@ FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Types/View/enumerationmemberwindow.ui \
     ../Source/Tome/Features/Types/View/listwindow.ui \
     ../Source/Tome/Features/Fields/View/listitemwindow.ui \
-    ../Source/Tome/Features/Records/View/duplicaterecordwindow.ui
+    ../Source/Tome/Features/Records/View/duplicaterecordwindow.ui \
+    ../Source/Tome/Features/Types/View/mapwindow.ui \
+    ../Source/Tome/Features/Fields/View/mapitemwindow.ui
 
 RESOURCES += \
     tome.qrc

@@ -27,8 +27,22 @@ namespace Tome
              */
             QString getItemType() const;
 
+            /**
+             * @brief getKeyType Convenience function for retrieving the Key Type restriction of this type, if available. Returns an empty string, if not.
+             * @return Key Type of this map, if available, and an empty string otherwise.
+             */
+            QString getKeyType() const;
+
+            /**
+             * @brief getKeyType Convenience function for retrieving the Value Type restriction of this type, if available. Returns an empty string, if not.
+             * @return Value Type of this map, if available, and an empty string otherwise.
+             */
+            QString getValueType() const;
+
+
             bool isEnumeration() const;
             bool isList() const;
+            bool isMap() const;
 
             /**
              * @brief setEnumeration Sets the Enumeration restriction of this type.
@@ -42,9 +56,23 @@ namespace Tome
              */
             void setItemType(const QString& itemType);
 
+            /**
+             * @brief setItemType Sets the Key Type restriction of this type.
+             * @param itemType Type of the map keys.
+             */
+            void setKeyType(const QString& keyType);
+
+            /**
+             * @brief setItemType Sets the Value Type restriction of this type.
+             * @param itemType Type of the map values.
+             */
+            void setValueType(const QString& valueType);
+
         private:
             static const QString RestrictionEnumeration;
             static const QString RestrictionItemType;
+            static const QString RestrictionKeyType;
+            static const QString RestrictionValueType;
     };
 
     inline bool operator==(const CustomType& lhs, const CustomType& rhs){ return lhs.name == rhs.name; }

@@ -38,6 +38,19 @@ const CustomType TypesController::addList(const QString& name, const QString& it
     return newType;
 }
 
+const CustomType TypesController::addMap(const QString& name, const QString& keyType, const QString& valueType)
+{
+    CustomType newType = CustomType();
+    newType.name = name;
+    newType.setKeyType(keyType);
+    newType.setValueType(valueType);
+
+    int index = findInsertionIndex(*this->model, newType, customTypeLessThanName);
+    this->model->insert(index, newType);
+
+    return newType;
+}
+
 const QStringList TypesController::getBuiltInTypes() const
 {
     QStringList typeNames;
@@ -127,7 +140,7 @@ void TypesController::renameType(const QString oldName, const QString newName)
     // Rename type.
     type.name = newName;
 
-    // Update list item type references.
+    // Update list item type and map key and value type references.
     for (int i = 0; i < this->model->count(); ++i)
     {
         CustomType& t = (*this->model)[i];
@@ -135,6 +148,19 @@ void TypesController::renameType(const QString oldName, const QString newName)
         if (t.isList() && t.getItemType() == oldName)
         {
             t.setItemType(newName);
+        }
+
+        if (t.isMap())
+        {
+            if (t.getKeyType() == oldName)
+            {
+                t.setKeyType(newName);
+            }
+
+            if (t.getValueType() == oldName)
+            {
+                t.setValueType(newName);
+            }
         }
     }
 }
@@ -167,6 +193,22 @@ void TypesController::updateList(const QString& oldName, const QString& newName,
 
     this->renameType(oldName, newName);
     type.setItemType(itemType);
+
+    if (needsSorting)
+    {
+        std::sort(this->model->begin(), this->model->end(), customTypeLessThanName);
+    }
+}
+
+void TypesController::updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType)
+{
+    CustomType& type = *this->getCustomTypeByName(oldName);
+
+    bool needsSorting = type.name != newName;
+
+    this->renameType(oldName, newName);
+    type.setKeyType(keyType);
+    type.setValueType(valueType);
 
     if (needsSorting)
     {
@@ -211,6 +253,11 @@ QString TypesController::valueToString(const QVariant& value, const QString& typ
         if (customType.isList())
         {
             return toString(value.toList());
+        }
+
+        if (customType.isMap())
+        {
+            return toString(value.toMap());
         }
     }
 

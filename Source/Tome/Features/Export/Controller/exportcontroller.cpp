@@ -186,6 +186,31 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                             }
                         }
                     }
+                    else if (customType.isMap())
+                    {
+                        // Use other template.
+                        fieldValueString = exportTemplate.mapTemplate;
+                        fieldValueText = QString();
+
+                        // Build map string.
+                        QVariantMap map = fieldValue.toMap();
+
+                        for (QVariantMap::const_iterator it = map.begin();
+                             it != map.end();
+                             ++it)
+                        {
+                            QString mapItem = exportTemplate.mapItemTemplate;
+                            mapItem = mapItem.replace(PlaceholderFieldId, fieldId);
+                            mapItem = mapItem.replace(PlaceholderFieldKey, it.key());
+                            mapItem = mapItem.replace(PlaceholderFieldValue, QVariant(it.value()).toString());
+                            fieldValueText.append(mapItem);
+
+                            if (it + 1 != map.end())
+                            {
+                                fieldValueText.append(exportTemplate.mapItemDelimiter);
+                            }
+                        }
+                    }
                 }
                 // Check if vector.
                 else if (fieldType == BuiltInType::Vector2I || fieldType == BuiltInType::Vector2R ||
