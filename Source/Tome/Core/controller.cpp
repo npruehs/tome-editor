@@ -16,6 +16,10 @@
 #include "../Features/Integrity/Controller/fieldtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypenotsupportedtask.h"
+#include "../Features/Integrity/Controller/mapkeytypedoesnotexisttask.h"
+#include "../Features/Integrity/Controller/mapkeytypenotsupportedtask.h"
+#include "../Features/Integrity/Controller/mapvaluetypedoesnotexisttask.h"
+#include "../Features/Integrity/Controller/mapvaluetypenotsupportedtask.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Records/Controller/recordscontroller.h"
@@ -63,6 +67,10 @@ Controller::Controller(CommandLineOptions* options) :
     this->tasksController->addTask(new FieldTypeDoesNotExistTask());
     this->tasksController->addTask(new ListItemTypeDoesNotExistTask());
     this->tasksController->addTask(new ListItemTypeNotSupportedTask());
+    this->tasksController->addTask(new MapKeyTypeDoesNotExistTask());
+    this->tasksController->addTask(new MapKeyTypeNotSupportedTask());
+    this->tasksController->addTask(new MapValueTypeDoesNotExistTask());
+    this->tasksController->addTask(new MapValueTypeNotSupportedTask());
 }
 
 Controller::~Controller()
