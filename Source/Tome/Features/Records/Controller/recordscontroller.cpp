@@ -287,6 +287,94 @@ bool RecordsController::isAncestorOf(const QString& possibleAncestor, const QStr
     return false;
 }
 
+void RecordsController::moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent)
+{
+    if (oldComponent == newComponent)
+    {
+        return;
+    }
+
+    // Get all fields that belong to the old and new component.
+    const FieldDefinitionList& fields = this->fieldDefinitionsController.getFieldDefinitions();
+
+    FieldDefinitionList oldComponentFields;
+    FieldDefinitionList newComponentFields;
+
+    for (int i = 0; i < fields.size(); ++i)
+    {
+        const FieldDefinition& field = fields[i];
+
+        if (field.id == fieldId)
+        {
+            continue;
+        }
+
+        if (field.component == oldComponent)
+        {
+            oldComponentFields.push_back(field);
+        }
+        else if (field.component == newComponent)
+        {
+            newComponentFields.push_back(field);
+        }
+    }
+
+    // Check all records for their current components.
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        RecordSet& recordSet = (*this->model)[i];
+
+        for (int j = 0; j < recordSet.records.size(); ++j)
+        {
+            Record& record = recordSet.records[j];
+
+            if (!oldComponent.isEmpty())
+            {
+                // If record has all fields of old component, remove field.
+                bool hasAllFieldsOfOldComponent = true;
+
+                for (int i = 0; i < oldComponentFields.size(); ++i)
+                {
+                    const FieldDefinition& field = oldComponentFields[i];
+
+                    if (!record.fieldValues.contains(field.id))
+                    {
+                        hasAllFieldsOfOldComponent = false;
+                        break;
+                    }
+                }
+
+                if (hasAllFieldsOfOldComponent)
+                {
+                    this->removeRecordField(record.id, fieldId);
+                }
+            }
+
+            if (!newComponent.isEmpty())
+            {
+                // If record has all fields of new component, add field.
+                bool hasAllFieldsOfNewComponent = true;
+
+                for (int i = 0; i < newComponentFields.size(); ++i)
+                {
+                    const FieldDefinition& field = newComponentFields[i];
+
+                    if (!record.fieldValues.contains(field.id))
+                    {
+                        hasAllFieldsOfNewComponent = false;
+                        break;
+                    }
+                }
+
+                if (hasAllFieldsOfNewComponent)
+                {
+                    this->addRecordField(record.id, fieldId);
+                }
+            }
+        }
+    }
+}
+
 void RecordsController::removeRecord(const QString& recordId)
 {
     // Remove references to record.

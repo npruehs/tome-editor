@@ -69,6 +69,8 @@ namespace Tome
              */
             bool isAncestorOf(const QString& possibleAncestor, const QString& recordId) const;
 
+            void moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent);
+
             void removeRecord(const QString& recordId);
             void removeRecordField(const QString fieldId);
             void removeRecordField(const QString& recordId, const QString& fieldId);

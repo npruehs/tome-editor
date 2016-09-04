@@ -263,8 +263,11 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QS
     try
     {
         // Update model.
+        const QString oldComponent = fieldDefinition.component;
+
         this->fieldDefinitionsController.updateFieldDefinition(oldId, newId, displayName, fieldType, defaultValue, component, description);
         this->recordsController.renameRecordField(oldId, newId);
+        this->recordsController.moveFieldToComponent(newId, oldComponent, component);
 
         // Update view.
         const int i = this->getFieldRow(oldId);
