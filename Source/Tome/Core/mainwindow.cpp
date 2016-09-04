@@ -436,6 +436,11 @@ void MainWindow::on_actionDuplicate_Record_triggered()
     const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
     const QStringList recordIds = this->controller->getRecordsController().getRecordIds();
 
+    if (recordId.isEmpty())
+    {
+        return;
+    }
+
     // Disallow all existing record ids.
     this->duplicateRecordWindow->setRecordId(recordId);
     this->duplicateRecordWindow->setDisallowedRecordIds(recordIds);
@@ -464,6 +469,11 @@ void MainWindow::on_actionRevert_Record_triggered()
 {
     // Get record to revert.
     const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
+
+    if (recordId.isEmpty())
+    {
+        return;
+    }
 
     // Show question.
     const QString& question = QString(tr("Are you sure you want to revert %1 to its original state?")).arg(recordId);
@@ -517,6 +527,12 @@ void MainWindow::on_actionFind_Usages_triggered()
 {
     // Find usages.
     const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
+
+    if (recordId.isEmpty())
+    {
+        return;
+    }
+
     this->controller->getFindUsagesController().findUsagesOfRecord(recordId);
 }
 
@@ -875,7 +891,10 @@ void MainWindow::updateMenus()
 
     this->ui->actionNew_Record->setEnabled(projectLoaded);
     this->ui->actionEdit_Record->setEnabled(projectLoaded);
+    this->ui->actionDuplicate_Record->setEnabled(projectLoaded);
+    this->ui->actionRevert_Record->setEnabled(projectLoaded);
     this->ui->actionRemove_Record->setEnabled(projectLoaded);
+    this->ui->actionFind_Usages->setEnabled(projectLoaded);
 
     this->ui->actionRun_Integrity_Checks->setEnabled(projectLoaded);
 }

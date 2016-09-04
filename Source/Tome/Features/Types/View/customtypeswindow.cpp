@@ -150,6 +150,12 @@ void CustomTypesWindow::on_actionFind_Usages_triggered()
 {
     // Find usages.
     const QString& typeName = this->getSelectedTypeName();
+
+    if (typeName.isEmpty())
+    {
+        return;
+    }
+
     this->findUsagesController.findUsagesOfType(typeName);
 }
 

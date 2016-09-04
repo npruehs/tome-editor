@@ -253,6 +253,7 @@ void FieldDefinitionsWindow::updateMenus()
 
     this->ui->actionEdit_Field->setEnabled(hasSelection);
     this->ui->actionDelete_Field->setEnabled(hasSelection);
+    this->ui->actionFind_Usages->setEnabled(hasSelection);
 }
 
 void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Component& component)
