@@ -12,8 +12,8 @@ namespace Tome
 
             void parse(int argc, char *argv[]);
 
-            int argc;
-            char* argv[];
+            int argc = 0;
+            char** argv = nullptr;
             QString exportPath;
             QString exportTemplateName;
             bool noGui;

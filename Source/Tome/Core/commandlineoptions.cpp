@@ -35,4 +35,6 @@ void CommandLineOptions::parse(int argc, char* argv[])
             continue;
         }
     }
+    this->argc = argc;
+    this->argv = argv;
 }
