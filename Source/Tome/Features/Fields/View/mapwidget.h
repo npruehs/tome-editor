@@ -37,6 +37,8 @@ namespace Tome
             void editItem(QTableWidgetItem* item);
             void removeItem();
 
+            void clearTable();
+
         private:
             QString keyType;
             QString valueType;

@@ -55,6 +55,9 @@ MapWidget::MapWidget(RecordsController& recordsController, TypesController& type
     // Set layout.
     this->setLayout(this->layout);
     this->layout->setContentsMargins(0, 0, 0, 0);
+
+    // Init table.
+    this->clearTable();
 }
 
 MapWidget::~MapWidget()
@@ -94,17 +97,11 @@ void MapWidget::setMap(const QVariantMap& map)
     this->map = map;
 
     // Update view.
-    this->tableWidget->clear();
-
-    this->tableWidget->setRowCount(map.size());
-    this->tableWidget->setColumnCount(2);
-
-    QStringList headers;
-    headers << tr("Key");
-    headers << tr("Value");
-    this->tableWidget->setHorizontalHeaderLabels(headers);
+    this->clearTable();
 
     // Add all fields.
+    this->tableWidget->setRowCount(map.size());
+
     int row = 0;
 
     this->tableWidget->setSortingEnabled(false);
@@ -216,4 +213,16 @@ void MapWidget::removeItem()
 
     // Update view.
     this->tableWidget->removeRow(row);
+}
+
+void MapWidget::clearTable()
+{
+    this->tableWidget->clear();
+
+    this->tableWidget->setColumnCount(2);
+
+    QStringList headers;
+    headers << tr("Key");
+    headers << tr("Value");
+    this->tableWidget->setHorizontalHeaderLabels(headers);
 }
