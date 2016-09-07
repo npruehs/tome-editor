@@ -35,6 +35,9 @@ void RecordsController::addRecordField(const QString& recordId, const QString& f
     const FieldDefinition& field =
             this->fieldDefinitionsController.getFieldDefinition(fieldId);
     record.fieldValues.insert(fieldId, field.defaultValue);
+
+    // Notify listeners.
+    emit recordFieldsChanged(recordId);
 }
 
 const Record RecordsController::duplicateRecord(const QString& existingRecordId, const QString& newRecordid)
@@ -415,7 +418,13 @@ void RecordsController::removeRecordField(const QString fieldId)
         for (int j = 0; j < recordSet.records.size(); ++j)
         {
             Record& record = recordSet.records[j];
-            record.fieldValues.remove(fieldId);
+            int removedFields = record.fieldValues.remove(fieldId);
+
+            if (removedFields > 0)
+            {
+                // Notify listeners.
+                emit recordFieldsChanged(record.id);
+            }
         }
     }
 }
@@ -450,6 +459,9 @@ void RecordsController::renameRecordField(const QString oldFieldId, const QStrin
                 const QVariant fieldValue = record.fieldValues[oldFieldId];
                 record.fieldValues.remove(oldFieldId);
                 record.fieldValues.insert(newFieldId, fieldValue);
+
+                // Notify listeners.
+                emit recordFieldsChanged(record.id);
             }
         }
     }
@@ -535,6 +547,9 @@ void RecordsController::updateRecordFieldValue(const QString& recordId, const QS
     {
         record.fieldValues[fieldId] = fieldValue;
     }
+
+    // Notify listeners.
+    emit recordFieldsChanged(recordId);
 }
 
 void RecordsController::updateRecordReferences(const QString oldReference, const QString newReference)

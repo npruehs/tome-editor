@@ -11,8 +11,10 @@ namespace Tome
     class FieldDefinitionsController;
     class TypesController;
 
-    class RecordsController
+    class RecordsController : public QObject
     {
+        Q_OBJECT
+
         public:
             RecordsController(const FieldDefinitionsController& fieldDefinitionsController);
 
@@ -84,6 +86,9 @@ namespace Tome
             void updateRecord(const QString& oldId, const QString& newId, const QString& displayName);
             void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue);
             void updateRecordReferences(const QString oldReference, const QString newReference);
+
+        signals:
+            void recordFieldsChanged(const QString& recordId);
 
         private:
             RecordSetList* model;
