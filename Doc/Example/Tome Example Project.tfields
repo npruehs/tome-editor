@@ -18,6 +18,12 @@
     <Field Id="MovementSpeed" DisplayName="Movement Speed" Description="Speed of this entity, in m/s." Type="Real" Component="PhysicsComponent" DefaultValue="12.750"/>
     <Field Id="Name" DisplayName="Name" Description="Name of this entity." Type="String" Component="NameComponent" DefaultValue=""/>
     <Field Id="Projectile" DisplayName="Projectile" Description="Type of the projectile fired by this entity when attacking." Type="Reference" Component="AttackComponent" DefaultValue=""/>
+    <Field Id="ProjectileBase" DisplayName="Projectile Base" Description="Position to spawn projectiles at, relative to the position of this entity." Type="Vector (3D Real)" Component="AttackComponent">
+        <DefaultValue Key="X" Value="0"/>
+        <DefaultValue Key="Y" Value="5"/>
+        <DefaultValue Key="Z" Value="0"/>
+    </Field>
+    <Field Id="ResourceCosts" DisplayName="Resource Costs" Description="Resources to pay in order to create this entity." Type="ResourceCostMap" Component="CostsComponent" DefaultValue=""/>
     <Field Id="RotationSpeed" DisplayName="Rotation Speed" Description="Rotation speed of this entity, in degrees / second." Type="Real" Component="PhysicsComponent" DefaultValue="360.000"/>
     <Field Id="SightRadius" DisplayName="Sight Radius" Description="Range of sight of this entity, in m." Type="Real" Component="SightComponent" DefaultValue="25.000"/>
     <Field Id="Sprite" DisplayName="Sprite" Description="Name of the sprite used to visualize this entity." Type="String" Component="VisualizationComponent" DefaultValue=""/>
