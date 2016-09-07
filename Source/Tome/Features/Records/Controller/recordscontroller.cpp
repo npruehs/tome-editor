@@ -328,7 +328,7 @@ void RecordsController::moveFieldToComponent(const QString& fieldId, const QStri
         {
             Record& record = recordSet.records[j];
 
-            if (!oldComponent.isEmpty())
+            if (!oldComponent.isEmpty() && !oldComponentFields.empty())
             {
                 // If record has all fields of old component, remove field.
                 bool hasAllFieldsOfOldComponent = true;
@@ -350,7 +350,7 @@ void RecordsController::moveFieldToComponent(const QString& fieldId, const QStri
                 }
             }
 
-            if (!newComponent.isEmpty())
+            if (!newComponent.isEmpty() && !newComponentFields.empty())
             {
                 // If record has all fields of new component, add field.
                 bool hasAllFieldsOfNewComponent = true;
