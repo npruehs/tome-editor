@@ -1,6 +1,8 @@
 #include "mapitemwindow.h"
 #include "ui_mapitemwindow.h"
 
+#include <QPushButton>
+
 #include "fieldvaluewidget.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
@@ -63,4 +65,14 @@ void MapItemWindow::setValue(const QVariant& value)
 void MapItemWindow::setValueType(const QString& valueType) const
 {
     this->valueWidget->setFieldType(valueType);
+}
+
+void MapItemWindow::showEvent(QShowEvent* event)
+{
+    QDialog::showEvent(event);
+
+    // Set OK as default button (instead of Cancel).
+    QPushButton* okButton = this->ui->buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setAutoDefault(true);
+    okButton->setDefault(true);
 }
