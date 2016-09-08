@@ -50,10 +50,7 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
     this->ui->tableWidget->setHorizontalHeaderLabels(headers);
 
     // Add all fields.
-    for (int i = 0; i < fieldDefinitions.size(); ++i)
-    {
-        this->updateRow(i, fieldDefinitions[i]);
-    }
+    this->updateTable();
 
     this->ui->tableWidget->resizeColumnsToContents();
     this->ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
@@ -76,6 +73,14 @@ FieldDefinitionsWindow::~FieldDefinitionsWindow()
     delete this->ui;
 
     delete this->fieldDefinitionWindow;
+}
+
+void FieldDefinitionsWindow::showEvent(QShowEvent* event)
+{
+    Q_UNUSED(event);
+
+    // Fields might have changed since last show (e.g. component removed).
+    this->updateTable();
 }
 
 void FieldDefinitionsWindow::on_actionNew_Field_triggered()
@@ -250,6 +255,20 @@ QString FieldDefinitionsWindow::getSelectedFieldId() const
     }
 
     return selectedItems[0]->data(Qt::DisplayRole).toString();
+}
+
+void FieldDefinitionsWindow::updateTable()
+{
+    const FieldDefinitionList& fieldDefinitions = this->fieldDefinitionsController.getFieldDefinitions();
+
+    this->ui->tableWidget->setSortingEnabled(false);
+
+    for (int i = 0; i < fieldDefinitions.size(); ++i)
+    {
+        this->updateRow(i, fieldDefinitions[i]);
+    }
+
+    this->ui->tableWidget->setSortingEnabled(true);
 }
 
 void FieldDefinitionsWindow::updateMenus()

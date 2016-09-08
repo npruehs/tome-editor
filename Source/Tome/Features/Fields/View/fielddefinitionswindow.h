@@ -39,6 +39,9 @@ class FieldDefinitionsWindow : public QMainWindow
     signals:
         void fieldChanged();
 
+    protected:
+        void showEvent(QShowEvent * event);
+
     private slots:
         void on_actionNew_Field_triggered();
         void on_actionEdit_Field_triggered();
@@ -63,6 +66,8 @@ class FieldDefinitionsWindow : public QMainWindow
 
         int getFieldRow(const QString& fieldId) const;
         QString getSelectedFieldId() const;
+
+        void updateTable();
         void updateMenus();
 
         void updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Tome::Component& component);
