@@ -15,6 +15,7 @@
 
 #include "controller.h"
 #include "../Features/Components/View/componentswindow.h"
+#include "../Features/Components/Controller/componentscontroller.h"
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
@@ -31,6 +32,9 @@
 #include "../Features/Records/View/recordtreewidget.h"
 #include "../Features/Records/View/recordtreewidgetitem.h"
 #include "../Features/Records/View/recordwindow.h"
+#include "../Features/Records/View/duplicaterecordwindow.h"
+#include "../Features/Search/Controller/findusagescontroller.h"
+#include "../Features/Search/View/searchresultsdockwidget.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
 #include "../Features/Tasks/Controller/taskscontroller.h"
 #include "../Features/Tasks/Model/severity.h"
@@ -47,17 +51,18 @@
 using namespace Tome;
 
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    controller(new Controller()),
+    controller(controller),
     aboutWindow(0),
     componentsWindow(0),
     customTypesWindow(0),
     fieldDefinitionsWindow(0),
     fieldValueWindow(0),
     newProjectWindow(0),
-    recordWindow(0)
+    recordWindow(0),
+    duplicateRecordWindow(0)
 {
     ui->setupUi(this);
 
@@ -73,11 +78,31 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->ui->splitter->addWidget(this->recordFieldTableWidget);
 
+    // Add search results.
+    this->searchResultsDockWidget = new SearchResultsDockWidget(this);
+    this->addDockWidget(Qt::BottomDockWidgetArea, this->searchResultsDockWidget, Qt::Vertical);
+
     // Add error list.
     this->errorListDockWidget = new ErrorListDockWidget(this);
-    this->addDockWidget(Qt::BottomDockWidgetArea, this->errorListDockWidget, Qt::Horizontal);
+    this->addDockWidget(Qt::BottomDockWidgetArea, this->errorListDockWidget, Qt::Vertical);
+
+    // Hide all dock widgets until required.
+    this->searchResultsDockWidget->close();
+    this->errorListDockWidget->close();
 
     // Connect signals.
+    connect(
+                this->controller,
+                SIGNAL(projectChanged(QSharedPointer<Tome::Project>)),
+                SLOT(onProjectChanged(QSharedPointer<Tome::Project>))
+                );
+
+    connect(
+                &this->controller->getRecordsController(),
+                SIGNAL(recordFieldsChanged(const QString&)),
+                SLOT(onRecordFieldsChanged(const QString&))
+                );
+
     connect(
                 this->ui->menuExport,
                 SIGNAL(triggered(QAction*)),
@@ -114,6 +139,12 @@ MainWindow::MainWindow(QWidget *parent) :
                 SLOT(treeWidgetRecordReparented(const QString&, const QString&))
                 );
 
+    connect(
+                &this->controller->getFindUsagesController(),
+                SIGNAL(searchResultChanged(const QString&, const Tome::SearchResultList)),
+                SLOT(searchResultChanged(const QString&, const Tome::SearchResultList))
+                );
+
     // Maximize window.
     this->showMaximized();
 
@@ -128,8 +159,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete this->ui;
-
-    delete this->controller;
 
     delete this->recordTreeWidget;
     delete this->recordFieldTableWidget;
@@ -158,6 +187,7 @@ void MainWindow::on_actionField_Definions_triggered()
                     this->controller->getComponentsController(),
                     this->controller->getRecordsController(),
                     this->controller->getTypesController(),
+                    this->controller->getFindUsagesController(),
                     this);
 
         connect(
@@ -190,6 +220,7 @@ void MainWindow::on_actionManage_Custom_Types_triggered()
         this->customTypesWindow = new CustomTypesWindow(
                     this->controller->getTypesController(),
                     this->controller->getFieldDefinitionsController(),
+                    this->controller->getFindUsagesController(),
                     this);
     }
 
@@ -213,7 +244,6 @@ void MainWindow::on_actionNew_Project_triggered()
         try
         {
             this->controller->createProject(projectName, projectPath);
-            this->onProjectChanged();
         }
         catch (std::runtime_error& e)
         {
@@ -266,12 +296,17 @@ void MainWindow::on_actionNew_Record_triggered()
     const FieldDefinitionList& fieldDefinitions =
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
     const QStringList recordIds = this->controller->getRecordsController().getRecordIds();
+    const ComponentList& componentDefinitions =
+            this->controller->getComponentsController().getComponents();
 
     // Disallow all existing record ids.
     this->recordWindow->setDisallowedRecordIds(recordIds);
 
     // Set fields.
     this->recordWindow->setRecordFields(fieldDefinitions);
+
+    // Set components.
+    this->recordWindow->setRecordComponents(componentDefinitions);
 
     // Show window.
     int result = this->recordWindow->exec();
@@ -305,6 +340,7 @@ void MainWindow::on_actionNew_Record_triggered()
 
         // Update view.
         this->refreshRecordTable();
+        this->recordTreeWidget->updateRecordIcon();
     }
 }
 
@@ -341,8 +377,10 @@ void MainWindow::on_actionEdit_Record_triggered()
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
     const RecordFieldValueMap inheritedFieldValues =
             this->controller->getRecordsController().getInheritedFieldValues(record.id);
+    const ComponentList& componentDefinitions =
+            this->controller->getComponentsController().getComponents();
 
-    this->recordWindow->setRecordFields(fieldDefinitions, record.fieldValues, inheritedFieldValues);
+    this->recordWindow->setRecordFields(fieldDefinitions, componentDefinitions, record.fieldValues, inheritedFieldValues);
 
     int result = this->recordWindow->exec();
 
@@ -390,7 +428,79 @@ void MainWindow::on_actionEdit_Record_triggered()
 
         // Update view.
         this->refreshRecordTable();
+        this->recordTreeWidget->updateRecordIcon();
     }
+}
+
+void MainWindow::on_actionDuplicate_Record_triggered()
+{
+    if (!this->duplicateRecordWindow)
+    {
+        this->duplicateRecordWindow = new DuplicateRecordWindow(this);
+    }
+
+    const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
+    const QStringList recordIds = this->controller->getRecordsController().getRecordIds();
+
+    if (recordId.isEmpty())
+    {
+        return;
+    }
+
+    // Disallow all existing record ids.
+    this->duplicateRecordWindow->setRecordId(recordId);
+    this->duplicateRecordWindow->setDisallowedRecordIds(recordIds);
+
+    // Show window.
+    int result = this->duplicateRecordWindow->exec();
+
+    if (result != QDialog::Accepted)
+    {
+        return;
+    }
+
+    const QString& newRecordId = this->duplicateRecordWindow->getRecordId();
+
+    // Update model.
+    this->controller->getRecordsController().duplicateRecord(recordId, newRecordId);
+
+    // Update view.
+    this->recordTreeWidget->clear();
+    this->refreshRecordTree();
+
+    this->recordTreeWidget->selectRecord(newRecordId);
+}
+
+void MainWindow::on_actionRevert_Record_triggered()
+{
+    // Get record to revert.
+    const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
+
+    if (recordId.isEmpty())
+    {
+        return;
+    }
+
+    // Show question.
+    const QString& question = QString(tr("Are you sure you want to revert %1 to its original state?")).arg(recordId);
+
+    int answer = QMessageBox::question(
+                this,
+                tr("Revert Record"),
+                question,
+                QMessageBox::Yes,
+                QMessageBox::No);
+
+    if (answer != QMessageBox::Yes)
+    {
+        return;
+    }
+
+    // Revert record.
+    this->controller->getRecordsController().revertRecord(recordId);
+
+    // Update view.
+    this->refreshRecordTable();
 }
 
 void MainWindow::on_actionRemove_Record_triggered()
@@ -418,6 +528,20 @@ void MainWindow::on_actionRemove_Record_triggered()
 
     delete recordItem;
 }
+
+void MainWindow::on_actionFind_Usages_triggered()
+{
+    // Find usages.
+    const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
+
+    if (recordId.isEmpty())
+    {
+        return;
+    }
+
+    this->controller->getFindUsagesController().findUsagesOfRecord(recordId);
+}
+
 
 void MainWindow::on_actionRun_Integrity_Checks_triggered()
 {
@@ -540,6 +664,13 @@ void MainWindow::revertFieldValue()
     }
 }
 
+void MainWindow::searchResultChanged(const QString& title, const SearchResultList results)
+{
+    // Update view.
+    this->showWindow(this->searchResultsDockWidget);
+    this->searchResultsDockWidget->showResults(title, results);
+}
+
 void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
 {
     QString id = this->recordTreeWidget->getSelectedRecordId();
@@ -646,7 +777,6 @@ void MainWindow::openProject(QString path)
     try
     {
         this->controller->openProject(path);
-        this->onProjectChanged();
     }
     catch (std::runtime_error& e)
     {
@@ -680,8 +810,10 @@ void MainWindow::onFieldChanged()
     this->refreshRecordTable();
 }
 
-void MainWindow::onProjectChanged()
+void MainWindow::onProjectChanged(QSharedPointer<Project> project)
 {
+    Q_UNUSED(project);
+
     // Enable project-specific buttons.
     this->updateMenus();
 
@@ -710,6 +842,14 @@ void MainWindow::onProjectChanged()
 
     // Update recent projects.
     this->updateRecentProjects();
+}
+
+void MainWindow::onRecordFieldsChanged(const QString& recordId)
+{
+    if (this->recordTreeWidget->getSelectedRecordId() == recordId)
+    {
+        this->refreshRecordTable();
+    }
 }
 
 void MainWindow::refreshErrorList()
@@ -765,7 +905,10 @@ void MainWindow::updateMenus()
 
     this->ui->actionNew_Record->setEnabled(projectLoaded);
     this->ui->actionEdit_Record->setEnabled(projectLoaded);
+    this->ui->actionDuplicate_Record->setEnabled(projectLoaded);
+    this->ui->actionRevert_Record->setEnabled(projectLoaded);
     this->ui->actionRemove_Record->setEnabled(projectLoaded);
+    this->ui->actionFind_Usages->setEnabled(projectLoaded);
 
     this->ui->actionRun_Integrity_Checks->setEnabled(projectLoaded);
 }

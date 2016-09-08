@@ -11,7 +11,11 @@ using namespace Tome;
 const QString ProjectSerializer::AttributeBaseType = "BaseType";
 const QString ProjectSerializer::AttributeExportedType = "ExportedType";
 const QString ProjectSerializer::AttributeExportAsTable = "ExportAsTable";
+const QString ProjectSerializer::AttributeExportRoots = "ExportRoots";
+const QString ProjectSerializer::AttributeExportInnerNodes = "ExportInnerNodes";
+const QString ProjectSerializer::AttributeExportLeafs = "ExportLeafs";
 const QString ProjectSerializer::AttributeKey = "Key";
+const QString ProjectSerializer::AttributePath = "Path";
 const QString ProjectSerializer::AttributeTomeType = "TomeType";
 const QString ProjectSerializer::AttributeValue = "Value";
 const QString ProjectSerializer::AttributeVersion = "Version";
@@ -20,6 +24,7 @@ const QString ProjectSerializer::ElementFieldDefinitions = "FieldDefinitions";
 const QString ProjectSerializer::ElementFileExtension = "FileExtension";
 const QString ProjectSerializer::ElementMapping = "Mapping";
 const QString ProjectSerializer::ElementName = "Name";
+const QString ProjectSerializer::ElementLocale = "Locale";
 const QString ProjectSerializer::ElementPath = "Path";
 const QString ProjectSerializer::ElementRestriction = "Restriction";
 const QString ProjectSerializer::ElementRestrictions = "Restrictions";
@@ -31,7 +36,7 @@ const QString ProjectSerializer::ElementType = "Type";
 const QString ProjectSerializer::ElementTypes = "Types";
 const QString ProjectSerializer::ElementTypeMap = "TypeMap";
 
-const int ProjectSerializer::Version = 1;
+const int ProjectSerializer::Version = 3;
 
 
 ProjectSerializer::ProjectSerializer()
@@ -55,6 +60,9 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
 
             // Write project name.
             writer.writeTextElement(ElementName, project->name);
+
+            // Write project locale.
+            writer.writeTextElement(ElementLocale, project->locale.name());
 
             // Write components.
             writer.writeStartElement(ElementComponents);
@@ -105,6 +113,25 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
                         if (exportTemplate.exportAsTable)
                         {
                             writer.writeAttribute(AttributeExportAsTable, "true");
+                        }
+                        if (!exportTemplate.path.isEmpty())
+                        {
+                            writer.writeAttribute(AttributePath, exportTemplate.path);
+                        }
+
+                        if (exportTemplate.exportRoots)
+                        {
+                            writer.writeAttribute(AttributeExportRoots, "true");
+                        }
+
+                        if (exportTemplate.exportInnerNodes)
+                        {
+                            writer.writeAttribute(AttributeExportInnerNodes, "true");
+                        }
+
+                        if (exportTemplate.exportLeafs)
+                        {
+                            writer.writeAttribute(AttributeExportLeafs, "true");
                         }
 
                         writer.writeTextElement(ElementName, exportTemplate.name);
@@ -177,11 +204,20 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
     // Begin document.
     reader.readStartDocument();
     {
+        // Read version.
+        int version = reader.readAttribute(AttributeVersion).toInt();
+
         // Begin project.
         reader.readStartElement(ElementTomeProject);
         {
             // Read project name.
             project->name = reader.readTextElement(ElementName);
+
+            // Read project locale.
+            if (version > 1)
+            {
+                project->locale = QLocale(reader.readTextElement(ElementLocale));
+            }
 
             // Read components.
             reader.readStartElement(ElementComponents);
@@ -199,9 +235,8 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             {
                 while (reader.isAtElement(ElementPath))
                 {
-                    const QString name = reader.readTextElement(ElementPath);
                     FieldDefinitionSet fieldDefinitionSet = FieldDefinitionSet();
-                    fieldDefinitionSet.name = name;
+                    fieldDefinitionSet.name = reader.readTextElement(ElementPath);;
                     project->fieldDefinitionSets.push_back(fieldDefinitionSet);
                 }
             }
@@ -212,9 +247,8 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             {
                 while (reader.isAtElement(ElementPath))
                 {
-                    const QString name = reader.readTextElement(ElementPath);
                     RecordSet recordSet = RecordSet();
-                    recordSet.name = name;
+                    recordSet.name = reader.readTextElement(ElementPath);
                     project->recordSets.push_back(recordSet);
                 }
             }
@@ -226,12 +260,21 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
                 while (reader.isAtElement(ElementTemplate))
                 {
                     bool exportAsTable = reader.readAttribute(AttributeExportAsTable) == "true";
+                    bool exportRoots = reader.readAttribute(AttributeExportRoots) == "true";
+                    bool exportInnerNodes = reader.readAttribute(AttributeExportInnerNodes) == "true";
+                    bool exportLeafs = reader.readAttribute(AttributeExportLeafs) == "true";
+                    QString templatePath = reader.readAttribute(AttributePath);
 
                     reader.readStartElement(ElementTemplate);
                     {
                         RecordExportTemplate exportTemplate = RecordExportTemplate();
 
                         exportTemplate.exportAsTable = exportAsTable;
+                        exportTemplate.exportRoots = exportRoots;
+                        exportTemplate.exportInnerNodes = exportInnerNodes;
+                        exportTemplate.exportLeafs = exportLeafs;
+
+                        exportTemplate.path = templatePath;
                         exportTemplate.name = reader.readTextElement(ElementName);
                         exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);
 

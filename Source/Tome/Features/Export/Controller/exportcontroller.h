@@ -20,6 +20,8 @@ namespace Tome
             const RecordExportTemplate getRecordExportTemplate(const QString& name) const;
             const RecordExportTemplateMap& getRecordExportTemplates() const;
 
+            bool hasRecordExportTemplate(const QString& name) const;
+
             void exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath);
             void exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device);
             void setRecordExportTemplates(RecordExportTemplateMap& model);
@@ -30,6 +32,7 @@ namespace Tome
             static const QString PlaceholderComponents;
             static const QString PlaceholderComponentName;
             static const QString PlaceholderFieldId;
+            static const QString PlaceholderFieldKey;
             static const QString PlaceholderFieldType;
             static const QString PlaceholderFieldValue;
             static const QString PlaceholderListItem;

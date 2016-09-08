@@ -7,16 +7,24 @@
 #include <QObject>
 #include <QTextStream>
 
+#include "commandlineoptions.h"
+#include "mainwindow.h"
 #include "../Features/Components/Controller/componentscontroller.h"
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
 #include "../Features/Integrity/Controller/fieldtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypedoesnotexisttask.h"
+#include "../Features/Integrity/Controller/listitemtypenotsupportedtask.h"
+#include "../Features/Integrity/Controller/mapkeytypedoesnotexisttask.h"
+#include "../Features/Integrity/Controller/mapkeytypenotsupportedtask.h"
+#include "../Features/Integrity/Controller/mapvaluetypedoesnotexisttask.h"
+#include "../Features/Integrity/Controller/mapvaluetypenotsupportedtask.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Records/Controller/recordscontroller.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
+#include "../Features/Search/Controller/findusagescontroller.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
 #include "../Features/Tasks/Controller/taskscontroller.h"
 #include "../Features/Types/Controller/typescontroller.h"
@@ -33,6 +41,9 @@ const QString Controller::RecordExportComponentDelimiterExtension = ".texportcd"
 const QString Controller::RecordExportListTemplateExtension = ".texportl";
 const QString Controller::RecordExportListItemTemplateExtension = ".texportli";
 const QString Controller::RecordExportListItemDelimiterExtension = ".texportld";
+const QString Controller::RecordExportMapTemplateExtension = ".texportm";
+const QString Controller::RecordExportMapItemTemplateExtension = ".texportmi";
+const QString Controller::RecordExportMapItemDelimiterExtension = ".texportmd";
 const QString Controller::RecordExportRecordFileTemplateExtension = ".texportf";
 const QString Controller::RecordExportRecordTemplateExtension = ".texportr";
 const QString Controller::RecordExportRecordDelimiterExtension = ".texportrd";
@@ -40,22 +51,35 @@ const QString Controller::RecordExportFieldValueTemplateExtension = ".texportv";
 const QString Controller::RecordExportFieldValueDelimiterExtension = ".texportvd";
 
 
-Controller::Controller() :
+Controller::Controller(CommandLineOptions* options) :
+    options(options),
     componentsController(new ComponentsController()),
     fieldDefinitionsController(new FieldDefinitionsController()),
     typesController(new TypesController()),
     recordsController(new RecordsController(*this->fieldDefinitionsController)),
     exportController(new ExportController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     settingsController(new SettingsController()),
-    tasksController(new TasksController(*this->componentsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController))
+    tasksController(new TasksController(*this->componentsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
+    findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
+    mainWindow(0)
 {
     // Setup tasks.
     this->tasksController->addTask(new FieldTypeDoesNotExistTask());
     this->tasksController->addTask(new ListItemTypeDoesNotExistTask());
+    this->tasksController->addTask(new ListItemTypeNotSupportedTask());
+    this->tasksController->addTask(new MapKeyTypeDoesNotExistTask());
+    this->tasksController->addTask(new MapKeyTypeNotSupportedTask());
+    this->tasksController->addTask(new MapValueTypeDoesNotExistTask());
+    this->tasksController->addTask(new MapValueTypeNotSupportedTask());
 }
 
 Controller::~Controller()
 {
+    if (this->mainWindow != 0)
+    {
+        delete this->mainWindow;
+    }
+
     delete this->componentsController;
     delete this->fieldDefinitionsController;
     delete this->recordsController;
@@ -63,6 +87,9 @@ Controller::~Controller()
     delete this->settingsController;
     delete this->typesController;
     delete this->tasksController;
+    delete this->findUsagesController;
+
+    delete this->options;
 }
 
 ComponentsController& Controller::getComponentsController()
@@ -98,6 +125,65 @@ TasksController& Controller::getTasksController()
 TypesController& Controller::getTypesController()
 {
     return *this->typesController;
+}
+
+FindUsagesController& Controller::getFindUsagesController()
+{
+    return *this->findUsagesController;
+}
+
+int Controller::start()
+{
+    if (!this->options->noGui)
+    {
+        // Setup view.
+        this->mainWindow = new MainWindow(this);
+        this->mainWindow->show();
+    }
+
+    if (!this->options->projectPath.isEmpty())
+    {
+        try
+        {
+            this->openProject(this->options->projectPath);
+        }
+        catch (std::runtime_error&)
+        {
+            // TODO(np): Write error log.
+            return 1;
+        }
+    }
+
+    if (!this->options->exportTemplateName.isEmpty() &&
+            !this->options->exportPath.isEmpty() &&
+            this->isProjectLoaded())
+    {
+        if (!this->exportController->hasRecordExportTemplate(this->options->exportTemplateName))
+        {
+            // TODO(np): Write error log.
+            return 1;
+        }
+
+        // Get export template.
+        const Tome::RecordExportTemplate& exportTemplate =
+                this->exportController->getRecordExportTemplate(this->options->exportTemplateName);
+
+        // Build export file path.
+        const QString filePath = this->options->exportPath + exportTemplate.fileExtension;
+
+        // Export records.
+        try
+        {
+            this->exportController->exportRecords(exportTemplate, filePath);
+        }
+        catch (std::runtime_error&)
+        {
+            // TODO(np): Write error log.
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 void Controller::createProject(const QString& projectName, const QString& projectPath)
@@ -177,9 +263,19 @@ void Controller::openProject(const QString& projectFileName)
             FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
 
             // Open field definition file.
-            const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSet.name + FieldDefinitionFileExtension);
-            QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
+            QString fullFieldDefinitionSetPath = fieldDefinitionSet.name;
 
+            if (!fullFieldDefinitionSetPath.endsWith(FieldDefinitionFileExtension))
+            {
+                fullFieldDefinitionSetPath = fullFieldDefinitionSetPath + FieldDefinitionFileExtension;
+            }
+
+            if (QDir::isRelativePath(fullFieldDefinitionSetPath))
+            {
+                fullFieldDefinitionSetPath = combinePaths(projectPath, fullFieldDefinitionSetPath);
+            }
+
+            QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
             if (fieldDefinitionFile.open(QIODevice::ReadOnly))
             {
                 try
@@ -207,7 +303,18 @@ void Controller::openProject(const QString& projectFileName)
             RecordSet& recordSet = project->recordSets[i];
 
             // Open record file.
-            const QString fullRecordSetPath = combinePaths(projectPath, recordSet.name + RecordFileExtension);
+            QString fullRecordSetPath = recordSet.name;
+
+            if (!fullRecordSetPath.endsWith(RecordFileExtension))
+            {
+                fullRecordSetPath = fullRecordSetPath + RecordFileExtension;
+            }
+
+            if (QDir::isRelativePath(fullRecordSetPath))
+            {
+                fullRecordSetPath = combinePaths(projectPath, fullRecordSetPath);
+            }
+
             QFile recordFile(fullRecordSetPath);
 
             if (recordFile.open(QIODevice::ReadOnly))
@@ -238,26 +345,48 @@ void Controller::openProject(const QString& projectFileName)
 
             try
             {
+                QString templatePath;
+                if ( !exportTemplate.path.isEmpty() )
+                {
+                    if (QDir::isRelativePath(exportTemplate.path))
+                    {
+                        templatePath = combinePaths( projectPath, exportTemplate.path );
+                    }
+                    else
+                    {
+                        templatePath = exportTemplate.path;
+                    }
+                }
+                else
+                {
+                    templatePath = projectPath;
+                }
                 exportTemplate.fieldValueDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportFieldValueDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportFieldValueDelimiterExtension);
                 exportTemplate.fieldValueTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportFieldValueTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportFieldValueTemplateExtension);
                 exportTemplate.recordDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportRecordDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportRecordDelimiterExtension);
                 exportTemplate.recordFileTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportRecordFileTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportRecordFileTemplateExtension);
                 exportTemplate.recordTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportRecordTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportRecordTemplateExtension);
                 exportTemplate.componentDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportComponentDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportComponentDelimiterExtension);
                 exportTemplate.componentTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportComponentTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportComponentTemplateExtension);
                 exportTemplate.listTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportListTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportListTemplateExtension);
                 exportTemplate.listItemTemplate =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportListItemTemplateExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportListItemTemplateExtension);
                 exportTemplate.listItemDelimiter =
-                        this->readFile(projectPath, exportTemplate.name + RecordExportListItemDelimiterExtension);
+                        this->readFile(templatePath, exportTemplate.name + RecordExportListItemDelimiterExtension);
+                exportTemplate.mapTemplate =
+                        this->readFile(templatePath, exportTemplate.name + RecordExportMapTemplateExtension);
+                exportTemplate.mapItemTemplate =
+                        this->readFile(templatePath, exportTemplate.name + RecordExportMapItemTemplateExtension);
+                exportTemplate.mapItemDelimiter =
+                        this->readFile(templatePath, exportTemplate.name + RecordExportMapItemDelimiterExtension);
             }
             catch (const std::runtime_error& e)
             {
@@ -314,8 +443,17 @@ void Controller::saveProject(QSharedPointer<Project> project)
         const FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
 
         // Build file name.
-        const QString fieldDefinitionSetFileName = fieldDefinitionSet.name + FieldDefinitionFileExtension;
-        const QString fullFieldDefinitionSetPath = combinePaths(projectPath, fieldDefinitionSetFileName);
+        QString fullFieldDefinitionSetPath = fieldDefinitionSet.name;
+
+        if (!fullFieldDefinitionSetPath.endsWith(FieldDefinitionFileExtension))
+        {
+            fullFieldDefinitionSetPath = fullFieldDefinitionSetPath + FieldDefinitionFileExtension;
+        }
+
+        if (QDir::isRelativePath(fullFieldDefinitionSetPath))
+        {
+            fullFieldDefinitionSetPath = combinePaths(projectPath, fullFieldDefinitionSetPath);
+        }
 
         // Write file.
         QFile fieldDefinitionSetFile(fullFieldDefinitionSetPath);
@@ -339,8 +477,17 @@ void Controller::saveProject(QSharedPointer<Project> project)
         const RecordSet& recordSet = project->recordSets[i];
 
         // Build file name.
-        const QString recordSetFileName = recordSet.name + RecordFileExtension;
-        const QString fullRecordSetPath = Tome::combinePaths(projectPath, recordSetFileName);
+        QString fullRecordSetPath = recordSet.name;
+
+        if (!fullRecordSetPath.endsWith(RecordFileExtension))
+        {
+            fullRecordSetPath = fullRecordSetPath + RecordFileExtension;
+        }
+
+        if (QDir::isRelativePath(fullRecordSetPath))
+        {
+            fullRecordSetPath = combinePaths(projectPath, fullRecordSetPath);
+        }
 
         // Write file.
         QFile recordSetFile(fullRecordSetPath);
@@ -386,6 +533,12 @@ void Controller::setProject(QSharedPointer<Project> project)
     // Add to recent projects.
     const QString& fullPath = this->getFullProjectPath();
     this->settingsController->addRecentProject(fullPath);
+
+    // Set the default locale.
+    QLocale::setDefault(project->locale);
+
+    // Notify listeners.
+    emit projectChanged(this->project);
 }
 
 const QString Controller::getFullProjectPath() const

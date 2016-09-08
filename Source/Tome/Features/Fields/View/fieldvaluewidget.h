@@ -16,8 +16,13 @@ namespace Tome
 {
     class CustomType;
     class ListWidget;
+    class MapWidget;
     class RecordsController;
     class TypesController;
+    class Vector2IWidget;
+    class Vector2RWidget;
+    class Vector3IWidget;
+    class Vector3RWidget;
 
     /**
      * @brief Changes its appearance depending on the specified type.
@@ -48,9 +53,14 @@ namespace Tome
             QDoubleSpinBox* doubleSpinBox;
             QVBoxLayout* layout;
             QLineEdit* lineEdit;
+            ListWidget* listWidget;
+            MapWidget* mapWidget;
             QComboBox* comboBox;
             QSpinBox* spinBox;
-            ListWidget* listWidget;
+            Vector2IWidget* vector2IWidget;
+            Vector3IWidget* vector3IWidget;
+            Vector2RWidget* vector2RWidget;
+            Vector3RWidget* vector3RWidget;
 
             RecordsController& recordsController;
             TypesController& typesController;

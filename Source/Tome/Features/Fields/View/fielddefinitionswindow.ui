@@ -59,6 +59,8 @@
     <addaction name="actionEdit_Field"/>
     <addaction name="actionDelete_Field"/>
     <addaction name="separator"/>
+    <addaction name="actionFind_Usages"/>
+    <addaction name="separator"/>
     <addaction name="actionClose"/>
    </widget>
    <addaction name="menuFields"/>
@@ -76,6 +78,8 @@
    </attribute>
    <addaction name="actionNew_Field"/>
    <addaction name="actionDelete_Field"/>
+   <addaction name="separator"/>
+   <addaction name="actionFind_Usages"/>
   </widget>
   <action name="actionNew_Field">
    <property name="icon">
@@ -117,6 +121,19 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="actionFind_Usages">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/FindSymbol_6263.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Find Usages...</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F7</string>
    </property>
   </action>
  </widget>

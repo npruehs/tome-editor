@@ -3,22 +3,27 @@
 
 #include <QSharedPointer>
 
+class MainWindow;
 
 namespace Tome
 {
+    class CommandLineOptions;
     class ComponentsController;
     class ExportController;
     class FieldDefinitionsController;
+    class FindUsagesController;
     class Project;
     class RecordsController;
     class SettingsController;
     class TasksController;
     class TypesController;
 
-    class Controller
+    class Controller : public QObject
     {
+        Q_OBJECT
+
         public:
-            Controller();
+            Controller(Tome::CommandLineOptions* options);
             ~Controller();
 
             ComponentsController& getComponentsController();
@@ -28,6 +33,9 @@ namespace Tome
             SettingsController& getSettingsController();
             TasksController& getTasksController();
             TypesController& getTypesController();
+            FindUsagesController& getFindUsagesController();
+
+            int start();
 
             void createProject(const QString& projectName, const QString& projectPath);
             const QString getFullProjectPath() const;
@@ -37,6 +45,9 @@ namespace Tome
             void openProject(const QString& projectFileName);
             void saveProject();
 
+        signals:
+            void projectChanged(QSharedPointer<Tome::Project> project);
+
         private:
             static const QString FieldDefinitionFileExtension;
             static const QString ProjectFileExtension;
@@ -45,12 +56,17 @@ namespace Tome
             static const QString RecordExportListTemplateExtension;
             static const QString RecordExportListItemTemplateExtension;
             static const QString RecordExportListItemDelimiterExtension;
+            static const QString RecordExportMapTemplateExtension;
+            static const QString RecordExportMapItemTemplateExtension;
+            static const QString RecordExportMapItemDelimiterExtension;
             static const QString RecordExportRecordFileTemplateExtension;
             static const QString RecordExportRecordTemplateExtension;
             static const QString RecordExportRecordDelimiterExtension;
             static const QString RecordExportFieldValueTemplateExtension;
             static const QString RecordExportFieldValueDelimiterExtension;
             static const QString RecordFileExtension;
+
+            CommandLineOptions* options;
 
             QSharedPointer<Project> project;
 
@@ -61,6 +77,9 @@ namespace Tome
             ExportController* exportController;
             SettingsController* settingsController;
             TasksController* tasksController;
+            FindUsagesController* findUsagesController;
+
+            MainWindow* mainWindow;
 
             const QString getFullProjectPath(QSharedPointer<Project> project) const;
             void saveProject(QSharedPointer<Project> project);

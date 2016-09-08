@@ -1,3 +1,7 @@
+[![AppVeyor](https://img.shields.io/appveyor/ci/npruehs/tome-editor.svg?maxAge=2592000)](https://ci.appveyor.com/project/npruehs/tome-editor)
+[![GitHub tag](https://img.shields.io/github/tag/npruehs/tome-editor.svg?maxAge=2592000)](https://github.com/npruehs/tome-editor/releases)
+[![license](https://img.shields.io/github/license/npruehs/tome-editor.svg?maxAge=2592000)](https://github.com/npruehs/tome-editor/blob/develop/LICENSE)
+
 # Tome
 
 Tome is a generic data editor for games supporting arbitrary input and output formats.
@@ -12,8 +16,13 @@ The tool is pretty self-explanatory. However, to give you a headstart, feel free
 
 * Creating data field definitions including constraints
 * Editing record values conveniently with tooltips and validation
+* Creating custom data types such as enumerations, lists and maps
+* Combining fields into components
+* Hierarchical record structure with inherited fields
 * Arbitrary output data formats through templates
 * Splitting data up into multiple files for improved collaboration
+* Run integrity checks to verify all your data
+* Advanced search features, such as finding all references to a specific record
 
 ## Development Cycle
 
@@ -58,7 +67,7 @@ You might also take a look at our [development wiki](https://github.com/npruehs/
 
 ### Step 4: Open a pull request
 
-Finally, [open a pull request](https://help.github.com/articles/using-pull-requests/) so we can review your changes together, and finally integrate it into the next release.
+Finally, [open a pull request](https://help.github.com/articles/creating-a-pull-request/) so we can review your changes together, and finally integrate it into the next release.
 
 ## License
 

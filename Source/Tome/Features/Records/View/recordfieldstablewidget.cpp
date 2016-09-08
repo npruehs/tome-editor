@@ -26,11 +26,12 @@ RecordFieldsTableWidget::RecordFieldsTableWidget(FieldDefinitionsController& fie
     this->verticalHeader()->setVisible(false);
 
     // Set headers.
-    this->setColumnCount(2);
+    this->setColumnCount(3);
 
     QStringList headers;
     headers << tr("Field");
-    headers << tr("Value");
+    headers << tr("Value");    
+    headers << tr("Description");
     this->setHorizontalHeaderLabels(headers);
 }
 
@@ -49,25 +50,12 @@ void RecordFieldsTableWidget::setRecord(int i, const QString recordId)
             this->fieldDefinitionsController.getFieldDefinition(key);
 
     QString keyString = field.displayName;
-    QString valueString = value.toString();
-
-    if (this->typesController.isCustomType(field.fieldType))
-    {
-        const CustomType& customType = this->typesController.getCustomType(field.fieldType);
-
-        if (customType.isList())
-        {
-            valueString = toString(value.toList());
-        }
-    }
+    QString valueString = this->typesController.valueToString(value, field.fieldType);
 
     // Show field and value.
     this->setItem(i, 0, new QTableWidgetItem(keyString));
     this->setItem(i, 1, new QTableWidgetItem(valueString));
-
-    // Show field description as tooltip.
-    this->item(i, 0)->setData(Qt::ToolTipRole, field.description);
-    this->item(i, 1)->setData(Qt::ToolTipRole, field.description);
+    this->setItem(i, 2, new QTableWidgetItem(field.description));
 
     // Show color preview.
     if (field.fieldType == BuiltInType::Color)

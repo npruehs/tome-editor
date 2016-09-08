@@ -3,29 +3,33 @@
 
 #include "enumerationwindow.h"
 #include "listwindow.h"
+#include "mapwindow.h"
 #include "../Controller/typescontroller.h"
 #include "../Model/builtintype.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
+#include "../../Search/Controller/findusagescontroller.h"
 #include "../../Types/Model/customtype.h"
 #include "../../../Util/listutils.h"
 
 using namespace Tome;
 
 
-CustomTypesWindow::CustomTypesWindow(TypesController& typesController, FieldDefinitionsController& fieldDefinitionsController, QWidget *parent) :
+CustomTypesWindow::CustomTypesWindow(TypesController& typesController, FieldDefinitionsController& fieldDefinitionsController, FindUsagesController& findUsagesController, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::CustomTypesWindow),
     typesController(typesController),
     fieldDefinitionsController(fieldDefinitionsController),
+    findUsagesController(findUsagesController),
     enumerationWindow(0),
-    listWindow(0)
+    listWindow(0),
+    mapWindow(0)
 {
     ui->setupUi(this);
 
     // Setup view.
-    int typeCount = this->typesController.getCustomTypes().size();
+    const CustomTypeList& types = this->typesController.getCustomTypes();
 
-    this->ui->tableWidget->setRowCount(typeCount);
+    this->ui->tableWidget->setRowCount(types.length());
     this->ui->tableWidget->setColumnCount(3);
 
     QStringList headers;
@@ -34,10 +38,14 @@ CustomTypesWindow::CustomTypesWindow(TypesController& typesController, FieldDefi
     headers << tr("Details");
     this->ui->tableWidget->setHorizontalHeaderLabels(headers);
 
-    for (int i = 0; i < typeCount; ++i)
+    // Add all types.
+    for (int i = 0; i < types.length(); ++i)
     {
-        this->updateRow(i);
+        this->updateRow(i, types[i]);
     }
+
+    // Enable sorting.
+    this->ui->tableWidget->setSortingEnabled(true);
 }
 
 CustomTypesWindow::~CustomTypesWindow()
@@ -46,6 +54,7 @@ CustomTypesWindow::~CustomTypesWindow()
 
     delete this->enumerationWindow;
     delete this->listWindow;
+    delete this->mapWindow;
 }
 
 void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
@@ -55,6 +64,9 @@ void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
     {
         this->enumerationWindow = new EnumerationWindow(this);
     }
+
+    this->enumerationWindow->setEnumerationName("");
+    this->enumerationWindow->setEnumerationMembers(QStringList());
 
     int result = this->enumerationWindow->exec();
 
@@ -67,9 +79,8 @@ void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
                     this->enumerationWindow->getEnumerationMembers());
 
         // Update view.
-        int index = this->typesController.indexOf(newType);
-        this->ui->tableWidget->insertRow(index);
-        this->updateRow(index);
+        this->ui->tableWidget->insertRow(0);
+        this->updateRow(0, newType);
     }
 }
 
@@ -93,12 +104,37 @@ void CustomTypesWindow::on_actionNew_List_triggered()
                     this->listWindow->getListItemType());
 
         // Update view.
-        int index = this->typesController.indexOf(newType);
-
-        this->ui->tableWidget->insertRow(index);
-        this->updateRow(index);
+        this->ui->tableWidget->insertRow(0);
+        this->updateRow(0, newType);
     }
 }
+
+void CustomTypesWindow::on_actionNew_Map_triggered()
+{
+    // Show window.
+    if (!this->mapWindow)
+    {
+        this->mapWindow = new MapWindow(this->typesController, this);
+    }
+
+    this->mapWindow->init();
+    int result = this->mapWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        // Update model.
+        CustomType newType =
+                this->typesController.addMap(
+                    this->mapWindow->getMapName(),
+                    this->mapWindow->getMapKeyType(),
+                    this->mapWindow->getMapValueType());
+
+        // Update view.
+        this->ui->tableWidget->insertRow(0);
+        this->updateRow(0, newType);
+    }
+}
+
 
 void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
 {
@@ -121,23 +157,40 @@ void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
     {
         this->editList(typeName, type);
     }
+    else if (type.isMap())
+    {
+        this->editMap(typeName, type);
+    }
 }
 
 void CustomTypesWindow::on_actionDelete_Custom_Type_triggered()
 {
-    // Get selected type.
-    int index = this->getSelectedTypeIndex();
+    // Update model.
+    QString typeName = this->getSelectedTypeName();
 
-    if (index < 0)
+    if (typeName.isEmpty())
     {
         return;
     }
 
-    // Update model.
-    this->typesController.removeCustomTypeAt(index);
+    this->typesController.removeCustomType(typeName);
 
     // Update view.
+    const int index = this->getSelectedTypeIndex();
     this->ui->tableWidget->removeRow(index);
+}
+
+void CustomTypesWindow::on_actionFind_Usages_triggered()
+{
+    // Find usages.
+    const QString& typeName = this->getSelectedTypeName();
+
+    if (typeName.isEmpty())
+    {
+        return;
+    }
+
+    this->findUsagesController.findUsagesOfType(typeName);
 }
 
 void CustomTypesWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
@@ -214,53 +267,79 @@ void CustomTypesWindow::editList(QString typeName, const CustomType& type)
     }
 }
 
+void CustomTypesWindow::editMap(QString typeName, const CustomType& type)
+{
+    // Show window.
+    if (!this->mapWindow)
+    {
+        this->mapWindow = new MapWindow(this->typesController, this);
+    }
+
+    this->mapWindow->init();
+
+    // Update view.
+    this->mapWindow->setMapName(type.name);
+    this->mapWindow->setMapKeyType(type.getKeyType());
+    this->mapWindow->setMapValueType(type.getValueType());
+
+    int result = this->mapWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        // Update type.
+        this->updateMap(
+                    typeName,
+                    this->mapWindow->getMapName(),
+                    this->mapWindow->getMapKeyType(),
+                    this->mapWindow->getMapValueType());
+    }
+}
+
 void CustomTypesWindow::updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration)
 {
     const CustomType& type = this->typesController.getCustomType(oldName);
-
-    bool needsSorting = type.name != newName;
 
     // Update model.
     this->fieldDefinitionsController.renameFieldType(oldName, newName);
     this->typesController.updateEnumeration(oldName, newName, enumeration);
 
     // Update view.
-    int index = this->typesController.indexOf(type);
-    this->updateRow(index);
-
-    // Sort by display name.
-    if (needsSorting)
-    {
-        this->ui->tableWidget->sortItems(0);
-    }
+    int index = this->getSelectedTypeIndex();
+    this->updateRow(index, type);
 }
 
 void CustomTypesWindow::updateList(const QString& oldName, const QString& newName, const QString& itemType)
 {
     const CustomType& type = this->typesController.getCustomType(oldName);
 
-    bool needsSorting = type.name != newName;
-
     // Update model.
     this->fieldDefinitionsController.renameFieldType(oldName, newName);
     this->typesController.updateList(oldName, newName, itemType);
 
     // Update view.
-    int index = this->typesController.indexOf(type);
-    this->updateRow(index);
-
-    // Sort by display name.
-    if (needsSorting)
-    {
-        this->ui->tableWidget->sortItems(0);
-    }
+    int index = this->getSelectedTypeIndex();
+    this->updateRow(index, type);
 }
 
-void CustomTypesWindow::updateRow(const int index)
+void CustomTypesWindow::updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType)
 {
-    const CustomTypeList& types = this->typesController.getCustomTypes();
-    const CustomType& type = types[index];
+    const CustomType& type = this->typesController.getCustomType(oldName);
 
+    // Update model.
+    this->fieldDefinitionsController.renameFieldType(oldName, newName);
+    this->typesController.updateMap(oldName, newName, keyType, valueType);
+
+    // Update view.
+    int index = this->getSelectedTypeIndex();
+    this->updateRow(index, type);
+}
+
+void CustomTypesWindow::updateRow(const int index, const CustomType& type)
+{
+    // Disable sorting before upading data (see http://doc.qt.io/qt-5.7/qtablewidget.html#setItem)
+    this->ui->tableWidget->setSortingEnabled(false);
+
+    // Update view.
     this->ui->tableWidget->setItem(index, 0, new QTableWidgetItem(type.name));
 
     if (type.isEnumeration())
@@ -273,4 +352,12 @@ void CustomTypesWindow::updateRow(const int index)
         this->ui->tableWidget->setItem(index, 1, new QTableWidgetItem("List"));
         this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(type.getItemType()));
     }
+    else if (type.isMap())
+    {
+        this->ui->tableWidget->setItem(index, 1, new QTableWidgetItem("Map"));
+        this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(type.getKeyType() + " -> " + type.getValueType()));
+    }
+
+    // Enable sorting again.
+    this->ui->tableWidget->setSortingEnabled(true);
 }

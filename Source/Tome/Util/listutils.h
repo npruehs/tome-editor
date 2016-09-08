@@ -4,6 +4,7 @@
 #include <QList>
 #include <QStringList>
 #include <QVariantList>
+#include <QVariantMap>
 
 namespace Tome
 {
@@ -47,6 +48,33 @@ namespace Tome
             s.append(item.toString());
 
             if (i < list.length() - 1)
+            {
+                s.append(", ");
+            }
+        }
+
+        s.append("]");
+        return s;
+    }
+
+    inline QString toString(const QVariantMap& map)
+    {
+        QString s("[");
+
+        for (QVariantMap::const_iterator it = map.begin();
+             it != map.end();
+             ++it)
+        {
+            QVariant key = it.key();
+            QVariant value = it.value();
+
+            s.append("{");
+            s.append(key.toString());
+            s.append(":");
+            s.append(value.toString());
+            s.append("}");
+
+            if (it + 1 != map.end())
             {
                 s.append(", ");
             }

@@ -2,8 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSharedPointer>
 #include <QTableWidget>
 
+#include "../Features/Search/Model/searchresultlist.h"
 #include "../Features/Tasks/Model/messagelist.h"
 
 class ComponentsWindow;
@@ -13,6 +15,7 @@ class AboutWindow;
 class NewProjectWindow;
 class RecordWindow;
 class CustomTypesWindow;
+class DuplicateRecordWindow;
 
 namespace Ui {
     class MainWindow;
@@ -26,6 +29,7 @@ namespace Tome
     class RecordFieldsTableWidget;
     class RecordTreeWidget;
     class RecordTreeWidgetItem;
+    class SearchResultsDockWidget;
 }
 
 class MainWindow : public QMainWindow
@@ -33,7 +37,7 @@ class MainWindow : public QMainWindow
         Q_OBJECT
 
     public:
-        explicit MainWindow(QWidget *parent = 0);
+        explicit MainWindow(Tome::Controller* controller, QWidget *parent = 0);
         ~MainWindow();
 
     private slots:
@@ -49,7 +53,11 @@ class MainWindow : public QMainWindow
 
         void on_actionNew_Record_triggered();
         void on_actionEdit_Record_triggered();
+        void on_actionDuplicate_Record_triggered();
+        void on_actionRevert_Record_triggered();
         void on_actionRemove_Record_triggered();
+
+        void on_actionFind_Usages_triggered();
 
         void on_actionRun_Integrity_Checks_triggered();
 
@@ -62,12 +70,16 @@ class MainWindow : public QMainWindow
 
         void exportRecords(QAction* exportAction);
         void onFieldChanged();
+        void onProjectChanged(QSharedPointer<Tome::Project> project);
+        void onRecordFieldsChanged(const QString& recordId);
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();
+        void searchResultChanged(const QString& title, const Tome::SearchResultList results);
         void tableWidgetDoubleClicked(const QModelIndex &index);
         void treeWidgetDoubleClicked(const QModelIndex &index);
         void treeWidgetRecordReparented(const QString& recordId, const QString& newParentId);
         void treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+
 
     private:
         Ui::MainWindow *ui;
@@ -75,6 +87,7 @@ class MainWindow : public QMainWindow
         Tome::RecordTreeWidget* recordTreeWidget;
         Tome::RecordFieldsTableWidget* recordFieldTableWidget;
         Tome::ErrorListDockWidget* errorListDockWidget;
+        Tome::SearchResultsDockWidget* searchResultsDockWidget;
 
         Tome::Controller* controller;
 
@@ -85,13 +98,13 @@ class MainWindow : public QMainWindow
         FieldValueWindow* fieldValueWindow;
         NewProjectWindow *newProjectWindow;
         RecordWindow* recordWindow;
+        DuplicateRecordWindow* duplicateRecordWindow;
 
         Tome::MessageList messages;
 
         void addRecordField(const QString& fieldId);
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
-        void onProjectChanged();
         void refreshErrorList();
         void refreshRecordTree();
         void refreshRecordTable();

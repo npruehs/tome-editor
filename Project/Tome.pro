@@ -13,10 +13,12 @@ TEMPLATE = app
 
 # Expose application version in Windows property window and in application code.
 # http://www.openguru.com/2009/11/qt-best-way-to-set-application-version.html
-VERSION = 0.4
-VERSION_NAME = Chimera
+VERSION = 0.5
+VERSION_NAME = Dragon
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 DEFINES += APP_VERSION_NAME=\\\"$$VERSION_NAME\\\"
+
+RC_ICONS = ../Media/Icons/Tome.ico
 
 Debug:DESTDIR = ../../Bin/debug
 Debug:OBJECTS_DIR = ../../Obj/debug
@@ -74,7 +76,24 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Integrity/Controller/fieldtypedoesnotexisttask.cpp \
     ../Source/Tome/Features/Integrity/Controller/listitemtypedoesnotexisttask.cpp \
     ../Source/Tome/Features/Tasks/View/errorlistdockwidget.cpp \
-    ../Source/Tome/Features/Records/View/recordfieldstablewidget.cpp
+    ../Source/Tome/Features/Records/View/recordfieldstablewidget.cpp \
+    ../Source/Tome/Features/Fields/View/vector2iwidget.cpp \
+    ../Source/Tome/Features/Fields/View/vector3iwidget.cpp \
+    ../Source/Tome/Features/Fields/View/vector2rwidget.cpp \
+    ../Source/Tome/Features/Fields/View/vector3rwidget.cpp \
+    ../Source/Tome/Features/Integrity/Controller/listitemtypenotsupportedtask.cpp \
+    ../Source/Tome/Features/Search/Controller/findusagescontroller.cpp \
+    ../Source/Tome/Features/Search/View/searchresultsdockwidget.cpp \
+    ../Source/Tome/Features/Search/Model/searchresult.cpp \
+    ../Source/Tome/Features/Records/View/duplicaterecordwindow.cpp \
+    ../Source/Tome/Core/commandlineoptions.cpp \
+    ../Source/Tome/Features/Types/View/mapwindow.cpp \
+    ../Source/Tome/Features/Fields/View/mapitemwindow.cpp \
+    ../Source/Tome/Features/Fields/View/mapwidget.cpp \
+    ../Source/Tome/Features/Integrity/Controller/mapkeytypedoesnotexisttask.cpp \
+    ../Source/Tome/Features/Integrity/Controller/mapkeytypenotsupportedtask.cpp \
+    ../Source/Tome/Features/Integrity/Controller/mapvaluetypedoesnotexisttask.cpp \
+    ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -137,7 +156,26 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Integrity/Controller/fieldtypedoesnotexisttask.h \
     ../Source/Tome/Features/Integrity/Controller/listitemtypedoesnotexisttask.h \
     ../Source/Tome/Features/Tasks/View/errorlistdockwidget.h \
-    ../Source/Tome/Features/Records/View/recordfieldstablewidget.h
+    ../Source/Tome/Features/Records/View/recordfieldstablewidget.h \
+    ../Source/Tome/Features/Types/Model/vector.h \
+    ../Source/Tome/Features/Fields/View/vector2iwidget.h \
+    ../Source/Tome/Features/Fields/View/vector3iwidget.h \
+    ../Source/Tome/Features/Fields/View/vector2rwidget.h \
+    ../Source/Tome/Features/Fields/View/vector3rwidget.h \
+    ../Source/Tome/Features/Integrity/Controller/listitemtypenotsupportedtask.h \
+    ../Source/Tome/Features/Search/Controller/findusagescontroller.h \
+    ../Source/Tome/Features/Search/Model/searchresult.h \
+    ../Source/Tome/Features/Search/Model/searchresultlist.h \
+    ../Source/Tome/Features/Search/View/searchresultsdockwidget.h \
+    ../Source/Tome/Features/Records/View/duplicaterecordwindow.h \
+    ../Source/Tome/Core/commandlineoptions.h \
+    ../Source/Tome/Features/Types/View/mapwindow.h \
+    ../Source/Tome/Features/Fields/View/mapitemwindow.h \
+    ../Source/Tome/Features/Fields/View/mapwidget.h \
+    ../Source/Tome/Features/Integrity/Controller/mapkeytypedoesnotexisttask.h \
+    ../Source/Tome/Features/Integrity/Controller/mapkeytypenotsupportedtask.h \
+    ../Source/Tome/Features/Integrity/Controller/mapvaluetypedoesnotexisttask.h \
+    ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
@@ -152,7 +190,10 @@ FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Types/View/enumerationwindow.ui \
     ../Source/Tome/Features/Types/View/enumerationmemberwindow.ui \
     ../Source/Tome/Features/Types/View/listwindow.ui \
-    ../Source/Tome/Features/Fields/View/listitemwindow.ui
+    ../Source/Tome/Features/Fields/View/listitemwindow.ui \
+    ../Source/Tome/Features/Records/View/duplicaterecordwindow.ui \
+    ../Source/Tome/Features/Types/View/mapwindow.ui \
+    ../Source/Tome/Features/Fields/View/mapitemwindow.ui
 
 RESOURCES += \
     tome.qrc

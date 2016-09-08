@@ -20,6 +20,7 @@ RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController)
 void RecordTreeWidget::addRecord(const QString& id, const QString& displayName)
 {
     QTreeWidgetItem* newItem = new RecordTreeWidgetItem(id, displayName, QString());
+
     this->insertTopLevelItem(0, newItem);
     this->sortItems(0, Qt::AscendingOrder);
 
@@ -51,6 +52,47 @@ RecordTreeWidgetItem* RecordTreeWidget::getSelectedRecordItem() const
     return static_cast<RecordTreeWidgetItem*>(selectedItems.first());
 }
 
+void RecordTreeWidget::updateRecordIcon()
+{
+    this->updateRecordIcon(this->getSelectedRecordItem());
+}
+
+void RecordTreeWidget::updateRecordIcon(RecordTreeWidgetItem *recordTreeItem)
+{
+    if ( nullptr != recordTreeItem )
+    {
+        const Record &recordData = this->recordsController.getRecord( recordTreeItem->getId() );
+        // If the record and all ancestors have no fields, use a folder style icon
+        // else use a file style icon
+        bool recordIsEmtpy = recordData.fieldValues.empty();
+        if ( recordIsEmtpy )
+        {
+            const RecordList ancestors = this->recordsController.getAncestors( recordTreeItem->getId() );
+            for ( int i = 0; ancestors.size() > i && recordIsEmtpy; ++i )
+            {
+                recordIsEmtpy &= ancestors[ i ].fieldValues.empty();
+            }
+        }
+        recordTreeItem->setIcon( 0, QIcon( recordIsEmtpy ? ":/Media/Icons/Folder_6221.png" : ":/Media/Icons/Textfile_818_16x.png") );
+    }
+}
+
+void RecordTreeWidget::selectRecord(const QString& id)
+{
+    QTreeWidgetItemIterator it(this);
+
+    while (*it)
+    {
+      if ((*it)->text(0) == id)
+      {
+          this->setCurrentItem((*it));
+          break;
+      }
+
+      ++it;
+    }
+}
+
 void RecordTreeWidget::setRecords(const RecordList& records)
 {
     // Create record tree items.
@@ -62,6 +104,7 @@ void RecordTreeWidget::setRecords(const RecordList& records)
         RecordTreeWidgetItem* recordItem =
                 new RecordTreeWidgetItem(record.id, record.displayName, record.parentId);
         recordItems.insert(record.id, recordItem);
+        updateRecordIcon( recordItem );
     }
 
     // Build hierarchy and prepare item list for tree widget.

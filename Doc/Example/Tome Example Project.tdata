@@ -20,6 +20,10 @@
         <MovementSpeed Value="14"/>
         <Name Value="Archer"/>
         <Projectile Value="Arrow"/>
+        <ResourceCosts>
+            <Item Key="Gold" Value="100"/>
+            <Item Key="Lumber" Value="50"/>
+        </ResourceCosts>
         <RotationSpeed Value="360"/>
         <SightRadius Value="30"/>
         <Sprite Value="Sprites/Archer"/>
@@ -53,7 +57,11 @@
         <Mass Value="2.5"/>
         <MovementSpeed Value="20"/>
         <Name Value="Knight"/>
-        <Projectile/>
+        <Projectile Value=""/>
+        <ResourceCosts>
+            <Item Key="Gold" Value="250"/>
+            <Item Key="Lumber" Value="100"/>
+        </ResourceCosts>
         <RotationSpeed Value="360"/>
         <SightRadius Value="25"/>
         <Sprite Value="Sprites/Knight"/>
@@ -79,6 +87,14 @@
         <MovementSpeed Value="13"/>
         <Name Value="Mage"/>
         <Projectile Value="Fireball"/>
+        <ProjectileBase>
+            <Item Key="X" Value="0"/>
+            <Item Key="Y" Value="4"/>
+            <Item Key="Z" Value="1"/>
+        </ProjectileBase>
+        <ResourceCosts>
+            <Item Key="Gold" Value="300"/>
+        </ResourceCosts>
         <RotationSpeed Value="360"/>
         <SightRadius Value="25"/>
         <Sprite Value="Sprites/Mage"/>
@@ -102,7 +118,10 @@
         <Mass Value="1"/>
         <MovementSpeed Value="12.75"/>
         <Name Value="Peasant"/>
-        <Projectile/>
+        <Projectile Value=""/>
+        <ResourceCosts>
+            <Item Key="Gold" Value="50"/>
+        </ResourceCosts>
         <RotationSpeed Value="360"/>
         <SightRadius Value="20"/>
         <Sprite Value="Sprites/Peasant"/>
@@ -125,11 +144,17 @@
         <Mana Value="100"/>
         <Mass Value="1.000"/>
         <MovementSpeed Value="12.750"/>
-        <Name/>
-        <Projectile/>
+        <Name Value=""/>
+        <Projectile Value=""/>
+        <ProjectileBase>
+            <Item Key="X" Value="0"/>
+            <Item Key="Y" Value="5"/>
+            <Item Key="Z" Value="0"/>
+        </ProjectileBase>
+        <ResourceCosts Value=""/>
         <RotationSpeed Value="360.000"/>
         <SightRadius Value="25.000"/>
-        <Sprite/>
+        <Sprite Value=""/>
         <SpriteColor Value="#ffffff"/>
     </Record>
     <Record Id="Ability" DisplayName="Ability">

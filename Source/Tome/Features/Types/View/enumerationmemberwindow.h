@@ -20,6 +20,9 @@ class EnumerationMemberWindow : public QDialog
     public slots:
         void accept();
 
+    protected:
+        virtual void showEvent(QShowEvent* event);
+
     private:
         Ui::EnumerationMemberWindow *ui;
 

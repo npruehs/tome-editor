@@ -2,9 +2,6 @@
 #define LISTITEMWINDOW_H
 
 #include <QDialog>
-#include <QString>
-#include <QStringList>
-
 
 namespace Ui {
     class ListItemWindow;
@@ -30,6 +27,9 @@ class ListItemWindow : public QDialog
         void setValue(const QVariant& value);
 
         void setFieldType(const QString& fieldType) const;
+
+    protected:
+        virtual void showEvent(QShowEvent* event);
 
     private:
         Ui::ListItemWindow *ui;

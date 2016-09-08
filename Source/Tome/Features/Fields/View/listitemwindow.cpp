@@ -1,10 +1,11 @@
 #include "listitemwindow.h"
 #include "ui_listitemwindow.h"
 
+#include <QPushButton>
+
 #include "fieldvaluewidget.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
-#include "../../Types/Model/customtype.h"
 
 
 using namespace Tome;
@@ -44,4 +45,14 @@ void ListItemWindow::setValue(const QVariant& value)
 void ListItemWindow::setFieldType(const QString& fieldType) const
 {
     this->fieldValueWidget->setFieldType(fieldType);
+}
+
+void ListItemWindow::showEvent(QShowEvent* event)
+{
+    QDialog::showEvent(event);
+
+    // Set OK as default button (instead of Cancel).
+    QPushButton* okButton = this->ui->buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setAutoDefault(true);
+    okButton->setDefault(true);
 }

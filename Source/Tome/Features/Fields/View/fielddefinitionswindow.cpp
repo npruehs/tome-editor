@@ -9,6 +9,7 @@
 #include "../Controller/fielddefinitionscontroller.h"
 #include "../../Components/Controller/componentscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
+#include "../../Search/Controller/findusagescontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/builtintype.h"
 #include "../../../Util/listutils.h"
@@ -20,6 +21,7 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
         ComponentsController& componentsController,
         RecordsController& recordsController,
         TypesController& typesController,
+        FindUsagesController& findUsagesController,
         QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::FieldDefinitionsWindow),
@@ -27,6 +29,7 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
     componentsController(componentsController),
     recordsController(recordsController),
     typesController(typesController),
+    findUsagesController(findUsagesController),
     fieldDefinitionWindow(0)
 {
     ui->setupUi(this);
@@ -46,13 +49,17 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
     headers << tr("Description");
     this->ui->tableWidget->setHorizontalHeaderLabels(headers);
 
+    // Add all fields.
     for (int i = 0; i < fieldDefinitions.size(); ++i)
     {
-        this->updateRow(i);
+        this->updateRow(i, fieldDefinitions[i]);
     }
 
     this->ui->tableWidget->resizeColumnsToContents();
     this->ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
+
+    // Enable sorting.
+    this->ui->tableWidget->setSortingEnabled(true);
 
     // Listen for selection changes.
     connect(
@@ -93,28 +100,24 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
     {
         try
         {
+            const QString& fieldId = this->fieldDefinitionWindow->getFieldId();
+            const QString& component = this->fieldDefinitionWindow->getFieldComponent();
+
             // Update model.
             FieldDefinition fieldDefinition =
                     this->fieldDefinitionsController.addFieldDefinition(
-                        this->fieldDefinitionWindow->getFieldId(),
+                        fieldId,
                         this->fieldDefinitionWindow->getFieldDisplayName(),
                         this->fieldDefinitionWindow->getFieldType(),
                         this->fieldDefinitionWindow->getDefaultValue(),
-                        this->fieldDefinitionWindow->getFieldComponent(),
+                        component,
                         this->fieldDefinitionWindow->getFieldDescription());
 
-            // Update view.
-            int index = this->fieldDefinitionsController.indexOf(fieldDefinition);
+            this->recordsController.moveFieldToComponent(fieldId, QString(), component);
 
-            this->ui->tableWidget->insertRow(index);
-            this->updateFieldDefinition(
-                        fieldDefinition.id,
-                        fieldDefinition.id,
-                        fieldDefinition.displayName,
-                        fieldDefinition.fieldType,
-                        fieldDefinition.defaultValue,
-                        fieldDefinition.description,
-                        fieldDefinition.component);
+            // Update view.
+            this->ui->tableWidget->insertRow(0);
+            this->updateRow(0, fieldDefinition);
         }
         catch (std::out_of_range& e)
         {
@@ -192,8 +195,7 @@ void FieldDefinitionsWindow::on_actionDelete_Field_triggered()
         return;
     }
 
-    const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
-    int index = this->fieldDefinitionsController.indexOf(field);
+    const int index = this->getFieldRow(fieldId);
 
     // Update model.
     this->fieldDefinitionsController.removeFieldDefinition(fieldId);
@@ -204,6 +206,13 @@ void FieldDefinitionsWindow::on_actionDelete_Field_triggered()
 
     // Notify listeners.
     emit fieldChanged();
+}
+
+void FieldDefinitionsWindow::on_actionFind_Usages_triggered()
+{
+    // Find usages.
+    const QString& fieldId = this->getSelectedFieldId();
+    this->findUsagesController.findUsagesOfField(fieldId);
 }
 
 void FieldDefinitionsWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
@@ -217,6 +226,19 @@ void FieldDefinitionsWindow::tableWidgetSelectionChanged(const QItemSelection& s
     Q_UNUSED(selected);
     Q_UNUSED(deselected);
     this->updateMenus();
+}
+
+int FieldDefinitionsWindow::getFieldRow(const QString& fieldId) const
+{
+    for (int i = 0; i < this->ui->tableWidget->rowCount(); ++i)
+    {
+        if (this->ui->tableWidget->item(i, 0)->data(Qt::DisplayRole) == fieldId)
+        {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 QString FieldDefinitionsWindow::getSelectedFieldId() const
@@ -236,29 +258,25 @@ void FieldDefinitionsWindow::updateMenus()
 
     this->ui->actionEdit_Field->setEnabled(hasSelection);
     this->ui->actionDelete_Field->setEnabled(hasSelection);
+    this->ui->actionFind_Usages->setEnabled(hasSelection);
 }
 
 void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Component& component)
 {
     const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(oldId);
 
-    bool needsSorting = fieldDefinition.displayName != displayName;
-
     try
     {
         // Update model.
+        const QString oldComponent = fieldDefinition.component;
+
         this->fieldDefinitionsController.updateFieldDefinition(oldId, newId, displayName, fieldType, defaultValue, component, description);
         this->recordsController.renameRecordField(oldId, newId);
+        this->recordsController.moveFieldToComponent(newId, oldComponent, component);
 
         // Update view.
-        int index = this->fieldDefinitionsController.indexOf(fieldDefinition);
-        this->updateRow(index);
-
-        // Sort by display name.
-        if (needsSorting)
-        {
-            this->ui->tableWidget->sortItems(1);
-        }
+        const int i = this->getFieldRow(oldId);
+        this->updateRow(i, fieldDefinition);
     }
     catch (std::out_of_range& e)
     {
@@ -273,24 +291,13 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QS
     }
 }
 
-void FieldDefinitionsWindow::updateRow(const int i)
+void FieldDefinitionsWindow::updateRow(const int i, const FieldDefinition& fieldDefinition)
 {
-    // Get field definition.
-    const FieldDefinitionList& fieldDefinitions = this->fieldDefinitionsController.getFieldDefinitions();
-    const FieldDefinition& fieldDefinition = fieldDefinitions[i];
-
     // Convert default value to string.
-    QString defaultValueString = fieldDefinition.defaultValue.toString();
+    QString defaultValueString = this->typesController.valueToString(fieldDefinition.defaultValue, fieldDefinition.fieldType);
 
-    if (this->typesController.isCustomType(fieldDefinition.fieldType))
-    {
-        const CustomType& customType = this->typesController.getCustomType(fieldDefinition.fieldType);
-
-        if (customType.isList())
-        {
-            defaultValueString = toString(fieldDefinition.defaultValue.toList());
-        }
-    }
+    // Disable sorting before upading data (see http://doc.qt.io/qt-5.7/qtablewidget.html#setItem)
+    this->ui->tableWidget->setSortingEnabled(false);
 
     this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(fieldDefinition.id));
     this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(fieldDefinition.displayName));
@@ -305,4 +312,7 @@ void FieldDefinitionsWindow::updateRow(const int i)
         QColor color = fieldDefinition.defaultValue.value<QColor>();
         this->ui->tableWidget->item(i, 3)->setData(Qt::DecorationRole, color);
     }
+
+    // Enable sorting again.
+    this->ui->tableWidget->setSortingEnabled(true);
 }

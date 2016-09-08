@@ -1,8 +1,9 @@
 #ifndef TYPESCONTROLLER_H
 #define TYPESCONTROLLER_H
 
-#include "../Model/customtypelist.h"
+#include <QVariant>
 
+#include "../Model/customtypelist.h"
 
 namespace Tome
 {
@@ -13,6 +14,7 @@ namespace Tome
 
             const CustomType addEnumeration(const QString& name, const QStringList& enumeration);
             const CustomType addList(const QString& name, const QString& itemType);
+            const CustomType addMap(const QString& name, const QString& keyType, const QString& valueType);
 
             const QStringList getBuiltInTypes() const;
 
@@ -34,11 +36,16 @@ namespace Tome
             int indexOf(const CustomType& customType) const;
             bool isBuiltInType(const QString& name) const;
             bool isCustomType(const QString& name) const;
+            void removeCustomType(const QString& typeName);
             void removeCustomTypeAt(const int index);
             void renameType(const QString oldName, const QString newName);
             void setCustomTypes(CustomTypeList& model);
             void updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration);
             void updateList(const QString& oldName, const QString& newName, const QString& itemType);
+            void updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType);
+
+            QString valueToString(const QVariant& value, const QString& typeName);
+
 
         private:
             CustomTypeList* model;

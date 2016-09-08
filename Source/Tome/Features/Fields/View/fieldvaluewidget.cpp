@@ -4,6 +4,11 @@
 #include <stdexcept>
 
 #include "listwidget.h"
+#include "mapwidget.h"
+#include "vector2iwidget.h"
+#include "vector2rwidget.h"
+#include "vector3iwidget.h"
+#include "vector3rwidget.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/customtype.h"
@@ -32,9 +37,10 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
     this->addWidget(this->spinBox);
 
     this->doubleSpinBox = new QDoubleSpinBox();
-    this->doubleSpinBox->setMinimum(std::numeric_limits<float>::min());
+    this->doubleSpinBox->setMinimum(-std::numeric_limits<float>::max());
     this->doubleSpinBox->setMaximum(std::numeric_limits<float>::max());
-    this->doubleSpinBox->setDecimals(3);
+    this->doubleSpinBox->setDecimals(4);
+    this->doubleSpinBox->setLocale(QLocale());
     this->addWidget(this->doubleSpinBox);
 
     this->checkBox = new QCheckBox("Value");
@@ -49,6 +55,21 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
 
     this->listWidget = new ListWidget(this->recordsController, this->typesController);
     this->addWidget(this->listWidget);
+
+    this->vector2IWidget = new Vector2IWidget();
+    this->addWidget(this->vector2IWidget);
+
+    this->vector2RWidget = new Vector2RWidget();
+    this->addWidget(this->vector2RWidget);
+
+    this->vector3IWidget = new Vector3IWidget();
+    this->addWidget(this->vector3IWidget);
+
+    this->vector3RWidget = new Vector3RWidget();
+    this->addWidget(this->vector3RWidget);
+
+    this->mapWidget = new MapWidget(this->recordsController, this->typesController);
+    this->addWidget(this->mapWidget);
 
     // Set layout.
     this->setLayout(this->layout);
@@ -101,6 +122,26 @@ QVariant FieldValueWidget::getFieldValue() const
         return this->comboBox->currentText();
     }
 
+    if (this->fieldType == BuiltInType::Vector2I)
+    {
+        return this->vector2IWidget->getValue();
+    }
+
+    if (this->fieldType == BuiltInType::Vector2R)
+    {
+        return this->vector2RWidget->getValue();
+    }
+
+    if (this->fieldType == BuiltInType::Vector3I)
+    {
+        return this->vector3IWidget->getValue();
+    }
+
+    if (this->fieldType == BuiltInType::Vector3R)
+    {
+        return this->vector3RWidget->getValue();
+    }
+
     // Custom type - or is it?
     if (!this->typesController.isCustomType(this->fieldType))
     {
@@ -119,6 +160,11 @@ QVariant FieldValueWidget::getFieldValue() const
     if (customType.isList())
     {
         return this->listWidget->getItems();
+    }
+
+    if (customType.isMap())
+    {
+        return this->mapWidget->getMap();
     }
 
     const QString errorMessage = "Unknown field type: " + this->fieldType;
@@ -178,6 +224,30 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
         return;
     }
 
+    if (this->fieldType == BuiltInType::Vector2I)
+    {
+        this->setCurrentWidget(this->vector2IWidget);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector2R)
+    {
+        this->setCurrentWidget(this->vector2RWidget);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector3I)
+    {
+        this->setCurrentWidget(this->vector3IWidget);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector3R)
+    {
+        this->setCurrentWidget(this->vector3RWidget);
+        return;
+    }
+
     // Custom type - or is it?
     if (!this->typesController.isCustomType(this->fieldType))
     {
@@ -200,6 +270,14 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
     {
         this->listWidget->setFieldType(customType.getItemType());
         this->setCurrentWidget(this->listWidget);
+        return;
+    }
+
+    if (customType.isMap())
+    {
+        this->mapWidget->setKeyType(customType.getKeyType());
+        this->mapWidget->setValueType(customType.getValueType());
+        this->setCurrentWidget(this->mapWidget);
         return;
     }
 
@@ -251,6 +329,30 @@ void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
         return;
     }
 
+    if (this->fieldType == BuiltInType::Vector2I)
+    {
+        this->vector2IWidget->setValue(fieldValue);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector2R)
+    {
+        this->vector2RWidget->setValue(fieldValue);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector3I)
+    {
+        this->vector3IWidget->setValue(fieldValue);
+        return;
+    }
+
+    if (this->fieldType == BuiltInType::Vector3R)
+    {
+        this->vector3RWidget->setValue(fieldValue);
+        return;
+    }
+
     // Custom type - or is it?
     if (!this->typesController.isCustomType(this->fieldType))
     {
@@ -272,6 +374,12 @@ void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
     if (customType.isList())
     {
         this->listWidget->setItems(fieldValue.toList());
+        return;
+    }
+
+    if (customType.isMap())
+    {
+        this->mapWidget->setMap(fieldValue.toMap());
         return;
     }
 
