@@ -6,6 +6,7 @@
         <Name>ArmorComponent</Name>
         <Name>AttackComponent</Name>
         <Name>CostsComponent</Name>
+        <Name>HealthComponent</Name>
         <Name>InvulnerabilityComponent</Name>
         <Name>ManaComponent</Name>
         <Name>NameComponent</Name>
