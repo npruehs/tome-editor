@@ -100,15 +100,20 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
     {
         try
         {
+            const QString& fieldId = this->fieldDefinitionWindow->getFieldId();
+            const QString& component = this->fieldDefinitionWindow->getFieldComponent();
+
             // Update model.
             FieldDefinition fieldDefinition =
                     this->fieldDefinitionsController.addFieldDefinition(
-                        this->fieldDefinitionWindow->getFieldId(),
+                        fieldId,
                         this->fieldDefinitionWindow->getFieldDisplayName(),
                         this->fieldDefinitionWindow->getFieldType(),
                         this->fieldDefinitionWindow->getDefaultValue(),
-                        this->fieldDefinitionWindow->getFieldComponent(),
+                        component,
                         this->fieldDefinitionWindow->getFieldDescription());
+
+            this->recordsController.moveFieldToComponent(fieldId, QString(), component);
 
             // Update view.
             this->ui->tableWidget->insertRow(0);

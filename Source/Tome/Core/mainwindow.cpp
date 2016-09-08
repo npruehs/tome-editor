@@ -98,6 +98,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
+                &this->controller->getRecordsController(),
+                SIGNAL(recordFieldsChanged(const QString&)),
+                SLOT(onRecordFieldsChanged(const QString&))
+                );
+
+    connect(
                 this->ui->menuExport,
                 SIGNAL(triggered(QAction*)),
                 SLOT(exportRecords(QAction*))
@@ -836,6 +842,14 @@ void MainWindow::onProjectChanged(QSharedPointer<Project> project)
 
     // Update recent projects.
     this->updateRecentProjects();
+}
+
+void MainWindow::onRecordFieldsChanged(const QString& recordId)
+{
+    if (this->recordTreeWidget->getSelectedRecordId() == recordId)
+    {
+        this->refreshRecordTable();
+    }
 }
 
 void MainWindow::refreshErrorList()

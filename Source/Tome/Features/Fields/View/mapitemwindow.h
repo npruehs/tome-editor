@@ -29,6 +29,9 @@ class MapItemWindow : public QDialog
         void setValue(const QVariant& value);
         void setValueType(const QString& valueType) const;
 
+    protected:
+        virtual void showEvent(QShowEvent* event);
+
     private:
         Ui::MapItemWindow *ui;
         Tome::FieldValueWidget* keyWidget;

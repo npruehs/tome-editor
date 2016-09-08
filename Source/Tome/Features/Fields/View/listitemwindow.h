@@ -28,6 +28,9 @@ class ListItemWindow : public QDialog
 
         void setFieldType(const QString& fieldType) const;
 
+    protected:
+        virtual void showEvent(QShowEvent* event);
+
     private:
         Ui::ListItemWindow *ui;
         Tome::FieldValueWidget* fieldValueWidget;

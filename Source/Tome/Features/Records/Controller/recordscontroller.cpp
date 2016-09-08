@@ -35,6 +35,9 @@ void RecordsController::addRecordField(const QString& recordId, const QString& f
     const FieldDefinition& field =
             this->fieldDefinitionsController.getFieldDefinition(fieldId);
     record.fieldValues.insert(fieldId, field.defaultValue);
+
+    // Notify listeners.
+    emit recordFieldsChanged(recordId);
 }
 
 const Record RecordsController::duplicateRecord(const QString& existingRecordId, const QString& newRecordid)
@@ -328,7 +331,7 @@ void RecordsController::moveFieldToComponent(const QString& fieldId, const QStri
         {
             Record& record = recordSet.records[j];
 
-            if (!oldComponent.isEmpty())
+            if (!oldComponent.isEmpty() && !oldComponentFields.empty())
             {
                 // If record has all fields of old component, remove field.
                 bool hasAllFieldsOfOldComponent = true;
@@ -350,7 +353,7 @@ void RecordsController::moveFieldToComponent(const QString& fieldId, const QStri
                 }
             }
 
-            if (!newComponent.isEmpty())
+            if (!newComponent.isEmpty() && !newComponentFields.empty())
             {
                 // If record has all fields of new component, add field.
                 bool hasAllFieldsOfNewComponent = true;
@@ -415,7 +418,13 @@ void RecordsController::removeRecordField(const QString fieldId)
         for (int j = 0; j < recordSet.records.size(); ++j)
         {
             Record& record = recordSet.records[j];
-            record.fieldValues.remove(fieldId);
+            int removedFields = record.fieldValues.remove(fieldId);
+
+            if (removedFields > 0)
+            {
+                // Notify listeners.
+                emit recordFieldsChanged(record.id);
+            }
         }
     }
 }
@@ -450,6 +459,9 @@ void RecordsController::renameRecordField(const QString oldFieldId, const QStrin
                 const QVariant fieldValue = record.fieldValues[oldFieldId];
                 record.fieldValues.remove(oldFieldId);
                 record.fieldValues.insert(newFieldId, fieldValue);
+
+                // Notify listeners.
+                emit recordFieldsChanged(record.id);
             }
         }
     }
@@ -458,30 +470,22 @@ void RecordsController::renameRecordField(const QString oldFieldId, const QStrin
 QVariant RecordsController::revertFieldValue(const QString& recordId, const QString& fieldId)
 {
     // Check if there's anything to revert to.
-    QVariant inheritedValue = this->getInheritedFieldValue(recordId, fieldId);
+    QVariant valueToRevertTo = this->getInheritedFieldValue(recordId, fieldId);
 
-    if (inheritedValue != QVariant())
+    if (valueToRevertTo == QVariant())
     {
-        // Revert field value.
-        this->updateRecordFieldValue(recordId, fieldId, inheritedValue);
+        // Revert to field default value.
+        const FieldDefinition& field =
+                this->fieldDefinitionsController.getFieldDefinition(fieldId);
 
-        // Return reverted value.
-        return inheritedValue;
+        valueToRevertTo = field.defaultValue;
     }
-    else
-    {
-        // Return current value.
-        RecordFieldValueMap recordFieldValues = this->getRecordFieldValues(recordId);
 
-        if (recordFieldValues.contains(fieldId))
-        {
-            return recordFieldValues[fieldId];
-        }
-        else
-        {
-            return QVariant();
-        }
-    }
+    // Revert field value.
+    this->updateRecordFieldValue(recordId, fieldId, valueToRevertTo);
+
+    // Return reverted value.
+    return valueToRevertTo;
 }
 
 void RecordsController::revertRecord(const QString& recordId)
@@ -543,6 +547,9 @@ void RecordsController::updateRecordFieldValue(const QString& recordId, const QS
     {
         record.fieldValues[fieldId] = fieldValue;
     }
+
+    // Notify listeners.
+    emit recordFieldsChanged(recordId);
 }
 
 void RecordsController::updateRecordReferences(const QString oldReference, const QString newReference)

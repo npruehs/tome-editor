@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TomeProject Version="2">
+<TomeProject Version="3">
     <Name>Tome Example Project</Name>
     <Locale>en_US</Locale>
     <Components>
         <Name>ArmorComponent</Name>
         <Name>AttackComponent</Name>
+        <Name>CostsComponent</Name>
         <Name>InvulnerabilityComponent</Name>
         <Name>ManaComponent</Name>
         <Name>NameComponent</Name>
@@ -75,6 +76,17 @@
         <Type Name="Movement Types">
             <Restrictions>
                 <Restriction Key="ItemType" Value="Movement Type"/>
+            </Restrictions>
+        </Type>
+        <Type Name="Resource">
+            <Restrictions>
+                <Restriction Key="Enumeration" Value="Gold;Lumber"/>
+            </Restrictions>
+        </Type>
+        <Type Name="ResourceCostMap">
+            <Restrictions>
+                <Restriction Key="KeyType" Value="Resource"/>
+                <Restriction Key="ValueType" Value="Integer"/>
             </Restrictions>
         </Type>
     </Types>

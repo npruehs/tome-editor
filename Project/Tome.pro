@@ -13,10 +13,12 @@ TEMPLATE = app
 
 # Expose application version in Windows property window and in application code.
 # http://www.openguru.com/2009/11/qt-best-way-to-set-application-version.html
-VERSION = 0.4
-VERSION_NAME = Chimera
+VERSION = 0.5
+VERSION_NAME = Dragon
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 DEFINES += APP_VERSION_NAME=\\\"$$VERSION_NAME\\\"
+
+RC_ICONS = ../Media/Icons/Tome.ico
 
 Debug:DESTDIR = ../../Bin/debug
 Debug:OBJECTS_DIR = ../../Obj/debug
