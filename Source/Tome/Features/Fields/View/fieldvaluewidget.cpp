@@ -400,6 +400,20 @@ void FieldValueWidget::focusInEvent(QFocusEvent* event)
     if (this->currentWidget != 0)
     {
         this->currentWidget->setFocus();
+
+        // Select content for more convenient editing.
+        if (this->fieldType == BuiltInType::Integer)
+        {
+            this->spinBox->selectAll();
+        }
+        else if (this->fieldType == BuiltInType::Real)
+        {
+            this->doubleSpinBox->selectAll();
+        }
+        else if (this->fieldType == BuiltInType::String)
+        {
+            this->lineEdit->selectAll();
+        }
     }
 }
 
