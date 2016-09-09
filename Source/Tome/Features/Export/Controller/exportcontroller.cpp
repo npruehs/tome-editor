@@ -343,6 +343,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
 
     // Write record file.
     QTextStream textStream(&device);
+    textStream.setCodec("UTF-8");
     textStream << recordFileString;
 }
 
