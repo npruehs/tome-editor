@@ -1,0 +1,6 @@
+namespace TomeExampleProject
+{
+    using System.Collections.Generic;
+    
+$RECORDS$
+}

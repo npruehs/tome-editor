@@ -1,0 +1,1 @@
+        public $FIELD_TYPE$ $FIELD_ID$ { get; set; }
