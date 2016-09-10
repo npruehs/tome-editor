@@ -31,15 +31,18 @@ namespace Tome
 
             static const QString PlaceholderComponents;
             static const QString PlaceholderComponentName;
+            static const QString PlaceholderItemType;
             static const QString PlaceholderFieldId;
             static const QString PlaceholderFieldKey;
             static const QString PlaceholderFieldType;
             static const QString PlaceholderFieldValue;
+            static const QString PlaceholderKeyType;
             static const QString PlaceholderListItem;
             static const QString PlaceholderRecordFields;
             static const QString PlaceholderRecordId;
             static const QString PlaceholderRecordParentId;
             static const QString PlaceholderRecords;
+            static const QString PlaceholderValueType;
 
             const FieldDefinitionsController& fieldDefinitionsController;
             const RecordsController& recordsController;

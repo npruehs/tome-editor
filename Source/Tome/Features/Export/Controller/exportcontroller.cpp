@@ -17,15 +17,18 @@ using namespace Tome;
 
 const QString ExportController::PlaceholderComponents = "$RECORD_COMPONENTS$";
 const QString ExportController::PlaceholderComponentName = "$COMPONENT_NAME$";
+const QString ExportController::PlaceholderItemType = "$ITEM_TYPE$";
 const QString ExportController::PlaceholderFieldId = "$FIELD_ID$";
 const QString ExportController::PlaceholderFieldKey = "$FIELD_KEY$";
 const QString ExportController::PlaceholderFieldType = "$FIELD_TYPE$";
 const QString ExportController::PlaceholderFieldValue = "$FIELD_VALUE$";
+const QString ExportController::PlaceholderKeyType = "$KEY_TYPE$";
 const QString ExportController::PlaceholderListItem = "$LIST_ITEM$";
 const QString ExportController::PlaceholderRecordFields = "$RECORD_FIELDS$";
 const QString ExportController::PlaceholderRecordId = "$RECORD_ID$";
 const QString ExportController::PlaceholderRecordParentId = "$RECORD_PARENT$";
 const QString ExportController::PlaceholderRecords = "$RECORDS$";
+const QString ExportController::PlaceholderValueType = "$VALUE_TYPE$";
 
 
 ExportController::ExportController(const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController, const TypesController& typesController)
@@ -162,21 +165,25 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
 
                     if (customType.isList())
                     {
-                        // Use other template.
+                        // Use list template.
                         fieldValueString = exportTemplate.listTemplate;
-                        fieldValueText = QString();
-                        exportedFieldType = exportTemplate.typeMap.contains(customType.getItemType())
+
+                        QString exportedItemType = exportTemplate.typeMap.contains(customType.getItemType())
                                 ? exportTemplate.typeMap[customType.getItemType()]
                                 : customType.getItemType();
 
+                        fieldValueString = fieldValueString.replace(PlaceholderItemType, exportedItemType);
+
                         // Build list string.
+                        fieldValueText = QString();
+
                         QVariantList list = fieldValue.toList();
 
                         for (int i = 0; i < list.size(); ++i)
                         {
                             QString listItem = exportTemplate.listItemTemplate;
                             listItem = listItem.replace(PlaceholderFieldId, fieldId);
-                            listItem = listItem.replace(PlaceholderFieldType, exportedFieldType);
+                            listItem = listItem.replace(PlaceholderItemType, exportedItemType);
                             listItem = listItem.replace(PlaceholderListItem, list[i].toString());
                             fieldValueText.append(listItem);
 
@@ -188,11 +195,22 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                     }
                     else if (customType.isMap())
                     {
-                        // Use other template.
+                        // Use map template.
                         fieldValueString = exportTemplate.mapTemplate;
-                        fieldValueText = QString();
+
+                        QString exportedKeyType = exportTemplate.typeMap.contains(customType.getKeyType())
+                                ? exportTemplate.typeMap[customType.getKeyType()]
+                                : customType.getKeyType();
+                        QString exportedValueType = exportTemplate.typeMap.contains(customType.getValueType())
+                                ? exportTemplate.typeMap[customType.getValueType()]
+                                : customType.getValueType();
+
+                        fieldValueString = fieldValueString.replace(PlaceholderKeyType, exportedKeyType);
+                        fieldValueString = fieldValueString.replace(PlaceholderValueType, exportedValueType);
 
                         // Build map string.
+                        fieldValueText = QString();
+
                         QVariantMap map = fieldValue.toMap();
 
                         for (QVariantMap::const_iterator it = map.begin();
@@ -218,9 +236,31 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 {
                     // Use other template.
                     fieldValueString = exportTemplate.mapTemplate;
-                    fieldValueText = QString();
+
+                    QString exportedKeyType = exportTemplate.typeMap.contains("String")
+                            ? exportTemplate.typeMap["String"]
+                            : "String";
+                    QString exportedValueType;
+
+                    if (fieldType == BuiltInType::Vector2I || fieldType == BuiltInType::Vector3I)
+                    {
+                        exportedValueType = exportTemplate.typeMap.contains("Integer")
+                                ? exportTemplate.typeMap["Integer"]
+                                : "Integer";
+                    }
+                    else
+                    {
+                        exportedValueType = exportTemplate.typeMap.contains("Real")
+                                ? exportTemplate.typeMap["Real"]
+                                : "Real";
+                    }
+
+                    fieldValueString = fieldValueString.replace(PlaceholderKeyType, exportedKeyType);
+                    fieldValueString = fieldValueString.replace(PlaceholderValueType, exportedValueType);
 
                     // Build vector string.
+                    fieldValueText = QString();
+
                     QVariantMap vector = fieldValue.toMap();
 
                     QVariant x = vector[BuiltInType::Vector::X];
