@@ -33,6 +33,11 @@
             <TypeMap/>
         </Template>
         <Template ExportLeafs="true">
+            <Name>INI</Name>
+            <FileExtension>.ini</FileExtension>
+            <TypeMap/>
+        </Template>
+        <Template ExportLeafs="true">
             <Name>JSON</Name>
             <FileExtension>.json</FileExtension>
             <TypeMap/>
