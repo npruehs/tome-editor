@@ -65,6 +65,7 @@ class MainWindow : public QMainWindow
         void on_actionManual_triggered();
         void on_actionReport_a_Bug_triggered();
         void on_actionReleases_triggered();
+        void on_actionRoadmap_triggered();
 
         void on_actionError_List_triggered();
 

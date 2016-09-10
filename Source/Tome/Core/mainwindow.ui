@@ -62,6 +62,7 @@
     <addaction name="actionReport_a_Bug"/>
     <addaction name="separator"/>
     <addaction name="actionReleases"/>
+    <addaction name="actionRoadmap"/>
    </widget>
    <widget class="QMenu" name="menuFields">
     <property name="title">
@@ -310,6 +311,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionRoadmap">
+   <property name="text">
+    <string>Roadmap</string>
    </property>
   </action>
  </widget>
