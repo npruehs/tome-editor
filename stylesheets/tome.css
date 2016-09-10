@@ -1,0 +1,19 @@
+/* Based on http://stackoverflow.com/questions/5573855/how-to-make-a-stable-two-column-layout-in-html-css */
+
+.left
+{
+    width: 416px;
+    float: left;
+    margin-top: 50px;
+}
+
+.right
+{
+    margin-left: 430px;
+    margin-top: 50px;
+}
+
+.clear
+{
+    clear: both;
+}
