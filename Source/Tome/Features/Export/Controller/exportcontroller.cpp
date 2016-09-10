@@ -151,9 +151,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
 
                 // Get field type name.
                 QString fieldType = fieldDefinition.fieldType;
-                QString exportedFieldType = exportTemplate.typeMap.contains(fieldType)
-                        ? exportTemplate.typeMap[fieldType]
-                        : fieldType;
+                QString exportedFieldType = exportTemplate.typeMap.value(fieldType, fieldType);
 
                 // Apply field value template.
                 QString fieldValueString = exportTemplate.fieldValueTemplate;
@@ -168,9 +166,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                         // Use list template.
                         fieldValueString = exportTemplate.listTemplate;
 
-                        QString exportedItemType = exportTemplate.typeMap.contains(customType.getItemType())
-                                ? exportTemplate.typeMap[customType.getItemType()]
-                                : customType.getItemType();
+                        QString itemType = customType.getItemType();
+                        QString exportedItemType = exportTemplate.typeMap.value(itemType, itemType);
 
                         fieldValueString = fieldValueString.replace(PlaceholderItemType, exportedItemType);
 
@@ -198,12 +195,11 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                         // Use map template.
                         fieldValueString = exportTemplate.mapTemplate;
 
-                        QString exportedKeyType = exportTemplate.typeMap.contains(customType.getKeyType())
-                                ? exportTemplate.typeMap[customType.getKeyType()]
-                                : customType.getKeyType();
-                        QString exportedValueType = exportTemplate.typeMap.contains(customType.getValueType())
-                                ? exportTemplate.typeMap[customType.getValueType()]
-                                : customType.getValueType();
+                        QString keyType = customType.getKeyType();
+                        QString valueType = customType.getValueType();
+
+                        QString exportedKeyType = exportTemplate.typeMap.value(keyType, keyType);
+                        QString exportedValueType = exportTemplate.typeMap.value(valueType, valueType);
 
                         fieldValueString = fieldValueString.replace(PlaceholderKeyType, exportedKeyType);
                         fieldValueString = fieldValueString.replace(PlaceholderValueType, exportedValueType);
@@ -237,22 +233,16 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                     // Use other template.
                     fieldValueString = exportTemplate.mapTemplate;
 
-                    QString exportedKeyType = exportTemplate.typeMap.contains("String")
-                            ? exportTemplate.typeMap["String"]
-                            : "String";
+                    QString exportedKeyType = exportTemplate.typeMap.value("String", "String");
                     QString exportedValueType;
 
                     if (fieldType == BuiltInType::Vector2I || fieldType == BuiltInType::Vector3I)
                     {
-                        exportedValueType = exportTemplate.typeMap.contains("Integer")
-                                ? exportTemplate.typeMap["Integer"]
-                                : "Integer";
+                        exportedValueType = exportTemplate.typeMap.value("Integer", "Integer");
                     }
                     else
                     {
-                        exportedValueType = exportTemplate.typeMap.contains("Real")
-                                ? exportTemplate.typeMap["Real"]
-                                : "Real";
+                        exportedValueType = exportTemplate.typeMap.value("Real", "Real");
                     }
 
                     fieldValueString = fieldValueString.replace(PlaceholderKeyType, exportedKeyType);
