@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Template ExportAsTable="true" ExportLeafs="true">
+    <Name>HTML</Name>
+    <FileExtension>.html</FileExtension>
+    <TypeMap/>
+</Template>

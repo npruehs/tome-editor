@@ -3,6 +3,7 @@
 
 #include "../Model/component.h"
 #include "../Model/componentlist.h"
+#include "../Model/componentsetlist.h"
 
 namespace Tome
 {
@@ -12,13 +13,15 @@ namespace Tome
             ComponentsController();
 
             const Component addComponent(const QString& componentName);
-            const ComponentList& getComponents() const;
+
+            const ComponentList getComponents() const;
+            const ComponentSetList& getComponentSets() const;
             int indexOf(const Component& component) const;
             void removeComponent(const Component component);
-            void setComponents(ComponentList& model);
+            void setComponents(ComponentSetList& model);
 
         private:
-            ComponentList* model;
+            ComponentSetList* model;
     };
 }
 

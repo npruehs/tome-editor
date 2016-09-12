@@ -20,8 +20,9 @@ const CustomType TypesController::addEnumeration(const QString& name, const QStr
     newType.name = name;
     newType.setEnumeration(enumeration);
 
-    int index = findInsertionIndex(*this->model, newType, customTypeLessThanName);
-    this->model->insert(index, newType);
+    CustomTypeList& types = (*this->model)[0].types;
+    int index = findInsertionIndex(types, newType, customTypeLessThanName);
+    types.insert(index, newType);
 
     return newType;
 }
@@ -32,8 +33,9 @@ const CustomType TypesController::addList(const QString& name, const QString& it
     newType.name = name;
     newType.setItemType(itemType);
 
-    int index = findInsertionIndex(*this->model, newType, customTypeLessThanName);
-    this->model->insert(index, newType);
+    CustomTypeList& types = (*this->model)[0].types;
+    int index = findInsertionIndex(types, newType, customTypeLessThanName);
+    types.insert(index, newType);
 
     return newType;
 }
@@ -45,8 +47,9 @@ const CustomType TypesController::addMap(const QString& name, const QString& key
     newType.setKeyType(keyType);
     newType.setValueType(valueType);
 
-    int index = findInsertionIndex(*this->model, newType, customTypeLessThanName);
-    this->model->insert(index, newType);
+    CustomTypeList& types = (*this->model)[0].types;
+    int index = findInsertionIndex(types, newType, customTypeLessThanName);
+    types.insert(index, newType);
 
     return newType;
 }
@@ -72,7 +75,24 @@ const CustomType& TypesController::getCustomType(const QString& name) const
     return *this->getCustomTypeByName(name);
 }
 
-const CustomTypeList& TypesController::getCustomTypes() const
+const CustomTypeList TypesController::getCustomTypes() const
+{
+    CustomTypeList types;
+
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        const CustomTypeSet& typeSet = this->model->at(i);
+
+        for (int j = 0; j < typeSet.types.size(); ++j)
+        {
+            types << typeSet.types[j];
+        }
+    }
+
+    return types;
+}
+
+const CustomTypeSetList& TypesController::getCustomTypeList() const
 {
     return *this->model;
 }
@@ -80,10 +100,11 @@ const CustomTypeList& TypesController::getCustomTypes() const
 const QStringList TypesController::getTypeNames() const
 {
     QStringList typeNames = this->getBuiltInTypes();
+    CustomTypeList types = this->getCustomTypes();
 
-    for (int i = 0; i < this->model->size(); ++i)
+    for (int i = 0; i < types.size(); ++i)
     {
-        const CustomType& type = this->model->at(i);
+        const CustomType& type = types[i];
         typeNames.push_back(type.name);
     }
 
@@ -92,7 +113,7 @@ const QStringList TypesController::getTypeNames() const
 
 int TypesController::indexOf(const CustomType& customType) const
 {
-    return this->model->indexOf(customType);
+    return this->model->at(0).types.indexOf(customType);
 }
 
 bool TypesController::isBuiltInType(const QString& name) const
@@ -102,9 +123,11 @@ bool TypesController::isBuiltInType(const QString& name) const
 
 bool TypesController::isCustomType(const QString& name) const
 {
-    for (int i = 0; i < this->model->size(); ++i)
+    CustomTypeList types = this->getCustomTypes();
+
+    for (int i = 0; i < types.size(); ++i)
     {
-        const CustomType& type = this->model->at(i);
+        const CustomType& type = types[i];
         if (type.name == name)
         {
             return true;
@@ -116,13 +139,15 @@ bool TypesController::isCustomType(const QString& name) const
 
 void TypesController::removeCustomType(const QString& typeName)
 {
-    for (CustomTypeList::iterator it = this->model->begin();
-         it != this->model->end();
+    CustomTypeList& tpyes = (*this->model)[0].types;
+
+    for (CustomTypeList::iterator it = tpyes.begin();
+         it != tpyes.end();
          ++it)
     {
         if (it->name == typeName)
         {
-            this->model->erase(it);
+            tpyes.erase(it);
             return;
         }
     }
@@ -141,31 +166,37 @@ void TypesController::renameType(const QString oldName, const QString newName)
     type.name = newName;
 
     // Update list item type and map key and value type references.
-    for (int i = 0; i < this->model->count(); ++i)
+
+    for (int i = 0; i < this->model->size(); ++i)
     {
-        CustomType& t = (*this->model)[i];
+        CustomTypeSet& typeSet = (*this->model)[i];
 
-        if (t.isList() && t.getItemType() == oldName)
+        for (int j = 0; j < typeSet.types.size(); ++j)
         {
-            t.setItemType(newName);
-        }
+            CustomType& t = typeSet.types[j];
 
-        if (t.isMap())
-        {
-            if (t.getKeyType() == oldName)
+            if (t.isList() && t.getItemType() == oldName)
             {
-                t.setKeyType(newName);
+                t.setItemType(newName);
             }
 
-            if (t.getValueType() == oldName)
+            if (t.isMap())
             {
-                t.setValueType(newName);
+                if (t.getKeyType() == oldName)
+                {
+                    t.setKeyType(newName);
+                }
+
+                if (t.getValueType() == oldName)
+                {
+                    t.setValueType(newName);
+                }
             }
         }
     }
 }
 
-void TypesController::setCustomTypes(CustomTypeList& model)
+void TypesController::setCustomTypes(CustomTypeSetList& model)
 {
     this->model = &model;
 }
@@ -181,7 +212,7 @@ void TypesController::updateEnumeration(const QString& oldName, const QString& n
 
     if (needsSorting)
     {
-        std::sort(this->model->begin(), this->model->end(), customTypeLessThanName);
+        std::sort((*this->model)[0].types.begin(), (*this->model)[0].types.end(), customTypeLessThanName);
     }
 }
 
@@ -196,7 +227,7 @@ void TypesController::updateList(const QString& oldName, const QString& newName,
 
     if (needsSorting)
     {
-        std::sort(this->model->begin(), this->model->end(), customTypeLessThanName);
+        std::sort((*this->model)[0].types.begin(), (*this->model)[0].types.end(), customTypeLessThanName);
     }
 }
 
@@ -212,7 +243,7 @@ void TypesController::updateMap(const QString& oldName, const QString& newName, 
 
     if (needsSorting)
     {
-        std::sort(this->model->begin(), this->model->end(), customTypeLessThanName);
+        std::sort((*this->model)[0].types.begin(), (*this->model)[0].types.end(), customTypeLessThanName);
     }
 }
 
@@ -269,10 +300,16 @@ CustomType* TypesController::getCustomTypeByName(const QString& name) const
 {
     for (int i = 0; i < this->model->size(); ++i)
     {
-        CustomType& type = (*this->model)[i];
-        if (type.name == name)
+        CustomTypeSet& typeSet = (*this->model)[i];
+
+        for (int j = 0; j < typeSet.types.size(); ++j)
         {
-            return &type;
+            CustomType& type = typeSet.types[j];
+
+            if (type.name == name)
+            {
+                return &type;
+            }
         }
     }
 

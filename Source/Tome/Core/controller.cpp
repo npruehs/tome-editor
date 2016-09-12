@@ -10,7 +10,9 @@
 #include "commandlineoptions.h"
 #include "mainwindow.h"
 #include "../Features/Components/Controller/componentscontroller.h"
+#include "../Features/Components/Controller/componentsetserializer.h"
 #include "../Features/Export/Controller/exportcontroller.h"
+#include "../Features/Export/Controller/exporttemplateserializer.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
 #include "../Features/Integrity/Controller/fieldtypedoesnotexisttask.h"
@@ -28,16 +30,20 @@
 #include "../Features/Settings/Controller/settingscontroller.h"
 #include "../Features/Tasks/Controller/taskscontroller.h"
 #include "../Features/Types/Controller/typescontroller.h"
+#include "../Features/Types/Controller/customtypesetserializer.h"
 #include "../Util/pathutils.h"
 
 using namespace Tome;
 
 
+const QString Controller::ComponentFileExtension = ".tcomp";
 const QString Controller::FieldDefinitionFileExtension = ".tfields";
 const QString Controller::ProjectFileExtension = ".tproj";
 const QString Controller::RecordFileExtension = ".tdata";
 const QString Controller::RecordExportComponentTemplateExtension = ".texportc";
 const QString Controller::RecordExportComponentDelimiterExtension = ".texportcd";
+const QString Controller::RecordExportFieldValueTemplateExtension = ".texportv";
+const QString Controller::RecordExportFieldValueDelimiterExtension = ".texportvd";
 const QString Controller::RecordExportListTemplateExtension = ".texportl";
 const QString Controller::RecordExportListItemTemplateExtension = ".texportli";
 const QString Controller::RecordExportListItemDelimiterExtension = ".texportld";
@@ -47,9 +53,8 @@ const QString Controller::RecordExportMapItemDelimiterExtension = ".texportmd";
 const QString Controller::RecordExportRecordFileTemplateExtension = ".texportf";
 const QString Controller::RecordExportRecordTemplateExtension = ".texportr";
 const QString Controller::RecordExportRecordDelimiterExtension = ".texportrd";
-const QString Controller::RecordExportFieldValueTemplateExtension = ".texportv";
-const QString Controller::RecordExportFieldValueDelimiterExtension = ".texportvd";
-
+const QString Controller::RecordExportTemplateFileExtension = ".texport";
+const QString Controller::TypeFileExtension = ".ttypes";
 
 Controller::Controller(CommandLineOptions* options) :
     options(options),
@@ -255,6 +260,43 @@ void Controller::openProject(const QString& projectFileName)
             throw std::runtime_error(errorMessage.toStdString());
         }
 
+        // Load component files.
+        ComponentSetSerializer componentSerializer = ComponentSetSerializer();
+
+        for (int i = 0; i < project->componentSets.size(); ++i)
+        {
+            ComponentSet& componentSet = project->componentSets[i];
+
+            // TODO(np): Remove as soon as backwards compatibility is removed from ProjectSerializer.
+            if (componentSet.components.size() > 0)
+            {
+                continue;
+            }
+
+            // Open component file.
+            QString fullComponentSetPath =
+                    buildFullFilePath(componentSet.name, projectPath, ComponentFileExtension);
+
+            QFile componentFile(fullComponentSetPath);
+            if (componentFile.open(QIODevice::ReadOnly))
+            {
+                try
+                {
+                    componentSerializer.deserialize(componentFile, componentSet);
+                }
+                catch (const std::runtime_error& e)
+                {
+                    QString errorMessage = QObject::tr("File could not be read: ") + fullComponentSetPath + "\r\n" + e.what();
+                    throw std::runtime_error(errorMessage.toStdString());
+                }
+            }
+            else
+            {
+                QString errorMessage = QObject::tr("File could not be read:\r\n") + fullComponentSetPath;
+                throw std::runtime_error(errorMessage.toStdString());
+            }
+        }
+
         // Load field definition files.
         FieldDefinitionSetSerializer fieldDefinitionSerializer = FieldDefinitionSetSerializer();
 
@@ -263,17 +305,8 @@ void Controller::openProject(const QString& projectFileName)
             FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
 
             // Open field definition file.
-            QString fullFieldDefinitionSetPath = fieldDefinitionSet.name;
-
-            if (!fullFieldDefinitionSetPath.endsWith(FieldDefinitionFileExtension))
-            {
-                fullFieldDefinitionSetPath = fullFieldDefinitionSetPath + FieldDefinitionFileExtension;
-            }
-
-            if (QDir::isRelativePath(fullFieldDefinitionSetPath))
-            {
-                fullFieldDefinitionSetPath = combinePaths(projectPath, fullFieldDefinitionSetPath);
-            }
+            QString fullFieldDefinitionSetPath =
+                    buildFullFilePath(fieldDefinitionSet.name, projectPath, FieldDefinitionFileExtension);
 
             QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
             if (fieldDefinitionFile.open(QIODevice::ReadOnly))
@@ -303,20 +336,10 @@ void Controller::openProject(const QString& projectFileName)
             RecordSet& recordSet = project->recordSets[i];
 
             // Open record file.
-            QString fullRecordSetPath = recordSet.name;
-
-            if (!fullRecordSetPath.endsWith(RecordFileExtension))
-            {
-                fullRecordSetPath = fullRecordSetPath + RecordFileExtension;
-            }
-
-            if (QDir::isRelativePath(fullRecordSetPath))
-            {
-                fullRecordSetPath = combinePaths(projectPath, fullRecordSetPath);
-            }
+            QString fullRecordSetPath =
+                    buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
 
             QFile recordFile(fullRecordSetPath);
-
             if (recordFile.open(QIODevice::ReadOnly))
             {
                 try
@@ -337,12 +360,42 @@ void Controller::openProject(const QString& projectFileName)
         }
 
         // Load record export template files.
+        ExportTemplateSerializer exportTemplateSerializer = ExportTemplateSerializer();
+
         for (RecordExportTemplateMap::iterator it = project->recordExportTemplates.begin();
              it != project->recordExportTemplates.end();
              ++it)
         {
             RecordExportTemplate& exportTemplate = it.value();
 
+            // TODO(np): Remove empty check as soon as backwards compatibility is removed from ProjectSerializer.
+            if (exportTemplate.fileExtension.isEmpty())
+            {
+                // Read template file.
+                QString fullExportTemplatePath =
+                        buildFullFilePath(exportTemplate.name, projectPath, RecordExportTemplateFileExtension);
+
+                QFile exportTemplateFile(fullExportTemplatePath);
+                if (exportTemplateFile.open(QIODevice::ReadOnly))
+                {
+                    try
+                    {
+                        exportTemplateSerializer.deserialize(exportTemplateFile, exportTemplate);
+                    }
+                    catch (const std::runtime_error& e)
+                    {
+                        QString errorMessage = QObject::tr("File could not be read: ") + fullExportTemplatePath + "\r\n" + e.what();
+                        throw std::runtime_error(errorMessage.toStdString());
+                    }
+                }
+                else
+                {
+                    QString errorMessage = QObject::tr("File could not be read:\r\n") + fullExportTemplatePath;
+                    throw std::runtime_error(errorMessage.toStdString());
+                }
+            }
+
+            // Read template contents.
             try
             {
                 QString templatePath;
@@ -395,6 +448,43 @@ void Controller::openProject(const QString& projectFileName)
             }
         }
 
+        // Load type files.
+        CustomTypeSetSerializer typesSerializer = CustomTypeSetSerializer();
+
+        for (int i = 0; i < project->typeSets.size(); ++i)
+        {
+            CustomTypeSet& typeSet = project->typeSets[i];
+
+            // TODO(np): Remove as soon as backwards compatibility is removed from ProjectSerializer.
+            if (typeSet.types.size() > 0)
+            {
+                continue;
+            }
+
+            // Open types file.
+            QString fullTypeSetPath =
+                    buildFullFilePath(typeSet.name, projectPath, TypeFileExtension);
+
+            QFile typeFile(fullTypeSetPath);
+            if (typeFile.open(QIODevice::ReadOnly))
+            {
+                try
+                {
+                    typesSerializer.deserialize(typeFile, typeSet);
+                }
+                catch (const std::runtime_error& e)
+                {
+                    QString errorMessage = QObject::tr("File could not be read: ") + fullTypeSetPath + "\r\n" + e.what();
+                    throw std::runtime_error(errorMessage.toStdString());
+                }
+            }
+            else
+            {
+                QString errorMessage = QObject::tr("File could not be read:\r\n") + fullTypeSetPath;
+                throw std::runtime_error(errorMessage.toStdString());
+            }
+        }
+
         // Set project reference.
         this->setProject(project);
     }
@@ -412,6 +502,21 @@ void Controller::openProject(const QString& projectFileName)
 void Controller::saveProject()
 {
     this->saveProject(this->project);
+}
+
+QString Controller::buildFullFilePath(QString filePath, QString projectPath, QString desiredExtension) const
+{
+    if (!filePath.endsWith(desiredExtension))
+    {
+        filePath = filePath + desiredExtension;
+    }
+
+    if (QDir::isRelativePath(filePath))
+    {
+        filePath = combinePaths(projectPath, filePath);
+    }
+
+    return filePath;
 }
 
 void Controller::saveProject(QSharedPointer<Project> project)
@@ -435,6 +540,31 @@ void Controller::saveProject(QSharedPointer<Project> project)
         throw std::runtime_error(errorMessage.toStdString());
     }
 
+    // Write component sets.
+    ComponentSetSerializer componentSetSerializer = ComponentSetSerializer();
+
+    for (int i = 0; i < project->componentSets.size(); ++i)
+    {
+        const ComponentSet& componentSet = project->componentSets[i];
+
+        // Build file name.
+        QString fullComponentSetPath =
+                buildFullFilePath(componentSet.name, projectPath, ComponentFileExtension);
+
+        // Write file.
+        QFile componentSetFile(fullComponentSetPath);
+
+        if (componentSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
+        {
+            componentSetSerializer.serialize(componentSetFile, componentSet);
+        }
+        else
+        {
+            QString errorMessage = QObject::tr("Destination file could not be written:\r\n") + fullComponentSetPath;
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+
     // Write field definition sets.
     FieldDefinitionSetSerializer fieldDefinitionSetSerializer = FieldDefinitionSetSerializer();
 
@@ -443,17 +573,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
         const FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
 
         // Build file name.
-        QString fullFieldDefinitionSetPath = fieldDefinitionSet.name;
-
-        if (!fullFieldDefinitionSetPath.endsWith(FieldDefinitionFileExtension))
-        {
-            fullFieldDefinitionSetPath = fullFieldDefinitionSetPath + FieldDefinitionFileExtension;
-        }
-
-        if (QDir::isRelativePath(fullFieldDefinitionSetPath))
-        {
-            fullFieldDefinitionSetPath = combinePaths(projectPath, fullFieldDefinitionSetPath);
-        }
+        QString fullFieldDefinitionSetPath =
+                buildFullFilePath(fieldDefinitionSet.name, projectPath, FieldDefinitionFileExtension);
 
         // Write file.
         QFile fieldDefinitionSetFile(fullFieldDefinitionSetPath);
@@ -477,17 +598,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
         const RecordSet& recordSet = project->recordSets[i];
 
         // Build file name.
-        QString fullRecordSetPath = recordSet.name;
-
-        if (!fullRecordSetPath.endsWith(RecordFileExtension))
-        {
-            fullRecordSetPath = fullRecordSetPath + RecordFileExtension;
-        }
-
-        if (QDir::isRelativePath(fullRecordSetPath))
-        {
-            fullRecordSetPath = combinePaths(projectPath, fullRecordSetPath);
-        }
+        QString fullRecordSetPath =
+                buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
 
         // Write file.
         QFile recordSetFile(fullRecordSetPath);
@@ -499,6 +611,58 @@ void Controller::saveProject(QSharedPointer<Project> project)
         else
         {
             QString errorMessage = QObject::tr("Destination file could not be written:\r\n") + fullRecordSetPath;
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+
+    // Write export templates.
+    ExportTemplateSerializer exportTemplateSerializer = ExportTemplateSerializer();
+
+    for (RecordExportTemplateMap::const_iterator it = project->recordExportTemplates.begin();
+         it != project->recordExportTemplates.end();
+         ++it)
+    {
+        const RecordExportTemplate& exportTemplate = *it;
+
+        // Build file name.
+        QString fullExportTemplatePath =
+                buildFullFilePath(exportTemplate.name, projectPath, RecordExportTemplateFileExtension);
+
+        // Write file.
+        QFile exportTemplateFile(fullExportTemplatePath);
+
+        if (exportTemplateFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
+        {
+            exportTemplateSerializer.serialize(exportTemplateFile, exportTemplate);
+        }
+        else
+        {
+            QString errorMessage = QObject::tr("Destination file could not be written:\r\n") + fullExportTemplatePath;
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+
+    // Write type sets.
+    CustomTypeSetSerializer typeSetSerializer = CustomTypeSetSerializer();
+
+    for (int i = 0; i < project->typeSets.size(); ++i)
+    {
+        const CustomTypeSet& typeSet = project->typeSets[i];
+
+        // Build file name.
+        QString fullTypeSetPath =
+                buildFullFilePath(typeSet.name, projectPath, TypeFileExtension);
+
+        // Write file.
+        QFile typeSetFile(fullTypeSetPath);
+
+        if (typeSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
+        {
+            typeSetSerializer.serialize(typeSetFile, typeSet);
+        }
+        else
+        {
+            QString errorMessage = QObject::tr("Destination file could not be written:\r\n") + fullTypeSetPath;
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -524,11 +688,11 @@ void Controller::setProject(QSharedPointer<Project> project)
 {
     this->project = project;
 
-    this->componentsController->setComponents(project->components);
+    this->componentsController->setComponents(project->componentSets);
     this->exportController->setRecordExportTemplates(project->recordExportTemplates);
     this->fieldDefinitionsController->setFieldDefinitionSets(project->fieldDefinitionSets);
     this->recordsController->setRecordSets(project->recordSets);
-    this->typesController->setCustomTypes(project->types);
+    this->typesController->setCustomTypes(project->typeSets);
 
     // Add to recent projects.
     const QString& fullPath = this->getFullProjectPath();
