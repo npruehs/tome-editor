@@ -4,6 +4,7 @@
 #include <QVariant>
 
 #include "../Model/customtypelist.h"
+#include "../Model/customtypesetlist.h"
 
 namespace Tome
 {
@@ -25,7 +26,8 @@ namespace Tome
              */
             const CustomType& getCustomType(const QString& name) const;
 
-            const CustomTypeList& getCustomTypes() const;
+            const CustomTypeList getCustomTypes() const;
+            const CustomTypeSetList& getCustomTypeList() const;
 
             /**
              * @brief getCustomTypeNames Returns a list of all type names of this project, including built-in types.
@@ -39,7 +41,7 @@ namespace Tome
             void removeCustomType(const QString& typeName);
             void removeCustomTypeAt(const int index);
             void renameType(const QString oldName, const QString newName);
-            void setCustomTypes(CustomTypeList& model);
+            void setCustomTypes(CustomTypeSetList& model);
             void updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration);
             void updateList(const QString& oldName, const QString& newName, const QString& itemType);
             void updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType);
@@ -48,7 +50,7 @@ namespace Tome
 
 
         private:
-            CustomTypeList* model;
+            CustomTypeSetList* model;
 
             CustomType* getCustomTypeByName(const QString& name) const;
     };

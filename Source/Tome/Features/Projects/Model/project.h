@@ -10,7 +10,7 @@
 #include "../../Export/Model/recordexporttemplatemap.h"
 #include "../../Fields/Model/fielddefinitionsetlist.h"
 #include "../../Records/Model/recordsetlist.h"
-#include "../../Types/Model/customtypelist.h"
+#include "../../Types/Model/customtypesetlist.h"
 
 
 namespace Tome
@@ -28,7 +28,7 @@ namespace Tome
             FieldDefinitionSetList fieldDefinitionSets;
             RecordExportTemplateMap recordExportTemplates;
             RecordSetList recordSets;
-            CustomTypeList types;
+            CustomTypeSetList typeSets;
     };
 }
 

@@ -66,6 +66,7 @@ namespace Tome
             static const QString RecordExportFieldValueTemplateExtension;
             static const QString RecordExportFieldValueDelimiterExtension;
             static const QString RecordFileExtension;
+            static const QString TypeFileExtension;
 
             CommandLineOptions* options;
 

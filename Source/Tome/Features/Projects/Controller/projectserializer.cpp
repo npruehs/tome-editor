@@ -155,33 +155,13 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
             }
             writer.writeEndElement();
 
-            // Write types.
+            // Write type set paths.
             writer.writeStartElement(ElementTypes);
             {
-                for (int i = 0; i < project->types.size(); ++i)
+                for (int i = 0; i < project->typeSets.size(); ++i)
                 {
-                    const CustomType& type = project->types.at(i);
-
-                    writer.writeStartElement(ElementType);
-                    {
-                        writer.writeAttribute(ElementName, type.name);
-
-                        // Write restrictions map.
-                        writer.writeStartElement(ElementRestrictions);
-                        {
-                            for (QMap<QString, QString>::const_iterator itRestrictions = type.restrictions.begin();
-                                 itRestrictions != type.restrictions.end();
-                                 ++itRestrictions)
-                            {
-                                writer.writeStartElement(ElementRestriction);
-                                writer.writeAttribute(AttributeKey, itRestrictions.key());
-                                writer.writeAttribute(AttributeValue, itRestrictions.value());
-                                writer.writeEndElement();
-                            }
-                        }
-                        writer.writeEndElement();
-                    }
-                    writer.writeEndElement();
+                    const CustomTypeSet& typeSet = project->typeSets[i];
+                    writer.writeTextElement(ElementPath, typeSet.name);
                 }
             }
             writer.writeEndElement();
@@ -319,33 +299,50 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             // Read types.
             reader.readStartElement(ElementTypes);
             {
-                while (reader.isAtElement(ElementType))
+                if (version > 3)
                 {
-                    CustomType type = CustomType();
-
-                    type.name = reader.readAttribute(ElementName);
-
-                    reader.readStartElement(ElementType);
+                    while (reader.isAtElement(ElementPath))
                     {
-                        // Read type restriction map.
-                        reader.readStartElement(ElementRestrictions);
+                        CustomTypeSet typeSet = CustomTypeSet();
+                        typeSet.name = reader.readTextElement(ElementPath);
+                        project->typeSets.push_back(typeSet);
+                    }
+                }
+                else
+                {
+                    CustomTypeSet typeSet = CustomTypeSet();
+                    typeSet.name = project->name;
+
+                    while (reader.isAtElement(ElementType))
+                    {
+                        CustomType type = CustomType();
+
+                        type.name = reader.readAttribute(ElementName);
+
+                        reader.readStartElement(ElementType);
                         {
-                            while (reader.isAtElement(ElementRestriction))
+                            // Read type restriction map.
+                            reader.readStartElement(ElementRestrictions);
                             {
-                                QString restrictionKey = reader.readAttribute(AttributeKey);
-                                QString restrictionValue = reader.readAttribute(AttributeValue);
+                                while (reader.isAtElement(ElementRestriction))
+                                {
+                                    QString restrictionKey = reader.readAttribute(AttributeKey);
+                                    QString restrictionValue = reader.readAttribute(AttributeValue);
 
-                                type.restrictions.insert(restrictionKey, restrictionValue);
+                                    type.restrictions.insert(restrictionKey, restrictionValue);
 
-                                // Advance reader.
-                                reader.readEmptyElement(ElementRestriction);
+                                    // Advance reader.
+                                    reader.readEmptyElement(ElementRestriction);
+                                }
                             }
+                            reader.readEndElement();
                         }
                         reader.readEndElement();
-                    }
-                    reader.readEndElement();
 
-                    project->types.push_back(type);
+                        typeSet.types.push_back(type);
+                    }
+
+                    project->typeSets.push_back(typeSet);
                 }
             }
             reader.readEndElement();

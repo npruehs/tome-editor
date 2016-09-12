@@ -29,6 +29,7 @@
 #include "../Features/Settings/Controller/settingscontroller.h"
 #include "../Features/Tasks/Controller/taskscontroller.h"
 #include "../Features/Types/Controller/typescontroller.h"
+#include "../Features/Types/Controller/customtypesetserializer.h"
 #include "../Util/pathutils.h"
 
 using namespace Tome;
@@ -51,7 +52,7 @@ const QString Controller::RecordExportRecordTemplateExtension = ".texportr";
 const QString Controller::RecordExportRecordDelimiterExtension = ".texportrd";
 const QString Controller::RecordExportFieldValueTemplateExtension = ".texportv";
 const QString Controller::RecordExportFieldValueDelimiterExtension = ".texportvd";
-
+const QString Controller::TypeFileExtension = ".ttypes";
 
 Controller::Controller(CommandLineOptions* options) :
     options(options),
@@ -336,18 +337,7 @@ void Controller::openProject(const QString& projectFileName)
             QString fullRecordSetPath =
                     buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
 
-            if (!fullRecordSetPath.endsWith(RecordFileExtension))
-            {
-                fullRecordSetPath = fullRecordSetPath + RecordFileExtension;
-            }
-
-            if (QDir::isRelativePath(fullRecordSetPath))
-            {
-                fullRecordSetPath = combinePaths(projectPath, fullRecordSetPath);
-            }
-
             QFile recordFile(fullRecordSetPath);
-
             if (recordFile.open(QIODevice::ReadOnly))
             {
                 try
@@ -422,6 +412,45 @@ void Controller::openProject(const QString& projectFileName)
             catch (const std::runtime_error& e)
             {
                 QString errorMessage = QObject::tr("File could not be read:\r\n") + e.what();
+                throw std::runtime_error(errorMessage.toStdString());
+            }
+        }
+
+
+
+        // Load type files.
+        CustomTypeSetSerializer typesSerializer = CustomTypeSetSerializer();
+
+        for (int i = 0; i < project->typeSets.size(); ++i)
+        {
+            CustomTypeSet& typeSet = project->typeSets[i];
+
+            // TODO(np): Remove as soon as backwards compatibility is removed from ProjectSerializer.
+            if (typeSet.types.size() > 0)
+            {
+                continue;
+            }
+
+            // Open types file.
+            QString fullTypeSetPath =
+                    buildFullFilePath(typeSet.name, projectPath, TypeFileExtension);
+
+            QFile typeFile(fullTypeSetPath);
+            if (typeFile.open(QIODevice::ReadOnly))
+            {
+                try
+                {
+                    typesSerializer.deserialize(typeFile, typeSet);
+                }
+                catch (const std::runtime_error& e)
+                {
+                    QString errorMessage = QObject::tr("File could not be read: ") + fullTypeSetPath + "\r\n" + e.what();
+                    throw std::runtime_error(errorMessage.toStdString());
+                }
+            }
+            else
+            {
+                QString errorMessage = QObject::tr("File could not be read:\r\n") + fullTypeSetPath;
                 throw std::runtime_error(errorMessage.toStdString());
             }
         }
@@ -555,6 +584,31 @@ void Controller::saveProject(QSharedPointer<Project> project)
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
+
+    // Write type sets.
+    CustomTypeSetSerializer typeSetSerializer = CustomTypeSetSerializer();
+
+    for (int i = 0; i < project->typeSets.size(); ++i)
+    {
+        const CustomTypeSet& typeSet = project->typeSets[i];
+
+        // Build file name.
+        QString fullTypeSetPath =
+                buildFullFilePath(typeSet.name, projectPath, TypeFileExtension);
+
+        // Write file.
+        QFile typeSetFile(fullTypeSetPath);
+
+        if (typeSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
+        {
+            typeSetSerializer.serialize(typeSetFile, typeSet);
+        }
+        else
+        {
+            QString errorMessage = QObject::tr("Destination file could not be written:\r\n") + fullTypeSetPath;
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
 }
 
 QString Controller::readFile(const QString& path, const QString& fileName)
@@ -581,7 +635,7 @@ void Controller::setProject(QSharedPointer<Project> project)
     this->exportController->setRecordExportTemplates(project->recordExportTemplates);
     this->fieldDefinitionsController->setFieldDefinitionSets(project->fieldDefinitionSets);
     this->recordsController->setRecordSets(project->recordSets);
-    this->typesController->setCustomTypes(project->types);
+    this->typesController->setCustomTypes(project->typeSets);
 
     // Add to recent projects.
     const QString& fullPath = this->getFullProjectPath();

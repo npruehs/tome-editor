@@ -95,7 +95,9 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Integrity/Controller/mapvaluetypedoesnotexisttask.cpp \
     ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.cpp \
     ../Source/Tome/Features/Components/Model/componentset.cpp \
-    ../Source/Tome/Features/Components/Controller/componentsetserializer.cpp
+    ../Source/Tome/Features/Components/Controller/componentsetserializer.cpp \
+    ../Source/Tome/Features/Types/Model/customtypeset.cpp \
+    ../Source/Tome/Features/Types/Controller/customtypesetserializer.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -180,7 +182,10 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.h \
     ../Source/Tome/Features/Components/Model/componentset.h \
     ../Source/Tome/Features/Components/Controller/componentsetserializer.h \
-    ../Source/Tome/Features/Components/Model/componentsetlist.h
+    ../Source/Tome/Features/Components/Model/componentsetlist.h \
+    ../Source/Tome/Features/Types/Model/customtypeset.h \
+    ../Source/Tome/Features/Types/Controller/customtypesetserializer.h \
+    ../Source/Tome/Features/Types/Model/customtypesetlist.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
