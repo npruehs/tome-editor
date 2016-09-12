@@ -93,7 +93,9 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Integrity/Controller/mapkeytypedoesnotexisttask.cpp \
     ../Source/Tome/Features/Integrity/Controller/mapkeytypenotsupportedtask.cpp \
     ../Source/Tome/Features/Integrity/Controller/mapvaluetypedoesnotexisttask.cpp \
-    ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.cpp
+    ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.cpp \
+    ../Source/Tome/Features/Components/Model/componentset.cpp \
+    ../Source/Tome/Features/Components/Controller/componentsetserializer.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -175,7 +177,10 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Integrity/Controller/mapkeytypedoesnotexisttask.h \
     ../Source/Tome/Features/Integrity/Controller/mapkeytypenotsupportedtask.h \
     ../Source/Tome/Features/Integrity/Controller/mapvaluetypedoesnotexisttask.h \
-    ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.h
+    ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.h \
+    ../Source/Tome/Features/Components/Model/componentset.h \
+    ../Source/Tome/Features/Components/Controller/componentsetserializer.h \
+    ../Source/Tome/Features/Components/Model/componentsetlist.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

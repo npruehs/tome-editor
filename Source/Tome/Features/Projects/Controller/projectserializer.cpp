@@ -36,7 +36,7 @@ const QString ProjectSerializer::ElementType = "Type";
 const QString ProjectSerializer::ElementTypes = "Types";
 const QString ProjectSerializer::ElementTypeMap = "TypeMap";
 
-const int ProjectSerializer::Version = 3;
+const int ProjectSerializer::Version = 4;
 
 
 ProjectSerializer::ProjectSerializer()
@@ -67,12 +67,10 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
             // Write components.
             writer.writeStartElement(ElementComponents);
             {
-                for (ComponentList::iterator it = project->components.begin();
-                     it != project->components.end();
-                     ++it)
+                for (int i = 0; i < project->componentSets.size(); ++i)
                 {
-                    Component component = *it;
-                    writer.writeTextElement(ElementName, component);
+                    const ComponentSet& componentSet = project->componentSets[i];
+                    writer.writeTextElement(ElementPath, componentSet.name);
                 }
             }
             writer.writeEndElement();
@@ -222,10 +220,27 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             // Read components.
             reader.readStartElement(ElementComponents);
             {
-                while (reader.isAtElement(ElementName))
+                if (version > 3)
                 {
-                    const QString component = reader.readTextElement(ElementName);
-                    project->components.push_back(component);
+                    while (reader.isAtElement(ElementPath))
+                    {
+                        ComponentSet componentSet = ComponentSet();
+                        componentSet.name = reader.readTextElement(ElementPath);
+                        project->componentSets.push_back(componentSet);
+                    }
+                }
+                else
+                {
+                    ComponentSet componentSet = ComponentSet();
+                    componentSet.name = project->name;
+
+                    while (reader.isAtElement(ElementName))
+                    {
+                        const QString component = reader.readTextElement(ElementName);
+                        componentSet.components.push_back(component);
+                    }
+
+                    project->componentSets.push_back(componentSet);
                 }
             }
             reader.readEndElement();

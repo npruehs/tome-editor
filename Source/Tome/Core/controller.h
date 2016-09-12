@@ -49,6 +49,7 @@ namespace Tome
             void projectChanged(QSharedPointer<Tome::Project> project);
 
         private:
+            static const QString ComponentFileExtension;
             static const QString FieldDefinitionFileExtension;
             static const QString ProjectFileExtension;
             static const QString RecordExportComponentDelimiterExtension;
@@ -81,6 +82,7 @@ namespace Tome
 
             MainWindow* mainWindow;
 
+            QString buildFullFilePath(QString filePath, QString projectPath, QString desiredExtension) const;
             const QString getFullProjectPath(QSharedPointer<Project> project) const;
             void saveProject(QSharedPointer<Project> project);
             void setProject(QSharedPointer<Project> project);

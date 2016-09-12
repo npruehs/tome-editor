@@ -6,7 +6,7 @@
 #include <QVector>
 #include <QLocale>
 
-#include "../../Components/Model/componentlist.h"
+#include "../../Components/Model/componentsetlist.h"
 #include "../../Export/Model/recordexporttemplatemap.h"
 #include "../../Fields/Model/fielddefinitionsetlist.h"
 #include "../../Records/Model/recordsetlist.h"
@@ -24,7 +24,7 @@ namespace Tome
             QString path;
             QLocale locale;
 
-            ComponentList components;
+            ComponentSetList componentSets;
             FieldDefinitionSetList fieldDefinitionSets;
             RecordExportTemplateMap recordExportTemplates;
             RecordSetList recordSets;
