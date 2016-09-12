@@ -12,6 +12,7 @@
 #include "../Features/Components/Controller/componentscontroller.h"
 #include "../Features/Components/Controller/componentsetserializer.h"
 #include "../Features/Export/Controller/exportcontroller.h"
+#include "../Features/Export/Controller/exporttemplateserializer.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
 #include "../Features/Integrity/Controller/fieldtypedoesnotexisttask.h"
@@ -41,6 +42,8 @@ const QString Controller::ProjectFileExtension = ".tproj";
 const QString Controller::RecordFileExtension = ".tdata";
 const QString Controller::RecordExportComponentTemplateExtension = ".texportc";
 const QString Controller::RecordExportComponentDelimiterExtension = ".texportcd";
+const QString Controller::RecordExportFieldValueTemplateExtension = ".texportv";
+const QString Controller::RecordExportFieldValueDelimiterExtension = ".texportvd";
 const QString Controller::RecordExportListTemplateExtension = ".texportl";
 const QString Controller::RecordExportListItemTemplateExtension = ".texportli";
 const QString Controller::RecordExportListItemDelimiterExtension = ".texportld";
@@ -50,8 +53,7 @@ const QString Controller::RecordExportMapItemDelimiterExtension = ".texportmd";
 const QString Controller::RecordExportRecordFileTemplateExtension = ".texportf";
 const QString Controller::RecordExportRecordTemplateExtension = ".texportr";
 const QString Controller::RecordExportRecordDelimiterExtension = ".texportrd";
-const QString Controller::RecordExportFieldValueTemplateExtension = ".texportv";
-const QString Controller::RecordExportFieldValueDelimiterExtension = ".texportvd";
+const QString Controller::RecordExportTemplateFileExtension = ".texport";
 const QString Controller::TypeFileExtension = ".ttypes";
 
 Controller::Controller(CommandLineOptions* options) :
@@ -358,12 +360,42 @@ void Controller::openProject(const QString& projectFileName)
         }
 
         // Load record export template files.
+        ExportTemplateSerializer exportTemplateSerializer = ExportTemplateSerializer();
+
         for (RecordExportTemplateMap::iterator it = project->recordExportTemplates.begin();
              it != project->recordExportTemplates.end();
              ++it)
         {
             RecordExportTemplate& exportTemplate = it.value();
 
+            // TODO(np): Remove empty check as soon as backwards compatibility is removed from ProjectSerializer.
+            if (exportTemplate.fileExtension.isEmpty())
+            {
+                // Read template file.
+                QString fullExportTemplatePath =
+                        buildFullFilePath(exportTemplate.name, projectPath, RecordExportTemplateFileExtension);
+
+                QFile exportTemplateFile(fullExportTemplatePath);
+                if (exportTemplateFile.open(QIODevice::ReadOnly))
+                {
+                    try
+                    {
+                        exportTemplateSerializer.deserialize(exportTemplateFile, exportTemplate);
+                    }
+                    catch (const std::runtime_error& e)
+                    {
+                        QString errorMessage = QObject::tr("File could not be read: ") + fullExportTemplatePath + "\r\n" + e.what();
+                        throw std::runtime_error(errorMessage.toStdString());
+                    }
+                }
+                else
+                {
+                    QString errorMessage = QObject::tr("File could not be read:\r\n") + fullExportTemplatePath;
+                    throw std::runtime_error(errorMessage.toStdString());
+                }
+            }
+
+            // Read template contents.
             try
             {
                 QString templatePath;
@@ -415,8 +447,6 @@ void Controller::openProject(const QString& projectFileName)
                 throw std::runtime_error(errorMessage.toStdString());
             }
         }
-
-
 
         // Load type files.
         CustomTypeSetSerializer typesSerializer = CustomTypeSetSerializer();
@@ -581,6 +611,33 @@ void Controller::saveProject(QSharedPointer<Project> project)
         else
         {
             QString errorMessage = QObject::tr("Destination file could not be written:\r\n") + fullRecordSetPath;
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+
+    // Write export templates.
+    ExportTemplateSerializer exportTemplateSerializer = ExportTemplateSerializer();
+
+    for (RecordExportTemplateMap::const_iterator it = project->recordExportTemplates.begin();
+         it != project->recordExportTemplates.end();
+         ++it)
+    {
+        const RecordExportTemplate& exportTemplate = *it;
+
+        // Build file name.
+        QString fullExportTemplatePath =
+                buildFullFilePath(exportTemplate.name, projectPath, RecordExportTemplateFileExtension);
+
+        // Write file.
+        QFile exportTemplateFile(fullExportTemplatePath);
+
+        if (exportTemplateFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
+        {
+            exportTemplateSerializer.serialize(exportTemplateFile, exportTemplate);
+        }
+        else
+        {
+            QString errorMessage = QObject::tr("Destination file could not be written:\r\n") + fullExportTemplatePath;
             throw std::runtime_error(errorMessage.toStdString());
         }
     }

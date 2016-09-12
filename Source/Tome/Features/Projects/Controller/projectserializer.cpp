@@ -97,60 +97,15 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
             }
             writer.writeEndElement();
 
-            // Write record export templates.
+            // Write record export template paths.
             writer.writeStartElement(ElementRecordExportTemplates);
             {
                 for (RecordExportTemplateMap::const_iterator it = project->recordExportTemplates.begin();
                      it != project->recordExportTemplates.end();
                      ++it)
                 {
-                    writer.writeStartElement(ElementTemplate);
-                    {
-                        const RecordExportTemplate& exportTemplate = it.value();
-
-                        if (exportTemplate.exportAsTable)
-                        {
-                            writer.writeAttribute(AttributeExportAsTable, "true");
-                        }
-                        if (!exportTemplate.path.isEmpty())
-                        {
-                            writer.writeAttribute(AttributePath, exportTemplate.path);
-                        }
-
-                        if (exportTemplate.exportRoots)
-                        {
-                            writer.writeAttribute(AttributeExportRoots, "true");
-                        }
-
-                        if (exportTemplate.exportInnerNodes)
-                        {
-                            writer.writeAttribute(AttributeExportInnerNodes, "true");
-                        }
-
-                        if (exportTemplate.exportLeafs)
-                        {
-                            writer.writeAttribute(AttributeExportLeafs, "true");
-                        }
-
-                        writer.writeTextElement(ElementName, exportTemplate.name);
-                        writer.writeTextElement(ElementFileExtension, exportTemplate.fileExtension);
-
-                        // Write export type map.
-                        writer.writeStartElement(ElementTypeMap);
-                        {
-                            for (QMap<QString, QString>::const_iterator itTypeMap = exportTemplate.typeMap.begin();
-                                 itTypeMap != exportTemplate.typeMap.end();
-                                 ++itTypeMap)
-                            {
-                                writer.writeStartElement(ElementMapping);
-                                writer.writeAttribute(AttributeTomeType, itTypeMap.key());
-                                writer.writeAttribute(AttributeExportedType, itTypeMap.value());
-                                writer.writeEndElement();
-                            }
-                        }
-                        writer.writeEndElement();
-                    }
-                    writer.writeEndElement();
+                    const RecordExportTemplate& exportTemplate = *it;
+                    writer.writeTextElement(ElementPath, exportTemplate.name);
                 }
             }
             writer.writeEndElement();
@@ -252,46 +207,58 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             // Read record export templates.
             reader.readStartElement(ElementRecordExportTemplates);
             {
-                while (reader.isAtElement(ElementTemplate))
+                if (version > 3)
                 {
-                    bool exportAsTable = reader.readAttribute(AttributeExportAsTable) == "true";
-                    bool exportRoots = reader.readAttribute(AttributeExportRoots) == "true";
-                    bool exportInnerNodes = reader.readAttribute(AttributeExportInnerNodes) == "true";
-                    bool exportLeafs = reader.readAttribute(AttributeExportLeafs) == "true";
-                    QString templatePath = reader.readAttribute(AttributePath);
-
-                    reader.readStartElement(ElementTemplate);
+                    while (reader.isAtElement(ElementPath))
                     {
                         RecordExportTemplate exportTemplate = RecordExportTemplate();
+                        exportTemplate.name = reader.readTextElement(ElementPath);
+                        project->recordExportTemplates[exportTemplate.name] = exportTemplate;
+                    }
+                }
+                else
+                {
+                    while (reader.isAtElement(ElementTemplate))
+                    {
+                        bool exportAsTable = reader.readAttribute(AttributeExportAsTable) == "true";
+                        bool exportRoots = reader.readAttribute(AttributeExportRoots) == "true";
+                        bool exportInnerNodes = reader.readAttribute(AttributeExportInnerNodes) == "true";
+                        bool exportLeafs = reader.readAttribute(AttributeExportLeafs) == "true";
+                        QString templatePath = reader.readAttribute(AttributePath);
 
-                        exportTemplate.exportAsTable = exportAsTable;
-                        exportTemplate.exportRoots = exportRoots;
-                        exportTemplate.exportInnerNodes = exportInnerNodes;
-                        exportTemplate.exportLeafs = exportLeafs;
-
-                        exportTemplate.path = templatePath;
-                        exportTemplate.name = reader.readTextElement(ElementName);
-                        exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);
-
-                        // Read export type map.
-                        reader.readStartElement(ElementTypeMap);
+                        reader.readStartElement(ElementTemplate);
                         {
-                            while (reader.isAtElement(ElementMapping))
+                            RecordExportTemplate exportTemplate = RecordExportTemplate();
+
+                            exportTemplate.exportAsTable = exportAsTable;
+                            exportTemplate.exportRoots = exportRoots;
+                            exportTemplate.exportInnerNodes = exportInnerNodes;
+                            exportTemplate.exportLeafs = exportLeafs;
+
+                            exportTemplate.path = templatePath;
+                            exportTemplate.name = reader.readTextElement(ElementName);
+                            exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);
+
+                            // Read export type map.
+                            reader.readStartElement(ElementTypeMap);
                             {
-                                QString typeMapKey = reader.readAttribute(AttributeTomeType);
-                                QString typeMapValue = reader.readAttribute(AttributeExportedType);
+                                while (reader.isAtElement(ElementMapping))
+                                {
+                                    QString typeMapKey = reader.readAttribute(AttributeTomeType);
+                                    QString typeMapValue = reader.readAttribute(AttributeExportedType);
 
-                                exportTemplate.typeMap.insert(typeMapKey, typeMapValue);
+                                    exportTemplate.typeMap.insert(typeMapKey, typeMapValue);
 
-                                // Advance reader.
-                                reader.readEmptyElement(ElementMapping);
+                                    // Advance reader.
+                                    reader.readEmptyElement(ElementMapping);
+                                }
                             }
+                            reader.readEndElement();
+
+                            project->recordExportTemplates.insert(exportTemplate.name, exportTemplate);
                         }
                         reader.readEndElement();
-
-                        project->recordExportTemplates.insert(exportTemplate.name, exportTemplate);
                     }
-                    reader.readEndElement();
                 }
             }
             reader.readEndElement();

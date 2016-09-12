@@ -97,7 +97,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Components/Model/componentset.cpp \
     ../Source/Tome/Features/Components/Controller/componentsetserializer.cpp \
     ../Source/Tome/Features/Types/Model/customtypeset.cpp \
-    ../Source/Tome/Features/Types/Controller/customtypesetserializer.cpp
+    ../Source/Tome/Features/Types/Controller/customtypesetserializer.cpp \
+    ../Source/Tome/Features/Export/Controller/exporttemplateserializer.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -185,7 +186,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Components/Model/componentsetlist.h \
     ../Source/Tome/Features/Types/Model/customtypeset.h \
     ../Source/Tome/Features/Types/Controller/customtypesetserializer.h \
-    ../Source/Tome/Features/Types/Model/customtypesetlist.h
+    ../Source/Tome/Features/Types/Model/customtypesetlist.h \
+    ../Source/Tome/Features/Export/Controller/exporttemplateserializer.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
