@@ -171,6 +171,18 @@ bool FieldDefinitionWindow::validate()
         return false;
     }
 
+    // Id must not contain any reserved characters.
+    if (this->getFieldId().contains("$"))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Reserved character"),
+                    tr("Please specify an id without $ character."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return false;
+    }
+
     // Display name must not be empty.
     if (this->getFieldDisplayName().isEmpty())
     {
