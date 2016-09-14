@@ -1,6 +1,7 @@
 #include "enumerationwindow.h"
 #include "ui_enumerationwindow.h"
 
+#include <QMessageBox>
 #include <QStringListModel>
 
 #include "enumerationmemberwindow.h"
@@ -52,6 +53,15 @@ void EnumerationWindow::setEnumerationMembers(const QStringList enumeration)
     this->ui->listWidget->insertItems(0, enumeration);
 }
 
+void EnumerationWindow::accept()
+{
+    // Validate data.
+    if (this->validate())
+    {
+        this->done(Accepted);
+    }
+}
+
 void EnumerationWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
@@ -97,4 +107,21 @@ void EnumerationWindow::on_actionDelete_Member_triggered()
 
     // Update view.
     this->ui->listWidget->takeItem(row);
+}
+
+bool EnumerationWindow::validate()
+{
+    // Name must not be empty.
+    if (this->getEnumerationName().isEmpty())
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Missing data"),
+                    tr("Please specify a name for the enumeration."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return false;
+    }
+
+    return true;
 }
