@@ -113,6 +113,11 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 }
             }
 
+            if (exportTemplate.ignoredRecords.contains(record.id))
+            {
+                continue;
+            }
+
             // Build field values string.
             QString fieldValuesString;
 
@@ -283,6 +288,12 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 if (matchedSpecificFields.contains(fieldId))
                 {
                     // Field has already explicitly been matched by a regular expression before. Skip.
+                    continue;
+                }
+
+                if (exportTemplate.ignoredFields.contains(fieldId))
+                {
+                    // Field ignored by template.
                     continue;
                 }
 
