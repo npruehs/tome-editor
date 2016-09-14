@@ -14,12 +14,18 @@ const QString ExportTemplateSerializer::AttributeExportInnerNodes = "ExportInner
 const QString ExportTemplateSerializer::AttributeExportLeafs = "ExportLeafs";
 const QString ExportTemplateSerializer::AttributeExportedType = "ExportedType";
 const QString ExportTemplateSerializer::AttributeTomeType = "TomeType";
+const QString ExportTemplateSerializer::AttributeVersion = "Version";
 const QString ExportTemplateSerializer::ElementFileExtension = "FileExtension";
+const QString ExportTemplateSerializer::ElementId = "Id";
+const QString ExportTemplateSerializer::ElementIgnoredFields = "IgnoredFields";
+const QString ExportTemplateSerializer::ElementIgnoredRecords = "IgnoredRecords";
 const QString ExportTemplateSerializer::ElementMapping = "Mapping";
 const QString ExportTemplateSerializer::ElementName = "Name";
 const QString ExportTemplateSerializer::ElementPath = "Path";
 const QString ExportTemplateSerializer::ElementTemplate = "Template";
 const QString ExportTemplateSerializer::ElementTypeMap = "TypeMap";
+
+const int ExportTemplateSerializer::Version = 2;
 
 
 ExportTemplateSerializer::ExportTemplateSerializer()
@@ -37,6 +43,10 @@ void ExportTemplateSerializer::serialize(QIODevice& device, const RecordExportTe
     {
         writer.writeStartElement(ElementTemplate);
         {
+            // Write version.
+            writer.writeAttribute(AttributeVersion, QString::number(Version));
+
+            // Write export flags.
             if (exportTemplate.exportAsTable)
             {
                 writer.writeAttribute(AttributeExportAsTable, "true");
@@ -61,6 +71,7 @@ void ExportTemplateSerializer::serialize(QIODevice& device, const RecordExportTe
                 writer.writeAttribute(AttributeExportLeafs, "true");
             }
 
+            // Write name and file extension.
             writer.writeTextElement(ElementName, exportTemplate.name);
             writer.writeTextElement(ElementFileExtension, exportTemplate.fileExtension);
 
@@ -75,6 +86,25 @@ void ExportTemplateSerializer::serialize(QIODevice& device, const RecordExportTe
                     writer.writeAttribute(AttributeTomeType, itTypeMap.key());
                     writer.writeAttribute(AttributeExportedType, itTypeMap.value());
                     writer.writeEndElement();
+                }
+            }
+            writer.writeEndElement();
+
+            // Write ignore lists.
+            writer.writeStartElement(ElementIgnoredRecords);
+            {
+                for (int i = 0; i < exportTemplate.ignoredRecords.size(); ++i)
+                {
+                    writer.writeTextElement(ElementId, exportTemplate.ignoredRecords[i]);
+                }
+            }
+            writer.writeEndElement();
+
+            writer.writeStartElement(ElementIgnoredFields);
+            {
+                for (int i = 0; i < exportTemplate.ignoredFields.size(); ++i)
+                {
+                    writer.writeTextElement(ElementId, exportTemplate.ignoredFields[i]);
                 }
             }
             writer.writeEndElement();
@@ -94,6 +124,10 @@ void ExportTemplateSerializer::deserialize(QIODevice& device, RecordExportTempla
     // Begin document.
     reader.readStartDocument();
     {
+        // Read version.
+        int version = reader.readAttribute(AttributeVersion).toInt();
+
+        // Read export flags.
         bool exportAsTable = reader.readAttribute(AttributeExportAsTable) == "true";
         bool exportRoots = reader.readAttribute(AttributeExportRoots) == "true";
         bool exportInnerNodes = reader.readAttribute(AttributeExportInnerNodes) == "true";
@@ -127,6 +161,28 @@ void ExportTemplateSerializer::deserialize(QIODevice& device, RecordExportTempla
                 }
             }
             reader.readEndElement();
+
+            // Read ignore lists.
+            if (version > 1)
+            {
+                reader.readStartElement(ElementIgnoredRecords);
+                {
+                    while (reader.isAtElement(ElementId))
+                    {
+                        exportTemplate.ignoredRecords << reader.readTextElement(ElementId);
+                    }
+                }
+                reader.readEndElement();
+
+                reader.readStartElement(ElementIgnoredFields);
+                {
+                    while (reader.isAtElement(ElementId))
+                    {
+                        exportTemplate.ignoredFields << reader.readTextElement(ElementId);
+                    }
+                }
+                reader.readEndElement();
+            }
         }
         reader.readEndElement();
     }

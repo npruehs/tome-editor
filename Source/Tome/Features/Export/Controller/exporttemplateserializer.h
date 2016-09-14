@@ -22,12 +22,18 @@ namespace Tome
             static const QString AttributeExportLeafs;
             static const QString AttributeExportedType;
             static const QString AttributeTomeType;
+            static const QString AttributeVersion;
             static const QString ElementFileExtension;
+            static const QString ElementId;
+            static const QString ElementIgnoredFields;
+            static const QString ElementIgnoredRecords;
             static const QString ElementMapping;
             static const QString ElementName;
             static const QString ElementPath;
             static const QString ElementTemplate;
             static const QString ElementTypeMap;
+
+            static const int Version;
     };
 }
 
