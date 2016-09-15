@@ -113,7 +113,26 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 }
             }
 
+            // Check if ignored.
             if (exportTemplate.ignoredRecords.contains(record.id))
+            {
+                continue;
+            }
+
+            // Check if any ancestor ignored.
+            RecordList ancestors = this->recordsController.getAncestors(record.id);
+            bool anyAncestorIgnored = false;
+
+            for (int i = 0; i < ancestors.size(); ++i)
+            {
+                if (exportTemplate.ignoredRecords.contains(ancestors[i].id))
+                {
+                    anyAncestorIgnored = true;
+                    break;
+                }
+            }
+
+            if (anyAncestorIgnored)
             {
                 continue;
             }
