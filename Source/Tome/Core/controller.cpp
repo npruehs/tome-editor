@@ -362,18 +362,18 @@ void Controller::openProject(const QString& projectFileName)
         // Load record export template files.
         ExportTemplateSerializer exportTemplateSerializer = ExportTemplateSerializer();
 
-        for (RecordExportTemplateMap::iterator it = project->recordExportTemplates.begin();
+        for (RecordExportTemplateList::iterator it = project->recordExportTemplates.begin();
              it != project->recordExportTemplates.end();
              ++it)
         {
-            RecordExportTemplate& exportTemplate = it.value();
+            RecordExportTemplate& exportTemplate = *it;
 
             // TODO(np): Remove empty check as soon as backwards compatibility is removed from ProjectSerializer.
             if (exportTemplate.fileExtension.isEmpty())
             {
                 // Read template file.
                 QString fullExportTemplatePath =
-                        buildFullFilePath(exportTemplate.name, projectPath, RecordExportTemplateFileExtension);
+                        buildFullFilePath(exportTemplate.path, projectPath, RecordExportTemplateFileExtension);
 
                 QFile exportTemplateFile(fullExportTemplatePath);
                 if (exportTemplateFile.open(QIODevice::ReadOnly))
@@ -398,48 +398,44 @@ void Controller::openProject(const QString& projectFileName)
             // Read template contents.
             try
             {
-                QString templatePath;
-                if ( !exportTemplate.path.isEmpty() )
+                QString templatePath = exportTemplate.path;
+
+                if (QDir::isRelativePath(templatePath))
                 {
-                    if (QDir::isRelativePath(exportTemplate.path))
-                    {
-                        templatePath = combinePaths( projectPath, exportTemplate.path );
-                    }
-                    else
-                    {
-                        templatePath = exportTemplate.path;
-                    }
+                    templatePath = combinePaths(projectPath, templatePath);
                 }
-                else
+
+                if (templatePath.endsWith(RecordExportTemplateFileExtension))
                 {
-                    templatePath = projectPath;
+                    templatePath = templatePath.remove(RecordExportTemplateFileExtension);
                 }
+
                 exportTemplate.fieldValueDelimiter =
-                        this->readFile(templatePath, exportTemplate.name + RecordExportFieldValueDelimiterExtension);
+                        this->readFile(templatePath + RecordExportFieldValueDelimiterExtension);
                 exportTemplate.fieldValueTemplate =
-                        this->readFile(templatePath, exportTemplate.name + RecordExportFieldValueTemplateExtension);
+                        this->readFile(templatePath + RecordExportFieldValueTemplateExtension);
                 exportTemplate.recordDelimiter =
-                        this->readFile(templatePath, exportTemplate.name + RecordExportRecordDelimiterExtension);
+                        this->readFile(templatePath + RecordExportRecordDelimiterExtension);
                 exportTemplate.recordFileTemplate =
-                        this->readFile(templatePath, exportTemplate.name + RecordExportRecordFileTemplateExtension);
+                        this->readFile(templatePath + RecordExportRecordFileTemplateExtension);
                 exportTemplate.recordTemplate =
-                        this->readFile(templatePath, exportTemplate.name + RecordExportRecordTemplateExtension);
+                        this->readFile(templatePath + RecordExportRecordTemplateExtension);
                 exportTemplate.componentDelimiter =
-                        this->readFile(templatePath, exportTemplate.name + RecordExportComponentDelimiterExtension);
+                        this->readFile(templatePath + RecordExportComponentDelimiterExtension);
                 exportTemplate.componentTemplate =
-                        this->readFile(templatePath, exportTemplate.name + RecordExportComponentTemplateExtension);
+                        this->readFile(templatePath + RecordExportComponentTemplateExtension);
                 exportTemplate.listTemplate =
-                        this->readFile(templatePath, exportTemplate.name + RecordExportListTemplateExtension);
+                        this->readFile(templatePath + RecordExportListTemplateExtension);
                 exportTemplate.listItemTemplate =
-                        this->readFile(templatePath, exportTemplate.name + RecordExportListItemTemplateExtension);
+                        this->readFile(templatePath + RecordExportListItemTemplateExtension);
                 exportTemplate.listItemDelimiter =
-                        this->readFile(templatePath, exportTemplate.name + RecordExportListItemDelimiterExtension);
+                        this->readFile(templatePath + RecordExportListItemDelimiterExtension);
                 exportTemplate.mapTemplate =
-                        this->readFile(templatePath, exportTemplate.name + RecordExportMapTemplateExtension);
+                        this->readFile(templatePath + RecordExportMapTemplateExtension);
                 exportTemplate.mapItemTemplate =
-                        this->readFile(templatePath, exportTemplate.name + RecordExportMapItemTemplateExtension);
+                        this->readFile(templatePath + RecordExportMapItemTemplateExtension);
                 exportTemplate.mapItemDelimiter =
-                        this->readFile(templatePath, exportTemplate.name + RecordExportMapItemDelimiterExtension);
+                        this->readFile(templatePath + RecordExportMapItemDelimiterExtension);
             }
             catch (const std::runtime_error& e)
             {
@@ -618,7 +614,7 @@ void Controller::saveProject(QSharedPointer<Project> project)
     // Write export templates.
     ExportTemplateSerializer exportTemplateSerializer = ExportTemplateSerializer();
 
-    for (RecordExportTemplateMap::const_iterator it = project->recordExportTemplates.begin();
+    for (RecordExportTemplateList::const_iterator it = project->recordExportTemplates.begin();
          it != project->recordExportTemplates.end();
          ++it)
     {
@@ -626,7 +622,7 @@ void Controller::saveProject(QSharedPointer<Project> project)
 
         // Build file name.
         QString fullExportTemplatePath =
-                buildFullFilePath(exportTemplate.name, projectPath, RecordExportTemplateFileExtension);
+                buildFullFilePath(exportTemplate.path, projectPath, RecordExportTemplateFileExtension);
 
         // Write file.
         QFile exportTemplateFile(fullExportTemplatePath);
@@ -668,9 +664,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
     }
 }
 
-QString Controller::readFile(const QString& path, const QString& fileName)
+QString Controller::readFile(const QString& fullPath)
 {
-    const QString fullPath = combinePaths(path, fileName);
     QFile file(fullPath);
 
     if (file.open(QIODevice::ReadOnly))

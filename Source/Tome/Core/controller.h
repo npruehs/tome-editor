@@ -88,7 +88,7 @@ namespace Tome
             const QString getFullProjectPath(QSharedPointer<Project> project) const;
             void saveProject(QSharedPointer<Project> project);
             void setProject(QSharedPointer<Project> project);
-            QString readFile(const QString& path, const QString& fileName);
+            QString readFile(const QString& fullPath);
     };
 }
 

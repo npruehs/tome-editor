@@ -4,6 +4,7 @@
 #include <QIODevice>
 #include <QString>
 
+#include "../Model/recordexporttemplatelist.h"
 #include "../Model/recordexporttemplatemap.h"
 
 namespace Tome
@@ -24,10 +25,10 @@ namespace Tome
 
             void exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath);
             void exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device);
-            void setRecordExportTemplates(RecordExportTemplateMap& model);
+            void setRecordExportTemplates(const RecordExportTemplateList& exportTemplates);
 
         private:
-            RecordExportTemplateMap* model;
+            RecordExportTemplateMap model;
 
             static const QString PlaceholderComponents;
             static const QString PlaceholderComponentName;

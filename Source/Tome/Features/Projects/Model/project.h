@@ -7,7 +7,7 @@
 #include <QLocale>
 
 #include "../../Components/Model/componentsetlist.h"
-#include "../../Export/Model/recordexporttemplatemap.h"
+#include "../../Export/Model/recordexporttemplatelist.h"
 #include "../../Fields/Model/fielddefinitionsetlist.h"
 #include "../../Records/Model/recordsetlist.h"
 #include "../../Types/Model/customtypesetlist.h"
@@ -26,7 +26,7 @@ namespace Tome
 
             ComponentSetList componentSets;
             FieldDefinitionSetList fieldDefinitionSets;
-            RecordExportTemplateMap recordExportTemplates;
+            RecordExportTemplateList recordExportTemplates;
             RecordSetList recordSets;
             CustomTypeSetList typeSets;
     };

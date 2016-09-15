@@ -187,7 +187,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/customtypeset.h \
     ../Source/Tome/Features/Types/Controller/customtypesetserializer.h \
     ../Source/Tome/Features/Types/Model/customtypesetlist.h \
-    ../Source/Tome/Features/Export/Controller/exporttemplateserializer.h
+    ../Source/Tome/Features/Export/Controller/exporttemplateserializer.h \
+    ../Source/Tome/Features/Export/Model/recordexporttemplatelist.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

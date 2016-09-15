@@ -40,17 +40,17 @@ ExportController::ExportController(const FieldDefinitionsController& fieldDefini
 
 const RecordExportTemplate ExportController::getRecordExportTemplate(const QString& name) const
 {
-    return this->model->value(name);
+    return this->model.value(name);
 }
 
-const RecordExportTemplateMap&ExportController::getRecordExportTemplates() const
+const RecordExportTemplateMap& ExportController::getRecordExportTemplates() const
 {
-    return *this->model;
+    return this->model;
 }
 
 bool ExportController::hasRecordExportTemplate(const QString& name) const
 {
-    return this->model->contains(name);
+    return this->model.contains(name);
 }
 
 void ExportController::exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath)
@@ -450,7 +450,13 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
     textStream << recordFileString;
 }
 
-void ExportController::setRecordExportTemplates(RecordExportTemplateMap& model)
+void ExportController::setRecordExportTemplates(const RecordExportTemplateList& exportTemplates)
 {
-    this->model = &model;
+    this->model.clear();
+
+    for (int i = 0; i < exportTemplates.size(); ++i)
+    {
+        const RecordExportTemplate& exportTemplate = exportTemplates[i];
+        this->model.insert(exportTemplate.name, exportTemplate);
+    }
 }

@@ -21,7 +21,6 @@ const QString ExportTemplateSerializer::ElementIgnoredFields = "IgnoredFields";
 const QString ExportTemplateSerializer::ElementIgnoredRecords = "IgnoredRecords";
 const QString ExportTemplateSerializer::ElementMapping = "Mapping";
 const QString ExportTemplateSerializer::ElementName = "Name";
-const QString ExportTemplateSerializer::ElementPath = "Path";
 const QString ExportTemplateSerializer::ElementTemplate = "Template";
 const QString ExportTemplateSerializer::ElementTypeMap = "TypeMap";
 
@@ -50,10 +49,6 @@ void ExportTemplateSerializer::serialize(QIODevice& device, const RecordExportTe
             if (exportTemplate.exportAsTable)
             {
                 writer.writeAttribute(AttributeExportAsTable, "true");
-            }
-            if (!exportTemplate.path.isEmpty())
-            {
-                writer.writeAttribute(ElementPath, exportTemplate.path);
             }
 
             if (exportTemplate.exportRoots)
@@ -132,13 +127,11 @@ void ExportTemplateSerializer::deserialize(QIODevice& device, RecordExportTempla
         bool exportRoots = reader.readAttribute(AttributeExportRoots) == "true";
         bool exportInnerNodes = reader.readAttribute(AttributeExportInnerNodes) == "true";
         bool exportLeafs = reader.readAttribute(AttributeExportLeafs) == "true";
-        QString templatePath = reader.readAttribute(ElementPath);
 
         exportTemplate.exportAsTable = exportAsTable;
         exportTemplate.exportRoots = exportRoots;
         exportTemplate.exportInnerNodes = exportInnerNodes;
         exportTemplate.exportLeafs = exportLeafs;
-        exportTemplate.path = templatePath;
 
         // Read record export templates.
         reader.readStartElement(ElementTemplate);

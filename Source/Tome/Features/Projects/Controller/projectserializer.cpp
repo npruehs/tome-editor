@@ -15,7 +15,6 @@ const QString ProjectSerializer::AttributeExportRoots = "ExportRoots";
 const QString ProjectSerializer::AttributeExportInnerNodes = "ExportInnerNodes";
 const QString ProjectSerializer::AttributeExportLeafs = "ExportLeafs";
 const QString ProjectSerializer::AttributeKey = "Key";
-const QString ProjectSerializer::AttributePath = "Path";
 const QString ProjectSerializer::AttributeTomeType = "TomeType";
 const QString ProjectSerializer::AttributeValue = "Value";
 const QString ProjectSerializer::AttributeVersion = "Version";
@@ -100,12 +99,12 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
             // Write record export template paths.
             writer.writeStartElement(ElementRecordExportTemplates);
             {
-                for (RecordExportTemplateMap::const_iterator it = project->recordExportTemplates.begin();
+                for (RecordExportTemplateList::const_iterator it = project->recordExportTemplates.begin();
                      it != project->recordExportTemplates.end();
                      ++it)
                 {
                     const RecordExportTemplate& exportTemplate = *it;
-                    writer.writeTextElement(ElementPath, exportTemplate.name);
+                    writer.writeTextElement(ElementPath, exportTemplate.path);
                 }
             }
             writer.writeEndElement();
@@ -212,8 +211,8 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
                     while (reader.isAtElement(ElementPath))
                     {
                         RecordExportTemplate exportTemplate = RecordExportTemplate();
-                        exportTemplate.name = reader.readTextElement(ElementPath);
-                        project->recordExportTemplates[exportTemplate.name] = exportTemplate;
+                        exportTemplate.path = reader.readTextElement(ElementPath);
+                        project->recordExportTemplates << exportTemplate;
                     }
                 }
                 else
@@ -224,7 +223,6 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
                         bool exportRoots = reader.readAttribute(AttributeExportRoots) == "true";
                         bool exportInnerNodes = reader.readAttribute(AttributeExportInnerNodes) == "true";
                         bool exportLeafs = reader.readAttribute(AttributeExportLeafs) == "true";
-                        QString templatePath = reader.readAttribute(AttributePath);
 
                         reader.readStartElement(ElementTemplate);
                         {
@@ -235,7 +233,6 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
                             exportTemplate.exportInnerNodes = exportInnerNodes;
                             exportTemplate.exportLeafs = exportLeafs;
 
-                            exportTemplate.path = templatePath;
                             exportTemplate.name = reader.readTextElement(ElementName);
                             exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);
 
@@ -255,7 +252,7 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
                             }
                             reader.readEndElement();
 
-                            project->recordExportTemplates.insert(exportTemplate.name, exportTemplate);
+                            project->recordExportTemplates << exportTemplate;
                         }
                         reader.readEndElement();
                     }
