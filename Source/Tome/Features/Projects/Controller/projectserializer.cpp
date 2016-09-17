@@ -234,6 +234,7 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
                             exportTemplate.exportLeafs = exportLeafs;
 
                             exportTemplate.name = reader.readTextElement(ElementName);
+                            exportTemplate.path = exportTemplate.name;
                             exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);
 
                             // Read export type map.
