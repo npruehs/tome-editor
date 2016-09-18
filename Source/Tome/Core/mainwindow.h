@@ -104,11 +104,13 @@ class MainWindow : public QMainWindow
         Tome::MessageList messages;
 
         void addRecordField(const QString& fieldId);
+        QString getReadOnlyMessage(const QString& recordId);
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
         void refreshErrorList();
         void refreshRecordTree();
         void refreshRecordTable();
+        void showReadOnlyMessage(const QString& recordId);
         void showWindow(QWidget* widget);
         void updateMenus();
         void updateRecentProjects();

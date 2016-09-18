@@ -32,6 +32,7 @@ namespace Tome
             static const QString ElementItem;
             static const QString ElementKey;
             static const QString ElementParentId;
+            static const QString ElementReadOnly;
             static const QString ElementRecord;
             static const QString ElementRecords;
             static const QString ElementValue;

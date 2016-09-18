@@ -13,6 +13,7 @@ const QString RecordSetSerializer::ElementId = "Id";
 const QString RecordSetSerializer::ElementItem = "Item";
 const QString RecordSetSerializer::ElementKey = "Key";
 const QString RecordSetSerializer::ElementParentId = "Parent";
+const QString RecordSetSerializer::ElementReadOnly = "ReadOnly";
 const QString RecordSetSerializer::ElementRecord = "Record";
 const QString RecordSetSerializer::ElementRecords = "Records";
 const QString RecordSetSerializer::ElementValue = "Value";
@@ -46,6 +47,11 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
                     // Write record.
                     stream.writeAttribute(ElementId, record.id);
                     stream.writeAttribute(ElementDisplayName, record.displayName);
+
+                    if (record.readOnly)
+                    {
+                        stream.writeAttribute(ElementReadOnly, "true");
+                    }
 
                     if (!record.parentId.isEmpty())
                     {
@@ -130,6 +136,7 @@ void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) c
                 record.id = reader.readAttribute(ElementId);
                 record.displayName = reader.readAttribute(ElementDisplayName);
                 record.parentId = reader.readAttribute(ElementParentId);
+                record.readOnly = reader.readAttribute(ElementReadOnly) == "true";
 
                 reader.readStartElement(ElementRecord);
 

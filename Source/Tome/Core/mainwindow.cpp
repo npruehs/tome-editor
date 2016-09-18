@@ -356,6 +356,13 @@ void MainWindow::on_actionEdit_Record_triggered()
     // Get selected record.
     const Record& record = this->controller->getRecordsController().getRecord(id);
 
+    // Check if read-only.
+    if (record.readOnly)
+    {
+        this->showReadOnlyMessage(record.id);
+        return;
+    }
+
     // Show window.
     if (!this->recordWindow)
     {
@@ -481,6 +488,15 @@ void MainWindow::on_actionRevert_Record_triggered()
         return;
     }
 
+    // Check if read-only.
+    const Record& record = this->controller->getRecordsController().getRecord(recordId);
+
+    if (record.readOnly)
+    {
+        this->showReadOnlyMessage(recordId);
+        return;
+    }
+
     // Show question.
     const QString& question = QString(tr("Are you sure you want to revert %1 to its original state?")).arg(recordId);
 
@@ -512,8 +528,18 @@ void MainWindow::on_actionRemove_Record_triggered()
         return;
     }
 
+    // Check if read-only.
+    const QString recordId = recordItem->getId();
+    const Record& record = this->controller->getRecordsController().getRecord(recordId);
+
+    if (record.readOnly)
+    {
+        this->showReadOnlyMessage(recordId);
+        return;
+    }
+
     // Update model.
-    this->controller->getRecordsController().removeRecord(recordItem->getId());
+    this->controller->getRecordsController().removeRecord(recordId);
 
     // Update view.
     if (recordItem->parent() != 0)
@@ -740,6 +766,15 @@ void MainWindow::treeWidgetRecordReparented(const QString& recordId, const QStri
         return;
     }
 
+    // Check if read-only.
+    const Record& record = this->controller->getRecordsController().getRecord(recordId);
+
+    if (record.readOnly)
+    {
+        this->showReadOnlyMessage(recordId);
+        return;
+    }
+
     // Update model.
     this->controller->getRecordsController().reparentRecord(recordId, newParentId);
 
@@ -770,6 +805,11 @@ void MainWindow::addRecordField(const QString& fieldId)
 
     // Update view.
     this->recordFieldTableWidget->insertRow(index);
+}
+
+QString MainWindow::getReadOnlyMessage(const QString& recordId)
+{
+    return tr("The record %1 has been marked as read-only. You cannot edit, reparent or remove read-only records.").arg(recordId);
 }
 
 void MainWindow::openProject(QString path)
@@ -889,6 +929,30 @@ void MainWindow::refreshRecordTable()
     {
         this->updateRecordRow(i);
     }
+
+    // Check if read-only.
+    const Record& record = this->controller->getRecordsController().getRecord(id);
+
+    if (record.readOnly)
+    {
+        this->recordFieldTableWidget->setEnabled(false);
+        this->recordFieldTableWidget->setToolTip(this->getReadOnlyMessage(id));
+    }
+    else
+    {
+        this->recordFieldTableWidget->setEnabled(true);
+        this->recordFieldTableWidget->setToolTip(QString());
+    }
+}
+
+void MainWindow::showReadOnlyMessage(const QString& recordId)
+{
+    QMessageBox::information(
+                this,
+                tr("Record is read-only"),
+                this->getReadOnlyMessage(recordId),
+                QMessageBox::Close,
+                QMessageBox::Close);
 }
 
 void MainWindow::showWindow(QWidget* widget)
