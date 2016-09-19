@@ -19,7 +19,7 @@ namespace Tome
             QString id;
             RecordFieldValueMap fieldValues;
             QString parentId;
-            bool readOnly;
+            bool readOnly = false;
     };
 
     inline bool operator==(const Record& lhs, const Record& rhs){ return lhs.id == rhs.id; }
