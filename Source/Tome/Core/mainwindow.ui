@@ -82,6 +82,7 @@
     <addaction name="actionRevert_Record"/>
     <addaction name="actionRemove_Record"/>
     <addaction name="separator"/>
+    <addaction name="actionFindRecord"/>
     <addaction name="actionFind_Usages"/>
    </widget>
    <widget class="QMenu" name="menuExport">
@@ -125,6 +126,7 @@
    <addaction name="actionRevert_Record"/>
    <addaction name="actionRemove_Record"/>
    <addaction name="separator"/>
+   <addaction name="actionFindRecord"/>
    <addaction name="actionFind_Usages"/>
    <addaction name="separator"/>
    <addaction name="actionRun_Integrity_Checks"/>
@@ -316,6 +318,19 @@
   <action name="actionRoadmap">
    <property name="text">
     <string>Roadmap</string>
+   </property>
+  </action>
+  <action name="actionFindRecord">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/Find_5650.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Find Record...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
  </widget>

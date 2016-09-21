@@ -33,7 +33,9 @@
 #include "../Features/Records/View/recordtreewidgetitem.h"
 #include "../Features/Records/View/recordwindow.h"
 #include "../Features/Records/View/duplicaterecordwindow.h"
+#include "../Features/Search/Controller/findrecordcontroller.h"
 #include "../Features/Search/Controller/findusagescontroller.h"
+#include "../Features/Search/View/findrecordwindow.h"
 #include "../Features/Search/View/searchresultsdockwidget.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
 #include "../Features/Tasks/Controller/taskscontroller.h"
@@ -62,7 +64,8 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     fieldValueWindow(0),
     newProjectWindow(0),
     recordWindow(0),
-    duplicateRecordWindow(0)
+    duplicateRecordWindow(0),
+    findRecordWindow(0)
 {
     ui->setupUi(this);
 
@@ -151,6 +154,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 SLOT(searchResultChanged(const QString&, const Tome::SearchResultList))
                 );
 
+    connect(
+                &this->controller->getFindRecordController(),
+                SIGNAL(searchResultChanged(const QString&, const Tome::SearchResultList)),
+                SLOT(searchResultChanged(const QString&, const Tome::SearchResultList))
+                );
+
     // Maximize window.
     this->showMaximized();
 
@@ -177,6 +186,7 @@ MainWindow::~MainWindow()
     delete this->fieldValueWindow;
     delete this->newProjectWindow;
     delete this->recordWindow;
+    delete this->findRecordWindow;
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -559,6 +569,26 @@ void MainWindow::on_actionRemove_Record_triggered()
     }
 
     delete recordItem;
+}
+
+void MainWindow::on_actionFindRecord_triggered()
+{
+    // Show window.
+    if (!this->findRecordWindow)
+    {
+        this->findRecordWindow = new FindRecordWindow();
+    }
+
+    int result = this->findRecordWindow->exec();
+
+    if (result != QDialog::Accepted)
+    {
+        return;
+    }
+
+    // Find record.
+    QString searchPattern = this->findRecordWindow->getSearchPattern();
+    this->controller->getFindRecordController().findRecord(searchPattern);
 }
 
 void MainWindow::on_actionFind_Usages_triggered()
@@ -988,6 +1018,7 @@ void MainWindow::updateMenus()
     this->ui->actionDuplicate_Record->setEnabled(projectLoaded);
     this->ui->actionRevert_Record->setEnabled(projectLoaded);
     this->ui->actionRemove_Record->setEnabled(projectLoaded);
+    this->ui->actionFindRecord->setEnabled(projectLoaded);
     this->ui->actionFind_Usages->setEnabled(projectLoaded);
 
     this->ui->actionRun_Integrity_Checks->setEnabled(projectLoaded);

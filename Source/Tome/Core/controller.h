@@ -11,6 +11,7 @@ namespace Tome
     class ComponentsController;
     class ExportController;
     class FieldDefinitionsController;
+    class FindRecordController;
     class FindUsagesController;
     class Project;
     class RecordsController;
@@ -34,6 +35,7 @@ namespace Tome
             TasksController& getTasksController();
             TypesController& getTypesController();
             FindUsagesController& getFindUsagesController();
+            FindRecordController& getFindRecordController();
 
             int start();
 
@@ -82,6 +84,7 @@ namespace Tome
             SettingsController* settingsController;
             TasksController* tasksController;
             FindUsagesController* findUsagesController;
+            FindRecordController* findRecordController;
 
             MainWindow* mainWindow;
 

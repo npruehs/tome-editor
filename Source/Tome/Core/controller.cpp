@@ -26,6 +26,7 @@
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Records/Controller/recordscontroller.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
+#include "../Features/Search/Controller/findrecordcontroller.h"
 #include "../Features/Search/Controller/findusagescontroller.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
 #include "../Features/Tasks/Controller/taskscontroller.h"
@@ -66,6 +67,7 @@ Controller::Controller(CommandLineOptions* options) :
     settingsController(new SettingsController()),
     tasksController(new TasksController(*this->componentsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
+    findRecordController(new FindRecordController(*this->recordsController)),
     mainWindow(0)
 {
     // Setup tasks.
@@ -93,6 +95,7 @@ Controller::~Controller()
     delete this->typesController;
     delete this->tasksController;
     delete this->findUsagesController;
+    delete this->findRecordController;
 
     delete this->options;
 }
@@ -135,6 +138,11 @@ TypesController& Controller::getTypesController()
 FindUsagesController& Controller::getFindUsagesController()
 {
     return *this->findUsagesController;
+}
+
+FindRecordController&Controller::getFindRecordController()
+{
+    return *this->findRecordController;
 }
 
 int Controller::start()
