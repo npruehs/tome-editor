@@ -160,6 +160,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 SLOT(searchResultChanged(const QString&, const Tome::SearchResultList))
                 );
 
+    connect(
+                this->searchResultsDockWidget,
+                SIGNAL(recordLinkActivated(const QString&)),
+                SLOT(onRecordLinkActivated(const QString&))
+                );
+
     // Maximize window.
     this->showMaximized();
 

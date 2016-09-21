@@ -1,6 +1,7 @@
 #include "searchresultsdockwidget.h"
 
 #include <QHeaderView>
+#include <QLabel>
 
 #include "../Model/searchresult.h"
 
@@ -50,7 +51,35 @@ void SearchResultsDockWidget::showResults(const QString& title, const SearchResu
     for (int i = 0; i < this->results.count(); ++i)
     {
         const SearchResult& result = this->results.at(i);
-        const QString resultString = result.targetSiteId + ": " + result.content;
-        this->tableWidget->setItem(i, 0, new QTableWidgetItem(resultString));
+
+        // Create table row.
+        this->tableWidget->setItem(i, 0, new QTableWidgetItem());
+        QLabel* resultLabel;
+
+        // Show hyperlink for records, and normal text for other results.
+        if (result.targetSiteType == TargetSiteType::Record)
+        {
+            QString resultString = QString("<a href='%1'>%1</a>: %2").arg(result.targetSiteId, result.content);
+            resultLabel = new QLabel(resultString);
+
+            connect(
+                        resultLabel,
+                        SIGNAL(linkActivated(const QString&)),
+                        SLOT(onRecordLinkActivated(const QString&))
+                        );
+        }
+        else
+        {
+            QString resultString = QString(result.targetSiteId + ": " + result.content);
+            resultLabel = new QLabel(resultString);
+        }
+
+        QModelIndex index = this->tableWidget->model()->index(i, 0);
+        this->tableWidget->setIndexWidget(index, resultLabel);
     }
+}
+
+void SearchResultsDockWidget::onRecordLinkActivated(const QString& recordId)
+{
+    emit this->recordLinkActivated(recordId);
 }

@@ -11,11 +11,16 @@ namespace Tome
 {
     class SearchResultsDockWidget : public QDockWidget
     {
+            Q_OBJECT
+
         public:
             SearchResultsDockWidget(QWidget* parent);
             ~SearchResultsDockWidget();
 
             void showResults(const QString& title, const SearchResultList& results);
+
+        signals:
+            void recordLinkActivated(const QString& recordId);
 
         private:
             QWidget* widget;
@@ -23,6 +28,9 @@ namespace Tome
             QTableWidget* tableWidget;
 
             SearchResultList results;
+
+        private slots:
+            void onRecordLinkActivated(const QString& recordId);
     };
 }
 
