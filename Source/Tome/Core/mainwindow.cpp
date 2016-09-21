@@ -140,6 +140,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
+                this->recordFieldTableWidget,
+                SIGNAL(recordLinkActivated(const QString&)),
+                SLOT(onRecordLinkActivated(const QString&))
+                );
+
+    connect(
                 &this->controller->getFindUsagesController(),
                 SIGNAL(searchResultChanged(const QString&, const Tome::SearchResultList)),
                 SLOT(searchResultChanged(const QString&, const Tome::SearchResultList))
@@ -895,6 +901,11 @@ void MainWindow::onRecordFieldsChanged(const QString& recordId)
     {
         this->refreshRecordTable();
     }
+}
+
+void MainWindow::onRecordLinkActivated(const QString& recordId)
+{
+    this->recordTreeWidget->selectRecord(recordId);
 }
 
 void MainWindow::refreshErrorList()

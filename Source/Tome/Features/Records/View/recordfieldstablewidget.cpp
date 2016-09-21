@@ -1,6 +1,7 @@
 #include "recordfieldstablewidget.h"
 
 #include <QHeaderView>
+#include <QLabel>
 
 #include "../Controller/recordscontroller.h"
 #include "../Model/recordfieldvaluemap.h"
@@ -30,7 +31,7 @@ RecordFieldsTableWidget::RecordFieldsTableWidget(FieldDefinitionsController& fie
 
     QStringList headers;
     headers << tr("Field");
-    headers << tr("Value");    
+    headers << tr("Value");
     headers << tr("Description");
     this->setHorizontalHeaderLabels(headers);
 }
@@ -52,10 +53,31 @@ void RecordFieldsTableWidget::setRecord(int i, const QString recordId)
     QString keyString = field.displayName;
     QString valueString = this->typesController.valueToString(value, field.fieldType);
 
-    // Show field and value.
+    // Show field, value and description.
     this->setItem(i, 0, new QTableWidgetItem(keyString));
-    this->setItem(i, 1, new QTableWidgetItem(valueString));
+    this->setItem(i, 1, new QTableWidgetItem());
     this->setItem(i, 2, new QTableWidgetItem(field.description));
+
+    QLabel* valueLabel;
+
+    // Show hyperlink for reference fields, and normal text for other fields.
+    if (field.fieldType == BuiltInType::Reference)
+    {
+        valueLabel = new QLabel("<a href='" + valueString + "'>" + valueString + "</a>");
+
+        connect(
+                    valueLabel,
+                    SIGNAL(linkActivated(const QString&)),
+                    SLOT(onRecordLinkActivated(const QString&))
+                    );
+    }
+    else
+    {
+        valueLabel = new QLabel(valueString);
+    }
+
+    QModelIndex index = this->model()->index(i, 1);
+    this->setIndexWidget(index, valueLabel);
 
     // Show color preview.
     if (field.fieldType == BuiltInType::Color)
@@ -67,4 +89,9 @@ void RecordFieldsTableWidget::setRecord(int i, const QString recordId)
     // Resize columns.
     this->resizeColumnsToContents();
     this->horizontalHeader()->setStretchLastSection(true);
+}
+
+void RecordFieldsTableWidget::onRecordLinkActivated(const QString& recordId)
+{
+    emit this->recordLinkActivated(recordId);
 }

@@ -73,6 +73,7 @@ class MainWindow : public QMainWindow
         void onFieldChanged();
         void onProjectChanged(QSharedPointer<Tome::Project> project);
         void onRecordFieldsChanged(const QString& recordId);
+        void onRecordLinkActivated(const QString& recordId);
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();
         void searchResultChanged(const QString& title, const Tome::SearchResultList results);
