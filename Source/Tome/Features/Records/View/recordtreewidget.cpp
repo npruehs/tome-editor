@@ -52,12 +52,12 @@ RecordTreeWidgetItem* RecordTreeWidget::getSelectedRecordItem() const
     return static_cast<RecordTreeWidgetItem*>(selectedItems.first());
 }
 
-void RecordTreeWidget::updateRecordIcon()
+void RecordTreeWidget::updateRecordItem()
 {
-    this->updateRecordIcon(this->getSelectedRecordItem());
+    this->updateRecordItem(this->getSelectedRecordItem());
 }
 
-void RecordTreeWidget::updateRecordIcon(RecordTreeWidgetItem *recordTreeItem)
+void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
 {
     if ( nullptr != recordTreeItem )
     {
@@ -74,11 +74,18 @@ void RecordTreeWidget::updateRecordIcon(RecordTreeWidgetItem *recordTreeItem)
             }
         }
 
+        // Set color.
         if (recordTreeItem->isReadOnly())
         {
-            recordTreeItem->setIcon(0, QIcon(":/Media/Icons/lock_16xLG.png"));
+            recordTreeItem->setForeground(0, QBrush(Qt::blue));
         }
-        else if (recordIsEmtpy)
+        else
+        {
+            recordTreeItem->setForeground(0, QBrush(Qt::black));
+        }
+
+        // Set icon.
+        if (recordIsEmtpy)
         {
             recordTreeItem->setIcon(0, QIcon(":/Media/Icons/Folder_6221.png"));
         }
@@ -116,7 +123,7 @@ void RecordTreeWidget::setRecords(const RecordList& records)
         RecordTreeWidgetItem* recordItem =
                 new RecordTreeWidgetItem(record.id, record.displayName, record.parentId, record.readOnly);
         recordItems.insert(record.id, recordItem);
-        updateRecordIcon( recordItem );
+        updateRecordItem( recordItem );
     }
 
     // Build hierarchy and prepare item list for tree widget.

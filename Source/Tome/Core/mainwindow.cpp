@@ -340,7 +340,7 @@ void MainWindow::on_actionNew_Record_triggered()
 
         // Update view.
         this->refreshRecordTable();
-        this->recordTreeWidget->updateRecordIcon();
+        this->recordTreeWidget->updateRecordItem();
     }
 }
 
@@ -435,7 +435,7 @@ void MainWindow::on_actionEdit_Record_triggered()
 
         // Update view.
         this->refreshRecordTable();
-        this->recordTreeWidget->updateRecordIcon();
+        this->recordTreeWidget->updateRecordItem();
     }
 }
 
@@ -1020,7 +1020,7 @@ void MainWindow::updateRecord(const QString& id, const QString& displayName)
     }
 }
 
-void MainWindow::updateRecordRow(int i)
+void MainWindow::updateRecordRow(const int i)
 {
     // Get selected record.
     QString id = this->recordTreeWidget->getSelectedRecordId();
