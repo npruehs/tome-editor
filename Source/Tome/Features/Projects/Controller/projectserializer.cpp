@@ -14,6 +14,7 @@ const QString ProjectSerializer::AttributeExportAsTable = "ExportAsTable";
 const QString ProjectSerializer::AttributeExportRoots = "ExportRoots";
 const QString ProjectSerializer::AttributeExportInnerNodes = "ExportInnerNodes";
 const QString ProjectSerializer::AttributeExportLeafs = "ExportLeafs";
+const QString ProjectSerializer::AttributeIgnoreReadOnly = "IgnoreReadOnly";
 const QString ProjectSerializer::AttributeKey = "Key";
 const QString ProjectSerializer::AttributeTomeType = "TomeType";
 const QString ProjectSerializer::AttributeValue = "Value";
@@ -56,6 +57,12 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
         {
             // Write version.
             writer.writeAttribute(AttributeVersion, QString::number(Version));
+
+            // Write lock behaviour.
+            if (project->ignoreReadOnly)
+            {
+                writer.writeAttribute(AttributeIgnoreReadOnly, "true");
+            }
 
             // Write project name.
             writer.writeTextElement(ElementName, project->name);
@@ -138,6 +145,9 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
     {
         // Read version.
         int version = reader.readAttribute(AttributeVersion).toInt();
+
+        // Read lock behaviour.
+        project->ignoreReadOnly = reader.readAttribute(AttributeIgnoreReadOnly) == "true";
 
         // Begin project.
         reader.readStartElement(ElementTomeProject);

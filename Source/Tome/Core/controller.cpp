@@ -225,6 +225,11 @@ const QString Controller::getProjectPath() const
     return this->project->path;
 }
 
+bool Controller::getProjectIgnoreReadOnly() const
+{
+    return this->project->ignoreReadOnly;
+}
+
 bool Controller::isProjectLoaded() const
 {
     return this->project != 0;

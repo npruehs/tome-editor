@@ -41,6 +41,7 @@ namespace Tome
             const QString getFullProjectPath() const;
             const QString getProjectName() const;
             const QString getProjectPath() const;
+            bool getProjectIgnoreReadOnly() const;
             bool isProjectLoaded() const;
             void openProject(const QString& projectFileName);
             void saveProject();

@@ -357,7 +357,7 @@ void MainWindow::on_actionEdit_Record_triggered()
     const Record& record = this->controller->getRecordsController().getRecord(id);
 
     // Check if read-only.
-    if (record.readOnly)
+    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
     {
         this->showReadOnlyMessage(record.id);
         return;
@@ -491,7 +491,7 @@ void MainWindow::on_actionRevert_Record_triggered()
     // Check if read-only.
     const Record& record = this->controller->getRecordsController().getRecord(recordId);
 
-    if (record.readOnly)
+    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
     {
         this->showReadOnlyMessage(recordId);
         return;
@@ -532,7 +532,7 @@ void MainWindow::on_actionRemove_Record_triggered()
     const QString recordId = recordItem->getId();
     const Record& record = this->controller->getRecordsController().getRecord(recordId);
 
-    if (record.readOnly)
+    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
     {
         this->showReadOnlyMessage(recordId);
         return;
@@ -769,7 +769,7 @@ void MainWindow::treeWidgetRecordReparented(const QString& recordId, const QStri
     // Check if read-only.
     const Record& record = this->controller->getRecordsController().getRecord(recordId);
 
-    if (record.readOnly)
+    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
     {
         this->showReadOnlyMessage(recordId);
         return;
@@ -933,7 +933,7 @@ void MainWindow::refreshRecordTable()
     // Check if read-only.
     const Record& record = this->controller->getRecordsController().getRecord(id);
 
-    if (record.readOnly)
+    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
     {
         this->recordFieldTableWidget->setEnabled(false);
         this->recordFieldTableWidget->setToolTip(this->getReadOnlyMessage(id));

@@ -23,6 +23,7 @@ namespace Tome
             QString name;
             QString path;
             QLocale locale;
+            bool ignoreReadOnly;
 
             ComponentSetList componentSets;
             FieldDefinitionSetList fieldDefinitionSets;
