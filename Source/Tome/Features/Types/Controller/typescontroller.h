@@ -27,7 +27,7 @@ namespace Tome
             const CustomType& getCustomType(const QString& name) const;
 
             const CustomTypeList getCustomTypes() const;
-            const CustomTypeSetList& getCustomTypeList() const;
+            const CustomTypeSetList& getCustomTypeSets() const;
 
             /**
              * @brief getCustomTypeNames Returns a list of all type names of this project, including built-in types.

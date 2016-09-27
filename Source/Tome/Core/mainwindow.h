@@ -17,6 +17,7 @@ class RecordWindow;
 class CustomTypesWindow;
 class DuplicateRecordWindow;
 class FindRecordWindow;
+class ProjectOverviewWindow;
 
 namespace Ui {
     class MainWindow;
@@ -43,6 +44,8 @@ class MainWindow : public QMainWindow
 
     private slots:
         void on_actionExit_triggered();
+
+        void on_actionProject_Overview_triggered();
 
         void on_actionField_Definions_triggered();
         void on_actionManage_Components_triggered();
@@ -84,7 +87,6 @@ class MainWindow : public QMainWindow
         void treeWidgetRecordReparented(const QString& recordId, const QString& newParentId);
         void treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
-
     private:
         Ui::MainWindow *ui;
 
@@ -104,6 +106,7 @@ class MainWindow : public QMainWindow
         RecordWindow* recordWindow;
         DuplicateRecordWindow* duplicateRecordWindow;
         FindRecordWindow* findRecordWindow;
+        ProjectOverviewWindow* projectOverviewWindow;
 
         Tome::MessageList messages;
 

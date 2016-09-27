@@ -100,7 +100,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Types/Controller/customtypesetserializer.cpp \
     ../Source/Tome/Features/Export/Controller/exporttemplateserializer.cpp \
     ../Source/Tome/Features/Search/Controller/findrecordcontroller.cpp \
-    ../Source/Tome/Features/Search/View/findrecordwindow.cpp
+    ../Source/Tome/Features/Search/View/findrecordwindow.cpp \
+    ../Source/Tome/Features/Projects/View/projectoverviewwindow.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -192,7 +193,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Export/Controller/exporttemplateserializer.h \
     ../Source/Tome/Features/Export/Model/recordexporttemplatelist.h \
     ../Source/Tome/Features/Search/Controller/findrecordcontroller.h \
-    ../Source/Tome/Features/Search/View/findrecordwindow.h
+    ../Source/Tome/Features/Search/View/findrecordwindow.h \
+    ../Source/Tome/Features/Projects/View/projectoverviewwindow.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
@@ -211,7 +213,8 @@ FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Records/View/duplicaterecordwindow.ui \
     ../Source/Tome/Features/Types/View/mapwindow.ui \
     ../Source/Tome/Features/Fields/View/mapitemwindow.ui \
-    ../Source/Tome/Features/Search/View/findrecordwindow.ui
+    ../Source/Tome/Features/Search/View/findrecordwindow.ui \
+    ../Source/Tome/Features/Projects/View/projectoverviewwindow.ui
 
 RESOURCES += \
     tome.qrc

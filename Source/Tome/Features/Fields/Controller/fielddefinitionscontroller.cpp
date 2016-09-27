@@ -59,6 +59,11 @@ const FieldDefinitionList FieldDefinitionsController::getFieldDefinitions() cons
     return fieldDefinitions;
 }
 
+const FieldDefinitionSetList& FieldDefinitionsController::getFieldDefinitionSets() const
+{
+    return *this->model;
+}
+
 bool FieldDefinitionsController::hasFieldDefinition(const QString& id) const
 {
     for (int i = 0; i < this->model->size(); ++i)

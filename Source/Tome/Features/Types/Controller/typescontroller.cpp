@@ -92,7 +92,7 @@ const CustomTypeList TypesController::getCustomTypes() const
     return types;
 }
 
-const CustomTypeSetList& TypesController::getCustomTypeList() const
+const CustomTypeSetList& TypesController::getCustomTypeSets() const
 {
     return *this->model;
 }

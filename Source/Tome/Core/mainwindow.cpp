@@ -25,6 +25,7 @@
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/View/newprojectwindow.h"
+#include "../Features/Projects/View/projectoverviewwindow.h"
 #include "../Features/Records/Controller/recordscontroller.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
 #include "../Features/Records/Model/recordfieldstate.h"
@@ -65,7 +66,8 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     newProjectWindow(0),
     recordWindow(0),
     duplicateRecordWindow(0),
-    findRecordWindow(0)
+    findRecordWindow(0),
+    projectOverviewWindow(0)
 {
     ui->setupUi(this);
 
@@ -198,6 +200,19 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionExit_triggered()
 {
     this->close();
+}
+
+
+void MainWindow::on_actionProject_Overview_triggered()
+{
+    if (!this->projectOverviewWindow)
+    {
+        this->projectOverviewWindow = new ProjectOverviewWindow(
+                    this->controller,
+                    this);
+    }
+
+    this->showWindow(this->projectOverviewWindow);
 }
 
 void MainWindow::on_actionField_Definions_triggered()
@@ -1014,6 +1029,8 @@ void MainWindow::updateMenus()
     bool projectLoaded = this->controller->isProjectLoaded();
 
     this->ui->actionSave_Project->setEnabled(projectLoaded);
+
+    this->ui->actionProject_Overview->setEnabled(projectLoaded);
 
     this->ui->actionField_Definions->setEnabled(projectLoaded);
     this->ui->actionManage_Components->setEnabled(projectLoaded);

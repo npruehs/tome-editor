@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>434</width>
     <height>300</height>
    </rect>
   </property>
@@ -29,7 +29,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>434</width>
      <height>21</height>
     </rect>
    </property>
@@ -102,7 +102,14 @@
     </property>
     <addaction name="actionError_List"/>
    </widget>
+   <widget class="QMenu" name="menuProject">
+    <property name="title">
+     <string>Project</string>
+    </property>
+    <addaction name="actionProject_Overview"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuProject"/>
    <addaction name="menuRecords"/>
    <addaction name="menuFields"/>
    <addaction name="menuExport"/>
@@ -331,6 +338,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionProject_Overview">
+   <property name="text">
+    <string>Project Overview...</string>
    </property>
   </action>
  </widget>

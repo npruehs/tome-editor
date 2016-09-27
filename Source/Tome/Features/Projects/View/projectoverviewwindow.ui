@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ProjectOverviewWindow</class>
+ <widget class="QDialog" name="ProjectOverviewWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>155</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Project Overview</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout_2">
+   <item row="0" column="0">
+    <widget class="QLabel" name="labelProjectPath">
+     <property name="text">
+      <string>Project Path:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="labelProjectPathValue">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="labelRecords">
+     <property name="text">
+      <string>Records:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="labelRecordsValue">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelFields">
+     <property name="text">
+      <string>Fields:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="labelFieldsValue">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="labelComponents">
+     <property name="text">
+      <string>Components:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="labelComponentsValue">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelCustomTypes">
+     <property name="text">
+      <string>Custom Types:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="labelCustomTypesValue">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="labelExportTemplates">
+     <property name="text">
+      <string>Export Templates:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLabel" name="labelExportTemplatesValue">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close</set>
+     </property>
+     <property name="centerButtons">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>ProjectOverviewWindow</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>ProjectOverviewWindow</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
