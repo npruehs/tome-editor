@@ -336,13 +336,6 @@
          <item>
           <layout class="QVBoxLayout" name="verticalLayoutExportTemplatesButtons">
            <item>
-            <widget class="QPushButton" name="pushButtonAddNewExportTemplate">
-             <property name="text">
-              <string>Add New...</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QPushButton" name="pushButtonAddExistingExportTemplate">
              <property name="text">
               <string>Add Existing...</string>

@@ -17,6 +17,7 @@ namespace Tome
     class FindRecordController;
     class FindUsagesController;
     class Project;
+    class RecordExportTemplate;
     class RecordSet;
     class RecordsController;
     class SettingsController;
@@ -52,6 +53,7 @@ namespace Tome
             bool isProjectLoaded() const;
             void loadComponentSet(const QString& projectPath, ComponentSet& componentSet);
             void loadCustomTypeSet(const QString& projectPath, CustomTypeSet& customTypeSet);
+            void loadExportTemplate(const QString& projectPath, RecordExportTemplate& exportTemplate);
             void loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet);
             void loadRecordSet(const QString& projectPath, RecordSet& recordSet);
             void openProject(const QString& projectFileName);

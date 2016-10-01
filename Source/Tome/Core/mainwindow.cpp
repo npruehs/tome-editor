@@ -115,6 +115,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
+                &this->controller->getExportController(),
+                SIGNAL(exportTemplatesChanged()),
+                SLOT(onExportTemplatesChanged())
+                );
+
+    connect(
                 this->ui->menuExport,
                 SIGNAL(triggered(QAction*)),
                 SLOT(exportRecords(QAction*))
@@ -716,6 +722,11 @@ void MainWindow::exportRecords(QAction* exportAction)
     }
 }
 
+void MainWindow::onExportTemplatesChanged()
+{
+    this->refreshExportMenu();
+}
+
 void MainWindow::openRecentProject(QAction* recentProjectAction)
 {
     QString path = recentProjectAction->text();
@@ -932,18 +943,7 @@ void MainWindow::onProjectChanged(QSharedPointer<Project> project)
     this->refreshRecordTree();
 
     // Setup record exports.
-    this->ui->menuExport->clear();
-
-    const RecordExportTemplateMap& recordExportTemplateMap =
-            this->controller->getExportController().getRecordExportTemplates();
-
-    for (RecordExportTemplateMap::const_iterator it = recordExportTemplateMap.begin();
-         it != recordExportTemplateMap.end();
-         ++it)
-    {
-        QAction* exportAction = new QAction(it.key(), this);
-        this->ui->menuExport->addAction(exportAction);
-    }
+    this->refreshExportMenu();
 
     // Update title.
     this->updateWindowTitle();
@@ -973,6 +973,22 @@ void MainWindow::onRecordLinkActivated(const QString& recordId)
 void MainWindow::refreshErrorList()
 {
     this->errorListDockWidget->showMessages(this->messages);
+}
+
+void MainWindow::refreshExportMenu()
+{
+    this->ui->menuExport->clear();
+
+    const RecordExportTemplateMap& recordExportTemplateMap =
+            this->controller->getExportController().getRecordExportTemplates();
+
+    for (RecordExportTemplateMap::const_iterator it = recordExportTemplateMap.begin();
+         it != recordExportTemplateMap.end();
+         ++it)
+    {
+        QAction* exportAction = new QAction(it.key(), this);
+        this->ui->menuExport->addAction(exportAction);
+    }
 }
 
 void MainWindow::refreshRecordTree()

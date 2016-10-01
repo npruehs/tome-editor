@@ -311,6 +311,86 @@ void Controller::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& ty
     }
 }
 
+void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemplate& exportTemplate)
+{
+    ExportTemplateSerializer exportTemplateSerializer = ExportTemplateSerializer();
+
+     // TODO(np): Remove empty check as soon as backwards compatibility is removed from ProjectSerializer.
+    if (exportTemplate.fileExtension.isEmpty())
+    {
+        // Read template file.
+        QString fullExportTemplatePath =
+                buildFullFilePath(exportTemplate.path, projectPath, RecordExportTemplateFileExtension);
+
+        QFile exportTemplateFile(fullExportTemplatePath);
+        if (exportTemplateFile.open(QIODevice::ReadOnly))
+        {
+            try
+            {
+                exportTemplateSerializer.deserialize(exportTemplateFile, exportTemplate);
+            }
+            catch (const std::runtime_error& e)
+            {
+                QString errorMessage = QObject::tr("File could not be read: ") + fullExportTemplatePath + "\r\n" + e.what();
+                throw std::runtime_error(errorMessage.toStdString());
+            }
+        }
+        else
+        {
+            QString errorMessage = QObject::tr("File could not be read:\r\n") + fullExportTemplatePath;
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+
+    // Read template contents.
+    try
+    {
+        QString templatePath = exportTemplate.path;
+
+        if (QDir::isRelativePath(templatePath))
+        {
+            templatePath = combinePaths(projectPath, templatePath);
+        }
+
+        if (templatePath.endsWith(RecordExportTemplateFileExtension))
+        {
+            templatePath = templatePath.remove(RecordExportTemplateFileExtension);
+        }
+
+        exportTemplate.fieldValueDelimiter =
+                this->readFile(templatePath + RecordExportFieldValueDelimiterExtension);
+        exportTemplate.fieldValueTemplate =
+                this->readFile(templatePath + RecordExportFieldValueTemplateExtension);
+        exportTemplate.recordDelimiter =
+                this->readFile(templatePath + RecordExportRecordDelimiterExtension);
+        exportTemplate.recordFileTemplate =
+                this->readFile(templatePath + RecordExportRecordFileTemplateExtension);
+        exportTemplate.recordTemplate =
+                this->readFile(templatePath + RecordExportRecordTemplateExtension);
+        exportTemplate.componentDelimiter =
+                this->readFile(templatePath + RecordExportComponentDelimiterExtension);
+        exportTemplate.componentTemplate =
+                this->readFile(templatePath + RecordExportComponentTemplateExtension);
+        exportTemplate.listTemplate =
+                this->readFile(templatePath + RecordExportListTemplateExtension);
+        exportTemplate.listItemTemplate =
+                this->readFile(templatePath + RecordExportListItemTemplateExtension);
+        exportTemplate.listItemDelimiter =
+                this->readFile(templatePath + RecordExportListItemDelimiterExtension);
+        exportTemplate.mapTemplate =
+                this->readFile(templatePath + RecordExportMapTemplateExtension);
+        exportTemplate.mapItemTemplate =
+                this->readFile(templatePath + RecordExportMapItemTemplateExtension);
+        exportTemplate.mapItemDelimiter =
+                this->readFile(templatePath + RecordExportMapItemDelimiterExtension);
+    }
+    catch (const std::runtime_error& e)
+    {
+        QString errorMessage = QObject::tr("File could not be read:\r\n") + e.what();
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+}
+
 void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet)
 {
     FieldDefinitionSetSerializer fieldDefinitionSerializer = FieldDefinitionSetSerializer();
@@ -416,88 +496,11 @@ void Controller::openProject(const QString& projectFileName)
         }
 
         // Load record export template files.
-        ExportTemplateSerializer exportTemplateSerializer = ExportTemplateSerializer();
-
         for (RecordExportTemplateList::iterator it = project->recordExportTemplates.begin();
              it != project->recordExportTemplates.end();
              ++it)
         {
-            RecordExportTemplate& exportTemplate = *it;
-
-            // TODO(np): Remove empty check as soon as backwards compatibility is removed from ProjectSerializer.
-            if (exportTemplate.fileExtension.isEmpty())
-            {
-                // Read template file.
-                QString fullExportTemplatePath =
-                        buildFullFilePath(exportTemplate.path, projectPath, RecordExportTemplateFileExtension);
-
-                QFile exportTemplateFile(fullExportTemplatePath);
-                if (exportTemplateFile.open(QIODevice::ReadOnly))
-                {
-                    try
-                    {
-                        exportTemplateSerializer.deserialize(exportTemplateFile, exportTemplate);
-                    }
-                    catch (const std::runtime_error& e)
-                    {
-                        QString errorMessage = QObject::tr("File could not be read: ") + fullExportTemplatePath + "\r\n" + e.what();
-                        throw std::runtime_error(errorMessage.toStdString());
-                    }
-                }
-                else
-                {
-                    QString errorMessage = QObject::tr("File could not be read:\r\n") + fullExportTemplatePath;
-                    throw std::runtime_error(errorMessage.toStdString());
-                }
-            }
-
-            // Read template contents.
-            try
-            {
-                QString templatePath = exportTemplate.path;
-
-                if (QDir::isRelativePath(templatePath))
-                {
-                    templatePath = combinePaths(projectPath, templatePath);
-                }
-
-                if (templatePath.endsWith(RecordExportTemplateFileExtension))
-                {
-                    templatePath = templatePath.remove(RecordExportTemplateFileExtension);
-                }
-
-                exportTemplate.fieldValueDelimiter =
-                        this->readFile(templatePath + RecordExportFieldValueDelimiterExtension);
-                exportTemplate.fieldValueTemplate =
-                        this->readFile(templatePath + RecordExportFieldValueTemplateExtension);
-                exportTemplate.recordDelimiter =
-                        this->readFile(templatePath + RecordExportRecordDelimiterExtension);
-                exportTemplate.recordFileTemplate =
-                        this->readFile(templatePath + RecordExportRecordFileTemplateExtension);
-                exportTemplate.recordTemplate =
-                        this->readFile(templatePath + RecordExportRecordTemplateExtension);
-                exportTemplate.componentDelimiter =
-                        this->readFile(templatePath + RecordExportComponentDelimiterExtension);
-                exportTemplate.componentTemplate =
-                        this->readFile(templatePath + RecordExportComponentTemplateExtension);
-                exportTemplate.listTemplate =
-                        this->readFile(templatePath + RecordExportListTemplateExtension);
-                exportTemplate.listItemTemplate =
-                        this->readFile(templatePath + RecordExportListItemTemplateExtension);
-                exportTemplate.listItemDelimiter =
-                        this->readFile(templatePath + RecordExportListItemDelimiterExtension);
-                exportTemplate.mapTemplate =
-                        this->readFile(templatePath + RecordExportMapTemplateExtension);
-                exportTemplate.mapItemTemplate =
-                        this->readFile(templatePath + RecordExportMapItemTemplateExtension);
-                exportTemplate.mapItemDelimiter =
-                        this->readFile(templatePath + RecordExportMapItemDelimiterExtension);
-            }
-            catch (const std::runtime_error& e)
-            {
-                QString errorMessage = QObject::tr("File could not be read:\r\n") + e.what();
-                throw std::runtime_error(errorMessage.toStdString());
-            }
+            this->loadExportTemplate(projectPath, *it);
         }
 
         // Load type files.

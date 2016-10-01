@@ -38,6 +38,15 @@ ExportController::ExportController(const FieldDefinitionsController& fieldDefini
 {
 }
 
+void ExportController::addRecordExportTemplate(const RecordExportTemplate& exportTemplate)
+{
+    // Update model.
+    this->model[exportTemplate.name] = exportTemplate;
+
+    // Notify listeners.
+    emit this->exportTemplatesChanged();
+}
+
 const RecordExportTemplate ExportController::getRecordExportTemplate(const QString& name) const
 {
     return this->model.value(name);
@@ -467,6 +476,15 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
     QTextStream textStream(&device);
     textStream.setCodec("UTF-8");
     textStream << recordFileString;
+}
+
+void ExportController::removeExportTemplate(const QString& name)
+{
+    // Update model.
+    this->model.remove(name);
+
+    // Notify listeners.
+    emit this->exportTemplatesChanged();
 }
 
 void ExportController::setRecordExportTemplates(const RecordExportTemplateList& exportTemplates)

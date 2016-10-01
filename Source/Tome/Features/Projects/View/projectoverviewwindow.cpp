@@ -27,6 +27,7 @@ ProjectOverviewWindow::ProjectOverviewWindow(Controller* controller, QWidget *pa
     // Align buttons.
     this->ui->verticalLayoutComponentsButtons->setAlignment(Qt::AlignTop);
     this->ui->verticalLayoutCustomTypesButtons->setAlignment(Qt::AlignTop);
+    this->ui->verticalLayoutExportTemplatesButtons->setAlignment(Qt::AlignTop);
     this->ui->verticalLayoutFieldsButtons->setAlignment(Qt::AlignTop);
     this->ui->verticalLayoutRecordsButtons->setAlignment(Qt::AlignTop);
 
@@ -78,6 +79,25 @@ ProjectOverviewWindow::ProjectOverviewWindow(Controller* controller, QWidget *pa
                 this->ui->pushButtonRemoveCustomTypesFile,
                 SIGNAL(clicked(bool)),
                 SLOT(onRemoveCustomTypesFileClicked(bool))
+                );
+
+    // Connect export template button signals.
+    connect(
+                this->ui->pushButtonAddExistingExportTemplate,
+                SIGNAL(clicked(bool)),
+                SLOT(onAddExistingExportTemplateFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonNavigateToExportTemplate,
+                SIGNAL(clicked(bool)),
+                SLOT(onNavigateToExportTemplateFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonRemoveExportTemplate,
+                SIGNAL(clicked(bool)),
+                SLOT(onRemoveExportTemplateFileClicked(bool))
                 );
 
     // Connect field definition button signals.
@@ -140,25 +160,11 @@ void ProjectOverviewWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
 
-    // Update component data.
     this->updateComponentData();
-
-    // Update export data.
-    ExportController& exportController = this->controller->getExportController();
-    const int exportTemplateCount = exportController.getRecordExportTemplates().count();
-    const QString exportTemplatesText = QString(tr("%1 export template%2")).arg(
-                QString::number(exportTemplateCount),
-                exportTemplateCount != 1 ? "s" : "");
-    this->ui->labelExportTemplatesValue->setText(exportTemplatesText);
-
-    // Update fields data.
-    this->updateFieldDefinitionData();
-
-    // Update record data.
-    this->updateRecordData();
-
-    // Update type data.
     this->updateCustomTypeData();
+    this->updateExportTemplateData();
+    this->updateFieldDefinitionData();
+    this->updateRecordData();
 }
 
 QListWidgetItem*ProjectOverviewWindow::getSelectedListWidgetItem(QListWidget* listWidget)
@@ -251,6 +257,38 @@ void ProjectOverviewWindow::updateCustomTypeData()
         item->setData(Qt::DisplayRole, customTypeSetPath);
         item->setData(Qt::UserRole, customTypeSet.name);
         this->ui->listWidgetCustomTypes->addItem(item);
+    }
+}
+
+void ProjectOverviewWindow::updateExportTemplateData()
+{
+    // Count export templates.
+    ExportController& exportController = this->controller->getExportController();
+    const RecordExportTemplateMap& exportTemplateMap = exportController.getRecordExportTemplates();
+    const int exportTemplateCount = exportTemplateMap.count();
+    const QString exportTemplatesText = QString(tr("%1 export template%2")).arg(
+                QString::number(exportTemplateCount),
+                exportTemplateCount != 1 ? "s" : "");
+    this->ui->labelExportTemplatesValue->setText(exportTemplatesText);
+
+    // Add list items.
+    this->ui->listWidgetExportTemplates->clear();
+
+    for (RecordExportTemplateMap::const_iterator it = exportTemplateMap.begin();
+         it != exportTemplateMap.end();
+         ++it)
+    {
+        const RecordExportTemplate& exportTemplate = *it;
+        const QString& exportTemplatePath = this->controller->buildFullFilePath(
+                    exportTemplate.path,
+                    this->controller->getProjectPath(),
+                    Controller::RecordExportTemplateFileExtension);
+
+        // Add list item.
+        QListWidgetItem* item = new QListWidgetItem();
+        item->setData(Qt::DisplayRole, exportTemplatePath);
+        item->setData(Qt::UserRole, exportTemplate.name);
+        this->ui->listWidgetExportTemplates->addItem(item);
     }
 }
 
@@ -388,6 +426,43 @@ void ProjectOverviewWindow::onAddExistingCustomTypesFileClicked(bool checked)
         QMessageBox::critical(
                     this,
                     tr("Unable to load type file"),
+                    e.what(),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+    }
+}
+
+void ProjectOverviewWindow::onAddExistingExportTemplateFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Open file browser dialog.
+    const QString& projectPath = this->controller->getProjectPath();
+    const QString& exportTemplateFileName = QFileDialog::getOpenFileName(this,
+                                                                  tr("Add Existing Export Template File"),
+                                                                  projectPath,
+                                                                  "Tome Export Template Files (*.texport)");
+    QDir projectDirectory = QDir(projectPath);
+    const QString& relativeExportTemplateFilePath = projectDirectory.relativeFilePath(exportTemplateFileName);
+
+    try
+    {
+        // Load export template.
+        RecordExportTemplate exportTemplate = RecordExportTemplate();
+        exportTemplate.path = relativeExportTemplateFilePath;
+        this->controller->loadExportTemplate(projectPath, exportTemplate);
+
+        // Update model.
+        this->controller->getExportController().addRecordExportTemplate(exportTemplate);
+
+        // Update view.
+        this->updateExportTemplateData();
+    }
+    catch (std::runtime_error& e)
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to load export template"),
                     e.what(),
                     QMessageBox::Close,
                     QMessageBox::Close);
@@ -580,6 +655,14 @@ void ProjectOverviewWindow::onNavigateToCustomTypesFileClicked(bool checked)
     this->navigateToSelectedFile(selectedCustomTypeSetItem);
 }
 
+void ProjectOverviewWindow::onNavigateToExportTemplateFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    QListWidgetItem* selectedExportTemplateItem = this->getSelectedListWidgetItem(this->ui->listWidgetExportTemplates);
+    this->navigateToSelectedFile(selectedExportTemplateItem);
+}
+
 void ProjectOverviewWindow::onNavigateToFieldDefinitionsFileClicked(bool checked)
 {
     Q_UNUSED(checked)
@@ -634,6 +717,26 @@ void ProjectOverviewWindow::onRemoveCustomTypesFileClicked(bool checked)
 
     // Update view.
     this->updateCustomTypeData();
+}
+
+void ProjectOverviewWindow::onRemoveExportTemplateFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Get selected export template.
+    QListWidgetItem* selectedExportTemplateItem = this->getSelectedListWidgetItem(this->ui->listWidgetExportTemplates);
+
+    if (selectedExportTemplateItem == nullptr)
+    {
+        return;
+    }
+
+    // Update model.
+    const QString& exportTemplateName = selectedExportTemplateItem->data(Qt::UserRole).toString();
+    this->controller->getExportController().removeExportTemplate(exportTemplateName);
+
+    // Update view.
+    this->updateExportTemplateData();
 }
 
 void ProjectOverviewWindow::onRemoveFieldDefinitionsFileClicked(bool checked)
