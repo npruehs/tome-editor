@@ -402,18 +402,23 @@ void RecordsController::removeRecord(const QString& recordId)
     }
 
     // Remove record.
-    RecordList& records = (*this->model)[0].records;
-
-    for (RecordList::iterator it = records.begin();
-         it != records.end();
-         ++it)
+    for (RecordSetList::iterator itSets = this->model->begin();
+         itSets != this->model->end();
+         ++itSets)
     {
-        Record& record = *it;
+        RecordList& records = (*itSets).records;
 
-        if (record.id == recordId)
+        for (RecordList::iterator it = records.begin();
+             it != records.end();
+             ++it)
         {
-            records.erase(it);
-            return;
+            Record& record = *it;
+
+            if (record.id == recordId)
+            {
+                records.erase(it);
+                return;
+            }
         }
     }
 }
@@ -555,7 +560,12 @@ void RecordsController::updateRecord(const QString& oldId, const QString& newId,
 
     if (needsSorting)
     {
-        std::sort((*this->model)[0].records.begin(), (*this->model)[0].records.end(), recordLessThanDisplayName);
+        for (RecordSetList::iterator it = this->model->begin();
+             it != this->model->end();
+             ++it)
+        {
+            std::sort((*it).records.begin(), (*it).records.end(), recordLessThanDisplayName);
+        }
     }
 }
 

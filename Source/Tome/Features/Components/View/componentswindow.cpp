@@ -68,7 +68,7 @@ void ComponentsWindow::on_actionDelete_Component_triggered()
         return;
     }
 
-    Component component = selectedItems[0]->text();
+    Component component = selectedItems.first()->text();
     int index = this->componentsController.indexOf(component);
 
     // Update model.

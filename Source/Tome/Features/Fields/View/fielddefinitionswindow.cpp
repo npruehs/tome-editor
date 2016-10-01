@@ -254,7 +254,7 @@ QString FieldDefinitionsWindow::getSelectedFieldId() const
         return QString();
     }
 
-    return selectedItems[0]->data(Qt::DisplayRole).toString();
+    return selectedItems.first()->data(Qt::DisplayRole).toString();
 }
 
 void FieldDefinitionsWindow::updateTable()

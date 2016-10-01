@@ -54,16 +54,21 @@ int ComponentsController::indexOf(const Component& component) const
 
 void ComponentsController::removeComponent(const Component component)
 {
-    ComponentList& components = (*this->model)[0].components;
-
-    for (ComponentList::iterator it = components.begin();
-         it != components.end();
-         ++it)
+    for (ComponentSetList::iterator itSets = this->model->begin();
+         itSets != this->model->end();
+         ++itSets)
     {
-        if (*it == component)
+        ComponentList& components = (*itSets).components;
+
+        for (ComponentList::iterator it = components.begin();
+             it != components.end();
+             ++it)
         {
-            components.erase(it);
-            return;
+            if (*it == component)
+            {
+                components.erase(it);
+                return;
+            }
         }
     }
 }

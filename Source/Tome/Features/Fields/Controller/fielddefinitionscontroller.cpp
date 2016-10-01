@@ -194,7 +194,12 @@ void FieldDefinitionsController::updateFieldDefinition(const QString oldId, cons
     // Sort by display name.
     if (needsSorting)
     {
-        std::sort((*this->model)[0].fieldDefinitions.begin(), (*this->model)[0].fieldDefinitions.end(), fieldDefinitionLessThanDisplayName);
+        for (FieldDefinitionSetList::iterator it = this->model->begin();
+             it != this->model->end();
+             ++it)
+        {
+            std::sort((*it).fieldDefinitions.begin(), (*it).fieldDefinitions.end(), fieldDefinitionLessThanDisplayName);
+        }
     }
 }
 

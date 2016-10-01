@@ -144,16 +144,21 @@ bool TypesController::isCustomType(const QString& name) const
 
 void TypesController::removeCustomType(const QString& typeName)
 {
-    CustomTypeList& tpyes = (*this->model)[0].types;
-
-    for (CustomTypeList::iterator it = tpyes.begin();
-         it != tpyes.end();
-         ++it)
+    for (CustomTypeSetList::iterator itSets = this->model->begin();
+         itSets != this->model->end();
+         ++itSets)
     {
-        if (it->name == typeName)
+        CustomTypeList& types = (*itSets).types;
+
+        for (CustomTypeList::iterator it = types.begin();
+             it != types.end();
+             ++it)
         {
-            tpyes.erase(it);
-            return;
+            if (it->name == typeName)
+            {
+                types.erase(it);
+                return;
+            }
         }
     }
 }
@@ -232,7 +237,12 @@ void TypesController::updateEnumeration(const QString& oldName, const QString& n
 
     if (needsSorting)
     {
-        std::sort((*this->model)[0].types.begin(), (*this->model)[0].types.end(), customTypeLessThanName);
+        for (CustomTypeSetList::iterator it = this->model->begin();
+             it != this->model->end();
+             ++it)
+        {
+            std::sort((*it).types.begin(), (*it).types.end(), customTypeLessThanName);
+        }
     }
 }
 
@@ -247,7 +257,12 @@ void TypesController::updateList(const QString& oldName, const QString& newName,
 
     if (needsSorting)
     {
-        std::sort((*this->model)[0].types.begin(), (*this->model)[0].types.end(), customTypeLessThanName);
+        for (CustomTypeSetList::iterator it = this->model->begin();
+             it != this->model->end();
+             ++it)
+        {
+            std::sort((*it).types.begin(), (*it).types.end(), customTypeLessThanName);
+        }
     }
 }
 
@@ -263,7 +278,12 @@ void TypesController::updateMap(const QString& oldName, const QString& newName, 
 
     if (needsSorting)
     {
-        std::sort((*this->model)[0].types.begin(), (*this->model)[0].types.end(), customTypeLessThanName);
+        for (CustomTypeSetList::iterator it = this->model->begin();
+             it != this->model->end();
+             ++it)
+        {
+            std::sort((*it).types.begin(), (*it).types.end(), customTypeLessThanName);
+        }
     }
 }
 
