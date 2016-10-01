@@ -98,6 +98,12 @@
         <layout class="QHBoxLayout" name="horizontalLayoutFieldCount">
          <item>
           <widget class="QLabel" name="labelFields">
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="text">
             <string>Fields:</string>
            </property>
@@ -113,7 +119,43 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayoutFields"/>
+        <layout class="QHBoxLayout" name="horizontalLayoutFields">
+         <item>
+          <widget class="QListWidget" name="listWidgetFields"/>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayoutFieldsButtons">
+           <item>
+            <widget class="QPushButton" name="pushButtonAddNewFieldsFile">
+             <property name="text">
+              <string>Add New...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonAddExistingFieldsFile">
+             <property name="text">
+              <string>Add Existing...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonRemoveFieldsFile">
+             <property name="text">
+              <string>Remove</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonNavigateToFieldsFile">
+             <property name="text">
+              <string>Navigate To...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -126,6 +168,12 @@
         <layout class="QHBoxLayout" name="horizontalLayoutComponentCount">
          <item>
           <widget class="QLabel" name="labelComponents">
+           <property name="maximumSize">
+            <size>
+             <width>75</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="text">
             <string>Components:</string>
            </property>
@@ -141,7 +189,43 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayoutComponents"/>
+        <layout class="QHBoxLayout" name="horizontalLayoutComponents">
+         <item>
+          <widget class="QListWidget" name="listWidgetComponents"/>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayoutComponentsButtons">
+           <item>
+            <widget class="QPushButton" name="pushButtonAddNewComponentsFile">
+             <property name="text">
+              <string>Add New...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonAddExistingComponentsFile">
+             <property name="text">
+              <string>Add Existing...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonRemoveComponentsFile">
+             <property name="text">
+              <string>Remove</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonNavigateToComponentsFile">
+             <property name="text">
+              <string>Navigate To...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -154,6 +238,12 @@
         <layout class="QHBoxLayout" name="horizontalLayoutTypeCount">
          <item>
           <widget class="QLabel" name="labelCustomTypes">
+           <property name="maximumSize">
+            <size>
+             <width>80</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="text">
             <string>Custom Types:</string>
            </property>
@@ -169,7 +259,43 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayoutTypes"/>
+        <layout class="QHBoxLayout" name="horizontalLayoutCustomTypes">
+         <item>
+          <widget class="QListWidget" name="listWidgetCustomTypes"/>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayoutCustomTypesButtons">
+           <item>
+            <widget class="QPushButton" name="pushButtonAddNewCustomTypesFile">
+             <property name="text">
+              <string>Add New...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonAddExistingCustomTypesFile">
+             <property name="text">
+              <string>Add Existing...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonRemoveCustomTypesFile">
+             <property name="text">
+              <string>Remove</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonNavigateToCustomTypesFile">
+             <property name="text">
+              <string>Navigate To...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -182,6 +308,12 @@
         <layout class="QHBoxLayout" name="horizontalLayoutExportTemplateCount">
          <item>
           <widget class="QLabel" name="labelExportTemplates">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="text">
             <string>Export Templates:</string>
            </property>
@@ -197,7 +329,43 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayoutExportTemplates"/>
+        <layout class="QHBoxLayout" name="horizontalLayoutExportTemplates">
+         <item>
+          <widget class="QListWidget" name="listWidgetExportTemplates"/>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayoutExportTemplatesButtons">
+           <item>
+            <widget class="QPushButton" name="pushButtonAddNewExportTemplate">
+             <property name="text">
+              <string>Add New...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonAddExistingExportTemplate">
+             <property name="text">
+              <string>Add Existing...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonRemoveExportTemplate">
+             <property name="text">
+              <string>Remove</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonNavigateToExportTemplate">
+             <property name="text">
+              <string>Navigate To...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

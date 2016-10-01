@@ -30,14 +30,25 @@ class ProjectOverviewWindow : public QDialog
 
         Tome::Controller* controller;
 
+        QListWidgetItem* getSelectedFieldDefinitionSet();
         QListWidgetItem* getSelectedRecordSet();
 
+        void navigateToSelectedFile(QListWidgetItem* item);
+
+        void updateFieldDefinitionData();
         void updateRecordData();
 
     private slots:
+        void onAddExistingFieldDefinitionsFileClicked(bool checked);
         void onAddExistingRecordsFileClicked(bool checked);
+
+        void onAddNewFieldDefinitionsFileClicked(bool checked);
         void onAddNewRecordsFileClicked(bool checked);
+
+        void onNavigateToFieldDefinitionsFileClicked(bool checked);
         void onNavigateToRecordsFileClicked(bool checked);
+
+        void onRemoveFieldDefinitionsFileClicked(bool checked);
         void onRemoveRecordsFileClicked(bool checked);
 };
 

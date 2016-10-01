@@ -26,8 +26,9 @@ ProjectOverviewWindow::ProjectOverviewWindow(Controller* controller, QWidget *pa
 
     // Align buttons.
     this->ui->verticalLayoutRecordsButtons->setAlignment(Qt::AlignTop);
+    this->ui->verticalLayoutFieldsButtons->setAlignment(Qt::AlignTop);
 
-    // Connect signals.
+    // Connect record button signals.
     connect(
                 this->ui->pushButtonAddExistingRecordsFile,
                 SIGNAL(clicked(bool)),
@@ -50,6 +51,31 @@ ProjectOverviewWindow::ProjectOverviewWindow(Controller* controller, QWidget *pa
                 this->ui->pushButtonRemoveRecordsFile,
                 SIGNAL(clicked(bool)),
                 SLOT(onRemoveRecordsFileClicked(bool))
+                );
+
+    // Connect field definition button signals.
+    connect(
+                this->ui->pushButtonAddExistingFieldsFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onAddExistingFieldDefinitionsFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonAddNewFieldsFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onAddNewFieldDefinitionsFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonNavigateToFieldsFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onNavigateToFieldDefinitionsFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonRemoveFieldsFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onRemoveFieldDefinitionsFileClicked(bool))
                 );
 }
 
@@ -82,15 +108,7 @@ void ProjectOverviewWindow::showEvent(QShowEvent* event)
     this->ui->labelExportTemplatesValue->setText(exportTemplatesText);
 
     // Update fields data.
-    FieldDefinitionsController& fieldDefintionsController = this->controller->getFieldDefinitionsController();
-    const int fieldDefinitionSetCount = fieldDefintionsController.getFieldDefinitionSets().count();
-    const int fieldDefintionCount = fieldDefintionsController.getFieldDefinitions().count();
-    const QString fieldsText = QString(tr("%1 field%2 (in %3 file%4)")).arg(
-                QString::number(fieldDefintionCount),
-                fieldDefintionCount != 1 ? "s" : "",
-                QString::number(fieldDefinitionSetCount),
-                fieldDefinitionSetCount != 1 ? "s" : "");
-    this->ui->labelFieldsValue->setText(fieldsText);
+    this->updateFieldDefinitionData();
 
     // Update record data.
     this->updateRecordData();
@@ -107,6 +125,18 @@ void ProjectOverviewWindow::showEvent(QShowEvent* event)
     this->ui->labelCustomTypesValue->setText(typesText);
 }
 
+QListWidgetItem*ProjectOverviewWindow::getSelectedFieldDefinitionSet()
+{
+    QList<QListWidgetItem*> selectedItems = this->ui->listWidgetFields->selectedItems();
+
+    if (selectedItems.empty())
+    {
+        return nullptr;
+    }
+
+    return selectedItems.first();
+}
+
 QListWidgetItem* ProjectOverviewWindow::getSelectedRecordSet()
 {
     QList<QListWidgetItem*> selectedItems = this->ui->listWidgetRecords->selectedItems();
@@ -117,6 +147,54 @@ QListWidgetItem* ProjectOverviewWindow::getSelectedRecordSet()
     }
 
     return selectedItems.first();
+}
+
+void ProjectOverviewWindow::navigateToSelectedFile(QListWidgetItem* item)
+{
+    if (item == nullptr)
+    {
+        return;
+    }
+
+    // Get file path.
+    const QString& filePath = item->data(Qt::DisplayRole).toString();
+    QFileInfo file(filePath);
+
+    // Open in explorer or finder.
+    QDesktopServices::openUrl(QUrl(file.absolutePath()));
+}
+
+void ProjectOverviewWindow::updateFieldDefinitionData()
+{
+    // Count field definition sets and field definition.
+    FieldDefinitionsController& fieldDefintionsController = this->controller->getFieldDefinitionsController();
+    const FieldDefinitionSetList& fieldDefinitionSets = fieldDefintionsController.getFieldDefinitionSets();
+    const int fieldDefinitionSetCount = fieldDefinitionSets.count();
+    const int fieldDefintionCount = fieldDefintionsController.getFieldDefinitions().count();
+    const QString fieldsText = QString(tr("%1 field%2 (in %3 file%4)")).arg(
+                QString::number(fieldDefintionCount),
+                fieldDefintionCount != 1 ? "s" : "",
+                QString::number(fieldDefinitionSetCount),
+                fieldDefinitionSetCount != 1 ? "s" : "");
+    this->ui->labelFieldsValue->setText(fieldsText);
+
+    // Add list items.
+    this->ui->listWidgetFields->clear();
+
+    for (int i = 0; i < fieldDefinitionSets.count(); ++i)
+    {
+        const FieldDefinitionSet& fieldDefinitionSet = fieldDefinitionSets[i];
+        const QString& fieldDefinitionSetPath = this->controller->buildFullFilePath(
+                    fieldDefinitionSet.name,
+                    this->controller->getProjectPath(),
+                    Controller::FieldDefinitionFileExtension);
+
+        // Add list item.
+        QListWidgetItem* item = new QListWidgetItem();
+        item->setData(Qt::DisplayRole, fieldDefinitionSetPath);
+        item->setData(Qt::UserRole, fieldDefinitionSet.name);
+        this->ui->listWidgetFields->addItem(item);
+    }
 }
 
 void ProjectOverviewWindow::updateRecordData()
@@ -149,6 +227,43 @@ void ProjectOverviewWindow::updateRecordData()
         item->setData(Qt::DisplayRole, recordSetPath);
         item->setData(Qt::UserRole, recordSet.name);
         this->ui->listWidgetRecords->addItem(item);
+    }
+}
+
+void ProjectOverviewWindow::onAddExistingFieldDefinitionsFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Open file browser dialog.
+    const QString& projectPath = this->controller->getProjectPath();
+    const QString& fieldDefinitionSetFileName = QFileDialog::getOpenFileName(this,
+                                                                  tr("Add Existing Field Definitions File"),
+                                                                  projectPath,
+                                                                  "Tome Field Definition Files (*.tfields)");
+    QDir projectDirectory = QDir(projectPath);
+    const QString& relativeFieldDefinitionFilePath = projectDirectory.relativeFilePath(fieldDefinitionSetFileName);
+
+    try
+    {
+        // Load field definitions.
+        FieldDefinitionSet fieldDefinitionSet = FieldDefinitionSet();
+        fieldDefinitionSet.name = relativeFieldDefinitionFilePath;
+        this->controller->loadFieldDefinitionSet(projectPath, fieldDefinitionSet);
+
+        // Update model.
+        this->controller->getFieldDefinitionsController().addFieldDefinitionSet(fieldDefinitionSet);
+
+        // Update view.
+        this->updateFieldDefinitionData();
+    }
+    catch (std::runtime_error& e)
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to load field definitions file"),
+                    e.what(),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
     }
 }
 
@@ -189,6 +304,30 @@ void ProjectOverviewWindow::onAddExistingRecordsFileClicked(bool checked)
     }
 }
 
+void ProjectOverviewWindow::onAddNewFieldDefinitionsFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Open file browser dialog.
+    const QString& projectPath = this->controller->getProjectPath();
+    const QString& fieldDefinitionSetFileName = QFileDialog::getSaveFileName(this,
+                                                                  tr("Add New Field Definitions File"),
+                                                                  projectPath,
+                                                                  "Tome Field Definition Files (*.tfields)");
+    QDir projectDirectory = QDir(projectPath);
+    const QString& relativeFieldDefinitionFilePath = projectDirectory.relativeFilePath(fieldDefinitionSetFileName);
+
+    // Create new field definition set.
+    FieldDefinitionSet fieldDefinitionSet = FieldDefinitionSet();
+    fieldDefinitionSet.name = relativeFieldDefinitionFilePath;
+
+    // Update model.
+    this->controller->getFieldDefinitionsController().addFieldDefinitionSet(fieldDefinitionSet);
+
+    // Update view.
+    this->updateFieldDefinitionData();
+}
+
 void ProjectOverviewWindow::onAddNewRecordsFileClicked(bool checked)
 {
     Q_UNUSED(checked)
@@ -213,24 +352,40 @@ void ProjectOverviewWindow::onAddNewRecordsFileClicked(bool checked)
     this->updateRecordData();
 }
 
+void ProjectOverviewWindow::onNavigateToFieldDefinitionsFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    QListWidgetItem* selectedFieldDefinitionSetItem = this->getSelectedFieldDefinitionSet();
+    this->navigateToSelectedFile(selectedFieldDefinitionSetItem);
+}
+
 void ProjectOverviewWindow::onNavigateToRecordsFileClicked(bool checked)
 {
     Q_UNUSED(checked)
 
-    // Get selected record set.
     QListWidgetItem* selectedRecordSetItem = this->getSelectedRecordSet();
+    this->navigateToSelectedFile(selectedRecordSetItem);
+}
 
-    if (selectedRecordSetItem == nullptr)
+void ProjectOverviewWindow::onRemoveFieldDefinitionsFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Get selected field definition set.
+    QListWidgetItem* selectedFieldDefinitionSetItem = this->getSelectedFieldDefinitionSet();
+
+    if (selectedFieldDefinitionSetItem == nullptr)
     {
         return;
     }
 
-    // Get record set path.
-    const QString& recordSetPath = selectedRecordSetItem->data(Qt::DisplayRole).toString();
-    QFileInfo recordFile(recordSetPath);
+    // Update model.
+    const QString& fieldDefinitionSetName = selectedFieldDefinitionSetItem->data(Qt::UserRole).toString();
+    this->controller->getFieldDefinitionsController().removeFieldDefinitionSet(fieldDefinitionSetName);
 
-    // Open in explorer or finder.
-    QDesktopServices::openUrl(QUrl(recordFile.absolutePath()));
+    // Update view.
+    this->updateFieldDefinitionData();
 }
 
 void ProjectOverviewWindow::onRemoveRecordsFileClicked(bool checked)

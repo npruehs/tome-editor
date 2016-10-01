@@ -10,6 +10,7 @@ namespace Tome
     class CommandLineOptions;
     class ComponentsController;
     class ExportController;
+    class FieldDefinitionSet;
     class FieldDefinitionsController;
     class FindRecordController;
     class FindUsagesController;
@@ -47,6 +48,7 @@ namespace Tome
             const QString getProjectPath() const;
             bool getProjectIgnoreReadOnly() const;
             bool isProjectLoaded() const;
+            void loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet);
             void loadRecordSet(const QString& projectPath, RecordSet& recordSet);
             void openProject(const QString& projectFileName);
             void saveProject();

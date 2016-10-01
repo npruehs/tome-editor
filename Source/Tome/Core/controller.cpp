@@ -243,6 +243,34 @@ bool Controller::isProjectLoaded() const
     return this->project != 0;
 }
 
+void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet)
+{
+    FieldDefinitionSetSerializer fieldDefinitionSerializer = FieldDefinitionSetSerializer();
+
+    // Open field definition file.
+    QString fullFieldDefinitionSetPath =
+            buildFullFilePath(fieldDefinitionSet.name, projectPath, FieldDefinitionFileExtension);
+
+    QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
+    if (fieldDefinitionFile.open(QIODevice::ReadOnly))
+    {
+        try
+        {
+            fieldDefinitionSerializer.deserialize(fieldDefinitionFile, fieldDefinitionSet);
+        }
+        catch (const std::runtime_error& e)
+        {
+            QString errorMessage = QObject::tr("File could not be read: ") + fullFieldDefinitionSetPath + "\r\n" + e.what();
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+    else
+    {
+        QString errorMessage = QObject::tr("File could not be read:\r\n") + fullFieldDefinitionSetPath;
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+}
+
 void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet)
 {
     RecordSetSerializer recordSetSerializer = RecordSetSerializer();
@@ -339,34 +367,9 @@ void Controller::openProject(const QString& projectFileName)
         }
 
         // Load field definition files.
-        FieldDefinitionSetSerializer fieldDefinitionSerializer = FieldDefinitionSetSerializer();
-
         for (int i = 0; i < project->fieldDefinitionSets.size(); ++i)
         {
-            FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
-
-            // Open field definition file.
-            QString fullFieldDefinitionSetPath =
-                    buildFullFilePath(fieldDefinitionSet.name, projectPath, FieldDefinitionFileExtension);
-
-            QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
-            if (fieldDefinitionFile.open(QIODevice::ReadOnly))
-            {
-                try
-                {
-                    fieldDefinitionSerializer.deserialize(fieldDefinitionFile, fieldDefinitionSet);
-                }
-                catch (const std::runtime_error& e)
-                {
-                    QString errorMessage = QObject::tr("File could not be read: ") + fullFieldDefinitionSetPath + "\r\n" + e.what();
-                    throw std::runtime_error(errorMessage.toStdString());
-                }
-            }
-            else
-            {
-                QString errorMessage = QObject::tr("File could not be read:\r\n") + fullFieldDefinitionSetPath;
-                throw std::runtime_error(errorMessage.toStdString());
-            }
+            this->loadFieldDefinitionSet(projectPath, project->fieldDefinitionSets[i]);
         }
 
         // Load record files.
