@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Template ExportLeafs="true">
+<Template Version="2" ExportLeafs="true">
     <Name>Slash XML</Name>
     <FileExtension>.blueprints.xml</FileExtension>
     <TypeMap>
@@ -13,4 +13,6 @@
         <Mapping TomeType="Reference" ExportedType="System.String"/>
         <Mapping TomeType="String" ExportedType="System.String"/>
     </TypeMap>
+    <IgnoredRecords/>
+    <IgnoredFields/>
 </Template>
