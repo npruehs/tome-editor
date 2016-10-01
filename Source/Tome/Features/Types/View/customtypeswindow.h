@@ -62,6 +62,7 @@ class CustomTypesWindow : public QMainWindow
         void updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType);
 
         void updateRow(const int index, const Tome::CustomType& type);
+        void updateTable();
 };
 
 #endif // CUSTOMTYPESWINDOW_H

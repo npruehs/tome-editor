@@ -294,8 +294,7 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QS
         this->recordsController.moveFieldToComponent(newId, oldComponent, component);
 
         // Update view.
-        const int i = this->getFieldRow(oldId);
-        this->updateRow(i, fieldDefinition);
+        this->updateTable();
     }
     catch (std::out_of_range& e)
     {

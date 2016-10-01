@@ -39,10 +39,7 @@ CustomTypesWindow::CustomTypesWindow(TypesController& typesController, FieldDefi
     this->ui->tableWidget->setHorizontalHeaderLabels(headers);
 
     // Add all types.
-    for (int i = 0; i < types.length(); ++i)
-    {
-        this->updateRow(i, types[i]);
-    }
+    this->updateTable();
 
     // Enable sorting.
     this->ui->tableWidget->setSortingEnabled(true);
@@ -297,41 +294,32 @@ void CustomTypesWindow::editMap(QString typeName, const CustomType& type)
 
 void CustomTypesWindow::updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration)
 {
-    const CustomType& type = this->typesController.getCustomType(oldName);
-
     // Update model.
     this->fieldDefinitionsController.renameFieldType(oldName, newName);
     this->typesController.updateEnumeration(oldName, newName, enumeration);
 
     // Update view.
-    int index = this->getSelectedTypeIndex();
-    this->updateRow(index, type);
+    this->updateTable();
 }
 
 void CustomTypesWindow::updateList(const QString& oldName, const QString& newName, const QString& itemType)
 {
-    const CustomType& type = this->typesController.getCustomType(oldName);
-
     // Update model.
     this->fieldDefinitionsController.renameFieldType(oldName, newName);
     this->typesController.updateList(oldName, newName, itemType);
 
     // Update view.
-    int index = this->getSelectedTypeIndex();
-    this->updateRow(index, type);
+    this->updateTable();
 }
 
 void CustomTypesWindow::updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType)
 {
-    const CustomType& type = this->typesController.getCustomType(oldName);
-
     // Update model.
     this->fieldDefinitionsController.renameFieldType(oldName, newName);
     this->typesController.updateMap(oldName, newName, keyType, valueType);
 
     // Update view.
-    int index = this->getSelectedTypeIndex();
-    this->updateRow(index, type);
+    this->updateTable();
 }
 
 void CustomTypesWindow::updateRow(const int index, const CustomType& type)
@@ -360,4 +348,14 @@ void CustomTypesWindow::updateRow(const int index, const CustomType& type)
 
     // Enable sorting again.
     this->ui->tableWidget->setSortingEnabled(true);
+}
+
+void CustomTypesWindow::updateTable()
+{
+    const CustomTypeList& types = this->typesController.getCustomTypes();
+
+    for (int i = 0; i < types.length(); ++i)
+    {
+        this->updateRow(i, types[i]);
+    }
 }
