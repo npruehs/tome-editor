@@ -243,6 +243,34 @@ bool Controller::isProjectLoaded() const
     return this->project != 0;
 }
 
+void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet)
+{
+    RecordSetSerializer recordSetSerializer = RecordSetSerializer();
+
+    // Open record file.
+    QString fullRecordSetPath =
+            buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
+
+    QFile recordFile(fullRecordSetPath);
+    if (recordFile.open(QIODevice::ReadOnly))
+    {
+        try
+        {
+            recordSetSerializer.deserialize(recordFile, recordSet);
+        }
+        catch (const std::runtime_error& e)
+        {
+            QString errorMessage = QObject::tr("File could not be read: ") + fullRecordSetPath + "\r\n" + e.what();
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+    else
+    {
+        QString errorMessage = QObject::tr("File could not be read:\r\n") + fullRecordSetPath;
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+}
+
 void Controller::openProject(const QString& projectFileName)
 {
     if (projectFileName.count() <= 0)
@@ -342,34 +370,9 @@ void Controller::openProject(const QString& projectFileName)
         }
 
         // Load record files.
-        RecordSetSerializer recordSetSerializer = RecordSetSerializer();
-
         for (int i = 0; i < project->recordSets.size(); ++i)
         {
-            RecordSet& recordSet = project->recordSets[i];
-
-            // Open record file.
-            QString fullRecordSetPath =
-                    buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
-
-            QFile recordFile(fullRecordSetPath);
-            if (recordFile.open(QIODevice::ReadOnly))
-            {
-                try
-                {
-                    recordSetSerializer.deserialize(recordFile, recordSet);
-                }
-                catch (const std::runtime_error& e)
-                {
-                    QString errorMessage = QObject::tr("File could not be read: ") + fullRecordSetPath + "\r\n" + e.what();
-                    throw std::runtime_error(errorMessage.toStdString());
-                }
-            }
-            else
-            {
-                QString errorMessage = QObject::tr("File could not be read:\r\n") + fullRecordSetPath;
-                throw std::runtime_error(errorMessage.toStdString());
-            }
+            this->loadRecordSet(projectPath, project->recordSets[i]);
         }
 
         // Load record export template files.

@@ -14,6 +14,7 @@ namespace Tome
     class FindRecordController;
     class FindUsagesController;
     class Project;
+    class RecordSet;
     class RecordsController;
     class SettingsController;
     class TasksController;
@@ -39,19 +40,17 @@ namespace Tome
 
             int start();
 
+            QString buildFullFilePath(QString filePath, QString projectPath, QString desiredExtension) const;
             void createProject(const QString& projectName, const QString& projectPath);
             const QString getFullProjectPath() const;
             const QString getProjectName() const;
             const QString getProjectPath() const;
             bool getProjectIgnoreReadOnly() const;
             bool isProjectLoaded() const;
+            void loadRecordSet(const QString& projectPath, RecordSet& recordSet);
             void openProject(const QString& projectFileName);
             void saveProject();
 
-        signals:
-            void projectChanged(QSharedPointer<Tome::Project> project);
-
-        private:
             static const QString ComponentFileExtension;
             static const QString FieldDefinitionFileExtension;
             static const QString ProjectFileExtension;
@@ -72,6 +71,10 @@ namespace Tome
             static const QString RecordFileExtension;
             static const QString TypeFileExtension;
 
+        signals:
+            void projectChanged(QSharedPointer<Tome::Project> project);
+
+        private:
             CommandLineOptions* options;
 
             QSharedPointer<Project> project;
@@ -88,7 +91,6 @@ namespace Tome
 
             MainWindow* mainWindow;
 
-            QString buildFullFilePath(QString filePath, QString projectPath, QString desiredExtension) const;
             const QString getFullProjectPath(QSharedPointer<Project> project) const;
             void saveProject(QSharedPointer<Project> project);
             void setProject(QSharedPointer<Project> project);

@@ -109,6 +109,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
+                &this->controller->getRecordsController(),
+                SIGNAL(recordSetsChanged()),
+                SLOT(onRecordSetsChanged())
+                );
+
+    connect(
                 this->ui->menuExport,
                 SIGNAL(triggered(QAction*)),
                 SLOT(exportRecords(QAction*))
@@ -952,6 +958,11 @@ void MainWindow::onRecordFieldsChanged(const QString& recordId)
     {
         this->refreshRecordTable();
     }
+}
+
+void MainWindow::onRecordSetsChanged()
+{
+    this->refreshRecordTree();
 }
 
 void MainWindow::onRecordLinkActivated(const QString& recordId)

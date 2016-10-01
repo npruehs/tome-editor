@@ -1,6 +1,13 @@
 #include "projectoverviewwindow.h"
 #include "ui_projectoverviewwindow.h"
 
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QMessageBox>
+#include <QUrl>
+
 #include "../../Components/Controller/componentscontroller.h"
 #include "../../Export/Controller/exportcontroller.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
@@ -15,7 +22,35 @@ ProjectOverviewWindow::ProjectOverviewWindow(Controller* controller, QWidget *pa
     ui(new Ui::ProjectOverviewWindow),
     controller(controller)
 {
-    ui->setupUi(this);
+    this->ui->setupUi(this);
+
+    // Align buttons.
+    this->ui->verticalLayoutRecordsButtons->setAlignment(Qt::AlignTop);
+
+    // Connect signals.
+    connect(
+                this->ui->pushButtonAddExistingRecordsFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onAddExistingRecordsFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonAddNewRecordsFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onAddNewRecordsFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonNavigateToRecordsFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onNavigateToRecordsFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonRemoveRecordsFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onRemoveRecordsFileClicked(bool))
+                );
 }
 
 ProjectOverviewWindow::~ProjectOverviewWindow()
@@ -26,9 +61,6 @@ ProjectOverviewWindow::~ProjectOverviewWindow()
 void ProjectOverviewWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
-
-    // Update project data.
-    this->ui->labelProjectPathValue->setText(this->controller->getFullProjectPath());
 
     // Update component data.
     ComponentsController& componentsController = this->controller->getComponentsController();
@@ -61,15 +93,7 @@ void ProjectOverviewWindow::showEvent(QShowEvent* event)
     this->ui->labelFieldsValue->setText(fieldsText);
 
     // Update record data.
-    RecordsController& recordsController = this->controller->getRecordsController();
-    const int recordSetCount = recordsController.getRecordSets().count();
-    const int recordCount = recordsController.getRecords().count();
-    const QString recordsText = QString(tr("%1 record%2 (in %3 file%4)")).arg(
-                QString::number(recordCount),
-                recordCount != 1 ? "s" : "",
-                QString::number(recordSetCount),
-                recordSetCount != 1 ? "s" : "");
-    this->ui->labelRecordsValue->setText(recordsText);
+    this->updateRecordData();
 
     // Update type data.
     TypesController& typesController = this->controller->getTypesController();
@@ -81,4 +105,150 @@ void ProjectOverviewWindow::showEvent(QShowEvent* event)
                 QString::number(typeSetCount),
                 typeSetCount != 1 ? "s" : "");
     this->ui->labelCustomTypesValue->setText(typesText);
+}
+
+QListWidgetItem* ProjectOverviewWindow::getSelectedRecordSet()
+{
+    QList<QListWidgetItem*> selectedItems = this->ui->listWidgetRecords->selectedItems();
+
+    if (selectedItems.empty())
+    {
+        return nullptr;
+    }
+
+    return selectedItems.first();
+}
+
+void ProjectOverviewWindow::updateRecordData()
+{
+    // Count records sets and records.
+    RecordsController& recordsController = this->controller->getRecordsController();
+    const RecordSetList& recordSets = recordsController.getRecordSets();
+    const int recordSetCount = recordSets.count();
+    const int recordCount = recordsController.getRecords().count();
+    const QString recordsText = QString(tr("%1 record%2 (in %3 file%4)")).arg(
+                QString::number(recordCount),
+                recordCount != 1 ? "s" : "",
+                QString::number(recordSetCount),
+                recordSetCount != 1 ? "s" : "");
+    this->ui->labelRecordsValue->setText(recordsText);
+
+    // Add list items.
+    this->ui->listWidgetRecords->clear();
+
+    for (int i = 0; i < recordSets.count(); ++i)
+    {
+        const RecordSet& recordSet = recordSets[i];
+        const QString& recordSetPath = this->controller->buildFullFilePath(
+                    recordSet.name,
+                    this->controller->getProjectPath(),
+                    Controller::RecordFileExtension);
+
+        // Add list item.
+        QListWidgetItem* item = new QListWidgetItem();
+        item->setData(Qt::DisplayRole, recordSetPath);
+        item->setData(Qt::UserRole, recordSet.name);
+        this->ui->listWidgetRecords->addItem(item);
+    }
+}
+
+void ProjectOverviewWindow::onAddExistingRecordsFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Open file browser dialog.
+    const QString& projectPath = this->controller->getProjectPath();
+    const QString& recordSetFileName = QFileDialog::getOpenFileName(this,
+                                                                  tr("Add Existing Records File"),
+                                                                  projectPath,
+                                                                  "Tome Record Files (*.tdata)");
+    QDir projectDirectory = QDir(projectPath);
+    const QString& relativeRecordFilePath = projectDirectory.relativeFilePath(recordSetFileName);
+
+    try
+    {
+        // Load records.
+        RecordSet recordSet = RecordSet();
+        recordSet.name = relativeRecordFilePath;
+        this->controller->loadRecordSet(projectPath, recordSet);
+
+        // Update model.
+        this->controller->getRecordsController().addRecordSet(recordSet);
+
+        // Update view.
+        this->updateRecordData();
+    }
+    catch (std::runtime_error& e)
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to load records file"),
+                    e.what(),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+    }
+}
+
+void ProjectOverviewWindow::onAddNewRecordsFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Open file browser dialog.
+    const QString& projectPath = this->controller->getProjectPath();
+    const QString& recordSetFileName = QFileDialog::getSaveFileName(this,
+                                                                  tr("Add New Records File"),
+                                                                  projectPath,
+                                                                  "Tome Record Files (*.tdata)");
+    QDir projectDirectory = QDir(projectPath);
+    const QString& relativeRecordFilePath = projectDirectory.relativeFilePath(recordSetFileName);
+
+    // Create new record set.
+    RecordSet recordSet = RecordSet();
+    recordSet.name = relativeRecordFilePath;
+
+    // Update model.
+    this->controller->getRecordsController().addRecordSet(recordSet);
+
+    // Update view.
+    this->updateRecordData();
+}
+
+void ProjectOverviewWindow::onNavigateToRecordsFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Get selected record set.
+    QListWidgetItem* selectedRecordSetItem = this->getSelectedRecordSet();
+
+    if (selectedRecordSetItem == nullptr)
+    {
+        return;
+    }
+
+    // Get record set path.
+    const QString& recordSetPath = selectedRecordSetItem->data(Qt::DisplayRole).toString();
+    QFileInfo recordFile(recordSetPath);
+
+    // Open in explorer or finder.
+    QDesktopServices::openUrl(QUrl(recordFile.absolutePath()));
+}
+
+void ProjectOverviewWindow::onRemoveRecordsFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Get selected record set.
+    QListWidgetItem* selectedRecordSetItem = this->getSelectedRecordSet();
+
+    if (selectedRecordSetItem == nullptr)
+    {
+        return;
+    }
+
+    // Update model.
+    const QString& recordSetName = selectedRecordSetItem->data(Qt::UserRole).toString();
+    this->controller->getRecordsController().removeRecordSet(recordSetName);
+
+    // Update view.
+    this->updateRecordData();
 }

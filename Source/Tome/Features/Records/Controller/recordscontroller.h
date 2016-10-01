@@ -20,6 +20,7 @@ namespace Tome
 
             const Record addRecord(const QString& id, const QString& displayName);
             void addRecordField(const QString& recordId, const QString& fieldId);
+            void addRecordSet(const RecordSet& recordSet);
 
             const Record duplicateRecord(const QString& existingRecordId, const QString& newRecordid);
 
@@ -76,6 +77,8 @@ namespace Tome
             void removeRecord(const QString& recordId);
             void removeRecordField(const QString fieldId);
             void removeRecordField(const QString& recordId, const QString& fieldId);
+            void removeRecordSet(const QString& name);
+
             void renameRecordField(const QString oldFieldId, const QString newFieldId);
 
             QVariant revertFieldValue(const QString& recordId, const QString& fieldId);
@@ -89,6 +92,7 @@ namespace Tome
 
         signals:
             void recordFieldsChanged(const QString& recordId);
+            void recordSetsChanged();
 
         private:
             RecordSetList* model;

@@ -114,6 +114,8 @@ void RecordTreeWidget::selectRecord(const QString& id)
 
 void RecordTreeWidget::setRecords(const RecordList& records)
 {
+    this->clear();
+
     // Create record tree items.
     QMap<QString, RecordTreeWidgetItem*> recordItems;
 

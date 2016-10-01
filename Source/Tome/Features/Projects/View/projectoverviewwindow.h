@@ -2,6 +2,7 @@
 #define PROJECTOVERVIEWWINDOW_H
 
 #include <QDialog>
+#include <QListWidgetItem>
 
 namespace Tome
 {
@@ -28,6 +29,16 @@ class ProjectOverviewWindow : public QDialog
         Ui::ProjectOverviewWindow *ui;
 
         Tome::Controller* controller;
+
+        QListWidgetItem* getSelectedRecordSet();
+
+        void updateRecordData();
+
+    private slots:
+        void onAddExistingRecordsFileClicked(bool checked);
+        void onAddNewRecordsFileClicked(bool checked);
+        void onNavigateToRecordsFileClicked(bool checked);
+        void onRemoveRecordsFileClicked(bool checked);
 };
 
 #endif // PROJECTOVERVIEWWINDOW_H

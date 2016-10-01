@@ -78,6 +78,7 @@ class MainWindow : public QMainWindow
         void onFieldChanged();
         void onProjectChanged(QSharedPointer<Tome::Project> project);
         void onRecordFieldsChanged(const QString& recordId);
+        void onRecordSetsChanged();
         void onRecordLinkActivated(const QString& recordId);
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();

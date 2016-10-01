@@ -40,6 +40,15 @@ void RecordsController::addRecordField(const QString& recordId, const QString& f
     emit recordFieldsChanged(recordId);
 }
 
+void RecordsController::addRecordSet(const RecordSet& recordSet)
+{
+    // Update model.
+    this->model->push_back(recordSet);
+
+    // Notify listeners.
+    emit this->recordSetsChanged();
+}
+
 const Record RecordsController::duplicateRecord(const QString& existingRecordId, const QString& newRecordid)
 {
     // Get record to duplicate.
@@ -441,6 +450,24 @@ void RecordsController::removeRecordField(const QString& recordId, const QString
     {
         Record& record = descendants[i];
         this->removeRecordField(record.id, fieldId);
+    }
+}
+
+void RecordsController::removeRecordSet(const QString& name)
+{
+    for (RecordSetList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if ((*it).name == name)
+        {
+            // Update model.
+            this->model->erase(it);
+
+            // Notify listeners.
+            emit this->recordSetsChanged();
+            return;
+        }
     }
 }
 
