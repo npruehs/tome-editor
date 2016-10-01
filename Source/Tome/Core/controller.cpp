@@ -243,6 +243,40 @@ bool Controller::isProjectLoaded() const
     return this->project != 0;
 }
 
+void Controller::loadComponentSet(const QString& projectPath, ComponentSet& componentSet)
+{
+    ComponentSetSerializer componentSerializer = ComponentSetSerializer();
+
+    // TODO(np): Remove as soon as backwards compatibility is removed from ProjectSerializer.
+    if (componentSet.components.size() > 0)
+    {
+        return;
+    }
+
+    // Open component file.
+    QString fullComponentSetPath =
+            buildFullFilePath(componentSet.name, projectPath, ComponentFileExtension);
+
+    QFile componentFile(fullComponentSetPath);
+    if (componentFile.open(QIODevice::ReadOnly))
+    {
+        try
+        {
+            componentSerializer.deserialize(componentFile, componentSet);
+        }
+        catch (const std::runtime_error& e)
+        {
+            QString errorMessage = QObject::tr("File could not be read: ") + fullComponentSetPath + "\r\n" + e.what();
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+    else
+    {
+        QString errorMessage = QObject::tr("File could not be read:\r\n") + fullComponentSetPath;
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+}
+
 void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet)
 {
     FieldDefinitionSetSerializer fieldDefinitionSerializer = FieldDefinitionSetSerializer();
@@ -330,40 +364,9 @@ void Controller::openProject(const QString& projectFileName)
         }
 
         // Load component files.
-        ComponentSetSerializer componentSerializer = ComponentSetSerializer();
-
         for (int i = 0; i < project->componentSets.size(); ++i)
         {
-            ComponentSet& componentSet = project->componentSets[i];
-
-            // TODO(np): Remove as soon as backwards compatibility is removed from ProjectSerializer.
-            if (componentSet.components.size() > 0)
-            {
-                continue;
-            }
-
-            // Open component file.
-            QString fullComponentSetPath =
-                    buildFullFilePath(componentSet.name, projectPath, ComponentFileExtension);
-
-            QFile componentFile(fullComponentSetPath);
-            if (componentFile.open(QIODevice::ReadOnly))
-            {
-                try
-                {
-                    componentSerializer.deserialize(componentFile, componentSet);
-                }
-                catch (const std::runtime_error& e)
-                {
-                    QString errorMessage = QObject::tr("File could not be read: ") + fullComponentSetPath + "\r\n" + e.what();
-                    throw std::runtime_error(errorMessage.toStdString());
-                }
-            }
-            else
-            {
-                QString errorMessage = QObject::tr("File could not be read:\r\n") + fullComponentSetPath;
-                throw std::runtime_error(errorMessage.toStdString());
-            }
+            this->loadComponentSet(projectPath, project->componentSets[i]);
         }
 
         // Load field definition files.

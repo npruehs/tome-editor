@@ -8,6 +8,7 @@ class MainWindow;
 namespace Tome
 {
     class CommandLineOptions;
+    class ComponentSet;
     class ComponentsController;
     class ExportController;
     class FieldDefinitionSet;
@@ -48,6 +49,7 @@ namespace Tome
             const QString getProjectPath() const;
             bool getProjectIgnoreReadOnly() const;
             bool isProjectLoaded() const;
+            void loadComponentSet(const QString& projectPath, ComponentSet& componentSet);
             void loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet);
             void loadRecordSet(const QString& projectPath, RecordSet& recordSet);
             void openProject(const QString& projectFileName);

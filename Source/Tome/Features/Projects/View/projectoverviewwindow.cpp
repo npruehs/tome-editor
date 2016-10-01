@@ -25,32 +25,33 @@ ProjectOverviewWindow::ProjectOverviewWindow(Controller* controller, QWidget *pa
     this->ui->setupUi(this);
 
     // Align buttons.
-    this->ui->verticalLayoutRecordsButtons->setAlignment(Qt::AlignTop);
+    this->ui->verticalLayoutComponentsButtons->setAlignment(Qt::AlignTop);
     this->ui->verticalLayoutFieldsButtons->setAlignment(Qt::AlignTop);
+    this->ui->verticalLayoutRecordsButtons->setAlignment(Qt::AlignTop);
 
-    // Connect record button signals.
+    // Connect component button signals.
     connect(
-                this->ui->pushButtonAddExistingRecordsFile,
+                this->ui->pushButtonAddExistingComponentsFile,
                 SIGNAL(clicked(bool)),
-                SLOT(onAddExistingRecordsFileClicked(bool))
+                SLOT(onAddExistingComponentsFileClicked(bool))
                 );
 
     connect(
-                this->ui->pushButtonAddNewRecordsFile,
+                this->ui->pushButtonAddNewComponentsFile,
                 SIGNAL(clicked(bool)),
-                SLOT(onAddNewRecordsFileClicked(bool))
+                SLOT(onAddNewComponentsFileClicked(bool))
                 );
 
     connect(
-                this->ui->pushButtonNavigateToRecordsFile,
+                this->ui->pushButtonNavigateToComponentsFile,
                 SIGNAL(clicked(bool)),
-                SLOT(onNavigateToRecordsFileClicked(bool))
+                SLOT(onNavigateToComponentsFileClicked(bool))
                 );
 
     connect(
-                this->ui->pushButtonRemoveRecordsFile,
+                this->ui->pushButtonRemoveComponentsFile,
                 SIGNAL(clicked(bool)),
-                SLOT(onRemoveRecordsFileClicked(bool))
+                SLOT(onRemoveComponentsFileClicked(bool))
                 );
 
     // Connect field definition button signals.
@@ -77,6 +78,31 @@ ProjectOverviewWindow::ProjectOverviewWindow(Controller* controller, QWidget *pa
                 SIGNAL(clicked(bool)),
                 SLOT(onRemoveFieldDefinitionsFileClicked(bool))
                 );
+
+    // Connect record button signals.
+    connect(
+                this->ui->pushButtonAddExistingRecordsFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onAddExistingRecordsFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonAddNewRecordsFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onAddNewRecordsFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonNavigateToRecordsFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onNavigateToRecordsFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonRemoveRecordsFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onRemoveRecordsFileClicked(bool))
+                );
 }
 
 ProjectOverviewWindow::~ProjectOverviewWindow()
@@ -89,15 +115,7 @@ void ProjectOverviewWindow::showEvent(QShowEvent* event)
     QDialog::showEvent(event);
 
     // Update component data.
-    ComponentsController& componentsController = this->controller->getComponentsController();
-    const int componentSetCount = componentsController.getComponentSets().count();
-    const int componentCount = componentsController.getComponents().count();
-    const QString componentsText = QString(tr("%1 component%2 (in %3 file%4)")).arg(
-                QString::number(componentCount),
-                componentCount != 1 ? "s" : "",
-                QString::number(componentSetCount),
-                componentSetCount != 1 ? "s" : "");
-    this->ui->labelComponentsValue->setText(componentsText);
+    this->updateComponentData();
 
     // Update export data.
     ExportController& exportController = this->controller->getExportController();
@@ -125,21 +143,9 @@ void ProjectOverviewWindow::showEvent(QShowEvent* event)
     this->ui->labelCustomTypesValue->setText(typesText);
 }
 
-QListWidgetItem*ProjectOverviewWindow::getSelectedFieldDefinitionSet()
+QListWidgetItem*ProjectOverviewWindow::getSelectedListWidgetItem(QListWidget* listWidget)
 {
-    QList<QListWidgetItem*> selectedItems = this->ui->listWidgetFields->selectedItems();
-
-    if (selectedItems.empty())
-    {
-        return nullptr;
-    }
-
-    return selectedItems.first();
-}
-
-QListWidgetItem* ProjectOverviewWindow::getSelectedRecordSet()
-{
-    QList<QListWidgetItem*> selectedItems = this->ui->listWidgetRecords->selectedItems();
+    QList<QListWidgetItem*> selectedItems = listWidget->selectedItems();
 
     if (selectedItems.empty())
     {
@@ -162,6 +168,39 @@ void ProjectOverviewWindow::navigateToSelectedFile(QListWidgetItem* item)
 
     // Open in explorer or finder.
     QDesktopServices::openUrl(QUrl(file.absolutePath()));
+}
+
+void ProjectOverviewWindow::updateComponentData()
+{
+    // Count component sets and components.
+    ComponentsController& componentsController = this->controller->getComponentsController();
+    const ComponentSetList& componentSets = componentsController.getComponentSets();
+    const int componentSetCount = componentSets.count();
+    const int componentCount = componentsController.getComponents().count();
+    const QString componentsText = QString(tr("%1 component%2 (in %3 file%4)")).arg(
+                QString::number(componentCount),
+                componentCount != 1 ? "s" : "",
+                QString::number(componentSetCount),
+                componentSetCount != 1 ? "s" : "");
+    this->ui->labelComponentsValue->setText(componentsText);
+
+    // Add list items.
+    this->ui->listWidgetComponents->clear();
+
+    for (int i = 0; i < componentSets.count(); ++i)
+    {
+        const ComponentSet& componentSet = componentSets[i];
+        const QString& componentSetPath = this->controller->buildFullFilePath(
+                    componentSet.name,
+                    this->controller->getProjectPath(),
+                    Controller::ComponentFileExtension);
+
+        // Add list item.
+        QListWidgetItem* item = new QListWidgetItem();
+        item->setData(Qt::DisplayRole, componentSetPath);
+        item->setData(Qt::UserRole, componentSet.name);
+        this->ui->listWidgetComponents->addItem(item);
+    }
 }
 
 void ProjectOverviewWindow::updateFieldDefinitionData()
@@ -227,6 +266,43 @@ void ProjectOverviewWindow::updateRecordData()
         item->setData(Qt::DisplayRole, recordSetPath);
         item->setData(Qt::UserRole, recordSet.name);
         this->ui->listWidgetRecords->addItem(item);
+    }
+}
+
+void ProjectOverviewWindow::onAddExistingComponentsFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Open file browser dialog.
+    const QString& projectPath = this->controller->getProjectPath();
+    const QString& componentSetFileName = QFileDialog::getOpenFileName(this,
+                                                                  tr("Add Existing Components File"),
+                                                                  projectPath,
+                                                                  "Tome Component Files (*.tcomp)");
+    QDir projectDirectory = QDir(projectPath);
+    const QString& relativeComponentFilePath = projectDirectory.relativeFilePath(componentSetFileName);
+
+    try
+    {
+        // Load components.
+        ComponentSet componentSet = ComponentSet();
+        componentSet.name = relativeComponentFilePath;
+        this->controller->loadComponentSet(projectPath, componentSet);
+
+        // Update model.
+        this->controller->getComponentsController().addComponentSet(componentSet);
+
+        // Update view.
+        this->updateComponentData();
+    }
+    catch (std::runtime_error& e)
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to load component file"),
+                    e.what(),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
     }
 }
 
@@ -304,6 +380,30 @@ void ProjectOverviewWindow::onAddExistingRecordsFileClicked(bool checked)
     }
 }
 
+void ProjectOverviewWindow::onAddNewComponentsFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Open file browser dialog.
+    const QString& projectPath = this->controller->getProjectPath();
+    const QString& componentSetFileName = QFileDialog::getSaveFileName(this,
+                                                                  tr("Add New Components File"),
+                                                                  projectPath,
+                                                                  "Tome Component Files (*.tcomp)");
+    QDir projectDirectory = QDir(projectPath);
+    const QString& relativeComponentFilePath = projectDirectory.relativeFilePath(componentSetFileName);
+
+    // Create new component set.
+    ComponentSet componentSet = ComponentSet();
+    componentSet.name = relativeComponentFilePath;
+
+    // Update model.
+    this->controller->getComponentsController().addComponentSet(componentSet);
+
+    // Update view.
+    this->updateComponentData();
+}
+
 void ProjectOverviewWindow::onAddNewFieldDefinitionsFileClicked(bool checked)
 {
     Q_UNUSED(checked)
@@ -352,11 +452,19 @@ void ProjectOverviewWindow::onAddNewRecordsFileClicked(bool checked)
     this->updateRecordData();
 }
 
+void ProjectOverviewWindow::onNavigateToComponentsFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    QListWidgetItem* selectedComponentSetItem = this->getSelectedListWidgetItem(this->ui->listWidgetComponents);
+    this->navigateToSelectedFile(selectedComponentSetItem);
+}
+
 void ProjectOverviewWindow::onNavigateToFieldDefinitionsFileClicked(bool checked)
 {
     Q_UNUSED(checked)
 
-    QListWidgetItem* selectedFieldDefinitionSetItem = this->getSelectedFieldDefinitionSet();
+    QListWidgetItem* selectedFieldDefinitionSetItem = this->getSelectedListWidgetItem(this->ui->listWidgetFields);
     this->navigateToSelectedFile(selectedFieldDefinitionSetItem);
 }
 
@@ -364,8 +472,28 @@ void ProjectOverviewWindow::onNavigateToRecordsFileClicked(bool checked)
 {
     Q_UNUSED(checked)
 
-    QListWidgetItem* selectedRecordSetItem = this->getSelectedRecordSet();
+    QListWidgetItem* selectedRecordSetItem = this->getSelectedListWidgetItem(this->ui->listWidgetRecords);
     this->navigateToSelectedFile(selectedRecordSetItem);
+}
+
+void ProjectOverviewWindow::onRemoveComponentsFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Get selected component set.
+    QListWidgetItem* selectedComponentSetItem = this->getSelectedListWidgetItem(this->ui->listWidgetComponents);
+
+    if (selectedComponentSetItem == nullptr)
+    {
+        return;
+    }
+
+    // Update model.
+    const QString& componentSetName = selectedComponentSetItem->data(Qt::UserRole).toString();
+    this->controller->getComponentsController().removeComponentSet(componentSetName);
+
+    // Update view.
+    this->updateComponentData();
 }
 
 void ProjectOverviewWindow::onRemoveFieldDefinitionsFileClicked(bool checked)
@@ -373,7 +501,7 @@ void ProjectOverviewWindow::onRemoveFieldDefinitionsFileClicked(bool checked)
     Q_UNUSED(checked)
 
     // Get selected field definition set.
-    QListWidgetItem* selectedFieldDefinitionSetItem = this->getSelectedFieldDefinitionSet();
+    QListWidgetItem* selectedFieldDefinitionSetItem = this->getSelectedListWidgetItem(this->ui->listWidgetFields);
 
     if (selectedFieldDefinitionSetItem == nullptr)
     {
@@ -393,7 +521,7 @@ void ProjectOverviewWindow::onRemoveRecordsFileClicked(bool checked)
     Q_UNUSED(checked)
 
     // Get selected record set.
-    QListWidgetItem* selectedRecordSetItem = this->getSelectedRecordSet();
+    QListWidgetItem* selectedRecordSetItem = this->getSelectedListWidgetItem(this->ui->listWidgetRecords);
 
     if (selectedRecordSetItem == nullptr)
     {
