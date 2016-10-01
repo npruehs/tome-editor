@@ -20,6 +20,7 @@ namespace Tome
             RecordFieldValueMap fieldValues;
             QString parentId;
             bool readOnly = false;
+            QString recordSetName;
     };
 
     inline bool operator==(const Record& lhs, const Record& rhs){ return lhs.id == rhs.id; }

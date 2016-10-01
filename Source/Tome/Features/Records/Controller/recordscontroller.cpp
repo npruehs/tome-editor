@@ -235,6 +235,19 @@ const QStringList RecordsController::getRecordNames() const
     return names;
 }
 
+const QStringList RecordsController::getRecordSetNames() const
+{
+    QStringList names;
+
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        const RecordSet& recordSet = this->model->at(i);
+        names << recordSet.name;
+    }
+
+    return names;
+}
+
 const RecordFieldValueMap RecordsController::getRecordFieldValues(const QString& id) const
 {
     Record* record = this->getRecordById(id);
@@ -385,6 +398,43 @@ void RecordsController::moveFieldToComponent(const QString& fieldId, const QStri
             }
         }
     }
+}
+
+void RecordsController::moveRecordToSet(const QString& recordId, const QString& recordSetName)
+{
+    Record& record = *this->getRecordById(recordId);
+
+    for (RecordSetList::iterator itSets = this->model->begin();
+         itSets != this->model->end();
+         ++itSets)
+    {
+        RecordSet& recordSet = (*itSets);
+        RecordList& records = recordSet.records;
+
+        // Check if should add record.
+        if (recordSet.name == recordSetName)
+        {
+            int index = findInsertionIndex(records, record, recordLessThanDisplayName);
+            records.insert(index, record);
+            continue;
+        }
+
+        // Check if should remove record.
+        for (RecordList::iterator it = records.begin();
+             it != records.end();
+             ++it)
+        {
+            Record& record = *it;
+
+            if (record.id == recordId)
+            {
+                records.erase(it);
+                continue;
+            }
+        }
+    }
+
+    record.recordSetName = recordSetName;
 }
 
 void RecordsController::removeRecord(const QString& recordId)

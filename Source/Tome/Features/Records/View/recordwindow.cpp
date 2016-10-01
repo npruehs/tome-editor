@@ -81,6 +81,11 @@ QMap<QString, RecordFieldState::RecordFieldState> RecordWindow::getRecordFields(
     return fields;
 }
 
+QString RecordWindow::getRecordSetName() const
+{
+    return this->ui->comboBoxRecordSet->currentText();
+}
+
 void RecordWindow::clearRecordFields()
 {
     while (!this->ui->scrollAreaFieldsContents->layout()->isEmpty())
@@ -316,6 +321,17 @@ void RecordWindow::setRecordComponents(const Tome::ComponentList& components)
         const Component& component = components.at(i);
         this->setRecordComponent(component, RecordFieldState::Disabled);
     }
+}
+
+void RecordWindow::setRecordSetName(const QString& recordSetName)
+{
+    this->ui->comboBoxRecordSet->setCurrentText(recordSetName);
+}
+
+void RecordWindow::setRecordSetNames(const QStringList& recordSetNames)
+{
+    this->ui->comboBoxRecordSet->clear();
+    this->ui->comboBoxRecordSet->addItems(recordSetNames);
 }
 
 void RecordWindow::setRecordComponent(const QString& componentId, const Tome::RecordFieldState::RecordFieldState state)
