@@ -216,6 +216,16 @@ void Controller::createProject(const QString& projectName, const QString& projec
     recordSet.name = projectName;
     newProject->recordSets.push_back(recordSet);
 
+    // Create component set.
+    ComponentSet componentSet = ComponentSet();
+    componentSet.name = projectName;
+    newProject->componentSets.push_back(componentSet);
+
+    // Create custom type set.
+    CustomTypeSet customTypeSet = CustomTypeSet();
+    customTypeSet.name = projectName;
+    newProject->typeSets.push_back(customTypeSet);
+
     // Write project files.
     this->saveProject(newProject);
 
