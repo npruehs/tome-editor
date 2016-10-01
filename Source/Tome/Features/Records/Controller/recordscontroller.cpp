@@ -402,7 +402,7 @@ void RecordsController::moveFieldToComponent(const QString& fieldId, const QStri
 
 void RecordsController::moveRecordToSet(const QString& recordId, const QString& recordSetName)
 {
-    Record& record = *this->getRecordById(recordId);
+    Record record = this->getRecord(recordId);
 
     for (RecordSetList::iterator itSets = this->model->begin();
          itSets != this->model->end();
@@ -415,26 +415,25 @@ void RecordsController::moveRecordToSet(const QString& recordId, const QString& 
         if (recordSet.name == recordSetName)
         {
             int index = findInsertionIndex(records, record, recordLessThanDisplayName);
+            record.recordSetName = recordSetName;
             records.insert(index, record);
             continue;
         }
-
-        // Check if should remove record.
-        for (RecordList::iterator it = records.begin();
-             it != records.end();
-             ++it)
+        else
         {
-            Record& record = *it;
-
-            if (record.id == recordId)
+            // Check if should remove record.
+            for (RecordList::iterator it = records.begin();
+                 it != records.end();
+                 ++it)
             {
-                records.erase(it);
-                continue;
+                if ((*it).id == recordId)
+                {
+                    records.erase(it);
+                    break;
+                }
             }
         }
     }
-
-    record.recordSetName = recordSetName;
 }
 
 void RecordsController::removeRecord(const QString& recordId)

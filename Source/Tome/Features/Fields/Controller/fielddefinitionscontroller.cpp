@@ -110,7 +110,7 @@ int FieldDefinitionsController::indexOf(const FieldDefinition& fieldDefinition) 
 
 void FieldDefinitionsController::moveFieldDefinitionToSet(const QString& fieldDefinitionId, const QString& fieldDefinitionSetName)
 {
-    FieldDefinition& fieldDefinition = *this->getFieldDefinitionById(fieldDefinitionId);
+    FieldDefinition fieldDefinition = this->getFieldDefinition(fieldDefinitionId);
 
     for (FieldDefinitionSetList::iterator itSets = this->model->begin();
          itSets != this->model->end();
@@ -123,26 +123,25 @@ void FieldDefinitionsController::moveFieldDefinitionToSet(const QString& fieldDe
         if (fieldDefinitionSet.name == fieldDefinitionSetName)
         {
             int index = findInsertionIndex(fieldDefinitions, fieldDefinition, fieldDefinitionLessThanDisplayName);
+            fieldDefinition.fieldDefinitionSetName = fieldDefinitionSetName;
             fieldDefinitions.insert(index, fieldDefinition);
             continue;
         }
-
-        // Check if should remove field definitio.
-        for (FieldDefinitionList::iterator it = fieldDefinitions.begin();
-             it != fieldDefinitions.end();
-             ++it)
+        else
         {
-            FieldDefinition& fieldDefinition = *it;
-
-            if (fieldDefinition.id == fieldDefinitionId)
+            // Check if should remove field definition.
+            for (FieldDefinitionList::iterator it = fieldDefinitions.begin();
+                 it != fieldDefinitions.end();
+                 ++it)
             {
-                fieldDefinitions.erase(it);
-                continue;
+                if ((*it).id == fieldDefinitionId)
+                {
+                    fieldDefinitions.erase(it);
+                    break;
+                }
             }
         }
     }
-
-    fieldDefinition.fieldDefinitionSetName = fieldDefinitionSetName;
 }
 
 void FieldDefinitionsController::removeFieldComponent(const QString componentName)

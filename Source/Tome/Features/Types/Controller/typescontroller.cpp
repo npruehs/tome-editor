@@ -157,7 +157,7 @@ bool TypesController::isCustomType(const QString& name) const
 
 void TypesController::moveCustomTypeToSet(const QString& customTypeName, const QString& customTypeSetName)
 {
-    CustomType& customType = *this->getCustomTypeByName(customTypeName);
+    CustomType customType = this->getCustomType(customTypeName);
 
     for (CustomTypeSetList::iterator itSets = this->model->begin();
          itSets != this->model->end();
@@ -170,24 +170,25 @@ void TypesController::moveCustomTypeToSet(const QString& customTypeName, const Q
         if (customTypeSet.name == customTypeSetName)
         {
             int index = findInsertionIndex(customTypes, customType, customTypeLessThanName);
+            customType.typeSetName = customTypeSetName;
             customTypes.insert(index, customType);
             continue;
         }
-
-        // Check if should remove custom type.
-        for (CustomTypeList::iterator it = customTypes.begin();
-             it != customTypes.end();
-             ++it)
+        else
         {
-            if ((*it).name == customTypeName)
+            // Check if should remove custom type.
+            for (CustomTypeList::iterator it = customTypes.begin();
+                 it != customTypes.end();
+                 ++it)
             {
-                customTypes.erase(it);
-                break;
+                if ((*it).name == customTypeName)
+                {
+                    customTypes.erase(it);
+                    break;
+                }
             }
         }
     }
-
-    customType.typeSetName = customTypeSetName;
 }
 
 void TypesController::removeCustomType(const QString& typeName)
