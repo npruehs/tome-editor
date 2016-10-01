@@ -57,9 +57,9 @@ class CustomTypesWindow : public QMainWindow
         void editList(QString typeName, const Tome::CustomType& type);
         void editMap(QString typeName, const Tome::CustomType& type);
 
-        void updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration);
-        void updateList(const QString& oldName, const QString& name, const QString& itemType);
-        void updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType);
+        void updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration, const QString& typeSetName);
+        void updateList(const QString& oldName, const QString& name, const QString& itemType, const QString& typeSetName);
+        void updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType, const QString& typeSetName);
 
         void updateRow(const int index, const Tome::CustomType& type);
         void updateTable();

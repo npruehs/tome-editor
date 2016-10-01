@@ -23,11 +23,14 @@ class ListWindow : public QDialog
 
         QString getListName() const;
         QString getListItemType() const;
+        QString getTypeSetName() const;
 
         void init();
 
         void setListName(const QString& listName);
         void setListItemType(const QString& itemType);
+        void setTypeSetName(const QString& typeSet);
+        void setTypeSetNames(const QStringList& typeSets);
 
     public slots:
         void accept();
