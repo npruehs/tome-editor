@@ -277,6 +277,40 @@ void Controller::loadComponentSet(const QString& projectPath, ComponentSet& comp
     }
 }
 
+void Controller::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& typeSet)
+{
+    CustomTypeSetSerializer typesSerializer = CustomTypeSetSerializer();
+
+    // TODO(np): Remove as soon as backwards compatibility is removed from ProjectSerializer.
+    if (typeSet.types.size() > 0)
+    {
+        return;
+    }
+
+    // Open types file.
+    QString fullTypeSetPath =
+            buildFullFilePath(typeSet.name, projectPath, TypeFileExtension);
+
+    QFile typeFile(fullTypeSetPath);
+    if (typeFile.open(QIODevice::ReadOnly))
+    {
+        try
+        {
+            typesSerializer.deserialize(typeFile, typeSet);
+        }
+        catch (const std::runtime_error& e)
+        {
+            QString errorMessage = QObject::tr("File could not be read: ") + fullTypeSetPath + "\r\n" + e.what();
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+    else
+    {
+        QString errorMessage = QObject::tr("File could not be read:\r\n") + fullTypeSetPath;
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+}
+
 void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet)
 {
     FieldDefinitionSetSerializer fieldDefinitionSerializer = FieldDefinitionSetSerializer();
@@ -467,40 +501,9 @@ void Controller::openProject(const QString& projectFileName)
         }
 
         // Load type files.
-        CustomTypeSetSerializer typesSerializer = CustomTypeSetSerializer();
-
         for (int i = 0; i < project->typeSets.size(); ++i)
         {
-            CustomTypeSet& typeSet = project->typeSets[i];
-
-            // TODO(np): Remove as soon as backwards compatibility is removed from ProjectSerializer.
-            if (typeSet.types.size() > 0)
-            {
-                continue;
-            }
-
-            // Open types file.
-            QString fullTypeSetPath =
-                    buildFullFilePath(typeSet.name, projectPath, TypeFileExtension);
-
-            QFile typeFile(fullTypeSetPath);
-            if (typeFile.open(QIODevice::ReadOnly))
-            {
-                try
-                {
-                    typesSerializer.deserialize(typeFile, typeSet);
-                }
-                catch (const std::runtime_error& e)
-                {
-                    QString errorMessage = QObject::tr("File could not be read: ") + fullTypeSetPath + "\r\n" + e.what();
-                    throw std::runtime_error(errorMessage.toStdString());
-                }
-            }
-            else
-            {
-                QString errorMessage = QObject::tr("File could not be read:\r\n") + fullTypeSetPath;
-                throw std::runtime_error(errorMessage.toStdString());
-            }
+            this->loadCustomTypeSet(projectPath, project->typeSets[i]);
         }
 
         // Set project reference.

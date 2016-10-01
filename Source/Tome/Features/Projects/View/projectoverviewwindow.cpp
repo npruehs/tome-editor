@@ -26,6 +26,7 @@ ProjectOverviewWindow::ProjectOverviewWindow(Controller* controller, QWidget *pa
 
     // Align buttons.
     this->ui->verticalLayoutComponentsButtons->setAlignment(Qt::AlignTop);
+    this->ui->verticalLayoutCustomTypesButtons->setAlignment(Qt::AlignTop);
     this->ui->verticalLayoutFieldsButtons->setAlignment(Qt::AlignTop);
     this->ui->verticalLayoutRecordsButtons->setAlignment(Qt::AlignTop);
 
@@ -52,6 +53,31 @@ ProjectOverviewWindow::ProjectOverviewWindow(Controller* controller, QWidget *pa
                 this->ui->pushButtonRemoveComponentsFile,
                 SIGNAL(clicked(bool)),
                 SLOT(onRemoveComponentsFileClicked(bool))
+                );
+
+    // Connect custom type button signals.
+    connect(
+                this->ui->pushButtonAddExistingCustomTypesFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onAddExistingCustomTypesFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonAddNewCustomTypesFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onAddNewCustomTypesFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonNavigateToCustomTypesFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onNavigateToCustomTypesFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonRemoveCustomTypesFile,
+                SIGNAL(clicked(bool)),
+                SLOT(onRemoveCustomTypesFileClicked(bool))
                 );
 
     // Connect field definition button signals.
@@ -132,15 +158,7 @@ void ProjectOverviewWindow::showEvent(QShowEvent* event)
     this->updateRecordData();
 
     // Update type data.
-    TypesController& typesController = this->controller->getTypesController();
-    const int typeSetCount = typesController.getCustomTypeSets().count();
-    const int typeCount = typesController.getCustomTypes().count();
-    const QString typesText = QString(tr("%1 type%2 (in %3 file%4)")).arg(
-                QString::number(typeCount),
-                typeCount != 1 ? "s" : "",
-                QString::number(typeSetCount),
-                typeSetCount != 1 ? "s" : "");
-    this->ui->labelCustomTypesValue->setText(typesText);
+    this->updateCustomTypeData();
 }
 
 QListWidgetItem*ProjectOverviewWindow::getSelectedListWidgetItem(QListWidget* listWidget)
@@ -203,9 +221,42 @@ void ProjectOverviewWindow::updateComponentData()
     }
 }
 
+void ProjectOverviewWindow::updateCustomTypeData()
+{
+    // Count custom type sets and custom types.
+    TypesController& typesController = this->controller->getTypesController();
+    const CustomTypeSetList& customTypeSets = typesController.getCustomTypeSets();
+    const int typeSetCount = customTypeSets.count();
+    const int typeCount = typesController.getCustomTypes().count();
+    const QString typesText = QString(tr("%1 type%2 (in %3 file%4)")).arg(
+                QString::number(typeCount),
+                typeCount != 1 ? "s" : "",
+                QString::number(typeSetCount),
+                typeSetCount != 1 ? "s" : "");
+    this->ui->labelCustomTypesValue->setText(typesText);
+
+    // Add list items.
+    this->ui->listWidgetCustomTypes->clear();
+
+    for (int i = 0; i < customTypeSets.count(); ++i)
+    {
+        const CustomTypeSet& customTypeSet = customTypeSets[i];
+        const QString& customTypeSetPath = this->controller->buildFullFilePath(
+                    customTypeSet.name,
+                    this->controller->getProjectPath(),
+                    Controller::TypeFileExtension);
+
+        // Add list item.
+        QListWidgetItem* item = new QListWidgetItem();
+        item->setData(Qt::DisplayRole, customTypeSetPath);
+        item->setData(Qt::UserRole, customTypeSet.name);
+        this->ui->listWidgetCustomTypes->addItem(item);
+    }
+}
+
 void ProjectOverviewWindow::updateFieldDefinitionData()
 {
-    // Count field definition sets and field definition.
+    // Count field definition sets and field definitions.
     FieldDefinitionsController& fieldDefintionsController = this->controller->getFieldDefinitionsController();
     const FieldDefinitionSetList& fieldDefinitionSets = fieldDefintionsController.getFieldDefinitionSets();
     const int fieldDefinitionSetCount = fieldDefinitionSets.count();
@@ -300,6 +351,43 @@ void ProjectOverviewWindow::onAddExistingComponentsFileClicked(bool checked)
         QMessageBox::critical(
                     this,
                     tr("Unable to load component file"),
+                    e.what(),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+    }
+}
+
+void ProjectOverviewWindow::onAddExistingCustomTypesFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Open file browser dialog.
+    const QString& projectPath = this->controller->getProjectPath();
+    const QString& customTypeSetFileName = QFileDialog::getOpenFileName(this,
+                                                                  tr("Add Existing Types File"),
+                                                                  projectPath,
+                                                                  "Tome Type Files (*.ttypes)");
+    QDir projectDirectory = QDir(projectPath);
+    const QString& relativeCustomTypeFilePath = projectDirectory.relativeFilePath(customTypeSetFileName);
+
+    try
+    {
+        // Load custom types.
+        CustomTypeSet customTypeSet = CustomTypeSet();
+        customTypeSet.name = relativeCustomTypeFilePath;
+        this->controller->loadCustomTypeSet(projectPath, customTypeSet);
+
+        // Update model.
+        this->controller->getTypesController().addCustomTypeSet(customTypeSet);
+
+        // Update view.
+        this->updateCustomTypeData();
+    }
+    catch (std::runtime_error& e)
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to load type file"),
                     e.what(),
                     QMessageBox::Close,
                     QMessageBox::Close);
@@ -404,6 +492,30 @@ void ProjectOverviewWindow::onAddNewComponentsFileClicked(bool checked)
     this->updateComponentData();
 }
 
+void ProjectOverviewWindow::onAddNewCustomTypesFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Open file browser dialog.
+    const QString& projectPath = this->controller->getProjectPath();
+    const QString& customTypeSetFileName = QFileDialog::getSaveFileName(this,
+                                                                  tr("Add New Types File"),
+                                                                  projectPath,
+                                                                  "Tome Type Files (*.ttypes)");
+    QDir projectDirectory = QDir(projectPath);
+    const QString& relativeCustomTypeFilePath = projectDirectory.relativeFilePath(customTypeSetFileName);
+
+    // Create new custom type set.
+    CustomTypeSet customTypeSet = CustomTypeSet();
+    customTypeSet.name = relativeCustomTypeFilePath;
+
+    // Update model.
+    this->controller->getTypesController().addCustomTypeSet(customTypeSet);
+
+    // Update view.
+    this->updateCustomTypeData();
+}
+
 void ProjectOverviewWindow::onAddNewFieldDefinitionsFileClicked(bool checked)
 {
     Q_UNUSED(checked)
@@ -460,6 +572,14 @@ void ProjectOverviewWindow::onNavigateToComponentsFileClicked(bool checked)
     this->navigateToSelectedFile(selectedComponentSetItem);
 }
 
+void ProjectOverviewWindow::onNavigateToCustomTypesFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    QListWidgetItem* selectedCustomTypeSetItem = this->getSelectedListWidgetItem(this->ui->listWidgetCustomTypes);
+    this->navigateToSelectedFile(selectedCustomTypeSetItem);
+}
+
 void ProjectOverviewWindow::onNavigateToFieldDefinitionsFileClicked(bool checked)
 {
     Q_UNUSED(checked)
@@ -494,6 +614,26 @@ void ProjectOverviewWindow::onRemoveComponentsFileClicked(bool checked)
 
     // Update view.
     this->updateComponentData();
+}
+
+void ProjectOverviewWindow::onRemoveCustomTypesFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Get selected custom type set.
+    QListWidgetItem* selectedCustomTypeSetItem = this->getSelectedListWidgetItem(this->ui->listWidgetCustomTypes);
+
+    if (selectedCustomTypeSetItem == nullptr)
+    {
+        return;
+    }
+
+    // Update model.
+    const QString& customTypeSetName = selectedCustomTypeSetItem->data(Qt::UserRole).toString();
+    this->controller->getTypesController().removeCustomTypeSet(customTypeSetName);
+
+    // Update view.
+    this->updateCustomTypeData();
 }
 
 void ProjectOverviewWindow::onRemoveFieldDefinitionsFileClicked(bool checked)

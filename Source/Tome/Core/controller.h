@@ -10,6 +10,7 @@ namespace Tome
     class CommandLineOptions;
     class ComponentSet;
     class ComponentsController;
+    class CustomTypeSet;
     class ExportController;
     class FieldDefinitionSet;
     class FieldDefinitionsController;
@@ -50,6 +51,7 @@ namespace Tome
             bool getProjectIgnoreReadOnly() const;
             bool isProjectLoaded() const;
             void loadComponentSet(const QString& projectPath, ComponentSet& componentSet);
+            void loadCustomTypeSet(const QString& projectPath, CustomTypeSet& customTypeSet);
             void loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet);
             void loadRecordSet(const QString& projectPath, RecordSet& recordSet);
             void openProject(const QString& projectFileName);

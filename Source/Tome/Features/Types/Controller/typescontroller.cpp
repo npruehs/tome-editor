@@ -14,6 +14,11 @@ TypesController::TypesController()
 {
 }
 
+void TypesController::addCustomTypeSet(const CustomTypeSet& customTypeSet)
+{
+    this->model->push_back(customTypeSet);
+}
+
 const CustomType TypesController::addEnumeration(const QString& name, const QStringList& enumeration)
 {
     CustomType newType = CustomType();
@@ -156,6 +161,21 @@ void TypesController::removeCustomType(const QString& typeName)
 void TypesController::removeCustomTypeAt(const int index)
 {
     this->model->removeAt(index);
+}
+
+void TypesController::removeCustomTypeSet(const QString& name)
+{
+    for (CustomTypeSetList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if ((*it).name == name)
+        {
+            // Update model.
+            this->model->erase(it);
+            return;
+        }
+    }
 }
 
 void TypesController::renameType(const QString oldName, const QString newName)

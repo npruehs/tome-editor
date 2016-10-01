@@ -35,23 +35,28 @@ class ProjectOverviewWindow : public QDialog
         void navigateToSelectedFile(QListWidgetItem* item);
 
         void updateComponentData();
+        void updateCustomTypeData();
         void updateFieldDefinitionData();
         void updateRecordData();
 
     private slots:
         void onAddExistingComponentsFileClicked(bool checked);
+        void onAddExistingCustomTypesFileClicked(bool checked);
         void onAddExistingFieldDefinitionsFileClicked(bool checked);
         void onAddExistingRecordsFileClicked(bool checked);
 
         void onAddNewComponentsFileClicked(bool checked);
+        void onAddNewCustomTypesFileClicked(bool checked);
         void onAddNewFieldDefinitionsFileClicked(bool checked);
         void onAddNewRecordsFileClicked(bool checked);
 
         void onNavigateToComponentsFileClicked(bool checked);
+        void onNavigateToCustomTypesFileClicked(bool checked);
         void onNavigateToFieldDefinitionsFileClicked(bool checked);
         void onNavigateToRecordsFileClicked(bool checked);
 
         void onRemoveComponentsFileClicked(bool checked);
+        void onRemoveCustomTypesFileClicked(bool checked);
         void onRemoveFieldDefinitionsFileClicked(bool checked);
         void onRemoveRecordsFileClicked(bool checked);
 };
