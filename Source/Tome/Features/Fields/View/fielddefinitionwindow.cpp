@@ -62,6 +62,11 @@ Component FieldDefinitionWindow::getFieldComponent() const
     return this->ui->comboBoxComponent->currentText();
 }
 
+QString FieldDefinitionWindow::getFieldDefinitionSetName() const
+{
+    return this->ui->comboBoxFieldDefinitionSet->currentText();
+}
+
 QString FieldDefinitionWindow::getFieldDescription() const
 {
     return this->ui->plainTextEditDescription->toPlainText();
@@ -108,6 +113,17 @@ void FieldDefinitionWindow::init()
 void FieldDefinitionWindow::setFieldComponent(const QString& component) const
 {
     this->ui->comboBoxComponent->setCurrentText(component);
+}
+
+void FieldDefinitionWindow::setFieldDefinitionSetName(const QString& fieldDefinitionSetName)
+{
+    this->ui->comboBoxFieldDefinitionSet->setCurrentText(fieldDefinitionSetName);
+}
+
+void FieldDefinitionWindow::setFieldDefinitionSetNames(const QStringList& fieldDefinitionSetNames)
+{
+    this->ui->comboBoxFieldDefinitionSet->clear();
+    this->ui->comboBoxFieldDefinitionSet->addItems(fieldDefinitionSetNames);
 }
 
 void FieldDefinitionWindow::setFieldDescription(const QString& description)
