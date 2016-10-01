@@ -20,6 +20,11 @@ const Component ComponentsController::addComponent(const QString& componentName)
     return component;
 }
 
+void ComponentsController::addComponentSet(const ComponentSet& componentSet)
+{
+    this->model->push_back(componentSet);
+}
+
 const ComponentList ComponentsController::getComponents() const
 {
     ComponentList components;
@@ -58,6 +63,21 @@ void ComponentsController::removeComponent(const Component component)
         if (*it == component)
         {
             components.erase(it);
+            return;
+        }
+    }
+}
+
+void ComponentsController::removeComponentSet(const QString& name)
+{
+    for (ComponentSetList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if ((*it).name == name)
+        {
+            // Update model.
+            this->model->erase(it);
             return;
         }
     }

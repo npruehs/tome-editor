@@ -75,9 +75,11 @@ class MainWindow : public QMainWindow
         void on_actionError_List_triggered();
 
         void exportRecords(QAction* exportAction);
+        void onExportTemplatesChanged();
         void onFieldChanged();
         void onProjectChanged(QSharedPointer<Tome::Project> project);
         void onRecordFieldsChanged(const QString& recordId);
+        void onRecordSetsChanged();
         void onRecordLinkActivated(const QString& recordId);
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();
@@ -115,6 +117,7 @@ class MainWindow : public QMainWindow
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
         void refreshErrorList();
+        void refreshExportMenu();
         void refreshRecordTree();
         void refreshRecordTable();
         void showReadOnlyMessage(const QString& recordId);

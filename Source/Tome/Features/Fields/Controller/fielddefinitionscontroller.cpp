@@ -37,6 +37,12 @@ const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QStri
     return fieldDefinition;
 }
 
+void FieldDefinitionsController::addFieldDefinitionSet(const FieldDefinitionSet& fieldDefinitionSet)
+{
+    // Update model.
+    this->model->push_back(fieldDefinitionSet);
+}
+
 const FieldDefinition& FieldDefinitionsController::getFieldDefinition(const QString& id) const
 {
     return *this->getFieldDefinitionById(id);
@@ -122,6 +128,21 @@ void FieldDefinitionsController::removeFieldDefinition(const QString& fieldId)
                 fieldDefinitionSet.fieldDefinitions.erase(it);
                 return;
             }
+        }
+    }
+}
+
+void FieldDefinitionsController::removeFieldDefinitionSet(const QString& name)
+{
+    for (FieldDefinitionSetList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if ((*it).name == name)
+        {
+            // Update model.
+            this->model->erase(it);
+            return;
         }
     }
 }

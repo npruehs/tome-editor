@@ -243,6 +243,210 @@ bool Controller::isProjectLoaded() const
     return this->project != 0;
 }
 
+void Controller::loadComponentSet(const QString& projectPath, ComponentSet& componentSet)
+{
+    ComponentSetSerializer componentSerializer = ComponentSetSerializer();
+
+    // TODO(np): Remove as soon as backwards compatibility is removed from ProjectSerializer.
+    if (componentSet.components.size() > 0)
+    {
+        return;
+    }
+
+    // Open component file.
+    QString fullComponentSetPath =
+            buildFullFilePath(componentSet.name, projectPath, ComponentFileExtension);
+
+    QFile componentFile(fullComponentSetPath);
+    if (componentFile.open(QIODevice::ReadOnly))
+    {
+        try
+        {
+            componentSerializer.deserialize(componentFile, componentSet);
+        }
+        catch (const std::runtime_error& e)
+        {
+            QString errorMessage = QObject::tr("File could not be read: ") + fullComponentSetPath + "\r\n" + e.what();
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+    else
+    {
+        QString errorMessage = QObject::tr("File could not be read:\r\n") + fullComponentSetPath;
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+}
+
+void Controller::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& typeSet)
+{
+    CustomTypeSetSerializer typesSerializer = CustomTypeSetSerializer();
+
+    // TODO(np): Remove as soon as backwards compatibility is removed from ProjectSerializer.
+    if (typeSet.types.size() > 0)
+    {
+        return;
+    }
+
+    // Open types file.
+    QString fullTypeSetPath =
+            buildFullFilePath(typeSet.name, projectPath, TypeFileExtension);
+
+    QFile typeFile(fullTypeSetPath);
+    if (typeFile.open(QIODevice::ReadOnly))
+    {
+        try
+        {
+            typesSerializer.deserialize(typeFile, typeSet);
+        }
+        catch (const std::runtime_error& e)
+        {
+            QString errorMessage = QObject::tr("File could not be read: ") + fullTypeSetPath + "\r\n" + e.what();
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+    else
+    {
+        QString errorMessage = QObject::tr("File could not be read:\r\n") + fullTypeSetPath;
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+}
+
+void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemplate& exportTemplate)
+{
+    ExportTemplateSerializer exportTemplateSerializer = ExportTemplateSerializer();
+
+     // TODO(np): Remove empty check as soon as backwards compatibility is removed from ProjectSerializer.
+    if (exportTemplate.fileExtension.isEmpty())
+    {
+        // Read template file.
+        QString fullExportTemplatePath =
+                buildFullFilePath(exportTemplate.path, projectPath, RecordExportTemplateFileExtension);
+
+        QFile exportTemplateFile(fullExportTemplatePath);
+        if (exportTemplateFile.open(QIODevice::ReadOnly))
+        {
+            try
+            {
+                exportTemplateSerializer.deserialize(exportTemplateFile, exportTemplate);
+            }
+            catch (const std::runtime_error& e)
+            {
+                QString errorMessage = QObject::tr("File could not be read: ") + fullExportTemplatePath + "\r\n" + e.what();
+                throw std::runtime_error(errorMessage.toStdString());
+            }
+        }
+        else
+        {
+            QString errorMessage = QObject::tr("File could not be read:\r\n") + fullExportTemplatePath;
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+
+    // Read template contents.
+    try
+    {
+        QString templatePath = exportTemplate.path;
+
+        if (QDir::isRelativePath(templatePath))
+        {
+            templatePath = combinePaths(projectPath, templatePath);
+        }
+
+        if (templatePath.endsWith(RecordExportTemplateFileExtension))
+        {
+            templatePath = templatePath.remove(RecordExportTemplateFileExtension);
+        }
+
+        exportTemplate.fieldValueDelimiter =
+                this->readFile(templatePath + RecordExportFieldValueDelimiterExtension);
+        exportTemplate.fieldValueTemplate =
+                this->readFile(templatePath + RecordExportFieldValueTemplateExtension);
+        exportTemplate.recordDelimiter =
+                this->readFile(templatePath + RecordExportRecordDelimiterExtension);
+        exportTemplate.recordFileTemplate =
+                this->readFile(templatePath + RecordExportRecordFileTemplateExtension);
+        exportTemplate.recordTemplate =
+                this->readFile(templatePath + RecordExportRecordTemplateExtension);
+        exportTemplate.componentDelimiter =
+                this->readFile(templatePath + RecordExportComponentDelimiterExtension);
+        exportTemplate.componentTemplate =
+                this->readFile(templatePath + RecordExportComponentTemplateExtension);
+        exportTemplate.listTemplate =
+                this->readFile(templatePath + RecordExportListTemplateExtension);
+        exportTemplate.listItemTemplate =
+                this->readFile(templatePath + RecordExportListItemTemplateExtension);
+        exportTemplate.listItemDelimiter =
+                this->readFile(templatePath + RecordExportListItemDelimiterExtension);
+        exportTemplate.mapTemplate =
+                this->readFile(templatePath + RecordExportMapTemplateExtension);
+        exportTemplate.mapItemTemplate =
+                this->readFile(templatePath + RecordExportMapItemTemplateExtension);
+        exportTemplate.mapItemDelimiter =
+                this->readFile(templatePath + RecordExportMapItemDelimiterExtension);
+    }
+    catch (const std::runtime_error& e)
+    {
+        QString errorMessage = QObject::tr("File could not be read:\r\n") + e.what();
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+}
+
+void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet)
+{
+    FieldDefinitionSetSerializer fieldDefinitionSerializer = FieldDefinitionSetSerializer();
+
+    // Open field definition file.
+    QString fullFieldDefinitionSetPath =
+            buildFullFilePath(fieldDefinitionSet.name, projectPath, FieldDefinitionFileExtension);
+
+    QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
+    if (fieldDefinitionFile.open(QIODevice::ReadOnly))
+    {
+        try
+        {
+            fieldDefinitionSerializer.deserialize(fieldDefinitionFile, fieldDefinitionSet);
+        }
+        catch (const std::runtime_error& e)
+        {
+            QString errorMessage = QObject::tr("File could not be read: ") + fullFieldDefinitionSetPath + "\r\n" + e.what();
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+    else
+    {
+        QString errorMessage = QObject::tr("File could not be read:\r\n") + fullFieldDefinitionSetPath;
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+}
+
+void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet)
+{
+    RecordSetSerializer recordSetSerializer = RecordSetSerializer();
+
+    // Open record file.
+    QString fullRecordSetPath =
+            buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
+
+    QFile recordFile(fullRecordSetPath);
+    if (recordFile.open(QIODevice::ReadOnly))
+    {
+        try
+        {
+            recordSetSerializer.deserialize(recordFile, recordSet);
+        }
+        catch (const std::runtime_error& e)
+        {
+            QString errorMessage = QObject::tr("File could not be read: ") + fullRecordSetPath + "\r\n" + e.what();
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+    else
+    {
+        QString errorMessage = QObject::tr("File could not be read:\r\n") + fullRecordSetPath;
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+}
+
 void Controller::openProject(const QString& projectFileName)
 {
     if (projectFileName.count() <= 0)
@@ -274,224 +478,35 @@ void Controller::openProject(const QString& projectFileName)
         }
 
         // Load component files.
-        ComponentSetSerializer componentSerializer = ComponentSetSerializer();
-
         for (int i = 0; i < project->componentSets.size(); ++i)
         {
-            ComponentSet& componentSet = project->componentSets[i];
-
-            // TODO(np): Remove as soon as backwards compatibility is removed from ProjectSerializer.
-            if (componentSet.components.size() > 0)
-            {
-                continue;
-            }
-
-            // Open component file.
-            QString fullComponentSetPath =
-                    buildFullFilePath(componentSet.name, projectPath, ComponentFileExtension);
-
-            QFile componentFile(fullComponentSetPath);
-            if (componentFile.open(QIODevice::ReadOnly))
-            {
-                try
-                {
-                    componentSerializer.deserialize(componentFile, componentSet);
-                }
-                catch (const std::runtime_error& e)
-                {
-                    QString errorMessage = QObject::tr("File could not be read: ") + fullComponentSetPath + "\r\n" + e.what();
-                    throw std::runtime_error(errorMessage.toStdString());
-                }
-            }
-            else
-            {
-                QString errorMessage = QObject::tr("File could not be read:\r\n") + fullComponentSetPath;
-                throw std::runtime_error(errorMessage.toStdString());
-            }
+            this->loadComponentSet(projectPath, project->componentSets[i]);
         }
 
         // Load field definition files.
-        FieldDefinitionSetSerializer fieldDefinitionSerializer = FieldDefinitionSetSerializer();
-
         for (int i = 0; i < project->fieldDefinitionSets.size(); ++i)
         {
-            FieldDefinitionSet& fieldDefinitionSet = project->fieldDefinitionSets[i];
-
-            // Open field definition file.
-            QString fullFieldDefinitionSetPath =
-                    buildFullFilePath(fieldDefinitionSet.name, projectPath, FieldDefinitionFileExtension);
-
-            QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
-            if (fieldDefinitionFile.open(QIODevice::ReadOnly))
-            {
-                try
-                {
-                    fieldDefinitionSerializer.deserialize(fieldDefinitionFile, fieldDefinitionSet);
-                }
-                catch (const std::runtime_error& e)
-                {
-                    QString errorMessage = QObject::tr("File could not be read: ") + fullFieldDefinitionSetPath + "\r\n" + e.what();
-                    throw std::runtime_error(errorMessage.toStdString());
-                }
-            }
-            else
-            {
-                QString errorMessage = QObject::tr("File could not be read:\r\n") + fullFieldDefinitionSetPath;
-                throw std::runtime_error(errorMessage.toStdString());
-            }
+            this->loadFieldDefinitionSet(projectPath, project->fieldDefinitionSets[i]);
         }
 
         // Load record files.
-        RecordSetSerializer recordSetSerializer = RecordSetSerializer();
-
         for (int i = 0; i < project->recordSets.size(); ++i)
         {
-            RecordSet& recordSet = project->recordSets[i];
-
-            // Open record file.
-            QString fullRecordSetPath =
-                    buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
-
-            QFile recordFile(fullRecordSetPath);
-            if (recordFile.open(QIODevice::ReadOnly))
-            {
-                try
-                {
-                    recordSetSerializer.deserialize(recordFile, recordSet);
-                }
-                catch (const std::runtime_error& e)
-                {
-                    QString errorMessage = QObject::tr("File could not be read: ") + fullRecordSetPath + "\r\n" + e.what();
-                    throw std::runtime_error(errorMessage.toStdString());
-                }
-            }
-            else
-            {
-                QString errorMessage = QObject::tr("File could not be read:\r\n") + fullRecordSetPath;
-                throw std::runtime_error(errorMessage.toStdString());
-            }
+            this->loadRecordSet(projectPath, project->recordSets[i]);
         }
 
         // Load record export template files.
-        ExportTemplateSerializer exportTemplateSerializer = ExportTemplateSerializer();
-
         for (RecordExportTemplateList::iterator it = project->recordExportTemplates.begin();
              it != project->recordExportTemplates.end();
              ++it)
         {
-            RecordExportTemplate& exportTemplate = *it;
-
-            // TODO(np): Remove empty check as soon as backwards compatibility is removed from ProjectSerializer.
-            if (exportTemplate.fileExtension.isEmpty())
-            {
-                // Read template file.
-                QString fullExportTemplatePath =
-                        buildFullFilePath(exportTemplate.path, projectPath, RecordExportTemplateFileExtension);
-
-                QFile exportTemplateFile(fullExportTemplatePath);
-                if (exportTemplateFile.open(QIODevice::ReadOnly))
-                {
-                    try
-                    {
-                        exportTemplateSerializer.deserialize(exportTemplateFile, exportTemplate);
-                    }
-                    catch (const std::runtime_error& e)
-                    {
-                        QString errorMessage = QObject::tr("File could not be read: ") + fullExportTemplatePath + "\r\n" + e.what();
-                        throw std::runtime_error(errorMessage.toStdString());
-                    }
-                }
-                else
-                {
-                    QString errorMessage = QObject::tr("File could not be read:\r\n") + fullExportTemplatePath;
-                    throw std::runtime_error(errorMessage.toStdString());
-                }
-            }
-
-            // Read template contents.
-            try
-            {
-                QString templatePath = exportTemplate.path;
-
-                if (QDir::isRelativePath(templatePath))
-                {
-                    templatePath = combinePaths(projectPath, templatePath);
-                }
-
-                if (templatePath.endsWith(RecordExportTemplateFileExtension))
-                {
-                    templatePath = templatePath.remove(RecordExportTemplateFileExtension);
-                }
-
-                exportTemplate.fieldValueDelimiter =
-                        this->readFile(templatePath + RecordExportFieldValueDelimiterExtension);
-                exportTemplate.fieldValueTemplate =
-                        this->readFile(templatePath + RecordExportFieldValueTemplateExtension);
-                exportTemplate.recordDelimiter =
-                        this->readFile(templatePath + RecordExportRecordDelimiterExtension);
-                exportTemplate.recordFileTemplate =
-                        this->readFile(templatePath + RecordExportRecordFileTemplateExtension);
-                exportTemplate.recordTemplate =
-                        this->readFile(templatePath + RecordExportRecordTemplateExtension);
-                exportTemplate.componentDelimiter =
-                        this->readFile(templatePath + RecordExportComponentDelimiterExtension);
-                exportTemplate.componentTemplate =
-                        this->readFile(templatePath + RecordExportComponentTemplateExtension);
-                exportTemplate.listTemplate =
-                        this->readFile(templatePath + RecordExportListTemplateExtension);
-                exportTemplate.listItemTemplate =
-                        this->readFile(templatePath + RecordExportListItemTemplateExtension);
-                exportTemplate.listItemDelimiter =
-                        this->readFile(templatePath + RecordExportListItemDelimiterExtension);
-                exportTemplate.mapTemplate =
-                        this->readFile(templatePath + RecordExportMapTemplateExtension);
-                exportTemplate.mapItemTemplate =
-                        this->readFile(templatePath + RecordExportMapItemTemplateExtension);
-                exportTemplate.mapItemDelimiter =
-                        this->readFile(templatePath + RecordExportMapItemDelimiterExtension);
-            }
-            catch (const std::runtime_error& e)
-            {
-                QString errorMessage = QObject::tr("File could not be read:\r\n") + e.what();
-                throw std::runtime_error(errorMessage.toStdString());
-            }
+            this->loadExportTemplate(projectPath, *it);
         }
 
         // Load type files.
-        CustomTypeSetSerializer typesSerializer = CustomTypeSetSerializer();
-
         for (int i = 0; i < project->typeSets.size(); ++i)
         {
-            CustomTypeSet& typeSet = project->typeSets[i];
-
-            // TODO(np): Remove as soon as backwards compatibility is removed from ProjectSerializer.
-            if (typeSet.types.size() > 0)
-            {
-                continue;
-            }
-
-            // Open types file.
-            QString fullTypeSetPath =
-                    buildFullFilePath(typeSet.name, projectPath, TypeFileExtension);
-
-            QFile typeFile(fullTypeSetPath);
-            if (typeFile.open(QIODevice::ReadOnly))
-            {
-                try
-                {
-                    typesSerializer.deserialize(typeFile, typeSet);
-                }
-                catch (const std::runtime_error& e)
-                {
-                    QString errorMessage = QObject::tr("File could not be read: ") + fullTypeSetPath + "\r\n" + e.what();
-                    throw std::runtime_error(errorMessage.toStdString());
-                }
-            }
-            else
-            {
-                QString errorMessage = QObject::tr("File could not be read:\r\n") + fullTypeSetPath;
-                throw std::runtime_error(errorMessage.toStdString());
-            }
+            this->loadCustomTypeSet(projectPath, project->typeSets[i]);
         }
 
         // Set project reference.
