@@ -5,8 +5,10 @@
 using namespace Tome;
 
 
-const QString SettingsController::SettingsRecentProjects = "recentProjects";
-const QString SettingsController::SettingsPath = "path";
+const QString SettingsController::SettingPath = "path";
+const QString SettingsController::SettingRecentProjects = "recentProjects";
+const QString SettingsController::SettingRunIntegrityChecksOnSave = "runIntegrityChecksOnSave";
+const QString SettingsController::SettingShowDescriptionColumnInsteadOfFieldTooltips = "showDetailsColumnInsteadOfFieldTooltips";
 
 
 SettingsController::SettingsController()
@@ -37,16 +39,26 @@ const QStringList SettingsController::getRecentProjects() const
 {
     QStringList recentProjects;
 
-    int size = this->settings->beginReadArray(SettingsRecentProjects);
+    int size = this->settings->beginReadArray(SettingRecentProjects);
     for (int i = 0; i < size; ++i)
     {
         this->settings->setArrayIndex(i);
-        QString path = this->settings->value(SettingsPath).toString();
+        QString path = this->settings->value(SettingPath).toString();
         recentProjects.push_back(path);
     }
     this->settings->endArray();
 
     return recentProjects;
+}
+
+bool SettingsController::getRunIntegrityChecksOnSave() const
+{
+    return this->settings->value(SettingRunIntegrityChecksOnSave).toBool();
+}
+
+bool SettingsController::getShowDescriptionColumnInsteadOfFieldTooltips() const
+{
+    return this->settings->value(SettingShowDescriptionColumnInsteadOfFieldTooltips).toBool();
 }
 
 void SettingsController::removeRecentProject(const QString& path)
@@ -58,11 +70,21 @@ void SettingsController::removeRecentProject(const QString& path)
 
 void SettingsController::setRecentProjects(const QStringList& recentProjects)
 {
-    this->settings->beginWriteArray(SettingsRecentProjects);
+    this->settings->beginWriteArray(SettingRecentProjects);
     for (int i = 0; i < recentProjects.size(); ++i)
     {
         this->settings->setArrayIndex(i);
-        this->settings->setValue(SettingsPath, recentProjects.at(i));
+        this->settings->setValue(SettingPath, recentProjects.at(i));
     }
     this->settings->endArray();
+}
+
+void SettingsController::setRunIntegrityChecksOnSave(bool runIntegrityChecksOnSave)
+{
+    this->settings->setValue(SettingRunIntegrityChecksOnSave, runIntegrityChecksOnSave);
+}
+
+void SettingsController::setShowDescriptionColumnInsteadOfFieldTooltips(bool showDescriptionColumnInsteadOfFieldTooltips)
+{
+    this->settings->setValue(SettingShowDescriptionColumnInsteadOfFieldTooltips, showDescriptionColumnInsteadOfFieldTooltips);
 }

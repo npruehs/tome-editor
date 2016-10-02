@@ -39,6 +39,7 @@
 #include "../Features/Search/View/findrecordwindow.h"
 #include "../Features/Search/View/searchresultsdockwidget.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
+#include "../features/Settings/View/usersettingswindow.h"
 #include "../Features/Tasks/Controller/taskscontroller.h"
 #include "../Features/Tasks/Model/severity.h"
 #include "../Features/Tasks/Model/targetsitetype.h"
@@ -67,7 +68,8 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     recordWindow(0),
     duplicateRecordWindow(0),
     findRecordWindow(0),
-    projectOverviewWindow(0)
+    projectOverviewWindow(0),
+    userSettingsWindow(0)
 {
     ui->setupUi(this);
 
@@ -207,13 +209,14 @@ MainWindow::~MainWindow()
     delete this->newProjectWindow;
     delete this->recordWindow;
     delete this->findRecordWindow;
+    delete this->projectOverviewWindow;
+    delete this->userSettingsWindow;
 }
 
 void MainWindow::on_actionExit_triggered()
 {
     this->close();
 }
-
 
 void MainWindow::on_actionProject_Overview_triggered()
 {
@@ -321,7 +324,12 @@ void MainWindow::on_actionSave_Project_triggered()
 {
     try
     {
-         this->controller->saveProject();
+        this->controller->saveProject();
+
+        if (this->controller->getSettingsController().getRunIntegrityChecksOnSave())
+        {
+            this->on_actionRun_Integrity_Checks_triggered();
+        }
     }
     catch (std::runtime_error& e)
     {
@@ -668,6 +676,29 @@ void MainWindow::on_actionRun_Integrity_Checks_triggered()
     // Update view.
     this->showWindow(this->errorListDockWidget);
     this->refreshErrorList();
+}
+
+void MainWindow::on_actionUser_Settings_triggered()
+{
+    if (!this->userSettingsWindow)
+    {
+        this->userSettingsWindow = new UserSettingsWindow(this->controller->getSettingsController(), this);
+    }
+
+    int result = this->userSettingsWindow->exec();
+
+    if (result != QDialog::Accepted)
+    {
+        return;
+    }
+
+    // Save settings.
+    SettingsController& settingsController = this->controller->getSettingsController();
+    settingsController.setRunIntegrityChecksOnSave(this->userSettingsWindow->getRunIntegrityChecksOnSave());
+    settingsController.setShowDescriptionColumnInsteadOfFieldTooltips(this->userSettingsWindow->getShowDescriptionColumnInsteadOfFieldTooltips());
+
+    // Refresh view with updated settings.
+    this->refreshRecordTable();
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -1034,6 +1065,8 @@ void MainWindow::refreshRecordTable()
             this->controller->getRecordsController().getRecordFieldValues(id);
 
     // Update table.
+    this->recordFieldTableWidget->setDescriptionColumnEnabled(
+                this->controller->getSettingsController().getShowDescriptionColumnInsteadOfFieldTooltips());
     this->recordFieldTableWidget->setRowCount(fieldValues.size());
 
     for (int i = 0; i < this->recordFieldTableWidget->rowCount(); ++i)

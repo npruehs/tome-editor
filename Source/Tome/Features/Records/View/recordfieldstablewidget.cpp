@@ -25,14 +25,21 @@ RecordFieldsTableWidget::RecordFieldsTableWidget(FieldDefinitionsController& fie
     this->setSelectionBehavior(QAbstractItemView::SelectRows);
     this->horizontalHeader()->setStretchLastSection(true);
     this->verticalHeader()->setVisible(false);
+}
 
+void RecordFieldsTableWidget::setDescriptionColumnEnabled(bool enabled)
+{
     // Set headers.
-    this->setColumnCount(3);
-
     QStringList headers;
     headers << tr("Field");
     headers << tr("Value");
-    headers << tr("Description");
+
+    if (enabled)
+    {
+        headers << tr("Description");
+    }
+
+    this->setColumnCount(headers.count());
     this->setHorizontalHeaderLabels(headers);
 }
 
@@ -56,7 +63,18 @@ void RecordFieldsTableWidget::setRecord(int i, const QString recordId)
     // Show field, value and description.
     this->setItem(i, 0, new QTableWidgetItem(keyString));
     this->setItem(i, 1, new QTableWidgetItem());
-    this->setItem(i, 2, new QTableWidgetItem(field.description));
+
+    if (this->columnCount() > 2)
+    {
+        // Show field description as column.
+        this->setItem(i, 2, new QTableWidgetItem(field.description));
+    }
+    else
+    {
+        // Show field description as tooltip.
+        this->item(i, 0)->setData(Qt::ToolTipRole, field.description);
+        this->item(i, 1)->setData(Qt::ToolTipRole, field.description);
+    }
 
     QLabel* valueLabel;
 

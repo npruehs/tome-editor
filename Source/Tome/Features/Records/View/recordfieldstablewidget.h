@@ -16,6 +16,7 @@ namespace Tome
         public:
             RecordFieldsTableWidget(FieldDefinitionsController& fieldDefinitionsController, RecordsController& recordsController, TypesController& typesController);
 
+            void setDescriptionColumnEnabled(bool enabled);
             void setRecord(int i, const QString recordId);
 
         signals:

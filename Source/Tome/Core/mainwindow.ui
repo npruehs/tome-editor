@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>434</width>
+    <width>600</width>
     <height>300</height>
    </rect>
   </property>
@@ -29,7 +29,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>434</width>
+     <width>600</width>
      <height>21</height>
     </rect>
    </property>
@@ -108,12 +108,19 @@
     </property>
     <addaction name="actionProject_Overview"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionUser_Settings"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuProject"/>
    <addaction name="menuRecords"/>
    <addaction name="menuFields"/>
    <addaction name="menuExport"/>
    <addaction name="menuAnalyze"/>
+   <addaction name="menuTools"/>
    <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -343,6 +350,11 @@
   <action name="actionProject_Overview">
    <property name="text">
     <string>Project Overview...</string>
+   </property>
+  </action>
+  <action name="actionUser_Settings">
+   <property name="text">
+    <string>User Settings...</string>
    </property>
   </action>
  </widget>

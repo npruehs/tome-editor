@@ -14,12 +14,18 @@ namespace Tome
 
             void addRecentProject(const QString& path);
             const QStringList getRecentProjects() const;
+            bool getRunIntegrityChecksOnSave() const;
+            bool getShowDescriptionColumnInsteadOfFieldTooltips() const;
             void removeRecentProject(const QString& path);
             void setRecentProjects(const QStringList& recentProjects);
+            void setRunIntegrityChecksOnSave(bool runIntegrityChecksOnSave);
+            void setShowDescriptionColumnInsteadOfFieldTooltips(bool showDescriptionColumnInsteadOfFieldTooltips);
 
         private:
-            static const QString SettingsRecentProjects;
-            static const QString SettingsPath;
+            static const QString SettingPath;
+            static const QString SettingRecentProjects;
+            static const QString SettingRunIntegrityChecksOnSave;
+            static const QString SettingShowDescriptionColumnInsteadOfFieldTooltips;
 
             QSettings* settings;
     };

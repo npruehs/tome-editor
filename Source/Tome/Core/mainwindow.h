@@ -18,6 +18,7 @@ class CustomTypesWindow;
 class DuplicateRecordWindow;
 class FindRecordWindow;
 class ProjectOverviewWindow;
+class UserSettingsWindow;
 
 namespace Ui {
     class MainWindow;
@@ -66,6 +67,8 @@ class MainWindow : public QMainWindow
 
         void on_actionRun_Integrity_Checks_triggered();
 
+        void on_actionUser_Settings_triggered();
+
         void on_actionAbout_triggered();
         void on_actionManual_triggered();
         void on_actionReport_a_Bug_triggered();
@@ -109,6 +112,7 @@ class MainWindow : public QMainWindow
         DuplicateRecordWindow* duplicateRecordWindow;
         FindRecordWindow* findRecordWindow;
         ProjectOverviewWindow* projectOverviewWindow;
+        UserSettingsWindow* userSettingsWindow;
 
         Tome::MessageList messages;
 
