@@ -65,6 +65,10 @@ void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
     this->enumerationWindow->setEnumerationName("");
     this->enumerationWindow->setEnumerationMembers(QStringList());
 
+    const QStringList typeSetNames = this->typesController.getCustomTypeSetNames();
+    this->enumerationWindow->setTypeSetNames(typeSetNames);
+    this->enumerationWindow->setTypeSetName(typeSetNames.first());
+
     int result = this->enumerationWindow->exec();
 
     if (result == QDialog::Accepted)
@@ -73,7 +77,8 @@ void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
         CustomType newType =
                 this->typesController.addEnumeration(
                     this->enumerationWindow->getEnumerationName(),
-                    this->enumerationWindow->getEnumerationMembers());
+                    this->enumerationWindow->getEnumerationMembers(),
+                    this->enumerationWindow->getTypeSetName());
 
         // Update view.
         this->ui->tableWidget->insertRow(0);
@@ -98,7 +103,8 @@ void CustomTypesWindow::on_actionNew_List_triggered()
         CustomType newType =
                 this->typesController.addList(
                     this->listWindow->getListName(),
-                    this->listWindow->getListItemType());
+                    this->listWindow->getListItemType(),
+                    this->enumerationWindow->getTypeSetName());
 
         // Update view.
         this->ui->tableWidget->insertRow(0);
@@ -124,14 +130,14 @@ void CustomTypesWindow::on_actionNew_Map_triggered()
                 this->typesController.addMap(
                     this->mapWindow->getMapName(),
                     this->mapWindow->getMapKeyType(),
-                    this->mapWindow->getMapValueType());
+                    this->mapWindow->getMapValueType(),
+                    this->enumerationWindow->getTypeSetName());
 
         // Update view.
         this->ui->tableWidget->insertRow(0);
         this->updateRow(0, newType);
     }
 }
-
 
 void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
 {

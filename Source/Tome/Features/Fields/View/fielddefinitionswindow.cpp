@@ -116,7 +116,8 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
                         this->fieldDefinitionWindow->getFieldType(),
                         this->fieldDefinitionWindow->getDefaultValue(),
                         component,
-                        this->fieldDefinitionWindow->getFieldDescription());
+                        this->fieldDefinitionWindow->getFieldDescription(),
+                        this->fieldDefinitionWindow->getFieldDefinitionSetName());
 
             this->recordsController.moveFieldToComponent(fieldId, QString(), component);
 

@@ -12,7 +12,14 @@ FieldDefinitionsController::FieldDefinitionsController()
 {
 }
 
-const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QString& id, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& component, const QString& description)
+const FieldDefinition FieldDefinitionsController::addFieldDefinition(
+        const QString& id,
+        const QString& displayName,
+        const QString& fieldType,
+        const QVariant& defaultValue,
+        const QString& component,
+        const QString& description,
+        const QString& fieldDefinitionSetName)
 {
     // Check if already exists.
     if (this->hasFieldDefinition(id))
@@ -29,12 +36,26 @@ const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QStri
     fieldDefinition.defaultValue = defaultValue;
     fieldDefinition.component = component;
     fieldDefinition.description = description;
+    fieldDefinition.fieldDefinitionSetName = fieldDefinitionSetName;
 
-    FieldDefinitionList& fieldDefinitions = (*this->model)[0].fieldDefinitions;
-    int index = findInsertionIndex(fieldDefinitions, fieldDefinition, fieldDefinitionLessThanDisplayName);
-    fieldDefinitions.insert(index, fieldDefinition);
+    for (FieldDefinitionSetList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = *it;
 
-    return fieldDefinition;
+        if (fieldDefinitionSet.name == fieldDefinitionSetName)
+        {
+            FieldDefinitionList& fieldDefinitions = fieldDefinitionSet.fieldDefinitions;
+            int index = findInsertionIndex(fieldDefinitions, fieldDefinition, fieldDefinitionLessThanDisplayName);
+            fieldDefinitions.insert(index, fieldDefinition);
+
+            return fieldDefinition;
+        }
+    }
+
+    const QString errorMessage = "Field definition set not found: " + fieldDefinitionSetName;
+    throw std::out_of_range(errorMessage.toStdString());
 }
 
 void FieldDefinitionsController::addFieldDefinitionSet(const FieldDefinitionSet& fieldDefinitionSet)

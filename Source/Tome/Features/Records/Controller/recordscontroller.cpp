@@ -16,17 +16,31 @@ RecordsController::RecordsController(const FieldDefinitionsController& fieldDefi
 {
 }
 
-const Record RecordsController::addRecord(const QString& id, const QString& displayName)
+const Record RecordsController::addRecord(const QString& id, const QString& displayName, const QString& recordSetName)
 {
     Record record = Record();
     record.id = id;
     record.displayName = displayName;
+    record.recordSetName = recordSetName;
 
-    RecordList& records = (*this->model)[0].records;
-    int index = findInsertionIndex(records, record, recordLessThanDisplayName);
-    records.insert(index, record);
+    for (RecordSetList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        RecordSet& recordSet = *it;
 
-    return record;
+        if (recordSet.name == recordSetName)
+        {
+            RecordList& records = recordSet.records;
+            int index = findInsertionIndex(records, record, recordLessThanDisplayName);
+            records.insert(index, record);
+
+            return record;
+        }
+    }
+
+    const QString errorMessage = "Record set not found: " + recordSetName;
+    throw std::out_of_range(errorMessage.toStdString());
 }
 
 void RecordsController::addRecordField(const QString& recordId, const QString& fieldId)

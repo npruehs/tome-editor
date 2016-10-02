@@ -16,6 +16,10 @@ class ComponentWindow : public QDialog
         ~ComponentWindow();
 
         QString getComponentName() const;
+        QString getComponentSetName() const;
+
+        void setComponentSetName(const QString& componentSetName);
+        void setComponentSetNames(const QStringList& componentSetNames);
 
     public slots:
         void accept();

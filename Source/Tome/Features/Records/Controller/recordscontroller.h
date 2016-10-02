@@ -18,7 +18,7 @@ namespace Tome
         public:
             RecordsController(const FieldDefinitionsController& fieldDefinitionsController);
 
-            const Record addRecord(const QString& id, const QString& displayName);
+            const Record addRecord(const QString& id, const QString& displayName, const QString& recordSetName);
             void addRecordField(const QString& recordId, const QString& fieldId);
             void addRecordSet(const RecordSet& recordSet);
 

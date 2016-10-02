@@ -108,6 +108,11 @@ void FieldDefinitionWindow::init()
     {
         this->ui->comboBoxType->addItem(typeNames[i]);
     }
+
+    // Set field definition set names.
+    const QStringList fieldDefinitionSetNames = this->fieldDefinitionsController.getFieldDefinitionSetNames();
+    this->setFieldDefinitionSetNames(fieldDefinitionSetNames);
+    this->setFieldDefinitionSetName(fieldDefinitionSetNames.first());
 }
 
 void FieldDefinitionWindow::setFieldComponent(const QString& component) const

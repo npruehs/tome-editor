@@ -341,10 +341,12 @@ void MainWindow::on_actionNew_Record_triggered()
         this->recordWindow = new RecordWindow(this);
     }
 
+    RecordsController& recordsController = this->controller->getRecordsController();
+
     // Add fields.
     const FieldDefinitionList& fieldDefinitions =
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
-    const QStringList recordIds = this->controller->getRecordsController().getRecordIds();
+    const QStringList recordIds = recordsController.getRecordIds();
     const ComponentList& componentDefinitions =
             this->controller->getComponentsController().getComponents();
 
@@ -357,6 +359,11 @@ void MainWindow::on_actionNew_Record_triggered()
     // Set components.
     this->recordWindow->setRecordComponents(componentDefinitions);
 
+    // Set record set names.
+    const QStringList recordSetNames = recordsController.getRecordSetNames();
+    this->recordWindow->setRecordSetNames(recordSetNames);
+    this->recordWindow->setRecordSetName(recordSetNames.first());
+
     // Show window.
     int result = this->recordWindow->exec();
 
@@ -364,9 +371,10 @@ void MainWindow::on_actionNew_Record_triggered()
     {
         const QString& recordId = this->recordWindow->getRecordId();
         const QString& recordDisplayName = this->recordWindow->getRecordDisplayName();
+        const QString& recordSetName = this->recordWindow->getRecordSetName();
 
         // Update model.
-        this->controller->getRecordsController().addRecord(recordId, recordDisplayName);
+        recordsController.addRecord(recordId, recordDisplayName, recordSetName);
 
         // Update view.
         this->recordTreeWidget->addRecord(recordId, recordDisplayName);

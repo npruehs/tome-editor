@@ -50,6 +50,11 @@ void MapWindow::init()
         this->ui->comboBoxKeyType->addItem(typeNames[i]);
         this->ui->comboBoxValueType->addItem(typeNames[i]);
     }
+
+    // Set type set names.
+    const QStringList typeSetNames = this->typesController.getCustomTypeSetNames();
+    this->setTypeSetNames(typeSetNames);
+    this->setTypeSetName(typeSetNames.first());
 }
 
 void MapWindow::setMapName(const QString& mapName)

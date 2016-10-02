@@ -14,9 +14,9 @@ namespace Tome
             TypesController();
 
             void addCustomTypeSet(const CustomTypeSet& customTypeSet);
-            const CustomType addEnumeration(const QString& name, const QStringList& enumeration);
-            const CustomType addList(const QString& name, const QString& itemType);
-            const CustomType addMap(const QString& name, const QString& keyType, const QString& valueType);
+            const CustomType addEnumeration(const QString& name, const QStringList& enumeration, const QString& customTypeSetName);
+            const CustomType addList(const QString& name, const QString& itemType, const QString& customTypeSetName);
+            const CustomType addMap(const QString& name, const QString& keyType, const QString& valueType, const QString& customTypeSetName);
 
             const QStringList getBuiltInTypes() const;
 
@@ -56,6 +56,7 @@ namespace Tome
         private:
             CustomTypeSetList* model;
 
+            void addCustomType(CustomType customType, const QString& customTypeSetName);
             CustomType* getCustomTypeByName(const QString& name) const;
     };
 }

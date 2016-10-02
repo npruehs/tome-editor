@@ -19,42 +19,36 @@ void TypesController::addCustomTypeSet(const CustomTypeSet& customTypeSet)
     this->model->push_back(customTypeSet);
 }
 
-const CustomType TypesController::addEnumeration(const QString& name, const QStringList& enumeration)
+const CustomType TypesController::addEnumeration(const QString& name, const QStringList& enumeration, const QString& customTypeSetName)
 {
     CustomType newType = CustomType();
     newType.name = name;
     newType.setEnumeration(enumeration);
 
-    CustomTypeList& types = (*this->model)[0].types;
-    int index = findInsertionIndex(types, newType, customTypeLessThanName);
-    types.insert(index, newType);
+    this->addCustomType(newType, customTypeSetName);
 
     return newType;
 }
 
-const CustomType TypesController::addList(const QString& name, const QString& itemType)
+const CustomType TypesController::addList(const QString& name, const QString& itemType, const QString& customTypeSetName)
 {
     CustomType newType = CustomType();
     newType.name = name;
     newType.setItemType(itemType);
 
-    CustomTypeList& types = (*this->model)[0].types;
-    int index = findInsertionIndex(types, newType, customTypeLessThanName);
-    types.insert(index, newType);
+    this->addCustomType(newType, customTypeSetName);
 
     return newType;
 }
 
-const CustomType TypesController::addMap(const QString& name, const QString& keyType, const QString& valueType)
+const CustomType TypesController::addMap(const QString& name, const QString& keyType, const QString& valueType, const QString& customTypeSetName)
 {
     CustomType newType = CustomType();
     newType.name = name;
     newType.setKeyType(keyType);
     newType.setValueType(valueType);
 
-    CustomTypeList& types = (*this->model)[0].types;
-    int index = findInsertionIndex(types, newType, customTypeLessThanName);
-    types.insert(index, newType);
+    this->addCustomType(newType, customTypeSetName);
 
     return newType;
 }
@@ -401,6 +395,29 @@ QString TypesController::valueToString(const QVariant& value, const QString& typ
 
     // Default.
     return value.toString();
+}
+
+void TypesController::addCustomType(CustomType customType, const QString& customTypeSetName)
+{
+    customType.typeSetName = customTypeSetName;
+
+    for (CustomTypeSetList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        CustomTypeSet& customTypeSet = *it;
+
+        if (customTypeSet.name == customTypeSetName)
+        {
+            CustomTypeList& types = customTypeSet.types;
+            int index = findInsertionIndex(types, customType, customTypeLessThanName);
+            types.insert(index, customType);
+            return;
+        }
+    }
+
+    const QString errorMessage = "Custom type set not found: " + customTypeSetName;
+    throw std::out_of_range(errorMessage.toStdString());
 }
 
 CustomType* TypesController::getCustomTypeByName(const QString& name) const

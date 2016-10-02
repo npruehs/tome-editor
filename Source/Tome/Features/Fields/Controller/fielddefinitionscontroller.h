@@ -11,7 +11,14 @@ namespace Tome
         public:
             FieldDefinitionsController();
 
-            const FieldDefinition addFieldDefinition(const QString& id, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& component, const QString& description);
+            const FieldDefinition addFieldDefinition(
+                    const QString& id,
+                    const QString& displayName,
+                    const QString& fieldType,
+                    const QVariant& defaultValue,
+                    const QString& component,
+                    const QString& description,
+                    const QString& fieldDefinitionSetName);
             void addFieldDefinitionSet(const FieldDefinitionSet& fieldDefinitionSet);
             const FieldDefinition& getFieldDefinition(const QString& id) const;
             const FieldDefinitionList getFieldDefinitions() const;

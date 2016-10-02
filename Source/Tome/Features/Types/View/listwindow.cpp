@@ -44,6 +44,11 @@ void ListWindow::init()
     {
         this->ui->comboBoxItemType->addItem(typeNames[i]);
     }
+
+    // Set type set names.
+    const QStringList typeSetNames = this->typesController.getCustomTypeSetNames();
+    this->setTypeSetNames(typeSetNames);
+    this->setTypeSetName(typeSetNames.first());
 }
 
 void ListWindow::setListName(const QString& listName)
