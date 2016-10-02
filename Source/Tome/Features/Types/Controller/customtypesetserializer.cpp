@@ -82,6 +82,7 @@ void CustomTypeSetSerializer::deserialize(QIODevice& device, CustomTypeSet& cust
                 CustomType type = CustomType();
 
                 type.name = reader.readAttribute(ElementName);
+                type.typeSetName = customTypeSet.name;
 
                 reader.readStartElement(ElementType);
                 {

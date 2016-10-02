@@ -116,7 +116,8 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
                         this->fieldDefinitionWindow->getFieldType(),
                         this->fieldDefinitionWindow->getDefaultValue(),
                         component,
-                        this->fieldDefinitionWindow->getFieldDescription());
+                        this->fieldDefinitionWindow->getFieldDescription(),
+                        this->fieldDefinitionWindow->getFieldDefinitionSetName());
 
             this->recordsController.moveFieldToComponent(fieldId, QString(), component);
 
@@ -171,6 +172,8 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
     this->fieldDefinitionWindow->setDefaultValue(fieldDefinition.defaultValue);
     this->fieldDefinitionWindow->setFieldDescription(fieldDefinition.description);
     this->fieldDefinitionWindow->setFieldComponent(fieldDefinition.component);
+    this->fieldDefinitionWindow->setFieldDefinitionSetNames(this->fieldDefinitionsController.getFieldDefinitionSetNames());
+    this->fieldDefinitionWindow->setFieldDefinitionSetName(fieldDefinition.fieldDefinitionSetName);
 
     int result = this->fieldDefinitionWindow->exec();
 
@@ -184,7 +187,8 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
                  this->fieldDefinitionWindow->getFieldType(),
                  this->fieldDefinitionWindow->getDefaultValue(),
                  this->fieldDefinitionWindow->getFieldDescription(),
-                 this->fieldDefinitionWindow->getFieldComponent());
+                 this->fieldDefinitionWindow->getFieldComponent(),
+                 this->fieldDefinitionWindow->getFieldDefinitionSetName());
 
         // Notify listeners.
         emit fieldChanged();
@@ -280,7 +284,15 @@ void FieldDefinitionsWindow::updateMenus()
     this->ui->actionFind_Usages->setEnabled(hasSelection);
 }
 
-void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Component& component)
+void FieldDefinitionsWindow::updateFieldDefinition(
+        const QString oldId,
+        const QString newId,
+        const QString& displayName,
+        const QString& fieldType,
+        const QVariant& defaultValue,
+        const QString& description,
+        const Component& component,
+        const QString& fieldDefinitionSetName)
 {
     const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(oldId);
 
@@ -289,7 +301,7 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId, const QS
         // Update model.
         const QString oldComponent = fieldDefinition.component;
 
-        this->fieldDefinitionsController.updateFieldDefinition(oldId, newId, displayName, fieldType, defaultValue, component, description);
+        this->fieldDefinitionsController.updateFieldDefinition(oldId, newId, displayName, fieldType, defaultValue, component, description, fieldDefinitionSetName);
         this->recordsController.renameRecordField(oldId, newId);
         this->recordsController.moveFieldToComponent(newId, oldComponent, component);
 

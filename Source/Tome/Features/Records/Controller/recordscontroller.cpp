@@ -16,17 +16,31 @@ RecordsController::RecordsController(const FieldDefinitionsController& fieldDefi
 {
 }
 
-const Record RecordsController::addRecord(const QString& id, const QString& displayName)
+const Record RecordsController::addRecord(const QString& id, const QString& displayName, const QString& recordSetName)
 {
     Record record = Record();
     record.id = id;
     record.displayName = displayName;
+    record.recordSetName = recordSetName;
 
-    RecordList& records = (*this->model)[0].records;
-    int index = findInsertionIndex(records, record, recordLessThanDisplayName);
-    records.insert(index, record);
+    for (RecordSetList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        RecordSet& recordSet = *it;
 
-    return record;
+        if (recordSet.name == recordSetName)
+        {
+            RecordList& records = recordSet.records;
+            int index = findInsertionIndex(records, record, recordLessThanDisplayName);
+            records.insert(index, record);
+
+            return record;
+        }
+    }
+
+    const QString errorMessage = "Record set not found: " + recordSetName;
+    throw std::out_of_range(errorMessage.toStdString());
 }
 
 void RecordsController::addRecordField(const QString& recordId, const QString& fieldId)
@@ -235,6 +249,19 @@ const QStringList RecordsController::getRecordNames() const
     return names;
 }
 
+const QStringList RecordsController::getRecordSetNames() const
+{
+    QStringList names;
+
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        const RecordSet& recordSet = this->model->at(i);
+        names << recordSet.name;
+    }
+
+    return names;
+}
+
 const RecordFieldValueMap RecordsController::getRecordFieldValues(const QString& id) const
 {
     Record* record = this->getRecordById(id);
@@ -381,6 +408,42 @@ void RecordsController::moveFieldToComponent(const QString& fieldId, const QStri
                 if (hasAllFieldsOfNewComponent)
                 {
                     this->addRecordField(record.id, fieldId);
+                }
+            }
+        }
+    }
+}
+
+void RecordsController::moveRecordToSet(const QString& recordId, const QString& recordSetName)
+{
+    Record record = this->getRecord(recordId);
+
+    for (RecordSetList::iterator itSets = this->model->begin();
+         itSets != this->model->end();
+         ++itSets)
+    {
+        RecordSet& recordSet = (*itSets);
+        RecordList& records = recordSet.records;
+
+        // Check if should add record.
+        if (recordSet.name == recordSetName)
+        {
+            int index = findInsertionIndex(records, record, recordLessThanDisplayName);
+            record.recordSetName = recordSetName;
+            records.insert(index, record);
+            continue;
+        }
+        else
+        {
+            // Check if should remove record.
+            for (RecordList::iterator it = records.begin();
+                 it != records.end();
+                 ++it)
+            {
+                if ((*it).id == recordId)
+                {
+                    records.erase(it);
+                    break;
                 }
             }
         }

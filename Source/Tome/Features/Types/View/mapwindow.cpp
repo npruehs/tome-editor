@@ -32,6 +32,11 @@ QString MapWindow::getMapValueType() const
     return this->ui->comboBoxValueType->currentText();
 }
 
+QString MapWindow::getTypeSetName() const
+{
+    return this->ui->comboBoxTypeSet->currentText();
+}
+
 void MapWindow::init()
 {
     // Set type names.
@@ -45,6 +50,11 @@ void MapWindow::init()
         this->ui->comboBoxKeyType->addItem(typeNames[i]);
         this->ui->comboBoxValueType->addItem(typeNames[i]);
     }
+
+    // Set type set names.
+    const QStringList typeSetNames = this->typesController.getCustomTypeSetNames();
+    this->setTypeSetNames(typeSetNames);
+    this->setTypeSetName(typeSetNames.first());
 }
 
 void MapWindow::setMapName(const QString& mapName)
@@ -60,6 +70,17 @@ void MapWindow::setMapKeyType(const QString& keyType)
 void MapWindow::setMapValueType(const QString& valueType)
 {
     this->ui->comboBoxValueType->setCurrentText(valueType);
+}
+
+void MapWindow::setTypeSetName(const QString& typeSetName)
+{
+    this->ui->comboBoxTypeSet->setCurrentText(typeSetName);
+}
+
+void MapWindow::setTypeSetNames(const QStringList& typeSetNames)
+{
+    this->ui->comboBoxTypeSet->clear();
+    this->ui->comboBoxTypeSet->addItems(typeSetNames);
 }
 
 void MapWindow::accept()

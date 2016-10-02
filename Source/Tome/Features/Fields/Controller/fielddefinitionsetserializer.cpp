@@ -115,6 +115,7 @@ void FieldDefinitionSetSerializer::deserialize(QIODevice& device, FieldDefinitio
                 fieldDefinition.description = reader.readAttribute(AttributeDescription);
                 fieldDefinition.defaultValue = reader.readAttribute(AttributeDefaultValue);
                 fieldDefinition.fieldType = reader.readAttribute(AttributeType);
+                fieldDefinition.fieldDefinitionSetName = fieldDefinitionSet.name;
 
                 QString component = reader.readAttribute(AttributeComponent);
 

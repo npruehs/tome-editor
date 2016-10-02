@@ -14,9 +14,9 @@ namespace Tome
             TypesController();
 
             void addCustomTypeSet(const CustomTypeSet& customTypeSet);
-            const CustomType addEnumeration(const QString& name, const QStringList& enumeration);
-            const CustomType addList(const QString& name, const QString& itemType);
-            const CustomType addMap(const QString& name, const QString& keyType, const QString& valueType);
+            const CustomType addEnumeration(const QString& name, const QStringList& enumeration, const QString& customTypeSetName);
+            const CustomType addList(const QString& name, const QString& itemType, const QString& customTypeSetName);
+            const CustomType addMap(const QString& name, const QString& keyType, const QString& valueType, const QString& customTypeSetName);
 
             const QStringList getBuiltInTypes() const;
 
@@ -29,6 +29,7 @@ namespace Tome
 
             const CustomTypeList getCustomTypes() const;
             const CustomTypeSetList& getCustomTypeSets() const;
+            const QStringList getCustomTypeSetNames() const;
 
             /**
              * @brief getCustomTypeNames Returns a list of all type names of this project, including built-in types.
@@ -39,14 +40,15 @@ namespace Tome
             int indexOf(const CustomType& customType) const;
             bool isBuiltInType(const QString& name) const;
             bool isCustomType(const QString& name) const;
+            void moveCustomTypeToSet(const QString& customTypeName, const QString& customTypeSetName);
             void removeCustomType(const QString& typeName);
             void removeCustomTypeAt(const int index);
             void removeCustomTypeSet(const QString& name);
             void renameType(const QString oldName, const QString newName);
             void setCustomTypes(CustomTypeSetList& model);
-            void updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration);
-            void updateList(const QString& oldName, const QString& newName, const QString& itemType);
-            void updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType);
+            void updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration, const QString& typeSetName);
+            void updateList(const QString& oldName, const QString& newName, const QString& itemType, const QString& typeSetName);
+            void updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType, const QString& typeSetName);
 
             QString valueToString(const QVariant& value, const QString& typeName);
 
@@ -54,6 +56,7 @@ namespace Tome
         private:
             CustomTypeSetList* model;
 
+            void addCustomType(CustomType customType, const QString& customTypeSetName);
             CustomType* getCustomTypeByName(const QString& name) const;
     };
 }

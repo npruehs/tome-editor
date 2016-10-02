@@ -30,7 +30,7 @@ EnumerationWindow::~EnumerationWindow()
 
 QString EnumerationWindow::getEnumerationName() const
 {
-    return this->ui->lineEdit->text();
+    return this->ui->lineEditTypeName->text();
 }
 
 QStringList EnumerationWindow::getEnumerationMembers() const
@@ -38,9 +38,14 @@ QStringList EnumerationWindow::getEnumerationMembers() const
     return this->enumeration;
 }
 
+QString EnumerationWindow::getTypeSetName() const
+{
+    return this->ui->comboBoxTypeSet->currentText();
+}
+
 void EnumerationWindow::setEnumerationName(const QString& typeName)
 {
-    this->ui->lineEdit->setText(typeName);
+    this->ui->lineEditTypeName->setText(typeName);
 }
 
 void EnumerationWindow::setEnumerationMembers(const QStringList enumeration)
@@ -51,6 +56,17 @@ void EnumerationWindow::setEnumerationMembers(const QStringList enumeration)
     // Update view.
     this->ui->listWidget->clear();
     this->ui->listWidget->insertItems(0, enumeration);
+}
+
+void EnumerationWindow::setTypeSetName(const QString& typeSet)
+{
+    this->ui->comboBoxTypeSet->setCurrentText(typeSet);
+}
+
+void EnumerationWindow::setTypeSetNames(const QStringList& typeSets)
+{
+    this->ui->comboBoxTypeSet->clear();
+    this->ui->comboBoxTypeSet->addItems(typeSets);
 }
 
 void EnumerationWindow::accept()
@@ -65,7 +81,7 @@ void EnumerationWindow::accept()
 void EnumerationWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
-    this->ui->lineEdit->setFocus();
+    this->ui->lineEditTypeName->setFocus();
 }
 
 void EnumerationWindow::on_actionNew_Member_triggered()

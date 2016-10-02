@@ -33,6 +33,7 @@ class FieldDefinitionWindow : public QDialog
         ~FieldDefinitionWindow();
 
         Tome::Component getFieldComponent() const;
+        QString getFieldDefinitionSetName() const;
         QString getFieldDescription() const;
         QString getFieldDisplayName() const;
         QString getFieldId() const;
@@ -42,6 +43,8 @@ class FieldDefinitionWindow : public QDialog
         void init();
 
         void setFieldComponent(const QString& component) const;
+        void setFieldDefinitionSetName(const QString& fieldDefinitionSetName);
+        void setFieldDefinitionSetNames(const QStringList& fieldDefinitionSetNames);
         void setFieldDescription(const QString& description);
         void setFieldDisplayName(const QString& displayName);
         void setFieldId(const QString& fieldId);

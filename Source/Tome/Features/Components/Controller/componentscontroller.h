@@ -12,10 +12,11 @@ namespace Tome
         public:
             ComponentsController();
 
-            const Component addComponent(const QString& componentName);
+            const Component addComponent(const QString& componentName, const QString& componentSetName);
             void addComponentSet(const ComponentSet& componentSet);
             const ComponentList getComponents() const;
             const ComponentSetList& getComponentSets() const;
+            const QStringList getComponentSetNames() const;
             int indexOf(const Component& component) const;
             void removeComponent(const Component component);
             void removeComponentSet(const QString& name);

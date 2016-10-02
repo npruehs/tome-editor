@@ -23,12 +23,15 @@ class MapWindow : public QDialog
         QString getMapName() const;
         QString getMapKeyType() const;
         QString getMapValueType() const;
+        QString getTypeSetName() const;
 
         void init();
 
         void setMapName(const QString& mapName);
         void setMapKeyType(const QString& keyType);
         void setMapValueType(const QString& valueType);
+        void setTypeSetName(const QString& typeSetName);
+        void setTypeSetNames(const QStringList& typeSetNames);
 
     public slots:
         void accept();

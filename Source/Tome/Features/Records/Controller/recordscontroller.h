@@ -18,7 +18,7 @@ namespace Tome
         public:
             RecordsController(const FieldDefinitionsController& fieldDefinitionsController);
 
-            const Record addRecord(const QString& id, const QString& displayName);
+            const Record addRecord(const QString& id, const QString& displayName, const QString& recordSetName);
             void addRecordField(const QString& recordId, const QString& fieldId);
             void addRecordSet(const RecordSet& recordSet);
 
@@ -54,6 +54,8 @@ namespace Tome
              */
             const QStringList getRecordNames() const;
 
+            const QStringList getRecordSetNames() const;
+
             /**
              * @brief getRecordFieldValues Returns the map of actual field values of the record with the specified id, including all inherited values.
              * @param id Id of the record the get the map of field values of.
@@ -73,6 +75,7 @@ namespace Tome
             bool isAncestorOf(const QString& possibleAncestor, const QString& recordId) const;
 
             void moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent);
+            void moveRecordToSet(const QString& recordId, const QString& recordSetName);
 
             void removeRecord(const QString& recordId);
             void removeRecordField(const QString fieldId);

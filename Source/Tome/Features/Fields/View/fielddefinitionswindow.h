@@ -70,7 +70,15 @@ class FieldDefinitionsWindow : public QMainWindow
         void updateTable();
         void updateMenus();
 
-        void updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Tome::Component& component);
+        void updateFieldDefinition(
+                const QString oldId,
+                const QString newId,
+                const QString& displayName,
+                const QString& fieldType,
+                const QVariant& defaultValue,
+                const QString& description,
+                const Tome::Component& component,
+                const QString& fieldDefinitionSetName);
         void updateRow(const int index, const Tome::FieldDefinition& fieldDefinition);
 };
 

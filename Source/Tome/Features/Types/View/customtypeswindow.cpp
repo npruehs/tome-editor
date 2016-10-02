@@ -65,6 +65,10 @@ void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
     this->enumerationWindow->setEnumerationName("");
     this->enumerationWindow->setEnumerationMembers(QStringList());
 
+    const QStringList typeSetNames = this->typesController.getCustomTypeSetNames();
+    this->enumerationWindow->setTypeSetNames(typeSetNames);
+    this->enumerationWindow->setTypeSetName(typeSetNames.first());
+
     int result = this->enumerationWindow->exec();
 
     if (result == QDialog::Accepted)
@@ -73,7 +77,8 @@ void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
         CustomType newType =
                 this->typesController.addEnumeration(
                     this->enumerationWindow->getEnumerationName(),
-                    this->enumerationWindow->getEnumerationMembers());
+                    this->enumerationWindow->getEnumerationMembers(),
+                    this->enumerationWindow->getTypeSetName());
 
         // Update view.
         this->ui->tableWidget->insertRow(0);
@@ -98,7 +103,8 @@ void CustomTypesWindow::on_actionNew_List_triggered()
         CustomType newType =
                 this->typesController.addList(
                     this->listWindow->getListName(),
-                    this->listWindow->getListItemType());
+                    this->listWindow->getListItemType(),
+                    this->enumerationWindow->getTypeSetName());
 
         // Update view.
         this->ui->tableWidget->insertRow(0);
@@ -124,14 +130,14 @@ void CustomTypesWindow::on_actionNew_Map_triggered()
                 this->typesController.addMap(
                     this->mapWindow->getMapName(),
                     this->mapWindow->getMapKeyType(),
-                    this->mapWindow->getMapValueType());
+                    this->mapWindow->getMapValueType(),
+                    this->enumerationWindow->getTypeSetName());
 
         // Update view.
         this->ui->tableWidget->insertRow(0);
         this->updateRow(0, newType);
     }
 }
-
 
 void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
 {
@@ -225,6 +231,8 @@ void CustomTypesWindow::editEnumeration(QString typeName, const CustomType& type
     // Update view.
     this->enumerationWindow->setEnumerationName(type.name);
     this->enumerationWindow->setEnumerationMembers(type.getEnumeration());
+    this->enumerationWindow->setTypeSetNames(this->typesController.getCustomTypeSetNames());
+    this->enumerationWindow->setTypeSetName(type.typeSetName);
 
     int result = this->enumerationWindow->exec();
 
@@ -234,7 +242,8 @@ void CustomTypesWindow::editEnumeration(QString typeName, const CustomType& type
         this->updateEnumeration(
                     typeName,
                     this->enumerationWindow->getEnumerationName(),
-                    this->enumerationWindow->getEnumerationMembers());
+                    this->enumerationWindow->getEnumerationMembers(),
+                    this->enumerationWindow->getTypeSetName());
     }
 }
 
@@ -251,6 +260,8 @@ void CustomTypesWindow::editList(QString typeName, const CustomType& type)
     // Update view.
     this->listWindow->setListName(type.name);
     this->listWindow->setListItemType(type.getItemType());
+    this->listWindow->setTypeSetNames(this->typesController.getCustomTypeSetNames());
+    this->listWindow->setTypeSetName(type.typeSetName);
 
     int result = this->listWindow->exec();
 
@@ -260,7 +271,8 @@ void CustomTypesWindow::editList(QString typeName, const CustomType& type)
         this->updateList(
                     typeName,
                     this->listWindow->getListName(),
-                    this->listWindow->getListItemType());
+                    this->listWindow->getListItemType(),
+                    this->listWindow->getTypeSetName());
     }
 }
 
@@ -278,6 +290,8 @@ void CustomTypesWindow::editMap(QString typeName, const CustomType& type)
     this->mapWindow->setMapName(type.name);
     this->mapWindow->setMapKeyType(type.getKeyType());
     this->mapWindow->setMapValueType(type.getValueType());
+    this->mapWindow->setTypeSetNames(this->typesController.getCustomTypeSetNames());
+    this->mapWindow->setTypeSetName(type.typeSetName);
 
     int result = this->mapWindow->exec();
 
@@ -288,35 +302,36 @@ void CustomTypesWindow::editMap(QString typeName, const CustomType& type)
                     typeName,
                     this->mapWindow->getMapName(),
                     this->mapWindow->getMapKeyType(),
-                    this->mapWindow->getMapValueType());
+                    this->mapWindow->getMapValueType(),
+                    this->mapWindow->getTypeSetName());
     }
 }
 
-void CustomTypesWindow::updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration)
+void CustomTypesWindow::updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration, const QString& typeSetName)
 {
     // Update model.
     this->fieldDefinitionsController.renameFieldType(oldName, newName);
-    this->typesController.updateEnumeration(oldName, newName, enumeration);
+    this->typesController.updateEnumeration(oldName, newName, enumeration, typeSetName);
 
     // Update view.
     this->updateTable();
 }
 
-void CustomTypesWindow::updateList(const QString& oldName, const QString& newName, const QString& itemType)
+void CustomTypesWindow::updateList(const QString& oldName, const QString& newName, const QString& itemType, const QString& typeSetName)
 {
     // Update model.
     this->fieldDefinitionsController.renameFieldType(oldName, newName);
-    this->typesController.updateList(oldName, newName, itemType);
+    this->typesController.updateList(oldName, newName, itemType, typeSetName);
 
     // Update view.
     this->updateTable();
 }
 
-void CustomTypesWindow::updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType)
+void CustomTypesWindow::updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType, const QString& typeSetName)
 {
     // Update model.
     this->fieldDefinitionsController.renameFieldType(oldName, newName);
-    this->typesController.updateMap(oldName, newName, keyType, valueType);
+    this->typesController.updateMap(oldName, newName, keyType, valueType, typeSetName);
 
     // Update view.
     this->updateTable();

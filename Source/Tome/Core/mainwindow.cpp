@@ -341,10 +341,12 @@ void MainWindow::on_actionNew_Record_triggered()
         this->recordWindow = new RecordWindow(this);
     }
 
+    RecordsController& recordsController = this->controller->getRecordsController();
+
     // Add fields.
     const FieldDefinitionList& fieldDefinitions =
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
-    const QStringList recordIds = this->controller->getRecordsController().getRecordIds();
+    const QStringList recordIds = recordsController.getRecordIds();
     const ComponentList& componentDefinitions =
             this->controller->getComponentsController().getComponents();
 
@@ -357,6 +359,11 @@ void MainWindow::on_actionNew_Record_triggered()
     // Set components.
     this->recordWindow->setRecordComponents(componentDefinitions);
 
+    // Set record set names.
+    const QStringList recordSetNames = recordsController.getRecordSetNames();
+    this->recordWindow->setRecordSetNames(recordSetNames);
+    this->recordWindow->setRecordSetName(recordSetNames.first());
+
     // Show window.
     int result = this->recordWindow->exec();
 
@@ -364,9 +371,10 @@ void MainWindow::on_actionNew_Record_triggered()
     {
         const QString& recordId = this->recordWindow->getRecordId();
         const QString& recordDisplayName = this->recordWindow->getRecordDisplayName();
+        const QString& recordSetName = this->recordWindow->getRecordSetName();
 
         // Update model.
-        this->controller->getRecordsController().addRecord(recordId, recordDisplayName);
+        recordsController.addRecord(recordId, recordDisplayName, recordSetName);
 
         // Update view.
         this->recordTreeWidget->addRecord(recordId, recordDisplayName);
@@ -402,8 +410,10 @@ void MainWindow::on_actionEdit_Record_triggered()
         return;
     }
 
+    RecordsController& recordsController = this->controller->getRecordsController();
+
     // Get selected record.
-    const Record& record = this->controller->getRecordsController().getRecord(id);
+    const Record& record = recordsController.getRecord(id);
 
     // Check if read-only.
     if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
@@ -423,7 +433,7 @@ void MainWindow::on_actionEdit_Record_triggered()
     this->recordWindow->setRecordDisplayName(record.displayName);
 
     // Disallow all other record ids.
-    QStringList recordIds = this->controller->getRecordsController().getRecordIds();
+    QStringList recordIds = recordsController.getRecordIds();
     recordIds.removeOne(record.id);
 
     this->recordWindow->setDisallowedRecordIds(recordIds);
@@ -432,11 +442,15 @@ void MainWindow::on_actionEdit_Record_triggered()
     const FieldDefinitionList& fieldDefinitions =
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
     const RecordFieldValueMap inheritedFieldValues =
-            this->controller->getRecordsController().getInheritedFieldValues(record.id);
+            recordsController.getInheritedFieldValues(record.id);
     const ComponentList& componentDefinitions =
             this->controller->getComponentsController().getComponents();
 
     this->recordWindow->setRecordFields(fieldDefinitions, componentDefinitions, record.fieldValues, inheritedFieldValues);
+
+    // Set record set.
+    this->recordWindow->setRecordSetNames(recordsController.getRecordSetNames());
+    this->recordWindow->setRecordSetName(record.recordSetName);
 
     int result = this->recordWindow->exec();
 
@@ -450,7 +464,7 @@ void MainWindow::on_actionEdit_Record_triggered()
 
         // Get inherited fields.
         const RecordFieldValueMap inheritedFieldValues =
-                this->controller->getRecordsController().getInheritedFieldValues(recordId);
+                recordsController.getInheritedFieldValues(recordId);
 
         // Update record fields.
         const QMap<QString, RecordFieldState::RecordFieldState> recordFields =
@@ -480,6 +494,14 @@ void MainWindow::on_actionEdit_Record_triggered()
             {
                 this->removeRecordField(fieldId);
             }
+        }
+
+        // Move record, if necessary.
+        const QString recordSetName = this->recordWindow->getRecordSetName();
+
+        if (record.recordSetName != recordSetName)
+        {
+            recordsController.moveRecordToSet(record.id, recordSetName);
         }
 
         // Update view.

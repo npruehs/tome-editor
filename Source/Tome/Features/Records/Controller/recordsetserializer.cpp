@@ -137,6 +137,7 @@ void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) c
                 record.displayName = reader.readAttribute(ElementDisplayName);
                 record.parentId = reader.readAttribute(ElementParentId);
                 record.readOnly = reader.readAttribute(ElementReadOnly) == "true";
+                record.recordSetName = recordSet.name;
 
                 reader.readStartElement(ElementRecord);
 

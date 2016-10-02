@@ -11,13 +11,27 @@ ComponentsController::ComponentsController()
 {
 }
 
-const Component ComponentsController::addComponent(const QString& componentName)
+const Component ComponentsController::addComponent(const QString& componentName, const QString& componentSetName)
 {
     Component component = Component(componentName);
-    ComponentList& components = (*this->model)[0].components;
-    int index = findInsertionIndex(components, component, qStringLessThanLowerCase);
-    components.insert(index, component);
-    return component;
+
+    for (ComponentSetList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        ComponentSet& componentSet = *it;
+
+        if (componentSet.name == componentSetName)
+        {
+            ComponentList& components = componentSet.components;
+            int index = findInsertionIndex(components, component, qStringLessThanLowerCase);
+            components.insert(index, component);
+            return component;
+        }
+    }
+
+    const QString errorMessage = "Component set not found: " + componentSetName;
+    throw std::out_of_range(errorMessage.toStdString());
 }
 
 void ComponentsController::addComponentSet(const ComponentSet& componentSet)
@@ -45,6 +59,19 @@ const ComponentList ComponentsController::getComponents() const
 const ComponentSetList& ComponentsController::getComponentSets() const
 {
     return *this->model;
+}
+
+const QStringList ComponentsController::getComponentSetNames() const
+{
+    QStringList names;
+
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        const ComponentSet& componentSet = this->model->at(i);
+        names << componentSet.name;
+    }
+
+    return names;
 }
 
 int ComponentsController::indexOf(const Component& component) const
