@@ -12,6 +12,7 @@ namespace Tome
     class ComponentsController;
     class CustomTypeSet;
     class ExportController;
+    class FacetsController;
     class FieldDefinitionSet;
     class FieldDefinitionsController;
     class FindRecordController;
@@ -41,6 +42,7 @@ namespace Tome
             TypesController& getTypesController();
             FindUsagesController& getFindUsagesController();
             FindRecordController& getFindRecordController();
+            FacetsController& getFacetsController();
 
             int start();
 
@@ -96,6 +98,7 @@ namespace Tome
             TasksController* tasksController;
             FindUsagesController* findUsagesController;
             FindRecordController* findRecordController;
+            FacetsController* facetsController;
 
             MainWindow* mainWindow;
 

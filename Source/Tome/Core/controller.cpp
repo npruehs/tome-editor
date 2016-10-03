@@ -13,6 +13,13 @@
 #include "../Features/Components/Controller/componentsetserializer.h"
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Export/Controller/exporttemplateserializer.h"
+#include "../Features/Facets/Controller/facetscontroller.h"
+#include "../Features/Facets/Controller/maximumintegervaluefacet.h"
+#include "../Features/Facets/Controller/maximumrealvaluefacet.h"
+#include "../Features/Facets/Controller/maximumstringlengthfacet.h"
+#include "../Features/Facets/Controller/minimumintegervaluefacet.h"
+#include "../Features/Facets/Controller/minimumrealvaluefacet.h"
+#include "../Features/Facets/Controller/requiredreferenceancestorfacet.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
 #include "../Features/Integrity/Controller/fieldtypedoesnotexisttask.h"
@@ -68,6 +75,7 @@ Controller::Controller(CommandLineOptions* options) :
     tasksController(new TasksController(*this->componentsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findRecordController(new FindRecordController(*this->recordsController)),
+    facetsController(new FacetsController()),
     mainWindow(0)
 {
     // Setup tasks.
@@ -78,6 +86,14 @@ Controller::Controller(CommandLineOptions* options) :
     this->tasksController->addTask(new MapKeyTypeNotSupportedTask());
     this->tasksController->addTask(new MapValueTypeDoesNotExistTask());
     this->tasksController->addTask(new MapValueTypeNotSupportedTask());
+
+    // Register facets.
+    this->facetsController->registerFacet(new MinimumIntegerValueFacet());
+    this->facetsController->registerFacet(new MaximumIntegerValueFacet());
+    this->facetsController->registerFacet(new MinimumRealValueFacet());
+    this->facetsController->registerFacet(new MaximumRealValueFacet());
+    this->facetsController->registerFacet(new MaximumStringLengthFacet());
+    this->facetsController->registerFacet(new RequiredReferenceAncestorFacet());
 }
 
 Controller::~Controller()
@@ -96,6 +112,7 @@ Controller::~Controller()
     delete this->tasksController;
     delete this->findUsagesController;
     delete this->findRecordController;
+    delete this->facetsController;
 
     delete this->options;
 }
@@ -143,6 +160,11 @@ FindUsagesController& Controller::getFindUsagesController()
 FindRecordController&Controller::getFindRecordController()
 {
     return *this->findRecordController;
+}
+
+FacetsController&Controller::getFacetsController()
+{
+    return *this->facetsController;
 }
 
 int Controller::start()

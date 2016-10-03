@@ -102,7 +102,16 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Search/Controller/findrecordcontroller.cpp \
     ../Source/Tome/Features/Search/View/findrecordwindow.cpp \
     ../Source/Tome/Features/Projects/View/projectoverviewwindow.cpp \
-    ../Source/Tome/Features/Settings/View/usersettingswindow.cpp
+    ../Source/Tome/Features/Settings/View/usersettingswindow.cpp \
+    ../Source/Tome/Features/Facets/Controller/facetscontroller.cpp \
+    ../Source/Tome/Features/Facets/Controller/facet.cpp \
+    ../Source/Tome/Features/Facets/Controller/maximumintegervaluefacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/minimumintegervaluefacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/maximumrealvaluefacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/minimumrealvaluefacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/maximumstringlengthfacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/requiredreferenceancestorfacet.cpp \
+    ../Source/Tome/Features/Facets/Model/facetcontext.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -196,7 +205,16 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Search/Controller/findrecordcontroller.h \
     ../Source/Tome/Features/Search/View/findrecordwindow.h \
     ../Source/Tome/Features/Projects/View/projectoverviewwindow.h \
-    ../Source/Tome/Features/Settings/View/usersettingswindow.h
+    ../Source/Tome/Features/Settings/View/usersettingswindow.h \
+    ../Source/Tome/Features/Facets/Controller/facetscontroller.h \
+    ../Source/Tome/Features/Facets/Controller/facet.h \
+    ../Source/Tome/Features/Facets/Controller/maximumintegervaluefacet.h \
+    ../Source/Tome/Features/Facets/Controller/minimumintegervaluefacet.h \
+    ../Source/Tome/Features/Facets/Controller/maximumrealvaluefacet.h \
+    ../Source/Tome/Features/Facets/Controller/minimumrealvaluefacet.h \
+    ../Source/Tome/Features/Facets/Controller/maximumstringlengthfacet.h \
+    ../Source/Tome/Features/Facets/Controller/requiredreferenceancestorfacet.h \
+    ../Source/Tome/Features/Facets/Model/facetcontext.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

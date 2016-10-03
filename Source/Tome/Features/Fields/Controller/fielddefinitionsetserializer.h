@@ -36,6 +36,7 @@ namespace Tome
             static const QString AttributeType;
             static const QString AttributeValue;
 
+            static const QString ElementFacet;
             static const QString ElementField;
             static const QString ElementFields;
 
