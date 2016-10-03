@@ -16,6 +16,7 @@ namespace Tome
             MaximumIntegerValueFacet();
 
             QWidget* createWidget() const;
+            const QString getDescriptionForValue(const QVariant facetValue) const;
             const QString getDisplayName() const;
             const QString getKey() const;
             const QString getTargetType() const;

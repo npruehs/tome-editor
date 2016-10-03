@@ -17,6 +17,8 @@
 #include "../Features/Components/View/componentswindow.h"
 #include "../Features/Components/Controller/componentscontroller.h"
 #include "../Features/Export/Controller/exportcontroller.h"
+#include "../Features/Facets/Controller/facet.h"
+#include "../Features/Facets/Controller/facetscontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Fields/View/fielddefinitionswindow.h"
@@ -843,6 +845,23 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
     const FieldDefinition& field =
             this->controller->getFieldDefinitionsController().getFieldDefinition(fieldId);
 
+    // Get field facet data.
+    QString facetsDescription;
+    QList<Facet*> facets = this->controller->getFacetsController().getFacets(field.fieldType);
+
+    for (int i = 0; i < facets.count(); ++i)
+    {
+        Facet* facet = facets[i];
+        QString facetKey = facet->getKey();
+
+        if (field.facets.contains(facetKey))
+        {
+            QVariant facetValue = field.facets[facetKey];
+            facetsDescription += facet->getDescriptionForValue(facetValue);
+            facetsDescription += " ";
+        }
+    }
+
     // Prepare window.
     if (!this->fieldValueWindow)
     {
@@ -860,7 +879,7 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
 
     // Update view.
     this->fieldValueWindow->setFieldDisplayName(field.displayName);
-    this->fieldValueWindow->setFieldDescription(field.description);
+    this->fieldValueWindow->setFieldDescription(field.description + " " + facetsDescription);
     this->fieldValueWindow->setFieldType(field.fieldType);
     this->fieldValueWindow->setFieldValue(fieldValue);
 
