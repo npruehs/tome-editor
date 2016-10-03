@@ -240,6 +240,7 @@ void MainWindow::on_actionField_Definions_triggered()
                     this->controller->getRecordsController(),
                     this->controller->getTypesController(),
                     this->controller->getFindUsagesController(),
+                    this->controller->getFacetsController(),
                     this);
 
         connect(

@@ -18,7 +18,8 @@ namespace Tome
                     const QVariant& defaultValue,
                     const QString& component,
                     const QString& description,
-                    const QString& fieldDefinitionSetName);
+                    const QString& fieldDefinitionSetName,
+                    const QVariantMap& facets);
             void addFieldDefinitionSet(const FieldDefinitionSet& fieldDefinitionSet);
             const FieldDefinition& getFieldDefinition(const QString& id) const;
             const FieldDefinitionList getFieldDefinitions() const;
@@ -40,7 +41,8 @@ namespace Tome
                     const QVariant& defaultValue,
                     const QString& component,
                     const QString& description,
-                    const QString& fieldDefinitionSetName);
+                    const QString& fieldDefinitionSetName,
+                    const QVariantMap& facets);
 
         private:
             FieldDefinitionSetList* model;

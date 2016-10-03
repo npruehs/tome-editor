@@ -7,6 +7,7 @@
 
 #include "fielddefinitionwindow.h"
 #include "../Controller/fielddefinitionscontroller.h"
+#include "../../Facets/Controller/facetscontroller.h"
 #include "../../Components/Controller/componentscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Search/Controller/findusagescontroller.h"
@@ -22,6 +23,7 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
         RecordsController& recordsController,
         TypesController& typesController,
         FindUsagesController& findUsagesController,
+        FacetsController& facetsController,
         QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::FieldDefinitionsWindow),
@@ -30,6 +32,7 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
     recordsController(recordsController),
     typesController(typesController),
     findUsagesController(findUsagesController),
+    facetsController(facetsController),
     fieldDefinitionWindow(0)
 {
     ui->setupUi(this);
@@ -93,6 +96,7 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
                     this->componentsController,
                     this->recordsController,
                     this->typesController,
+                    this->facetsController,
                     this);
     }
 
@@ -117,7 +121,8 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
                         this->fieldDefinitionWindow->getDefaultValue(),
                         component,
                         this->fieldDefinitionWindow->getFieldDescription(),
-                        this->fieldDefinitionWindow->getFieldDefinitionSetName());
+                        this->fieldDefinitionWindow->getFieldDefinitionSetName(),
+                        this->fieldDefinitionWindow->getFieldFacets());
 
             this->recordsController.moveFieldToComponent(fieldId, QString(), component);
 
@@ -160,6 +165,7 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
                     this->componentsController,
                     this->recordsController,
                     this->typesController,
+                    this->facetsController,
                     this);
     }
 
@@ -174,6 +180,7 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
     this->fieldDefinitionWindow->setFieldComponent(fieldDefinition.component);
     this->fieldDefinitionWindow->setFieldDefinitionSetNames(this->fieldDefinitionsController.getFieldDefinitionSetNames());
     this->fieldDefinitionWindow->setFieldDefinitionSetName(fieldDefinition.fieldDefinitionSetName);
+    this->fieldDefinitionWindow->setFieldFacets(fieldDefinition.facets);
 
     int result = this->fieldDefinitionWindow->exec();
 
@@ -188,7 +195,8 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
                  this->fieldDefinitionWindow->getDefaultValue(),
                  this->fieldDefinitionWindow->getFieldDescription(),
                  this->fieldDefinitionWindow->getFieldComponent(),
-                 this->fieldDefinitionWindow->getFieldDefinitionSetName());
+                 this->fieldDefinitionWindow->getFieldDefinitionSetName(),
+                 this->fieldDefinitionWindow->getFieldFacets());
 
         // Notify listeners.
         emit fieldChanged();
@@ -284,15 +292,15 @@ void FieldDefinitionsWindow::updateMenus()
     this->ui->actionFind_Usages->setEnabled(hasSelection);
 }
 
-void FieldDefinitionsWindow::updateFieldDefinition(
-        const QString oldId,
+void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId,
         const QString newId,
         const QString& displayName,
         const QString& fieldType,
         const QVariant& defaultValue,
         const QString& description,
         const Component& component,
-        const QString& fieldDefinitionSetName)
+        const QString& fieldDefinitionSetName,
+        const QVariantMap& facets)
 {
     const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(oldId);
 
@@ -301,7 +309,16 @@ void FieldDefinitionsWindow::updateFieldDefinition(
         // Update model.
         const QString oldComponent = fieldDefinition.component;
 
-        this->fieldDefinitionsController.updateFieldDefinition(oldId, newId, displayName, fieldType, defaultValue, component, description, fieldDefinitionSetName);
+        this->fieldDefinitionsController.updateFieldDefinition
+                (oldId,
+                 newId,
+                 displayName,
+                 fieldType,
+                 defaultValue,
+                 component,
+                 description,
+                 fieldDefinitionSetName,
+                 facets);
         this->recordsController.renameRecordField(oldId, newId);
         this->recordsController.moveFieldToComponent(newId, oldComponent, component);
 

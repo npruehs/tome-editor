@@ -1,8 +1,6 @@
 #ifndef TASK
 #define TASK
 
-#include <QString>
-
 #include "../Model/messagelist.h"
 
 

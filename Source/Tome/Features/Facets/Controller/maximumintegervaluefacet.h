@@ -1,0 +1,27 @@
+#ifndef MAXIMUMINTEGERVALUEFACET_H
+#define MAXIMUMINTEGERVALUEFACET_H
+
+#include <QObject>
+
+#include "facet.h"
+
+
+namespace Tome
+{
+    class MaximumIntegerValueFacet : public QObject, public Facet
+    {
+            Q_OBJECT
+
+        public:
+            MaximumIntegerValueFacet();
+
+            QWidget* createWidget() const;
+            const QString getDisplayName() const;
+            const QString getKey() const;
+            const QString getTargetType() const;
+            const QVariant getWidgetValue(QWidget* widget) const;
+            void setWidgetValue(QWidget* widget, const QVariant value) const;
+    };
+}
+
+#endif // MAXIMUMINTEGERVALUEFACET_H
