@@ -7,6 +7,8 @@
 
 namespace Tome
 {
+    class FacetContext;
+
     class MinimumRealValueFacet : public QObject, public Facet
     {
             Q_OBJECT
@@ -14,7 +16,7 @@ namespace Tome
         public:
             MinimumRealValueFacet();
 
-            QWidget* createWidget() const;
+            QWidget* createWidget(const FacetContext& context) const;
             const QVariant getDefaultValue() const;
             const QString getDescriptionForValue(const QVariant facetValue) const;
             const QString getDisplayName() const;
@@ -22,7 +24,7 @@ namespace Tome
             const QString getTargetType() const;
             const QVariant getWidgetValue(QWidget* widget) const;
             void setWidgetValue(QWidget* widget, const QVariant value) const;
-            QString validateValue(const QVariant value, const QVariant facetValue) const;
+            QString validateValue(const FacetContext& context, const QVariant value, const QVariant facetValue) const;
     };
 }
 

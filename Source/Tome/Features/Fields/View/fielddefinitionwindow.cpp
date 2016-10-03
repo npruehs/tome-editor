@@ -8,6 +8,7 @@
 #include "../../Components/Controller/componentscontroller.h"
 #include "../../Facets/Controller/facet.h"
 #include "../../Facets/Controller/facetscontroller.h"
+#include "../../Facets/Model/facetcontext.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/builtintype.h"
@@ -189,13 +190,14 @@ void FieldDefinitionWindow::setFieldFacets(const QVariantMap& facets)
 
     // Add new facet widgets.
     QList<Facet*> typeFacets = this->facetsController.getFacets(this->getFieldType());
+    FacetContext context = FacetContext(this->recordsController);
 
     for (int i = 0; i < typeFacets.count(); ++i)
     {
         // Create facet widget and label.
         Facet* facet = typeFacets[i];
         QString facetDisplayName = facet->getDisplayName();
-        QWidget* facetWidget = facet->createWidget();
+        QWidget* facetWidget = facet->createWidget(context);
 
         // Get current facet value from field definition.
         QString facetKey = facet->getKey();

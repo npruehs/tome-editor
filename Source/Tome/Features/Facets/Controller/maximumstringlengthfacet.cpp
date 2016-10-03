@@ -4,6 +4,7 @@
 
 #include <QSpinBox>
 
+#include "../Model/facetcontext.h"
 #include "../../Types/Model/builtintype.h"
 
 using namespace Tome;
@@ -14,8 +15,10 @@ MaximumStringLengthFacet::MaximumStringLengthFacet()
 
 }
 
-QWidget* MaximumStringLengthFacet::createWidget() const
+QWidget* MaximumStringLengthFacet::createWidget(const FacetContext& context) const
 {
+    Q_UNUSED(context)
+
     QSpinBox* spinBox = new QSpinBox();
     spinBox->setMinimum(0);
     spinBox->setMaximum(std::numeric_limits<int>::max());
@@ -62,8 +65,10 @@ void MaximumStringLengthFacet::setWidgetValue(QWidget* widget, const QVariant va
     spinBox->setValue(value.toInt());
 }
 
-QString MaximumStringLengthFacet::validateValue(const QVariant value, const QVariant facetValue) const
+QString MaximumStringLengthFacet::validateValue(const FacetContext& context, const QVariant value, const QVariant facetValue) const
 {
+    Q_UNUSED(context)
+
     int maxLength = facetValue.toInt();
 
     if (maxLength > 0 && value.toString().length() > maxLength)

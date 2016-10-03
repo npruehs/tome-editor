@@ -6,6 +6,7 @@
 
 #include "fieldvaluewidget.h"
 #include "../../Facets/Controller/facet.h"
+#include "../../Facets/Model/facetcontext.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/customtype.h"
@@ -95,6 +96,8 @@ void FieldValueWindow::on_toolButtonRevert_clicked()
 
 bool FieldValueWindow::validate()
 {
+    FacetContext context = FacetContext(this->recordsController);
+
     // Validate all facets.
     for (int i = 0; i < this->facets.count(); ++i)
     {
@@ -109,7 +112,7 @@ bool FieldValueWindow::validate()
         QVariant facetValue = this->facetValues[facetKey];
         QVariant value = this->getFieldValue();
 
-        QString validationError = facet->validateValue(value, facetValue);
+        QString validationError = facet->validateValue(context, value, facetValue);
 
         if (!validationError.isEmpty())
         {

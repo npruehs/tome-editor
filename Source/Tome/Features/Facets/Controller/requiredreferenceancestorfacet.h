@@ -1,21 +1,20 @@
-#ifndef MAXIMUMINTEGERVALUEFACET_H
-#define MAXIMUMINTEGERVALUEFACET_H
+#ifndef REQUIREDREFERENCEANCESTORFACET_H
+#define REQUIREDREFERENCEANCESTORFACET_H
 
 #include <QObject>
 
 #include "facet.h"
 
-
 namespace Tome
 {
     class FacetContext;
 
-    class MaximumIntegerValueFacet : public QObject, public Facet
+    class RequiredReferenceAncestorFacet : public QObject, public Facet
     {
             Q_OBJECT
 
         public:
-            MaximumIntegerValueFacet();
+            RequiredReferenceAncestorFacet();
 
             QWidget* createWidget(const FacetContext& context) const;
             const QVariant getDefaultValue() const;
@@ -29,4 +28,4 @@ namespace Tome
     };
 }
 
-#endif // MAXIMUMINTEGERVALUEFACET_H
+#endif // REQUIREDREFERENCEANCESTORFACET_H

@@ -109,7 +109,9 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Facets/Controller/minimumintegervaluefacet.cpp \
     ../Source/Tome/Features/Facets/Controller/maximumrealvaluefacet.cpp \
     ../Source/Tome/Features/Facets/Controller/minimumrealvaluefacet.cpp \
-    ../Source/Tome/Features/Facets/Controller/maximumstringlengthfacet.cpp
+    ../Source/Tome/Features/Facets/Controller/maximumstringlengthfacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/requiredreferenceancestorfacet.cpp \
+    ../Source/Tome/Features/Facets/Model/facetcontext.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -210,7 +212,9 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Facets/Controller/minimumintegervaluefacet.h \
     ../Source/Tome/Features/Facets/Controller/maximumrealvaluefacet.h \
     ../Source/Tome/Features/Facets/Controller/minimumrealvaluefacet.h \
-    ../Source/Tome/Features/Facets/Controller/maximumstringlengthfacet.h
+    ../Source/Tome/Features/Facets/Controller/maximumstringlengthfacet.h \
+    ../Source/Tome/Features/Facets/Controller/requiredreferenceancestorfacet.h \
+    ../Source/Tome/Features/Facets/Model/facetcontext.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

@@ -4,6 +4,7 @@
 
 #include <QSpinBox>
 
+#include "../Model/facetcontext.h"
 #include "../../Types/Model/builtintype.h"
 
 using namespace Tome;
@@ -14,8 +15,10 @@ MinimumRealValueFacet::MinimumRealValueFacet()
 
 }
 
-QWidget* MinimumRealValueFacet::createWidget() const
+QWidget* MinimumRealValueFacet::createWidget(const FacetContext& context) const
 {
+    Q_UNUSED(context)
+
     QDoubleSpinBox* doubleSpinBox = new QDoubleSpinBox();
     doubleSpinBox->setMinimum(-std::numeric_limits<float>::max());
     doubleSpinBox->setMaximum(std::numeric_limits<float>::max());
@@ -60,8 +63,10 @@ void MinimumRealValueFacet::setWidgetValue(QWidget* widget, const QVariant value
     doubleSpinBox->setValue(value.toFloat());
 }
 
-QString MinimumRealValueFacet::validateValue(const QVariant value, const QVariant facetValue) const
+QString MinimumRealValueFacet::validateValue(const FacetContext& context, const QVariant value, const QVariant facetValue) const
 {
+    Q_UNUSED(context)
+
     if (value.toFloat() < facetValue.toFloat())
     {
         return tr("Value must not be less than %1.").arg(facetValue.toString());

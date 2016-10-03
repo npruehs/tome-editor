@@ -4,6 +4,7 @@
 
 #include <QSpinBox>
 
+#include "../Model/facetcontext.h"
 #include "../../Types/Model/builtintype.h"
 
 using namespace Tome;
@@ -13,8 +14,10 @@ MaximumIntegerValueFacet::MaximumIntegerValueFacet()
 {
 }
 
-QWidget* MaximumIntegerValueFacet::createWidget() const
+QWidget* MaximumIntegerValueFacet::createWidget(const FacetContext& context) const
 {
+    Q_UNUSED(context)
+
     QSpinBox* spinBox = new QSpinBox();
     spinBox->setMinimum(std::numeric_limits<int>::min());
     spinBox->setMaximum(std::numeric_limits<int>::max());
@@ -59,8 +62,10 @@ void MaximumIntegerValueFacet::setWidgetValue(QWidget* widget, const QVariant va
     spinBox->setValue(value.toInt());
 }
 
-QString MaximumIntegerValueFacet::validateValue(const QVariant value, const QVariant facetValue) const
+QString MaximumIntegerValueFacet::validateValue(const FacetContext& context, const QVariant value, const QVariant facetValue) const
 {
+    Q_UNUSED(context)
+
     if (value.toInt() > facetValue.toInt())
     {
         return tr("Value must not be greater than %1.").arg(facetValue.toString());
