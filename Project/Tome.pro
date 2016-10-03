@@ -105,7 +105,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Settings/View/usersettingswindow.cpp \
     ../Source/Tome/Features/Facets/Controller/facetscontroller.cpp \
     ../Source/Tome/Features/Facets/Controller/facet.cpp \
-    ../Source/Tome/Features/Facets/Controller/maximumintegervaluefacet.cpp
+    ../Source/Tome/Features/Facets/Controller/maximumintegervaluefacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/minimumintegervaluefacet.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -202,7 +203,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Settings/View/usersettingswindow.h \
     ../Source/Tome/Features/Facets/Controller/facetscontroller.h \
     ../Source/Tome/Features/Facets/Controller/facet.h \
-    ../Source/Tome/Features/Facets/Controller/maximumintegervaluefacet.h
+    ../Source/Tome/Features/Facets/Controller/maximumintegervaluefacet.h \
+    ../Source/Tome/Features/Facets/Controller/minimumintegervaluefacet.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

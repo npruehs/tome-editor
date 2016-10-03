@@ -15,6 +15,7 @@
 #include "../Features/Export/Controller/exporttemplateserializer.h"
 #include "../Features/Facets/Controller/facetscontroller.h"
 #include "../Features/Facets/Controller/maximumintegervaluefacet.h"
+#include "../Features/Facets/Controller/minimumintegervaluefacet.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
 #include "../Features/Integrity/Controller/fieldtypedoesnotexisttask.h"
@@ -83,6 +84,7 @@ Controller::Controller(CommandLineOptions* options) :
     this->tasksController->addTask(new MapValueTypeNotSupportedTask());
 
     // Register facets.
+    this->facetsController->registerFacet(new MinimumIntegerValueFacet());
     this->facetsController->registerFacet(new MaximumIntegerValueFacet());
 }
 

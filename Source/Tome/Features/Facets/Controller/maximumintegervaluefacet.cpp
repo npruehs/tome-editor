@@ -31,6 +31,17 @@ const QString MaximumIntegerValueFacet::getDescriptionForValue(const QVariant fa
     return tr("Maximum value is %1.").arg(facetValue.toString());
 }
 
+const QString MaximumIntegerValueFacet::getDisplayName() const
+{
+    return tr("Maximum Value");
+}
+
+const QString MaximumIntegerValueFacet::getKey() const
+{
+    return "Max";
+}
+
+
 const QString MaximumIntegerValueFacet::getTargetType() const
 {
     return BuiltInType::Integer;
@@ -40,16 +51,6 @@ const QVariant MaximumIntegerValueFacet::getWidgetValue(QWidget* widget) const
 {
     QSpinBox* spinBox = static_cast<QSpinBox*>(widget);
     return spinBox->value();
-}
-
-const QString MaximumIntegerValueFacet::getDisplayName() const
-{
-    return tr("Maximum Value");
-}
-
-const QString MaximumIntegerValueFacet::getKey() const
-{
-    return "Max";
 }
 
 void MaximumIntegerValueFacet::setWidgetValue(QWidget* widget, const QVariant value) const
