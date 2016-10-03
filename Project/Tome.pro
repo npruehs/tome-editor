@@ -107,7 +107,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Facets/Controller/facet.cpp \
     ../Source/Tome/Features/Facets/Controller/maximumintegervaluefacet.cpp \
     ../Source/Tome/Features/Facets/Controller/minimumintegervaluefacet.cpp \
-    ../Source/Tome/Features/Facets/Controller/maximumrealvaluefacet.cpp
+    ../Source/Tome/Features/Facets/Controller/maximumrealvaluefacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/minimumrealvaluefacet.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -206,7 +207,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Facets/Controller/facet.h \
     ../Source/Tome/Features/Facets/Controller/maximumintegervaluefacet.h \
     ../Source/Tome/Features/Facets/Controller/minimumintegervaluefacet.h \
-    ../Source/Tome/Features/Facets/Controller/maximumrealvaluefacet.h
+    ../Source/Tome/Features/Facets/Controller/maximumrealvaluefacet.h \
+    ../Source/Tome/Features/Facets/Controller/minimumrealvaluefacet.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
