@@ -19,6 +19,7 @@ namespace Tome
             virtual const QString getTargetType() const = 0;
             virtual const QVariant getWidgetValue(QWidget* widget) const = 0;
             virtual void setWidgetValue(QWidget* widget, const QVariant value) const = 0;
+            virtual QString validateValue(const QVariant value, const QVariant facetValue) const = 0;
     };
 }
 

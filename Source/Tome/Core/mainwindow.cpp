@@ -882,6 +882,7 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
     this->fieldValueWindow->setFieldDescription(field.description + " " + facetsDescription);
     this->fieldValueWindow->setFieldType(field.fieldType);
     this->fieldValueWindow->setFieldValue(fieldValue);
+    this->fieldValueWindow->setFieldFacets(facets, field.facets);
 
     // Show window.
     int result = this->fieldValueWindow->exec();

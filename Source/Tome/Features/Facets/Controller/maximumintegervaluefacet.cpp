@@ -52,3 +52,13 @@ void MaximumIntegerValueFacet::setWidgetValue(QWidget* widget, const QVariant va
     QSpinBox* spinBox = static_cast<QSpinBox*>(widget);
     spinBox->setValue(value.toInt());
 }
+
+QString MaximumIntegerValueFacet::validateValue(const QVariant value, const QVariant facetValue) const
+{
+    if (value.toInt() > facetValue.toInt())
+    {
+        return tr("Value must not be greater than %1.").arg(facetValue.toString());
+    }
+
+    return QString();
+}
