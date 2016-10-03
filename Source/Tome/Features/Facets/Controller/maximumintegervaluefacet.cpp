@@ -21,6 +21,11 @@ QWidget* MaximumIntegerValueFacet::createWidget() const
     return spinBox;
 }
 
+const QVariant MaximumIntegerValueFacet::getDefaultValue() const
+{
+    return std::numeric_limits<int>::max();
+}
+
 const QString MaximumIntegerValueFacet::getDescriptionForValue(const QVariant facetValue) const
 {
     return tr("Maximum value is %1.").arg(facetValue.toString());

@@ -13,6 +13,7 @@ namespace Tome
             virtual ~Facet();
 
             virtual QWidget* createWidget() const = 0;
+            virtual const QVariant getDefaultValue() const = 0;
             virtual const QString getDescriptionForValue(const QVariant facetValue) const = 0;
             virtual const QString getDisplayName() const = 0;
             virtual const QString getKey() const = 0;

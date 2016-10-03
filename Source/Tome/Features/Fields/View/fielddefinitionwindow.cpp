@@ -199,7 +199,7 @@ void FieldDefinitionWindow::setFieldFacets(const QVariantMap& facets)
 
         // Get current facet value from field definition.
         QString facetKey = facet->getKey();
-        QVariant facetValue = facets[facetKey];
+        QVariant facetValue = facets.contains(facetKey) ? facets[facetKey] : facet->getDefaultValue();
         facet->setWidgetValue(facetWidget, facetValue);
 
         // Insert into layout and remember for later removal.
