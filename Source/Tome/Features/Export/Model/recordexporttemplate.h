@@ -35,6 +35,9 @@ namespace Tome
             QString recordFileTemplate;
             QString recordTemplate;
             QMap<QString, QString> typeMap;
+
+            QStringList ignoredRecords;
+            QStringList ignoredFields;
     };
 }
 

@@ -1,6 +1,7 @@
 #include "enumerationwindow.h"
 #include "ui_enumerationwindow.h"
 
+#include <QMessageBox>
 #include <QStringListModel>
 
 #include "enumerationmemberwindow.h"
@@ -29,7 +30,7 @@ EnumerationWindow::~EnumerationWindow()
 
 QString EnumerationWindow::getEnumerationName() const
 {
-    return this->ui->lineEdit->text();
+    return this->ui->lineEditTypeName->text();
 }
 
 QStringList EnumerationWindow::getEnumerationMembers() const
@@ -37,9 +38,14 @@ QStringList EnumerationWindow::getEnumerationMembers() const
     return this->enumeration;
 }
 
+QString EnumerationWindow::getTypeSetName() const
+{
+    return this->ui->comboBoxTypeSet->currentText();
+}
+
 void EnumerationWindow::setEnumerationName(const QString& typeName)
 {
-    this->ui->lineEdit->setText(typeName);
+    this->ui->lineEditTypeName->setText(typeName);
 }
 
 void EnumerationWindow::setEnumerationMembers(const QStringList enumeration)
@@ -52,10 +58,30 @@ void EnumerationWindow::setEnumerationMembers(const QStringList enumeration)
     this->ui->listWidget->insertItems(0, enumeration);
 }
 
+void EnumerationWindow::setTypeSetName(const QString& typeSet)
+{
+    this->ui->comboBoxTypeSet->setCurrentText(typeSet);
+}
+
+void EnumerationWindow::setTypeSetNames(const QStringList& typeSets)
+{
+    this->ui->comboBoxTypeSet->clear();
+    this->ui->comboBoxTypeSet->addItems(typeSets);
+}
+
+void EnumerationWindow::accept()
+{
+    // Validate data.
+    if (this->validate())
+    {
+        this->done(Accepted);
+    }
+}
+
 void EnumerationWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
-    this->ui->lineEdit->setFocus();
+    this->ui->lineEditTypeName->setFocus();
 }
 
 void EnumerationWindow::on_actionNew_Member_triggered()
@@ -97,4 +123,21 @@ void EnumerationWindow::on_actionDelete_Member_triggered()
 
     // Update view.
     this->ui->listWidget->takeItem(row);
+}
+
+bool EnumerationWindow::validate()
+{
+    // Name must not be empty.
+    if (this->getEnumerationName().isEmpty())
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Missing data"),
+                    tr("Please specify a name for the enumeration."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return false;
+    }
+
+    return true;
 }

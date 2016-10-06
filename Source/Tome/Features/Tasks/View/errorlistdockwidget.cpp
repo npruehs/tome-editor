@@ -165,6 +165,7 @@ void ErrorListDockWidget::refreshMessages()
         // Show help link.
         QString helpLink = message.helpLink.isEmpty() ? "https://github.com/npruehs/tome-editor/wiki/" + message.messageCode : message.helpLink;
         QLabel* helpLinkLabel = new QLabel("<a href=\"" + helpLink + "\">" + message.messageCode + "</a>");
+        helpLinkLabel->setToolTip(helpLink);
         helpLinkLabel->setOpenExternalLinks(true);
 
         QModelIndex index = this->tableWidgetErrorList->model()->index(i, 1);

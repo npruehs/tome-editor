@@ -23,6 +23,7 @@ class RecordWindow : public QDialog
         QString getRecordDisplayName() const;
         QString getRecordId() const;
         QMap<QString, Tome::RecordFieldState::RecordFieldState> getRecordFields() const;
+        QString getRecordSetName() const;
 
         void clearRecordFields();
 
@@ -34,6 +35,8 @@ class RecordWindow : public QDialog
         void setRecordFields(const Tome::FieldDefinitionList& fieldDefinitions, const Tome::ComponentList &componentDefinitions, const Tome::RecordFieldValueMap& ownFieldValues, const Tome::RecordFieldValueMap& inheritedFieldValues);
         void setRecordComponent(const QString& componentId, const Tome::RecordFieldState::RecordFieldState state);
         void setRecordComponents(const Tome::ComponentList& components);
+        void setRecordSetName(const QString& recordSetName);
+        void setRecordSetNames(const QStringList& recordSetNames);
         void clearRecordComponents();
 
     public slots:

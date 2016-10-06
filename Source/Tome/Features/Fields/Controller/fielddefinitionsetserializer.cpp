@@ -16,6 +16,7 @@ const QString FieldDefinitionSetSerializer::AttributeId = "Id";
 const QString FieldDefinitionSetSerializer::AttributeKey = "Key";
 const QString FieldDefinitionSetSerializer::AttributeType = "Type";
 const QString FieldDefinitionSetSerializer::AttributeValue = "Value";
+const QString FieldDefinitionSetSerializer::ElementFacet = "Facet";
 const QString FieldDefinitionSetSerializer::ElementField = "Field";
 const QString FieldDefinitionSetSerializer::ElementFields = "Fields";
 
@@ -81,6 +82,17 @@ void FieldDefinitionSetSerializer::serialize(QIODevice& device, const FieldDefin
                     stream.writeAttribute(AttributeDefaultValue, fieldDefinition.defaultValue.toString());
                 }
 
+                // Write facets.
+                for (QVariantMap::const_iterator it = fieldDefinition.facets.begin();
+                     it != fieldDefinition.facets.end();
+                     ++it)
+                {
+                    stream.writeStartElement(ElementFacet);
+                    stream.writeAttribute(AttributeKey, it.key());
+                    stream.writeAttribute(AttributeValue, it.value().toString());
+                    stream.writeEndElement();
+                }
+
                 stream.writeEndElement();
             }
         }
@@ -115,6 +127,7 @@ void FieldDefinitionSetSerializer::deserialize(QIODevice& device, FieldDefinitio
                 fieldDefinition.description = reader.readAttribute(AttributeDescription);
                 fieldDefinition.defaultValue = reader.readAttribute(AttributeDefaultValue);
                 fieldDefinition.fieldType = reader.readAttribute(AttributeType);
+                fieldDefinition.fieldDefinitionSetName = fieldDefinitionSet.name;
 
                 QString component = reader.readAttribute(AttributeComponent);
 
@@ -153,6 +166,17 @@ void FieldDefinitionSetSerializer::deserialize(QIODevice& device, FieldDefinitio
                 else if (!list.isEmpty())
                 {
                     fieldDefinition.defaultValue = list;
+                }
+
+                // Read facets.
+                while (reader.isAtElement(ElementFacet))
+                {
+                    QString key = reader.readAttribute(AttributeKey);
+                    QVariant value = reader.readAttribute(AttributeValue);
+
+                    fieldDefinition.facets.insert(key, value);
+
+                    reader.readEmptyElement(ElementFacet);
                 }
 
                 reader.readEndElement();

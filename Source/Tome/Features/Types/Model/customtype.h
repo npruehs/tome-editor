@@ -14,6 +14,7 @@ namespace Tome
 
             QString name;
             QMap<QString, QString> restrictions;
+            QString typeSetName;
 
             /**
              * @brief getEnumeration Convenience function for retrieving the Enumeration restriction of this type, if available. Returns an empty list, if not.

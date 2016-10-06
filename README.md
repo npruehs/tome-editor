@@ -23,8 +23,11 @@ The tool is pretty self-explanatory. However, to give you a headstart, feel free
 * Splitting data up into multiple files for improved collaboration
 * Run integrity checks to verify all your data
 * Advanced search features, such as finding all references to a specific record
+* Command line support for exporting data without showing a GUI
 
 ## Development Cycle
+
+Feel free to take a look at the public [development roadmap](https://github.com/npruehs/tome-editor/milestones). 
 
 We know that using a tool like Tome in production requires you to be completely sure about stability and compatibility. Thus, new releases of Tome are created using [Semantic Versioning](http://semver.org/). In short:
 

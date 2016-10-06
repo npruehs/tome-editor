@@ -13,12 +13,13 @@ TEMPLATE = app
 
 # Expose application version in Windows property window and in application code.
 # http://www.openguru.com/2009/11/qt-best-way-to-set-application-version.html
-VERSION = 0.5
-VERSION_NAME = Dragon
+VERSION = 0.6
+VERSION_NAME = Hydra
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 DEFINES += APP_VERSION_NAME=\\\"$$VERSION_NAME\\\"
 
 RC_ICONS = ../Media/Icons/Tome.ico
+ICON = ../Media/Icons/Tome.icns
 
 Debug:DESTDIR = ../../Bin/debug
 Debug:OBJECTS_DIR = ../../Obj/debug
@@ -93,7 +94,25 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Integrity/Controller/mapkeytypedoesnotexisttask.cpp \
     ../Source/Tome/Features/Integrity/Controller/mapkeytypenotsupportedtask.cpp \
     ../Source/Tome/Features/Integrity/Controller/mapvaluetypedoesnotexisttask.cpp \
-    ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.cpp
+    ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.cpp \
+    ../Source/Tome/Features/Components/Model/componentset.cpp \
+    ../Source/Tome/Features/Components/Controller/componentsetserializer.cpp \
+    ../Source/Tome/Features/Types/Model/customtypeset.cpp \
+    ../Source/Tome/Features/Types/Controller/customtypesetserializer.cpp \
+    ../Source/Tome/Features/Export/Controller/exporttemplateserializer.cpp \
+    ../Source/Tome/Features/Search/Controller/findrecordcontroller.cpp \
+    ../Source/Tome/Features/Search/View/findrecordwindow.cpp \
+    ../Source/Tome/Features/Projects/View/projectoverviewwindow.cpp \
+    ../Source/Tome/Features/Settings/View/usersettingswindow.cpp \
+    ../Source/Tome/Features/Facets/Controller/facetscontroller.cpp \
+    ../Source/Tome/Features/Facets/Controller/facet.cpp \
+    ../Source/Tome/Features/Facets/Controller/maximumintegervaluefacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/minimumintegervaluefacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/maximumrealvaluefacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/minimumrealvaluefacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/maximumstringlengthfacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/requiredreferenceancestorfacet.cpp \
+    ../Source/Tome/Features/Facets/Model/facetcontext.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -175,7 +194,28 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Integrity/Controller/mapkeytypedoesnotexisttask.h \
     ../Source/Tome/Features/Integrity/Controller/mapkeytypenotsupportedtask.h \
     ../Source/Tome/Features/Integrity/Controller/mapvaluetypedoesnotexisttask.h \
-    ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.h
+    ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.h \
+    ../Source/Tome/Features/Components/Model/componentset.h \
+    ../Source/Tome/Features/Components/Controller/componentsetserializer.h \
+    ../Source/Tome/Features/Components/Model/componentsetlist.h \
+    ../Source/Tome/Features/Types/Model/customtypeset.h \
+    ../Source/Tome/Features/Types/Controller/customtypesetserializer.h \
+    ../Source/Tome/Features/Types/Model/customtypesetlist.h \
+    ../Source/Tome/Features/Export/Controller/exporttemplateserializer.h \
+    ../Source/Tome/Features/Export/Model/recordexporttemplatelist.h \
+    ../Source/Tome/Features/Search/Controller/findrecordcontroller.h \
+    ../Source/Tome/Features/Search/View/findrecordwindow.h \
+    ../Source/Tome/Features/Projects/View/projectoverviewwindow.h \
+    ../Source/Tome/Features/Settings/View/usersettingswindow.h \
+    ../Source/Tome/Features/Facets/Controller/facetscontroller.h \
+    ../Source/Tome/Features/Facets/Controller/facet.h \
+    ../Source/Tome/Features/Facets/Controller/maximumintegervaluefacet.h \
+    ../Source/Tome/Features/Facets/Controller/minimumintegervaluefacet.h \
+    ../Source/Tome/Features/Facets/Controller/maximumrealvaluefacet.h \
+    ../Source/Tome/Features/Facets/Controller/minimumrealvaluefacet.h \
+    ../Source/Tome/Features/Facets/Controller/maximumstringlengthfacet.h \
+    ../Source/Tome/Features/Facets/Controller/requiredreferenceancestorfacet.h \
+    ../Source/Tome/Features/Facets/Model/facetcontext.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
@@ -193,7 +233,10 @@ FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Fields/View/listitemwindow.ui \
     ../Source/Tome/Features/Records/View/duplicaterecordwindow.ui \
     ../Source/Tome/Features/Types/View/mapwindow.ui \
-    ../Source/Tome/Features/Fields/View/mapitemwindow.ui
+    ../Source/Tome/Features/Fields/View/mapitemwindow.ui \
+    ../Source/Tome/Features/Search/View/findrecordwindow.ui \
+    ../Source/Tome/Features/Projects/View/projectoverviewwindow.ui \
+    ../Source/Tome/Features/Settings/View/usersettingswindow.ui
 
 RESOURCES += \
     tome.qrc

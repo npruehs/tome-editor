@@ -16,6 +16,9 @@ class NewProjectWindow;
 class RecordWindow;
 class CustomTypesWindow;
 class DuplicateRecordWindow;
+class FindRecordWindow;
+class ProjectOverviewWindow;
+class UserSettingsWindow;
 
 namespace Ui {
     class MainWindow;
@@ -43,6 +46,8 @@ class MainWindow : public QMainWindow
     private slots:
         void on_actionExit_triggered();
 
+        void on_actionProject_Overview_triggered();
+
         void on_actionField_Definions_triggered();
         void on_actionManage_Components_triggered();
         void on_actionManage_Custom_Types_triggered();
@@ -57,21 +62,28 @@ class MainWindow : public QMainWindow
         void on_actionRevert_Record_triggered();
         void on_actionRemove_Record_triggered();
 
+        void on_actionFindRecord_triggered();
         void on_actionFind_Usages_triggered();
 
         void on_actionRun_Integrity_Checks_triggered();
+
+        void on_actionUser_Settings_triggered();
 
         void on_actionAbout_triggered();
         void on_actionManual_triggered();
         void on_actionReport_a_Bug_triggered();
         void on_actionReleases_triggered();
+        void on_actionRoadmap_triggered();
 
         void on_actionError_List_triggered();
 
         void exportRecords(QAction* exportAction);
+        void onExportTemplatesChanged();
         void onFieldChanged();
         void onProjectChanged(QSharedPointer<Tome::Project> project);
         void onRecordFieldsChanged(const QString& recordId);
+        void onRecordSetsChanged();
+        void onRecordLinkActivated(const QString& recordId);
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();
         void searchResultChanged(const QString& title, const Tome::SearchResultList results);
@@ -79,7 +91,6 @@ class MainWindow : public QMainWindow
         void treeWidgetDoubleClicked(const QModelIndex &index);
         void treeWidgetRecordReparented(const QString& recordId, const QString& newParentId);
         void treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
-
 
     private:
         Ui::MainWindow *ui;
@@ -99,15 +110,21 @@ class MainWindow : public QMainWindow
         NewProjectWindow *newProjectWindow;
         RecordWindow* recordWindow;
         DuplicateRecordWindow* duplicateRecordWindow;
+        FindRecordWindow* findRecordWindow;
+        ProjectOverviewWindow* projectOverviewWindow;
+        UserSettingsWindow* userSettingsWindow;
 
         Tome::MessageList messages;
 
         void addRecordField(const QString& fieldId);
+        QString getReadOnlyMessage(const QString& recordId);
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);
         void refreshErrorList();
+        void refreshExportMenu();
         void refreshRecordTree();
         void refreshRecordTable();
+        void showReadOnlyMessage(const QString& recordId);
         void showWindow(QWidget* widget);
         void updateMenus();
         void updateRecentProjects();

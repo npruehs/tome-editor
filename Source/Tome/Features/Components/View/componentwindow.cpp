@@ -21,6 +21,22 @@ QString ComponentWindow::getComponentName() const
     return this->ui->lineEdit->text();
 }
 
+QString ComponentWindow::getComponentSetName() const
+{
+    return this->ui->comboBox->currentText();
+}
+
+void ComponentWindow::setComponentSetName(const QString& componentSetName)
+{
+    this->ui->comboBox->setCurrentText(componentSetName);
+}
+
+void ComponentWindow::setComponentSetNames(const QStringList& componentSetNames)
+{
+    this->ui->comboBox->clear();
+    this->ui->comboBox->addItems(componentSetNames);
+}
+
 void ComponentWindow::accept()
 {
     // Validate data.

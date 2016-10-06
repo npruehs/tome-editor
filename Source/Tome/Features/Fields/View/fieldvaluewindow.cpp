@@ -1,9 +1,12 @@
 #include "fieldvaluewindow.h"
 #include "ui_fieldvaluewindow.h"
 
+#include <QMessageBox>
 #include <QPushButton>
 
 #include "fieldvaluewidget.h"
+#include "../../Facets/Controller/facet.h"
+#include "../../Facets/Model/facetcontext.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/customtype.h"
@@ -47,6 +50,12 @@ void FieldValueWindow::setFieldDisplayName(const QString& displayName)
     this->ui->labelDisplayNameValue->setText(displayName);
 }
 
+void FieldValueWindow::setFieldFacets(const QList<Facet*> facets, const QVariantMap& facetValues)
+{
+    this->facets = facets;
+    this->facetValues = facetValues;
+}
+
 void FieldValueWindow::setFieldValue(const QVariant& fieldValue)
 {
     this->fieldValueWidget->setFieldValue(fieldValue);
@@ -56,6 +65,15 @@ void FieldValueWindow::setFieldType(const QString& fieldType) const
 {
     this->ui->labelTypeValue->setText(fieldType);
     this->fieldValueWidget->setFieldType(fieldType);
+}
+
+void FieldValueWindow::accept()
+{
+    // Validate data.
+    if (this->validate())
+    {
+        this->done(Accepted);
+    }
 }
 
 void FieldValueWindow::showEvent(QShowEvent* event)
@@ -69,9 +87,51 @@ void FieldValueWindow::showEvent(QShowEvent* event)
     QPushButton* okButton = this->ui->buttonBox->button(QDialogButtonBox::Ok);
     okButton->setAutoDefault(true);
     okButton->setDefault(true);
+
+    // Adjust size, so opening a field value window with large content
+    // (e.g. color picker) does not cause huge empty areas in subsequent
+    // field value windows with small content (e.g. checkbox).
+    this->adjustSize();
 }
 
 void FieldValueWindow::on_toolButtonRevert_clicked()
 {
     emit revert();
+}
+
+bool FieldValueWindow::validate()
+{
+    FacetContext context = FacetContext(this->recordsController);
+
+    // Validate all facets.
+    for (int i = 0; i < this->facets.count(); ++i)
+    {
+        Facet* facet = this->facets[i];
+        QString facetKey = facet->getKey();
+
+        if (!this->facetValues.contains(facetKey))
+        {
+            continue;
+        }
+
+        QVariant facetValue = this->facetValues[facetKey];
+        QVariant value = this->getFieldValue();
+
+        QString validationError = facet->validateValue(context, value, facetValue);
+
+        if (!validationError.isEmpty())
+        {
+            QString facetDisplayName = facet->getDisplayName();
+
+            QMessageBox::information(
+                        this,
+                        facetDisplayName,
+                        validationError,
+                        QMessageBox::Close,
+                        QMessageBox::Close);
+            return false;
+        }
+    }
+
+    return true;
 }

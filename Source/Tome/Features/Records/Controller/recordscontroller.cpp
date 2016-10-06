@@ -16,17 +16,31 @@ RecordsController::RecordsController(const FieldDefinitionsController& fieldDefi
 {
 }
 
-const Record RecordsController::addRecord(const QString& id, const QString& displayName)
+const Record RecordsController::addRecord(const QString& id, const QString& displayName, const QString& recordSetName)
 {
     Record record = Record();
     record.id = id;
     record.displayName = displayName;
+    record.recordSetName = recordSetName;
 
-    RecordList& records = (*this->model)[0].records;
-    int index = findInsertionIndex(records, record, recordLessThanDisplayName);
-    records.insert(index, record);
+    for (RecordSetList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        RecordSet& recordSet = *it;
 
-    return record;
+        if (recordSet.name == recordSetName)
+        {
+            RecordList& records = recordSet.records;
+            int index = findInsertionIndex(records, record, recordLessThanDisplayName);
+            records.insert(index, record);
+
+            return record;
+        }
+    }
+
+    const QString errorMessage = "Record set not found: " + recordSetName;
+    throw std::out_of_range(errorMessage.toStdString());
 }
 
 void RecordsController::addRecordField(const QString& recordId, const QString& fieldId)
@@ -38,6 +52,15 @@ void RecordsController::addRecordField(const QString& recordId, const QString& f
 
     // Notify listeners.
     emit recordFieldsChanged(recordId);
+}
+
+void RecordsController::addRecordSet(const RecordSet& recordSet)
+{
+    // Update model.
+    this->model->push_back(recordSet);
+
+    // Notify listeners.
+    emit this->recordSetsChanged();
 }
 
 const Record RecordsController::duplicateRecord(const QString& existingRecordId, const QString& newRecordid)
@@ -226,6 +249,19 @@ const QStringList RecordsController::getRecordNames() const
     return names;
 }
 
+const QStringList RecordsController::getRecordSetNames() const
+{
+    QStringList names;
+
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        const RecordSet& recordSet = this->model->at(i);
+        names << recordSet.name;
+    }
+
+    return names;
+}
+
 const RecordFieldValueMap RecordsController::getRecordFieldValues(const QString& id) const
 {
     Record* record = this->getRecordById(id);
@@ -378,6 +414,42 @@ void RecordsController::moveFieldToComponent(const QString& fieldId, const QStri
     }
 }
 
+void RecordsController::moveRecordToSet(const QString& recordId, const QString& recordSetName)
+{
+    Record record = this->getRecord(recordId);
+
+    for (RecordSetList::iterator itSets = this->model->begin();
+         itSets != this->model->end();
+         ++itSets)
+    {
+        RecordSet& recordSet = (*itSets);
+        RecordList& records = recordSet.records;
+
+        // Check if should add record.
+        if (recordSet.name == recordSetName)
+        {
+            int index = findInsertionIndex(records, record, recordLessThanDisplayName);
+            record.recordSetName = recordSetName;
+            records.insert(index, record);
+            continue;
+        }
+        else
+        {
+            // Check if should remove record.
+            for (RecordList::iterator it = records.begin();
+                 it != records.end();
+                 ++it)
+            {
+                if ((*it).id == recordId)
+                {
+                    records.erase(it);
+                    break;
+                }
+            }
+        }
+    }
+}
+
 void RecordsController::removeRecord(const QString& recordId)
 {
     // Remove references to record.
@@ -393,24 +465,35 @@ void RecordsController::removeRecord(const QString& recordId)
     }
 
     // Remove record.
-    RecordList& records = (*this->model)[0].records;
-
-    for (RecordList::iterator it = records.begin();
-         it != records.end();
-         ++it)
+    for (RecordSetList::iterator itSets = this->model->begin();
+         itSets != this->model->end();
+         ++itSets)
     {
-        Record& record = *it;
+        RecordList& records = (*itSets).records;
 
-        if (record.id == recordId)
+        for (RecordList::iterator it = records.begin();
+             it != records.end();
+             ++it)
         {
-            records.erase(it);
-            return;
+            Record& record = *it;
+
+            if (record.id == recordId)
+            {
+                records.erase(it);
+                return;
+            }
         }
     }
 }
 
 void RecordsController::removeRecordField(const QString fieldId)
 {
+    QList<QString> changedRecords;
+
+    // Remove field from all records first, before notifying any listeners.
+    // Notifying them earlier can cause inconsistent behaviour due to
+    // records inheriting fields from parents who don't have the respective
+    // field removed yet.
     for (int i = 0; i < this->model->size(); ++i)
     {
         RecordSet& recordSet = (*this->model)[i];
@@ -418,14 +501,17 @@ void RecordsController::removeRecordField(const QString fieldId)
         for (int j = 0; j < recordSet.records.size(); ++j)
         {
             Record& record = recordSet.records[j];
-            int removedFields = record.fieldValues.remove(fieldId);
-
-            if (removedFields > 0)
+            if (record.fieldValues.remove(fieldId) > 0)
             {
-                // Notify listeners.
-                emit recordFieldsChanged(record.id);
+                changedRecords << record.id;
             }
         }
+    }
+
+    // Notify listeners.
+    for (int i = 0; i < changedRecords.count(); ++i)
+    {
+        emit recordFieldsChanged(changedRecords[i]);
     }
 }
 
@@ -441,6 +527,24 @@ void RecordsController::removeRecordField(const QString& recordId, const QString
     {
         Record& record = descendants[i];
         this->removeRecordField(record.id, fieldId);
+    }
+}
+
+void RecordsController::removeRecordSet(const QString& name)
+{
+    for (RecordSetList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if ((*it).name == name)
+        {
+            // Update model.
+            this->model->erase(it);
+
+            // Notify listeners.
+            emit this->recordSetsChanged();
+            return;
+        }
     }
 }
 
@@ -528,7 +632,12 @@ void RecordsController::updateRecord(const QString& oldId, const QString& newId,
 
     if (needsSorting)
     {
-        std::sort((*this->model)[0].records.begin(), (*this->model)[0].records.end(), recordLessThanDisplayName);
+        for (RecordSetList::iterator it = this->model->begin();
+             it != this->model->end();
+             ++it)
+        {
+            std::sort((*it).records.begin(), (*it).records.end(), recordLessThanDisplayName);
+        }
     }
 }
 
