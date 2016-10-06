@@ -19,6 +19,7 @@ DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 DEFINES += APP_VERSION_NAME=\\\"$$VERSION_NAME\\\"
 
 RC_ICONS = ../Media/Icons/Tome.ico
+ICON = ../Media/Icons/Tome.icns
 
 Debug:DESTDIR = ../../Bin/debug
 Debug:OBJECTS_DIR = ../../Obj/debug
