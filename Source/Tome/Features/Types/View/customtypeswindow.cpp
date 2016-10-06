@@ -131,7 +131,7 @@ void CustomTypesWindow::on_actionNew_Map_triggered()
                     this->mapWindow->getMapName(),
                     this->mapWindow->getMapKeyType(),
                     this->mapWindow->getMapValueType(),
-                    this->enumerationWindow->getTypeSetName());
+                    this->mapWindow->getTypeSetName());
 
         // Update view.
         this->ui->tableWidget->insertRow(0);
