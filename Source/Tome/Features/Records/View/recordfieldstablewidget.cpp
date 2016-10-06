@@ -76,35 +76,34 @@ void RecordFieldsTableWidget::setRecord(int i, const QString recordId)
         this->item(i, 1)->setData(Qt::ToolTipRole, field.description);
     }
 
-    QLabel* valueLabel;
-
     // Show hyperlink for reference fields, and normal text for other fields.
     if (field.fieldType == BuiltInType::Reference)
     {
-        valueLabel = new QLabel("<a href='" + valueString + "'>" + valueString + "</a>");
+        QLabel* valueLabel = new QLabel("<a href='" + valueString + "'>" + valueString + "</a>");
 
         connect(
                     valueLabel,
                     SIGNAL(linkActivated(const QString&)),
                     SLOT(onRecordLinkActivated(const QString&))
                     );
+
+        // Add margin for increased readability.
+        valueLabel->setMargin(5);
+
+        QModelIndex index = this->model()->index(i, 1);
+        this->setIndexWidget(index, valueLabel);
     }
     else
     {
-        valueLabel = new QLabel(valueString);
-    }
+        // Show normal text.
+        this->item(i, 1)->setData(Qt::DisplayRole, valueString);
 
-    // Add margin for increased readability.
-    valueLabel->setMargin(5);
-
-    QModelIndex index = this->model()->index(i, 1);
-    this->setIndexWidget(index, valueLabel);
-
-    // Show color preview.
-    if (field.fieldType == BuiltInType::Color)
-    {
-        QColor color = value.value<QColor>();
-        this->item(i, 1)->setData(Qt::DecorationRole, color);
+        // Show color preview.
+        if (field.fieldType == BuiltInType::Color)
+        {
+            QColor color = value.value<QColor>();
+            this->item(i, 1)->setData(Qt::DecorationRole, color);
+        }
     }
 
     // Resize columns.
