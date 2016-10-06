@@ -64,6 +64,11 @@ void FieldDefinitionWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
     this->ui->lineEditDisplayName->setFocus();
+
+    // Adjust size, so opening a window with large content
+    // (e.g. color picker) does not cause huge empty areas in subsequent
+    // windows with small content (e.g. checkbox).
+    this->adjustSize();
 }
 
 Component FieldDefinitionWindow::getFieldComponent() const

@@ -83,7 +83,7 @@ class FieldDefinitionsWindow : public QMainWindow
                 const Tome::Component& component,
                 const QString& fieldDefinitionSetName,
                 const QVariantMap& facets);
-        void updateRow(const int index, const Tome::FieldDefinition& fieldDefinition);
+        void updateRow(const int index, const Tome::FieldDefinition& fieldDefinition, bool disableSorting);
 };
 
 #endif // FIELDDEFINITIONSWINDOW_H

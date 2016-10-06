@@ -13,12 +13,13 @@ TEMPLATE = app
 
 # Expose application version in Windows property window and in application code.
 # http://www.openguru.com/2009/11/qt-best-way-to-set-application-version.html
-VERSION = 0.5
-VERSION_NAME = Dragon
+VERSION = 0.6
+VERSION_NAME = Hydra
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 DEFINES += APP_VERSION_NAME=\\\"$$VERSION_NAME\\\"
 
 RC_ICONS = ../Media/Icons/Tome.ico
+ICON = ../Media/Icons/Tome.icns
 
 Debug:DESTDIR = ../../Bin/debug
 Debug:OBJECTS_DIR = ../../Obj/debug

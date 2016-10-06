@@ -87,6 +87,11 @@ void FieldValueWindow::showEvent(QShowEvent* event)
     QPushButton* okButton = this->ui->buttonBox->button(QDialogButtonBox::Ok);
     okButton->setAutoDefault(true);
     okButton->setDefault(true);
+
+    // Adjust size, so opening a field value window with large content
+    // (e.g. color picker) does not cause huge empty areas in subsequent
+    // field value windows with small content (e.g. checkbox).
+    this->adjustSize();
 }
 
 void FieldValueWindow::on_toolButtonRevert_clicked()

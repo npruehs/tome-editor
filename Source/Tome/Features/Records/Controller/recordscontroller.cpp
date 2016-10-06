@@ -488,6 +488,12 @@ void RecordsController::removeRecord(const QString& recordId)
 
 void RecordsController::removeRecordField(const QString fieldId)
 {
+    QList<QString> changedRecords;
+
+    // Remove field from all records first, before notifying any listeners.
+    // Notifying them earlier can cause inconsistent behaviour due to
+    // records inheriting fields from parents who don't have the respective
+    // field removed yet.
     for (int i = 0; i < this->model->size(); ++i)
     {
         RecordSet& recordSet = (*this->model)[i];
@@ -495,14 +501,17 @@ void RecordsController::removeRecordField(const QString fieldId)
         for (int j = 0; j < recordSet.records.size(); ++j)
         {
             Record& record = recordSet.records[j];
-            int removedFields = record.fieldValues.remove(fieldId);
-
-            if (removedFields > 0)
+            if (record.fieldValues.remove(fieldId) > 0)
             {
-                // Notify listeners.
-                emit recordFieldsChanged(record.id);
+                changedRecords << record.id;
             }
         }
+    }
+
+    // Notify listeners.
+    for (int i = 0; i < changedRecords.count(); ++i)
+    {
+        emit recordFieldsChanged(changedRecords[i]);
     }
 }
 
