@@ -94,6 +94,9 @@ void RecordFieldsTableWidget::setRecord(int i, const QString recordId)
         valueLabel = new QLabel(valueString);
     }
 
+    // Add margin for increased readability.
+    valueLabel->setMargin(5);
+
     QModelIndex index = this->model()->index(i, 1);
     this->setIndexWidget(index, valueLabel);
 
