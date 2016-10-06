@@ -228,6 +228,7 @@ void FieldDefinitionWindow::setFieldType(const QString& fieldType) const
 void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &fieldType)
 {
     this->fieldValueWidget->setFieldType(fieldType);
+    this->setFieldFacets(QVariantMap());
 }
 
 void FieldDefinitionWindow::on_lineEditDisplayName_textEdited(const QString &displayName)
