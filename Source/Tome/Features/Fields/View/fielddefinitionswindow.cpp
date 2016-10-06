@@ -128,7 +128,7 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
 
             // Update view.
             this->ui->tableWidget->insertRow(0);
-            this->updateRow(0, fieldDefinition);
+            this->updateRow(0, fieldDefinition, true);
         }
         catch (std::out_of_range& e)
         {
@@ -277,7 +277,7 @@ void FieldDefinitionsWindow::updateTable()
 
     for (int i = 0; i < fieldDefinitions.size(); ++i)
     {
-        this->updateRow(i, fieldDefinitions[i]);
+        this->updateRow(i, fieldDefinitions[i], false);
     }
 
     this->ui->tableWidget->setSortingEnabled(true);
@@ -338,13 +338,16 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId,
     }
 }
 
-void FieldDefinitionsWindow::updateRow(const int i, const FieldDefinition& fieldDefinition)
+void FieldDefinitionsWindow::updateRow(const int i, const FieldDefinition& fieldDefinition, bool disableSorting)
 {
     // Convert default value to string.
     QString defaultValueString = this->typesController.valueToString(fieldDefinition.defaultValue, fieldDefinition.fieldType);
 
     // Disable sorting before upading data (see http://doc.qt.io/qt-5.7/qtablewidget.html#setItem)
-    this->ui->tableWidget->setSortingEnabled(false);
+    if (disableSorting)
+    {
+        this->ui->tableWidget->setSortingEnabled(false);
+    }
 
     this->ui->tableWidget->setItem(i, 0, new QTableWidgetItem(fieldDefinition.id));
     this->ui->tableWidget->setItem(i, 1, new QTableWidgetItem(fieldDefinition.displayName));
@@ -361,5 +364,8 @@ void FieldDefinitionsWindow::updateRow(const int i, const FieldDefinition& field
     }
 
     // Enable sorting again.
-    this->ui->tableWidget->setSortingEnabled(true);
+    if (disableSorting)
+    {
+        this->ui->tableWidget->setSortingEnabled(true);
+    }
 }
