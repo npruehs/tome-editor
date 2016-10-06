@@ -104,7 +104,7 @@ void CustomTypesWindow::on_actionNew_List_triggered()
                 this->typesController.addList(
                     this->listWindow->getListName(),
                     this->listWindow->getListItemType(),
-                    this->enumerationWindow->getTypeSetName());
+                    this->listWindow->getTypeSetName());
 
         // Update view.
         this->ui->tableWidget->insertRow(0);
