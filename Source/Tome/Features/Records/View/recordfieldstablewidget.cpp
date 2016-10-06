@@ -108,7 +108,6 @@ void RecordFieldsTableWidget::setRecord(int i, const QString recordId)
     }
 
     // Resize columns.
-    this->resizeColumnsToContents();
     this->horizontalHeader()->setStretchLastSection(true);
 }
 
