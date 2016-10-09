@@ -26,7 +26,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <!-- version should MATCH as closely as possible with the underlying software -->
     <!-- Is the version a prerelease of a version? https://docs.nuget.org/create/versioning#creating-prerelease-packages -->
     <!-- Note that unstable versions like 0.0.1 can be considered a released version, but it's possible that one can release a 0.0.1-beta before you release a 0.0.1 version. If the version number is final, that is considered a released version and not a prerelease. -->
-    <version>0.5-alpha</version>
+    <version>0.6-alpha</version>
     <packageSourceUrl>https://github.com/npruehs/tome-editor</packageSourceUrl>
     <!-- owners is a poor name for maintainers of the package. It sticks around by this name for compatibility reasons. It basically means you. -->
     <owners>Nick Prühs</owners>
@@ -55,49 +55,53 @@ Developing games is all about data. With game systems for modifying data and use
 Tome solves two problems that arise with every new game you build: First, you can import the definition of your game's data so game designers can create new data records and modify existing ones very conveniently. Second, you can export the results to any format your game engine understands.
     </description>
     <releaseNotes>
-Usability release.
+Advanced export release.
 
-With Tome starting to be used in production, this release focuses on bringing a lot of usability improvements rather than many new featues. 
+This release adds a lot of customizability for exporting data, along with automatically enforced field value constraints and project and user settings. 
 
 ## New Features
 
-* **Maps and Vectors.** Custom [key-value maps](https://github.com/npruehs/tome-editor/wiki/Custom-Data-Types#adding-maps) and two- and three-dimensional vectors with integer and floating-point numbers. 
-* **Find Usages.** Added [finding usages](https://github.com/npruehs/tome-editor/wiki/Search) of custom types, fields and records in your project.
-* **Command Line Support.** Can start Tome [without showing a window](https://github.com/npruehs/tome-editor/wiki/Command-Line-Support) and run data exports now.
+* **Field Facets.** Specify [custom constraints](https://github.com/npruehs/tome-editor/wiki/Field-Definitions#field-facets) such as the minimum value of an integer, the maximum length of a string, or the required parent of a record reference.
+* **Project Overview.** [Add new or existing files](https://github.com/npruehs/tome-editor/wiki/Project-Structure#addingremoving-project-data-files) to and/or remove files from the project. Specify which file to add new data to and move data between files.
+* **Search.** [Find records](https://github.com/npruehs/tome-editor/wiki/Search#finding-records) by id or display name.
+* **User Settings.** Specify whether to show a Description column in the records table or to run integrity checks on save. 
 
 ## Data
 
-* Added new integrity check for unsupported list and map item types. 
-* Records without any fields are no longer exported. Consequently, records whose parents don't have any fields will have their parent id reset for the export.
-* Increased decimals for real fields to 4 (were 3).
-* Allowing to specify whether to export roots, inner nodes and/or leafs of the record tree.
-* Adding a new field to an existing component will now automatically cause that field to be added to all records who already have all exisiting fields of that component.
-* Moving a field to a different component will now automatically remove that field from all records who have all other fields of that component.
+* Added placeholders for list item types and map key and value types in export templates. 
+* Added placeholders for specific field values in export templates.
+* Added possibility for ignoring specific records and/or fields in exports.
+* Using $ characters in record names is now prohibited.
+
+See https://github.com/npruehs/tome-editor/wiki/Exporting-Data for details.
+
+* Added read-only records that can't be edited, reverted, removed or reparented.
+
+See https://github.com/npruehs/tome-editor/wiki/Data-Records#read-only-records for details.
 
 ## Usability
 
-* Initially focusing display name field in field definition and record windows.
-* Initially focusing New Enumeration Member window text box.
-* Clearing Enumeration window when creating a new enumeration type, instead of showing contents of last edited enumeration.
-* Moved field definition type above default value in Field Definition window.
-* Set OK button as default in field value window, so users can immediately confirm their changes with Enter.
-* In the record window, users can add all fields of a component by either checking a field or a component checkbox.
-* Added description column to record field table and removed the tooltip.
-* Added record icons, differentiating between records with and without fields.
-* Added sorting field definitions, custom types and errors by arbitrary columns.
-* Added possibility to revert whole records, effectively reverting all of their fields.
-* Added possibility to duplicate records, creating a new record with the same parent and field values.
-* After manually changing a record id, the record id text is no longer linked to the display name text.
+* Initially selecting all content of Integer, Real and String controls for immediate editing.
+* Added hyperlinks to search results and references to other records.
+
+## Other
+
+* Moved components, custom types and export templates from project file to dedicated files.
+* Added link to Roadmap to Help menu.
+* Added application icon.
 
 ## Bug Fixes
 
-* Fixed a bug that caused export templates to create superfluous delimiters in the output files.
-* Fixed a bug that prevented users from specifying negative real numbers.
-* Fixed a bug that caused some components and table values of inherited fields to omitted when exporting records.
-
-## Upgrading to Tome 0.5
-
-With map support added to Tome, export templates require three new template files for exporting maps. See the [Exporting Data](https://github.com/npruehs/tome-editor/wiki/Exporting-Data#export-map-template-texportm) manual page for further details.
+* Fixed a crash that could occur when removing a field while a record inheriting that field is selected.
+* Fixed a bug that caused the field definitions window not to correctly reflect all changes if any components had been removed since the last time the window was shown.
+* Fixed a bug that caused UTF-8 text not to be correctly exported.
+* Fixed a bug that allowed users to create enumerations without specifying a name.
+* Fixed a bug that caused enumerations without any members to appear as if they had a single empty member.
+* Fixed a bug that caused field values in the record table to overlap with column boundaries.
+* Fixed a bug that caused field values in the record table to overlap with color previews.
+* Fixed a bug that occasionally caused the last column of the record not to fill all available space.
+* Fixed a bug that caused huge empty areas in field value windows with small content (e.g. checkbox) after having shown a window with large content (e.g. color picker) before.
+* Fixed a bug that caused sorting field definitions by any column other than id to occasionally make the table show duplicate rows.
     </releaseNotes>
     <!-- =============================== -->      
 
