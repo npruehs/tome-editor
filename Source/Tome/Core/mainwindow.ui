@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>600</width>
     <height>300</height>
    </rect>
   </property>
@@ -29,7 +29,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>600</width>
      <height>21</height>
     </rect>
    </property>
@@ -82,6 +82,7 @@
     <addaction name="actionRevert_Record"/>
     <addaction name="actionRemove_Record"/>
     <addaction name="separator"/>
+    <addaction name="actionFindRecord"/>
     <addaction name="actionFind_Usages"/>
    </widget>
    <widget class="QMenu" name="menuExport">
@@ -101,11 +102,25 @@
     </property>
     <addaction name="actionError_List"/>
    </widget>
+   <widget class="QMenu" name="menuProject">
+    <property name="title">
+     <string>Project</string>
+    </property>
+    <addaction name="actionProject_Overview"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionUser_Settings"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuProject"/>
    <addaction name="menuRecords"/>
    <addaction name="menuFields"/>
    <addaction name="menuExport"/>
    <addaction name="menuAnalyze"/>
+   <addaction name="menuTools"/>
    <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -125,6 +140,7 @@
    <addaction name="actionRevert_Record"/>
    <addaction name="actionRemove_Record"/>
    <addaction name="separator"/>
+   <addaction name="actionFindRecord"/>
    <addaction name="actionFind_Usages"/>
    <addaction name="separator"/>
    <addaction name="actionRun_Integrity_Checks"/>
@@ -316,6 +332,29 @@
   <action name="actionRoadmap">
    <property name="text">
     <string>Roadmap</string>
+   </property>
+  </action>
+  <action name="actionFindRecord">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/Find_5650.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Find Record...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionProject_Overview">
+   <property name="text">
+    <string>Project Overview...</string>
+   </property>
+  </action>
+  <action name="actionUser_Settings">
+   <property name="text">
+    <string>User Settings...</string>
    </property>
   </action>
  </widget>

@@ -19,7 +19,7 @@ RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController)
 
 void RecordTreeWidget::addRecord(const QString& id, const QString& displayName)
 {
-    QTreeWidgetItem* newItem = new RecordTreeWidgetItem(id, displayName, QString());
+    QTreeWidgetItem* newItem = new RecordTreeWidgetItem(id, displayName, QString(), false);
 
     this->insertTopLevelItem(0, newItem);
     this->sortItems(0, Qt::AscendingOrder);
@@ -52,12 +52,12 @@ RecordTreeWidgetItem* RecordTreeWidget::getSelectedRecordItem() const
     return static_cast<RecordTreeWidgetItem*>(selectedItems.first());
 }
 
-void RecordTreeWidget::updateRecordIcon()
+void RecordTreeWidget::updateRecordItem()
 {
-    this->updateRecordIcon(this->getSelectedRecordItem());
+    this->updateRecordItem(this->getSelectedRecordItem());
 }
 
-void RecordTreeWidget::updateRecordIcon(RecordTreeWidgetItem *recordTreeItem)
+void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
 {
     if ( nullptr != recordTreeItem )
     {
@@ -73,7 +73,26 @@ void RecordTreeWidget::updateRecordIcon(RecordTreeWidgetItem *recordTreeItem)
                 recordIsEmtpy &= ancestors[ i ].fieldValues.empty();
             }
         }
-        recordTreeItem->setIcon( 0, QIcon( recordIsEmtpy ? ":/Media/Icons/Folder_6221.png" : ":/Media/Icons/Textfile_818_16x.png") );
+
+        // Set color.
+        if (recordTreeItem->isReadOnly())
+        {
+            recordTreeItem->setForeground(0, QBrush(Qt::blue));
+        }
+        else
+        {
+            recordTreeItem->setForeground(0, QBrush(Qt::black));
+        }
+
+        // Set icon.
+        if (recordIsEmtpy)
+        {
+            recordTreeItem->setIcon(0, QIcon(":/Media/Icons/Folder_6221.png"));
+        }
+        else
+        {
+            recordTreeItem->setIcon(0, QIcon(":/Media/Icons/Textfile_818_16x.png"));
+        }
     }
 }
 
@@ -95,6 +114,8 @@ void RecordTreeWidget::selectRecord(const QString& id)
 
 void RecordTreeWidget::setRecords(const RecordList& records)
 {
+    this->clear();
+
     // Create record tree items.
     QMap<QString, RecordTreeWidgetItem*> recordItems;
 
@@ -102,9 +123,9 @@ void RecordTreeWidget::setRecords(const RecordList& records)
     {
         const Record& record = records[i];
         RecordTreeWidgetItem* recordItem =
-                new RecordTreeWidgetItem(record.id, record.displayName, record.parentId);
+                new RecordTreeWidgetItem(record.id, record.displayName, record.parentId, record.readOnly);
         recordItems.insert(record.id, recordItem);
-        updateRecordIcon( recordItem );
+        updateRecordItem( recordItem );
     }
 
     // Build hierarchy and prepare item list for tree widget.

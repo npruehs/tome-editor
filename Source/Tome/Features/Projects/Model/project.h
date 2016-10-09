@@ -6,11 +6,11 @@
 #include <QVector>
 #include <QLocale>
 
-#include "../../Components/Model/componentlist.h"
-#include "../../Export/Model/recordexporttemplatemap.h"
+#include "../../Components/Model/componentsetlist.h"
+#include "../../Export/Model/recordexporttemplatelist.h"
 #include "../../Fields/Model/fielddefinitionsetlist.h"
 #include "../../Records/Model/recordsetlist.h"
-#include "../../Types/Model/customtypelist.h"
+#include "../../Types/Model/customtypesetlist.h"
 
 
 namespace Tome
@@ -23,12 +23,13 @@ namespace Tome
             QString name;
             QString path;
             QLocale locale;
+            bool ignoreReadOnly;
 
-            ComponentList components;
+            ComponentSetList componentSets;
             FieldDefinitionSetList fieldDefinitionSets;
-            RecordExportTemplateMap recordExportTemplates;
+            RecordExportTemplateList recordExportTemplates;
             RecordSetList recordSets;
-            CustomTypeList types;
+            CustomTypeSetList typeSets;
     };
 }
 

@@ -2,6 +2,7 @@
 #define FIELDVALUEWINDOW_H
 
 #include <QDialog>
+#include <QVariantMap>
 
 namespace Ui {
     class FieldValueWindow;
@@ -10,6 +11,7 @@ namespace Ui {
 namespace Tome
 {
     class CustomType;
+    class Facet;
     class FieldValueWidget;
     class RecordsController;
     class TypesController;
@@ -27,8 +29,12 @@ class FieldValueWindow : public QDialog
 
         void setFieldDescription(const QString& description);
         void setFieldDisplayName(const QString& displayName);
+        void setFieldFacets(const QList<Tome::Facet*> facets, const QVariantMap& facetValues);
         void setFieldValue(const QVariant& fieldValue);
         void setFieldType(const QString& fieldType) const;
+
+    public slots:
+        void accept();
 
     signals:
         void revert();
@@ -45,6 +51,11 @@ class FieldValueWindow : public QDialog
 
         Tome::RecordsController& recordsController;
         Tome::TypesController& typesController;
+
+        QList<Tome::Facet*> facets;
+        QVariantMap facetValues;
+
+        bool validate();
 };
 
 #endif // FIELDVALUEWINDOW_H

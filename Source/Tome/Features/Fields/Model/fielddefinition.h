@@ -18,8 +18,10 @@ namespace Tome
             QVariant defaultValue;
             QString description;
             QString displayName;
+            QString fieldDefinitionSetName;
             QString fieldType;
             QString id;
+            QVariantMap facets;
     };
 
     inline bool operator==(const FieldDefinition& lhs, const FieldDefinition& rhs){ return lhs.id == rhs.id; }

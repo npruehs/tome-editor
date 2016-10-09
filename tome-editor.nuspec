@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Read this before creating packages: https://chocolatey.org/docs/create-packages -->
+<!-- It is especially important to read the above link to understand additional requirements when publishing packages to the community feed aka dot org (https://chocolatey.org/packages). -->
+
+<!-- Test your packages in a test environment: https://github.com/chocolatey/chocolatey-test-environment -->
+
+<!--
+This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Reference. Chocolatey uses a special version of NuGet.Core that allows us to do more than was initially possible. As such there are certain things to be aware of:
+
+* the package xmlns schema url may cause issues with nuget.exe
+* Any of the following elements can ONLY be used by choco tools - projectSourceUrl, docsUrl, mailingListUrl, bugTrackerUrl, packageSourceUrl, provides, conflicts, replaces 
+* nuget.exe can still install packages with those elements but they are ignored. Any authoring tools or commands will error on those elements 
+-->
+
+<!-- You can embed software files directly into packages, as long as you are not bound by distribution rights. -->
+<!-- * If you are an organization making private packages, you probably have no issues here -->
+<!-- * If you are releasing to the community feed, you need to consider distribution rights. -->
+<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <!-- == PACKAGE SPECIFIC SECTION == -->
+    <!-- This section is about this package, although id and version have ties back to the software -->
+    <!-- id is lowercase and if you want a good separator for words, use '-', not '.'. Dots are only acceptable as suffixes for certain types of packages, e.g. .install, .portable, .extension, .template -->
+    <!-- If the software is cross-platform, attempt to use the same id as the debian/rpm package(s) if possible. -->
+    <id>tome-editor</id>
+    <!-- version should MATCH as closely as possible with the underlying software -->
+    <!-- Is the version a prerelease of a version? https://docs.nuget.org/create/versioning#creating-prerelease-packages -->
+    <!-- Note that unstable versions like 0.0.1 can be considered a released version, but it's possible that one can release a 0.0.1-beta before you release a 0.0.1 version. If the version number is final, that is considered a released version and not a prerelease. -->
+    <version>0.6-alpha</version>
+    <packageSourceUrl>https://github.com/npruehs/tome-editor</packageSourceUrl>
+    <!-- owners is a poor name for maintainers of the package. It sticks around by this name for compatibility reasons. It basically means you. -->
+    <owners>Nick Prühs</owners>
+    <!-- ============================== -->
+
+    <!-- == SOFTWARE SPECIFIC SECTION == -->
+    <!-- This section is about the software itself -->
+    <title>Tome</title>
+    <authors>Nick Prühs</authors>
+    <!-- projectUrl is required for the community feed -->
+    <projectUrl>http://npruehs.github.io/tome-editor/</projectUrl>
+    <iconUrl>https://github.com/npruehs/tome-editor/raw/develop/Media/Icons/Tome.png</iconUrl>
+    <!-- <copyright>Year Software Vendor</copyright> -->
+    <!-- If there is a license Url available, it is is required for the community feed -->
+    <licenseUrl>https://github.com/npruehs/tome-editor/blob/develop/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/npruehs/tome-editor</projectSourceUrl>
+    <docsUrl>https://github.com/npruehs/tome-editor/wiki</docsUrl>
+    <!--<mailingListUrl></mailingListUrl>-->
+    <bugTrackerUrl>https://github.com/npruehs/tome-editor/issues</bugTrackerUrl>
+    <tags>tome game data editor</tags>
+    <summary>A generic data editor for games supporting arbitrary input and output formats.</summary>
+    <description>
+Developing games is all about data. With game systems for modifying data and user interfaces for presenting it, finding a sophisticated data model is key to creating successful games. Even more, being able to change this data and iterate on a day-to-day basis is mandatory in today's production cycles.
+
+Tome solves two problems that arise with every new game you build: First, you can import the definition of your game's data so game designers can create new data records and modify existing ones very conveniently. Second, you can export the results to any format your game engine understands.
+    </description>
+    <releaseNotes>
+Advanced export release.
+
+This release adds a lot of customizability for exporting data, along with automatically enforced field value constraints and project and user settings. 
+
+## New Features
+
+* **Field Facets.** Specify [custom constraints](https://github.com/npruehs/tome-editor/wiki/Field-Definitions#field-facets) such as the minimum value of an integer, the maximum length of a string, or the required parent of a record reference.
+* **Project Overview.** [Add new or existing files](https://github.com/npruehs/tome-editor/wiki/Project-Structure#addingremoving-project-data-files) to and/or remove files from the project. Specify which file to add new data to and move data between files.
+* **Search.** [Find records](https://github.com/npruehs/tome-editor/wiki/Search#finding-records) by id or display name.
+* **User Settings.** Specify whether to show a Description column in the records table or to run integrity checks on save. 
+
+## Data
+
+* Added placeholders for list item types and map key and value types in export templates. 
+* Added placeholders for specific field values in export templates.
+* Added possibility for ignoring specific records and/or fields in exports.
+* Using $ characters in record names is now prohibited.
+
+See https://github.com/npruehs/tome-editor/wiki/Exporting-Data for details.
+
+* Added read-only records that can't be edited, reverted, removed or reparented.
+
+See https://github.com/npruehs/tome-editor/wiki/Data-Records#read-only-records for details.
+
+## Usability
+
+* Initially selecting all content of Integer, Real and String controls for immediate editing.
+* Added hyperlinks to search results and references to other records.
+
+## Other
+
+* Moved components, custom types and export templates from project file to dedicated files.
+* Added link to Roadmap to Help menu.
+* Added application icon.
+
+## Bug Fixes
+
+* Fixed a crash that could occur when removing a field while a record inheriting that field is selected.
+* Fixed a bug that caused the field definitions window not to correctly reflect all changes if any components had been removed since the last time the window was shown.
+* Fixed a bug that caused UTF-8 text not to be correctly exported.
+* Fixed a bug that allowed users to create enumerations without specifying a name.
+* Fixed a bug that caused enumerations without any members to appear as if they had a single empty member.
+* Fixed a bug that caused field values in the record table to overlap with column boundaries.
+* Fixed a bug that caused field values in the record table to overlap with color previews.
+* Fixed a bug that occasionally caused the last column of the record not to fill all available space.
+* Fixed a bug that caused huge empty areas in field value windows with small content (e.g. checkbox) after having shown a window with large content (e.g. color picker) before.
+* Fixed a bug that caused sorting field definitions by any column other than id to occasionally make the table show duplicate rows.
+    </releaseNotes>
+    <!-- =============================== -->      
+
+    <!-- Specifying dependencies and version ranges? https://docs.nuget.org/create/versioning#specifying-version-ranges-in-.nuspec-files -->
+    <!--<dependencies>
+      <dependency id="" version="__MINIMUM_VERSION__" />
+      <dependency id="" version="[__EXACT_VERSION__]" />
+      <dependency id="" version="[_MIN_VERSION_INCLUSIVE, MAX_VERSION_INCLUSIVE]" />
+      <dependency id="" version="[_MIN_VERSION_INCLUSIVE, MAX_VERSION_EXCLUSIVE)" />
+      <dependency id="" />
+      <dependency id="chocolatey-uninstall.extension" />
+    </dependencies>-->
+    <!-- chocolatey-uninstall.extension - If supporting 0.9.9.x (or below) and including a chocolateyUninstall.ps1 file to uninstall an EXE/MSI, you probably want to include chocolatey-uninstall.extension as a dependency. Please verify whether you are using a helper function from that package. -->
+
+    <!--<provides>NOT YET IMPLEMENTED</provides>-->
+    <!--<conflicts>NOT YET IMPLEMENTED</conflicts>-->
+    <!--<replaces>NOT YET IMPLEMENTED</replaces>-->
+  </metadata>
+  <files>
+    <!-- this section controls what actually gets packaged into the Chocolatey package -->
+    <file src="chocolateyinstall.ps1" target="tools" />
+    <!--Building from Linux? You may need this instead: <file src="tools/**" target="tools" />-->
+  </files>
+</package>

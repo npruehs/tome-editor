@@ -23,6 +23,7 @@ The tool is pretty self-explanatory. However, to give you a headstart, feel free
 * Splitting data up into multiple files for improved collaboration
 * Run integrity checks to verify all your data
 * Advanced search features, such as finding all references to a specific record
+* Command line support for exporting data without showing a GUI
 
 ## Development Cycle
 

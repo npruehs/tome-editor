@@ -21,6 +21,18 @@ QStringList CustomType::getEnumeration() const
     }
 
     QString enumerationString = this->restrictions[RestrictionEnumeration];
+
+    if (enumerationString.isEmpty())
+    {
+        // http://doc.qt.io/qt-5/qstring.html#split
+        // If "sep" does not match anywhere in the string, split() returns a
+        // single-element list containing this string.
+        // If the enum contains exactly one value, that's fine.
+        // If it doesn't contain any values, we don't want a single empty
+        // enumeration member here.
+        return QStringList();
+    }
+
     return enumerationString.split(";");
 }
 

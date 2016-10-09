@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Types>
+    <Type Name="Armor Type">
+        <Restrictions>
+            <Restriction Key="Enumeration" Value="Cloth;Leather;Mail"/>
+        </Restrictions>
+    </Type>
+    <Type Name="Damage Type">
+        <Restrictions>
+            <Restriction Key="Enumeration" Value="Magic;Normal;Pierce"/>
+        </Restrictions>
+    </Type>
+    <Type Name="Movement Type">
+        <Restrictions>
+            <Restriction Key="Enumeration" Value="Air;Ground"/>
+        </Restrictions>
+    </Type>
+    <Type Name="Movement Types">
+        <Restrictions>
+            <Restriction Key="ItemType" Value="Movement Type"/>
+        </Restrictions>
+    </Type>
+    <Type Name="Resource">
+        <Restrictions>
+            <Restriction Key="Enumeration" Value="Gold;Lumber"/>
+        </Restrictions>
+    </Type>
+    <Type Name="ResourceCostMap">
+        <Restrictions>
+            <Restriction Key="KeyType" Value="Resource"/>
+            <Restriction Key="ValueType" Value="Integer"/>
+        </Restrictions>
+    </Type>
+</Types>

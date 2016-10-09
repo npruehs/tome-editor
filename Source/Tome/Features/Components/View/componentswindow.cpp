@@ -44,14 +44,20 @@ void ComponentsWindow::on_actionNew_Component_triggered()
         this->componentWindow = new ComponentWindow(this);
     }
 
+    // Set component sets.
+    const QStringList componentSetNames = this->componentsController.getComponentSetNames();
+    this->componentWindow->setComponentSetNames(componentSetNames);
+    this->componentWindow->setComponentSetName(componentSetNames.first());
+
     int result = this->componentWindow->exec();
 
     if (result == QDialog::Accepted)
     {
         const QString& componentName = this->componentWindow->getComponentName();
+        const QString& componentSetName = this->componentWindow->getComponentSetName();
 
         // Update model.
-        const Component& component = this->componentsController.addComponent(componentName);
+        const Component& component = this->componentsController.addComponent(componentName, componentSetName);
 
         // Update view.
         int index = this->componentsController.indexOf(component);
@@ -68,7 +74,7 @@ void ComponentsWindow::on_actionDelete_Component_triggered()
         return;
     }
 
-    Component component = selectedItems[0]->text();
+    Component component = selectedItems.first()->text();
     int index = this->componentsController.indexOf(component);
 
     // Update model.

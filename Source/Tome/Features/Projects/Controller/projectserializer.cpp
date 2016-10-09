@@ -14,8 +14,8 @@ const QString ProjectSerializer::AttributeExportAsTable = "ExportAsTable";
 const QString ProjectSerializer::AttributeExportRoots = "ExportRoots";
 const QString ProjectSerializer::AttributeExportInnerNodes = "ExportInnerNodes";
 const QString ProjectSerializer::AttributeExportLeafs = "ExportLeafs";
+const QString ProjectSerializer::AttributeIgnoreReadOnly = "IgnoreReadOnly";
 const QString ProjectSerializer::AttributeKey = "Key";
-const QString ProjectSerializer::AttributePath = "Path";
 const QString ProjectSerializer::AttributeTomeType = "TomeType";
 const QString ProjectSerializer::AttributeValue = "Value";
 const QString ProjectSerializer::AttributeVersion = "Version";
@@ -36,7 +36,7 @@ const QString ProjectSerializer::ElementType = "Type";
 const QString ProjectSerializer::ElementTypes = "Types";
 const QString ProjectSerializer::ElementTypeMap = "TypeMap";
 
-const int ProjectSerializer::Version = 3;
+const int ProjectSerializer::Version = 4;
 
 
 ProjectSerializer::ProjectSerializer()
@@ -58,6 +58,12 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
             // Write version.
             writer.writeAttribute(AttributeVersion, QString::number(Version));
 
+            // Write lock behaviour.
+            if (project->ignoreReadOnly)
+            {
+                writer.writeAttribute(AttributeIgnoreReadOnly, "true");
+            }
+
             // Write project name.
             writer.writeTextElement(ElementName, project->name);
 
@@ -67,12 +73,10 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
             // Write components.
             writer.writeStartElement(ElementComponents);
             {
-                for (ComponentList::iterator it = project->components.begin();
-                     it != project->components.end();
-                     ++it)
+                for (int i = 0; i < project->componentSets.size(); ++i)
                 {
-                    Component component = *it;
-                    writer.writeTextElement(ElementName, component);
+                    const ComponentSet& componentSet = project->componentSets[i];
+                    writer.writeTextElement(ElementPath, componentSet.name);
                 }
             }
             writer.writeEndElement();
@@ -99,91 +103,26 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
             }
             writer.writeEndElement();
 
-            // Write record export templates.
+            // Write record export template paths.
             writer.writeStartElement(ElementRecordExportTemplates);
             {
-                for (RecordExportTemplateMap::const_iterator it = project->recordExportTemplates.begin();
+                for (RecordExportTemplateList::const_iterator it = project->recordExportTemplates.begin();
                      it != project->recordExportTemplates.end();
                      ++it)
                 {
-                    writer.writeStartElement(ElementTemplate);
-                    {
-                        const RecordExportTemplate& exportTemplate = it.value();
-
-                        if (exportTemplate.exportAsTable)
-                        {
-                            writer.writeAttribute(AttributeExportAsTable, "true");
-                        }
-                        if (!exportTemplate.path.isEmpty())
-                        {
-                            writer.writeAttribute(AttributePath, exportTemplate.path);
-                        }
-
-                        if (exportTemplate.exportRoots)
-                        {
-                            writer.writeAttribute(AttributeExportRoots, "true");
-                        }
-
-                        if (exportTemplate.exportInnerNodes)
-                        {
-                            writer.writeAttribute(AttributeExportInnerNodes, "true");
-                        }
-
-                        if (exportTemplate.exportLeafs)
-                        {
-                            writer.writeAttribute(AttributeExportLeafs, "true");
-                        }
-
-                        writer.writeTextElement(ElementName, exportTemplate.name);
-                        writer.writeTextElement(ElementFileExtension, exportTemplate.fileExtension);
-
-                        // Write export type map.
-                        writer.writeStartElement(ElementTypeMap);
-                        {
-                            for (QMap<QString, QString>::const_iterator itTypeMap = exportTemplate.typeMap.begin();
-                                 itTypeMap != exportTemplate.typeMap.end();
-                                 ++itTypeMap)
-                            {
-                                writer.writeStartElement(ElementMapping);
-                                writer.writeAttribute(AttributeTomeType, itTypeMap.key());
-                                writer.writeAttribute(AttributeExportedType, itTypeMap.value());
-                                writer.writeEndElement();
-                            }
-                        }
-                        writer.writeEndElement();
-                    }
-                    writer.writeEndElement();
+                    const RecordExportTemplate& exportTemplate = *it;
+                    writer.writeTextElement(ElementPath, exportTemplate.path);
                 }
             }
             writer.writeEndElement();
 
-            // Write types.
+            // Write type set paths.
             writer.writeStartElement(ElementTypes);
             {
-                for (int i = 0; i < project->types.size(); ++i)
+                for (int i = 0; i < project->typeSets.size(); ++i)
                 {
-                    const CustomType& type = project->types.at(i);
-
-                    writer.writeStartElement(ElementType);
-                    {
-                        writer.writeAttribute(ElementName, type.name);
-
-                        // Write restrictions map.
-                        writer.writeStartElement(ElementRestrictions);
-                        {
-                            for (QMap<QString, QString>::const_iterator itRestrictions = type.restrictions.begin();
-                                 itRestrictions != type.restrictions.end();
-                                 ++itRestrictions)
-                            {
-                                writer.writeStartElement(ElementRestriction);
-                                writer.writeAttribute(AttributeKey, itRestrictions.key());
-                                writer.writeAttribute(AttributeValue, itRestrictions.value());
-                                writer.writeEndElement();
-                            }
-                        }
-                        writer.writeEndElement();
-                    }
-                    writer.writeEndElement();
+                    const CustomTypeSet& typeSet = project->typeSets[i];
+                    writer.writeTextElement(ElementPath, typeSet.name);
                 }
             }
             writer.writeEndElement();
@@ -207,6 +146,9 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
         // Read version.
         int version = reader.readAttribute(AttributeVersion).toInt();
 
+        // Read lock behaviour.
+        project->ignoreReadOnly = reader.readAttribute(AttributeIgnoreReadOnly) == "true";
+
         // Begin project.
         reader.readStartElement(ElementTomeProject);
         {
@@ -222,10 +164,27 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             // Read components.
             reader.readStartElement(ElementComponents);
             {
-                while (reader.isAtElement(ElementName))
+                if (version > 3)
                 {
-                    const QString component = reader.readTextElement(ElementName);
-                    project->components.push_back(component);
+                    while (reader.isAtElement(ElementPath))
+                    {
+                        ComponentSet componentSet = ComponentSet();
+                        componentSet.name = reader.readTextElement(ElementPath);
+                        project->componentSets.push_back(componentSet);
+                    }
+                }
+                else
+                {
+                    ComponentSet componentSet = ComponentSet();
+                    componentSet.name = project->name;
+
+                    while (reader.isAtElement(ElementName))
+                    {
+                        const QString component = reader.readTextElement(ElementName);
+                        componentSet.components.push_back(component);
+                    }
+
+                    project->componentSets.push_back(componentSet);
                 }
             }
             reader.readEndElement();
@@ -257,46 +216,57 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             // Read record export templates.
             reader.readStartElement(ElementRecordExportTemplates);
             {
-                while (reader.isAtElement(ElementTemplate))
+                if (version > 3)
                 {
-                    bool exportAsTable = reader.readAttribute(AttributeExportAsTable) == "true";
-                    bool exportRoots = reader.readAttribute(AttributeExportRoots) == "true";
-                    bool exportInnerNodes = reader.readAttribute(AttributeExportInnerNodes) == "true";
-                    bool exportLeafs = reader.readAttribute(AttributeExportLeafs) == "true";
-                    QString templatePath = reader.readAttribute(AttributePath);
-
-                    reader.readStartElement(ElementTemplate);
+                    while (reader.isAtElement(ElementPath))
                     {
                         RecordExportTemplate exportTemplate = RecordExportTemplate();
+                        exportTemplate.path = reader.readTextElement(ElementPath);
+                        project->recordExportTemplates << exportTemplate;
+                    }
+                }
+                else
+                {
+                    while (reader.isAtElement(ElementTemplate))
+                    {
+                        bool exportAsTable = reader.readAttribute(AttributeExportAsTable) == "true";
+                        bool exportRoots = reader.readAttribute(AttributeExportRoots) == "true";
+                        bool exportInnerNodes = reader.readAttribute(AttributeExportInnerNodes) == "true";
+                        bool exportLeafs = reader.readAttribute(AttributeExportLeafs) == "true";
 
-                        exportTemplate.exportAsTable = exportAsTable;
-                        exportTemplate.exportRoots = exportRoots;
-                        exportTemplate.exportInnerNodes = exportInnerNodes;
-                        exportTemplate.exportLeafs = exportLeafs;
-
-                        exportTemplate.path = templatePath;
-                        exportTemplate.name = reader.readTextElement(ElementName);
-                        exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);
-
-                        // Read export type map.
-                        reader.readStartElement(ElementTypeMap);
+                        reader.readStartElement(ElementTemplate);
                         {
-                            while (reader.isAtElement(ElementMapping))
+                            RecordExportTemplate exportTemplate = RecordExportTemplate();
+
+                            exportTemplate.exportAsTable = exportAsTable;
+                            exportTemplate.exportRoots = exportRoots;
+                            exportTemplate.exportInnerNodes = exportInnerNodes;
+                            exportTemplate.exportLeafs = exportLeafs;
+
+                            exportTemplate.name = reader.readTextElement(ElementName);
+                            exportTemplate.path = exportTemplate.name;
+                            exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);
+
+                            // Read export type map.
+                            reader.readStartElement(ElementTypeMap);
                             {
-                                QString typeMapKey = reader.readAttribute(AttributeTomeType);
-                                QString typeMapValue = reader.readAttribute(AttributeExportedType);
+                                while (reader.isAtElement(ElementMapping))
+                                {
+                                    QString typeMapKey = reader.readAttribute(AttributeTomeType);
+                                    QString typeMapValue = reader.readAttribute(AttributeExportedType);
 
-                                exportTemplate.typeMap.insert(typeMapKey, typeMapValue);
+                                    exportTemplate.typeMap.insert(typeMapKey, typeMapValue);
 
-                                // Advance reader.
-                                reader.readEmptyElement(ElementMapping);
+                                    // Advance reader.
+                                    reader.readEmptyElement(ElementMapping);
+                                }
                             }
+                            reader.readEndElement();
+
+                            project->recordExportTemplates << exportTemplate;
                         }
                         reader.readEndElement();
-
-                        project->recordExportTemplates.insert(exportTemplate.name, exportTemplate);
                     }
-                    reader.readEndElement();
                 }
             }
             reader.readEndElement();
@@ -304,33 +274,50 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             // Read types.
             reader.readStartElement(ElementTypes);
             {
-                while (reader.isAtElement(ElementType))
+                if (version > 3)
                 {
-                    CustomType type = CustomType();
-
-                    type.name = reader.readAttribute(ElementName);
-
-                    reader.readStartElement(ElementType);
+                    while (reader.isAtElement(ElementPath))
                     {
-                        // Read type restriction map.
-                        reader.readStartElement(ElementRestrictions);
+                        CustomTypeSet typeSet = CustomTypeSet();
+                        typeSet.name = reader.readTextElement(ElementPath);
+                        project->typeSets.push_back(typeSet);
+                    }
+                }
+                else
+                {
+                    CustomTypeSet typeSet = CustomTypeSet();
+                    typeSet.name = project->name;
+
+                    while (reader.isAtElement(ElementType))
+                    {
+                        CustomType type = CustomType();
+
+                        type.name = reader.readAttribute(ElementName);
+
+                        reader.readStartElement(ElementType);
                         {
-                            while (reader.isAtElement(ElementRestriction))
+                            // Read type restriction map.
+                            reader.readStartElement(ElementRestrictions);
                             {
-                                QString restrictionKey = reader.readAttribute(AttributeKey);
-                                QString restrictionValue = reader.readAttribute(AttributeValue);
+                                while (reader.isAtElement(ElementRestriction))
+                                {
+                                    QString restrictionKey = reader.readAttribute(AttributeKey);
+                                    QString restrictionValue = reader.readAttribute(AttributeValue);
 
-                                type.restrictions.insert(restrictionKey, restrictionValue);
+                                    type.restrictions.insert(restrictionKey, restrictionValue);
 
-                                // Advance reader.
-                                reader.readEmptyElement(ElementRestriction);
+                                    // Advance reader.
+                                    reader.readEmptyElement(ElementRestriction);
+                                }
                             }
+                            reader.readEndElement();
                         }
                         reader.readEndElement();
-                    }
-                    reader.readEndElement();
 
-                    project->types.push_back(type);
+                        typeSet.types.push_back(type);
+                    }
+
+                    project->typeSets.push_back(typeSet);
                 }
             }
             reader.readEndElement();

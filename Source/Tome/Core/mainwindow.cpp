@@ -17,6 +17,8 @@
 #include "../Features/Components/View/componentswindow.h"
 #include "../Features/Components/Controller/componentscontroller.h"
 #include "../Features/Export/Controller/exportcontroller.h"
+#include "../Features/Facets/Controller/facet.h"
+#include "../Features/Facets/Controller/facetscontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Fields/View/fielddefinitionswindow.h"
@@ -25,6 +27,7 @@
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/View/newprojectwindow.h"
+#include "../Features/Projects/View/projectoverviewwindow.h"
 #include "../Features/Records/Controller/recordscontroller.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
 #include "../Features/Records/Model/recordfieldstate.h"
@@ -33,9 +36,12 @@
 #include "../Features/Records/View/recordtreewidgetitem.h"
 #include "../Features/Records/View/recordwindow.h"
 #include "../Features/Records/View/duplicaterecordwindow.h"
+#include "../Features/Search/Controller/findrecordcontroller.h"
 #include "../Features/Search/Controller/findusagescontroller.h"
+#include "../Features/Search/View/findrecordwindow.h"
 #include "../Features/Search/View/searchresultsdockwidget.h"
 #include "../Features/Settings/Controller/settingscontroller.h"
+#include "../features/Settings/View/usersettingswindow.h"
 #include "../Features/Tasks/Controller/taskscontroller.h"
 #include "../Features/Tasks/Model/severity.h"
 #include "../Features/Tasks/Model/targetsitetype.h"
@@ -62,7 +68,10 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     fieldValueWindow(0),
     newProjectWindow(0),
     recordWindow(0),
-    duplicateRecordWindow(0)
+    duplicateRecordWindow(0),
+    findRecordWindow(0),
+    projectOverviewWindow(0),
+    userSettingsWindow(0)
 {
     ui->setupUi(this);
 
@@ -104,6 +113,18 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
+                &this->controller->getRecordsController(),
+                SIGNAL(recordSetsChanged()),
+                SLOT(onRecordSetsChanged())
+                );
+
+    connect(
+                &this->controller->getExportController(),
+                SIGNAL(exportTemplatesChanged()),
+                SLOT(onExportTemplatesChanged())
+                );
+
+    connect(
                 this->ui->menuExport,
                 SIGNAL(triggered(QAction*)),
                 SLOT(exportRecords(QAction*))
@@ -140,9 +161,27 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
+                this->recordFieldTableWidget,
+                SIGNAL(recordLinkActivated(const QString&)),
+                SLOT(onRecordLinkActivated(const QString&))
+                );
+
+    connect(
                 &this->controller->getFindUsagesController(),
                 SIGNAL(searchResultChanged(const QString&, const Tome::SearchResultList)),
                 SLOT(searchResultChanged(const QString&, const Tome::SearchResultList))
+                );
+
+    connect(
+                &this->controller->getFindRecordController(),
+                SIGNAL(searchResultChanged(const QString&, const Tome::SearchResultList)),
+                SLOT(searchResultChanged(const QString&, const Tome::SearchResultList))
+                );
+
+    connect(
+                this->searchResultsDockWidget,
+                SIGNAL(recordLinkActivated(const QString&)),
+                SLOT(onRecordLinkActivated(const QString&))
                 );
 
     // Maximize window.
@@ -171,11 +210,26 @@ MainWindow::~MainWindow()
     delete this->fieldValueWindow;
     delete this->newProjectWindow;
     delete this->recordWindow;
+    delete this->findRecordWindow;
+    delete this->projectOverviewWindow;
+    delete this->userSettingsWindow;
 }
 
 void MainWindow::on_actionExit_triggered()
 {
     this->close();
+}
+
+void MainWindow::on_actionProject_Overview_triggered()
+{
+    if (!this->projectOverviewWindow)
+    {
+        this->projectOverviewWindow = new ProjectOverviewWindow(
+                    this->controller,
+                    this);
+    }
+
+    this->showWindow(this->projectOverviewWindow);
 }
 
 void MainWindow::on_actionField_Definions_triggered()
@@ -188,6 +242,7 @@ void MainWindow::on_actionField_Definions_triggered()
                     this->controller->getRecordsController(),
                     this->controller->getTypesController(),
                     this->controller->getFindUsagesController(),
+                    this->controller->getFacetsController(),
                     this);
 
         connect(
@@ -272,7 +327,12 @@ void MainWindow::on_actionSave_Project_triggered()
 {
     try
     {
-         this->controller->saveProject();
+        this->controller->saveProject();
+
+        if (this->controller->getSettingsController().getRunIntegrityChecksOnSave())
+        {
+            this->on_actionRun_Integrity_Checks_triggered();
+        }
     }
     catch (std::runtime_error& e)
     {
@@ -292,10 +352,12 @@ void MainWindow::on_actionNew_Record_triggered()
         this->recordWindow = new RecordWindow(this);
     }
 
+    RecordsController& recordsController = this->controller->getRecordsController();
+
     // Add fields.
     const FieldDefinitionList& fieldDefinitions =
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
-    const QStringList recordIds = this->controller->getRecordsController().getRecordIds();
+    const QStringList recordIds = recordsController.getRecordIds();
     const ComponentList& componentDefinitions =
             this->controller->getComponentsController().getComponents();
 
@@ -308,6 +370,11 @@ void MainWindow::on_actionNew_Record_triggered()
     // Set components.
     this->recordWindow->setRecordComponents(componentDefinitions);
 
+    // Set record set names.
+    const QStringList recordSetNames = recordsController.getRecordSetNames();
+    this->recordWindow->setRecordSetNames(recordSetNames);
+    this->recordWindow->setRecordSetName(recordSetNames.first());
+
     // Show window.
     int result = this->recordWindow->exec();
 
@@ -315,9 +382,10 @@ void MainWindow::on_actionNew_Record_triggered()
     {
         const QString& recordId = this->recordWindow->getRecordId();
         const QString& recordDisplayName = this->recordWindow->getRecordDisplayName();
+        const QString& recordSetName = this->recordWindow->getRecordSetName();
 
         // Update model.
-        this->controller->getRecordsController().addRecord(recordId, recordDisplayName);
+        recordsController.addRecord(recordId, recordDisplayName, recordSetName);
 
         // Update view.
         this->recordTreeWidget->addRecord(recordId, recordDisplayName);
@@ -340,7 +408,7 @@ void MainWindow::on_actionNew_Record_triggered()
 
         // Update view.
         this->refreshRecordTable();
-        this->recordTreeWidget->updateRecordIcon();
+        this->recordTreeWidget->updateRecordItem();
     }
 }
 
@@ -353,8 +421,17 @@ void MainWindow::on_actionEdit_Record_triggered()
         return;
     }
 
+    RecordsController& recordsController = this->controller->getRecordsController();
+
     // Get selected record.
-    const Record& record = this->controller->getRecordsController().getRecord(id);
+    const Record& record = recordsController.getRecord(id);
+
+    // Check if read-only.
+    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
+    {
+        this->showReadOnlyMessage(record.id);
+        return;
+    }
 
     // Show window.
     if (!this->recordWindow)
@@ -367,7 +444,7 @@ void MainWindow::on_actionEdit_Record_triggered()
     this->recordWindow->setRecordDisplayName(record.displayName);
 
     // Disallow all other record ids.
-    QStringList recordIds = this->controller->getRecordsController().getRecordIds();
+    QStringList recordIds = recordsController.getRecordIds();
     recordIds.removeOne(record.id);
 
     this->recordWindow->setDisallowedRecordIds(recordIds);
@@ -376,11 +453,15 @@ void MainWindow::on_actionEdit_Record_triggered()
     const FieldDefinitionList& fieldDefinitions =
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
     const RecordFieldValueMap inheritedFieldValues =
-            this->controller->getRecordsController().getInheritedFieldValues(record.id);
+            recordsController.getInheritedFieldValues(record.id);
     const ComponentList& componentDefinitions =
             this->controller->getComponentsController().getComponents();
 
     this->recordWindow->setRecordFields(fieldDefinitions, componentDefinitions, record.fieldValues, inheritedFieldValues);
+
+    // Set record set.
+    this->recordWindow->setRecordSetNames(recordsController.getRecordSetNames());
+    this->recordWindow->setRecordSetName(record.recordSetName);
 
     int result = this->recordWindow->exec();
 
@@ -394,7 +475,7 @@ void MainWindow::on_actionEdit_Record_triggered()
 
         // Get inherited fields.
         const RecordFieldValueMap inheritedFieldValues =
-                this->controller->getRecordsController().getInheritedFieldValues(recordId);
+                recordsController.getInheritedFieldValues(recordId);
 
         // Update record fields.
         const QMap<QString, RecordFieldState::RecordFieldState> recordFields =
@@ -426,9 +507,17 @@ void MainWindow::on_actionEdit_Record_triggered()
             }
         }
 
+        // Move record, if necessary.
+        const QString recordSetName = this->recordWindow->getRecordSetName();
+
+        if (record.recordSetName != recordSetName)
+        {
+            recordsController.moveRecordToSet(record.id, recordSetName);
+        }
+
         // Update view.
         this->refreshRecordTable();
-        this->recordTreeWidget->updateRecordIcon();
+        this->recordTreeWidget->updateRecordItem();
     }
 }
 
@@ -481,6 +570,15 @@ void MainWindow::on_actionRevert_Record_triggered()
         return;
     }
 
+    // Check if read-only.
+    const Record& record = this->controller->getRecordsController().getRecord(recordId);
+
+    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
+    {
+        this->showReadOnlyMessage(recordId);
+        return;
+    }
+
     // Show question.
     const QString& question = QString(tr("Are you sure you want to revert %1 to its original state?")).arg(recordId);
 
@@ -512,8 +610,18 @@ void MainWindow::on_actionRemove_Record_triggered()
         return;
     }
 
+    // Check if read-only.
+    const QString recordId = recordItem->getId();
+    const Record& record = this->controller->getRecordsController().getRecord(recordId);
+
+    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
+    {
+        this->showReadOnlyMessage(recordId);
+        return;
+    }
+
     // Update model.
-    this->controller->getRecordsController().removeRecord(recordItem->getId());
+    this->controller->getRecordsController().removeRecord(recordId);
 
     // Update view.
     if (recordItem->parent() != 0)
@@ -527,6 +635,26 @@ void MainWindow::on_actionRemove_Record_triggered()
     }
 
     delete recordItem;
+}
+
+void MainWindow::on_actionFindRecord_triggered()
+{
+    // Show window.
+    if (!this->findRecordWindow)
+    {
+        this->findRecordWindow = new FindRecordWindow();
+    }
+
+    int result = this->findRecordWindow->exec();
+
+    if (result != QDialog::Accepted)
+    {
+        return;
+    }
+
+    // Find record.
+    QString searchPattern = this->findRecordWindow->getSearchPattern();
+    this->controller->getFindRecordController().findRecord(searchPattern);
 }
 
 void MainWindow::on_actionFind_Usages_triggered()
@@ -551,6 +679,29 @@ void MainWindow::on_actionRun_Integrity_Checks_triggered()
     // Update view.
     this->showWindow(this->errorListDockWidget);
     this->refreshErrorList();
+}
+
+void MainWindow::on_actionUser_Settings_triggered()
+{
+    if (!this->userSettingsWindow)
+    {
+        this->userSettingsWindow = new UserSettingsWindow(this->controller->getSettingsController(), this);
+    }
+
+    int result = this->userSettingsWindow->exec();
+
+    if (result != QDialog::Accepted)
+    {
+        return;
+    }
+
+    // Save settings.
+    SettingsController& settingsController = this->controller->getSettingsController();
+    settingsController.setRunIntegrityChecksOnSave(this->userSettingsWindow->getRunIntegrityChecksOnSave());
+    settingsController.setShowDescriptionColumnInsteadOfFieldTooltips(this->userSettingsWindow->getShowDescriptionColumnInsteadOfFieldTooltips());
+
+    // Refresh view with updated settings.
+    this->refreshRecordTable();
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -627,6 +778,11 @@ void MainWindow::exportRecords(QAction* exportAction)
     }
 }
 
+void MainWindow::onExportTemplatesChanged()
+{
+    this->refreshExportMenu();
+}
+
 void MainWindow::openRecentProject(QAction* recentProjectAction)
 {
     QString path = recentProjectAction->text();
@@ -689,6 +845,23 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
     const FieldDefinition& field =
             this->controller->getFieldDefinitionsController().getFieldDefinition(fieldId);
 
+    // Get field facet data.
+    QString facetsDescription;
+    QList<Facet*> facets = this->controller->getFacetsController().getFacets(field.fieldType);
+
+    for (int i = 0; i < facets.count(); ++i)
+    {
+        Facet* facet = facets[i];
+        QString facetKey = facet->getKey();
+
+        if (field.facets.contains(facetKey))
+        {
+            QVariant facetValue = field.facets[facetKey];
+            facetsDescription += facet->getDescriptionForValue(facetValue);
+            facetsDescription += " ";
+        }
+    }
+
     // Prepare window.
     if (!this->fieldValueWindow)
     {
@@ -706,9 +879,10 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
 
     // Update view.
     this->fieldValueWindow->setFieldDisplayName(field.displayName);
-    this->fieldValueWindow->setFieldDescription(field.description);
+    this->fieldValueWindow->setFieldDescription(field.description + " " + facetsDescription);
     this->fieldValueWindow->setFieldType(field.fieldType);
     this->fieldValueWindow->setFieldValue(fieldValue);
+    this->fieldValueWindow->setFieldFacets(facets, field.facets);
 
     // Show window.
     int result = this->fieldValueWindow->exec();
@@ -737,6 +911,15 @@ void MainWindow::treeWidgetRecordReparented(const QString& recordId, const QStri
     if (recordId == newParentId ||
             this->controller->getRecordsController().isAncestorOf(recordId, newParentId))
     {
+        return;
+    }
+
+    // Check if read-only.
+    const Record& record = this->controller->getRecordsController().getRecord(recordId);
+
+    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
+    {
+        this->showReadOnlyMessage(recordId);
         return;
     }
 
@@ -770,6 +953,11 @@ void MainWindow::addRecordField(const QString& fieldId)
 
     // Update view.
     this->recordFieldTableWidget->insertRow(index);
+}
+
+QString MainWindow::getReadOnlyMessage(const QString& recordId)
+{
+    return tr("The record %1 has been marked as read-only. You cannot edit, reparent or remove read-only records.").arg(recordId);
 }
 
 void MainWindow::openProject(QString path)
@@ -829,18 +1017,7 @@ void MainWindow::onProjectChanged(QSharedPointer<Project> project)
     this->refreshRecordTree();
 
     // Setup record exports.
-    this->ui->menuExport->clear();
-
-    const RecordExportTemplateMap& recordExportTemplateMap =
-            this->controller->getExportController().getRecordExportTemplates();
-
-    for (RecordExportTemplateMap::const_iterator it = recordExportTemplateMap.begin();
-         it != recordExportTemplateMap.end();
-         ++it)
-    {
-        QAction* exportAction = new QAction(it.key(), this);
-        this->ui->menuExport->addAction(exportAction);
-    }
+    this->refreshExportMenu();
 
     // Update title.
     this->updateWindowTitle();
@@ -857,9 +1034,35 @@ void MainWindow::onRecordFieldsChanged(const QString& recordId)
     }
 }
 
+void MainWindow::onRecordSetsChanged()
+{
+    this->refreshRecordTree();
+}
+
+void MainWindow::onRecordLinkActivated(const QString& recordId)
+{
+    this->recordTreeWidget->selectRecord(recordId);
+}
+
 void MainWindow::refreshErrorList()
 {
     this->errorListDockWidget->showMessages(this->messages);
+}
+
+void MainWindow::refreshExportMenu()
+{
+    this->ui->menuExport->clear();
+
+    const RecordExportTemplateMap& recordExportTemplateMap =
+            this->controller->getExportController().getRecordExportTemplates();
+
+    for (RecordExportTemplateMap::const_iterator it = recordExportTemplateMap.begin();
+         it != recordExportTemplateMap.end();
+         ++it)
+    {
+        QAction* exportAction = new QAction(it.key(), this);
+        this->ui->menuExport->addAction(exportAction);
+    }
 }
 
 void MainWindow::refreshRecordTree()
@@ -883,12 +1086,38 @@ void MainWindow::refreshRecordTable()
             this->controller->getRecordsController().getRecordFieldValues(id);
 
     // Update table.
+    this->recordFieldTableWidget->setDescriptionColumnEnabled(
+                this->controller->getSettingsController().getShowDescriptionColumnInsteadOfFieldTooltips());
     this->recordFieldTableWidget->setRowCount(fieldValues.size());
 
     for (int i = 0; i < this->recordFieldTableWidget->rowCount(); ++i)
     {
         this->updateRecordRow(i);
     }
+
+    // Check if read-only.
+    const Record& record = this->controller->getRecordsController().getRecord(id);
+
+    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
+    {
+        this->recordFieldTableWidget->setEnabled(false);
+        this->recordFieldTableWidget->setToolTip(this->getReadOnlyMessage(id));
+    }
+    else
+    {
+        this->recordFieldTableWidget->setEnabled(true);
+        this->recordFieldTableWidget->setToolTip(QString());
+    }
+}
+
+void MainWindow::showReadOnlyMessage(const QString& recordId)
+{
+    QMessageBox::information(
+                this,
+                tr("Record is read-only"),
+                this->getReadOnlyMessage(recordId),
+                QMessageBox::Close,
+                QMessageBox::Close);
 }
 
 void MainWindow::showWindow(QWidget* widget)
@@ -904,6 +1133,8 @@ void MainWindow::updateMenus()
 
     this->ui->actionSave_Project->setEnabled(projectLoaded);
 
+    this->ui->actionProject_Overview->setEnabled(projectLoaded);
+
     this->ui->actionField_Definions->setEnabled(projectLoaded);
     this->ui->actionManage_Components->setEnabled(projectLoaded);
     this->ui->actionManage_Custom_Types->setEnabled(projectLoaded);
@@ -913,6 +1144,7 @@ void MainWindow::updateMenus()
     this->ui->actionDuplicate_Record->setEnabled(projectLoaded);
     this->ui->actionRevert_Record->setEnabled(projectLoaded);
     this->ui->actionRemove_Record->setEnabled(projectLoaded);
+    this->ui->actionFindRecord->setEnabled(projectLoaded);
     this->ui->actionFind_Usages->setEnabled(projectLoaded);
 
     this->ui->actionRun_Integrity_Checks->setEnabled(projectLoaded);
@@ -956,7 +1188,7 @@ void MainWindow::updateRecord(const QString& id, const QString& displayName)
     }
 }
 
-void MainWindow::updateRecordRow(int i)
+void MainWindow::updateRecordRow(const int i)
 {
     // Get selected record.
     QString id = this->recordTreeWidget->getSelectedRecordId();

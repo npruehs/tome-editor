@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TomeProject Version="3">
+<TomeProject Version="4">
     <Name>Tome Example Project</Name>
     <Locale>en_US</Locale>
     <Components>
-        <Name>ArmorComponent</Name>
-        <Name>AttackComponent</Name>
-        <Name>CostsComponent</Name>
-        <Name>HealthComponent</Name>
-        <Name>InvulnerabilityComponent</Name>
-        <Name>ManaComponent</Name>
-        <Name>NameComponent</Name>
-        <Name>PhysicsComponent</Name>
-        <Name>RangeComponent</Name>
-        <Name>SightComponent</Name>
-        <Name>VisualizationComponent</Name>
+        <Path>Tome Example Project</Path>
     </Components>
     <FieldDefinitions>
         <Path>Tome Example Project</Path>
@@ -22,94 +12,15 @@
         <Path>Tome Example Project</Path>
     </Records>
     <RecordExportTemplates>
-        <Template ExportAsTable="true" ExportLeafs="true">
-            <Name>CSV</Name>
-            <FileExtension>.csv</FileExtension>
-            <TypeMap/>
-        </Template>
-        <Template ExportRoots="true">
-            <Name>CSharp</Name>
-            <FileExtension>.cs</FileExtension>
-            <TypeMap>
-                <Mapping TomeType="Armor Type" ExportedType="TomeExampleProject.Data.ArmorType"/>
-                <Mapping TomeType="Boolean" ExportedType="bool"/>
-                <Mapping TomeType="Color" ExportedType="string"/>
-                <Mapping TomeType="Damage Type" ExportedType="TomeExampleProject.Data.DamageType"/>
-                <Mapping TomeType="Integer" ExportedType="int"/>
-                <Mapping TomeType="Movement Type" ExportedType="TomeExampleProject.Data.MovementType"/>
-                <Mapping TomeType="Real" ExportedType="float"/>
-                <Mapping TomeType="Reference" ExportedType="string"/>
-                <Mapping TomeType="Resource" ExportedType="TomeExampleProject.Data.ResourceType"/>
-                <Mapping TomeType="String" ExportedType="string"/>
-            </TypeMap>
-        </Template>
-        <Template ExportAsTable="true" ExportLeafs="true">
-            <Name>HTML</Name>
-            <FileExtension>.html</FileExtension>
-            <TypeMap/>
-        </Template>
-        <Template ExportLeafs="true">
-            <Name>INI</Name>
-            <FileExtension>.ini</FileExtension>
-            <TypeMap/>
-        </Template>
-        <Template ExportLeafs="true">
-            <Name>JSON</Name>
-            <FileExtension>.json</FileExtension>
-            <TypeMap/>
-        </Template>
-        <Template ExportLeafs="true">
-            <Name>Slash XML</Name>
-            <FileExtension>.blueprints.xml</FileExtension>
-            <TypeMap>
-                <Mapping TomeType="Armor Type" ExportedType="FantasyGame.Data.ArmorType"/>
-                <Mapping TomeType="Boolean" ExportedType="System.Boolean"/>
-                <Mapping TomeType="Color" ExportedType="System.String"/>
-                <Mapping TomeType="Damage Type" ExportedType="FantasyGame.Data.DamageType"/>
-                <Mapping TomeType="Integer" ExportedType="System.Int32"/>
-                <Mapping TomeType="Movement Type" ExportedType="FantasyGame.Data.MovementType"/>
-                <Mapping TomeType="Real" ExportedType="System.Single"/>
-                <Mapping TomeType="Reference" ExportedType="System.String"/>
-                <Mapping TomeType="String" ExportedType="System.String"/>
-            </TypeMap>
-        </Template>
-        <Template ExportLeafs="true">
-            <Name>StarCraft II XML</Name>
-            <FileExtension>.xml</FileExtension>
-            <TypeMap/>
-        </Template>
+        <Path>CSV</Path>
+        <Path>CSharp</Path>
+        <Path>HTML</Path>
+        <Path>INI</Path>
+        <Path>JSON</Path>
+        <Path>Slash XML</Path>
+        <Path>StarCraft II XML</Path>
     </RecordExportTemplates>
     <Types>
-        <Type Name="Armor Type">
-            <Restrictions>
-                <Restriction Key="Enumeration" Value="Cloth;Leather;Mail"/>
-            </Restrictions>
-        </Type>
-        <Type Name="Damage Type">
-            <Restrictions>
-                <Restriction Key="Enumeration" Value="Magic;Normal;Pierce"/>
-            </Restrictions>
-        </Type>
-        <Type Name="Movement Type">
-            <Restrictions>
-                <Restriction Key="Enumeration" Value="Air;Ground"/>
-            </Restrictions>
-        </Type>
-        <Type Name="Movement Types">
-            <Restrictions>
-                <Restriction Key="ItemType" Value="Movement Type"/>
-            </Restrictions>
-        </Type>
-        <Type Name="Resource">
-            <Restrictions>
-                <Restriction Key="Enumeration" Value="Gold;Lumber"/>
-            </Restrictions>
-        </Type>
-        <Type Name="ResourceCostMap">
-            <Restrictions>
-                <Restriction Key="KeyType" Value="Resource"/>
-                <Restriction Key="ValueType" Value="Integer"/>
-            </Restrictions>
-        </Type>
+        <Path>Tome Example Project</Path>
     </Types>
 </TomeProject>

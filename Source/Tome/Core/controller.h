@@ -8,11 +8,18 @@ class MainWindow;
 namespace Tome
 {
     class CommandLineOptions;
+    class ComponentSet;
     class ComponentsController;
+    class CustomTypeSet;
     class ExportController;
+    class FacetsController;
+    class FieldDefinitionSet;
     class FieldDefinitionsController;
+    class FindRecordController;
     class FindUsagesController;
     class Project;
+    class RecordExportTemplate;
+    class RecordSet;
     class RecordsController;
     class SettingsController;
     class TasksController;
@@ -34,25 +41,33 @@ namespace Tome
             TasksController& getTasksController();
             TypesController& getTypesController();
             FindUsagesController& getFindUsagesController();
+            FindRecordController& getFindRecordController();
+            FacetsController& getFacetsController();
 
             int start();
 
+            QString buildFullFilePath(QString filePath, QString projectPath, QString desiredExtension) const;
             void createProject(const QString& projectName, const QString& projectPath);
             const QString getFullProjectPath() const;
             const QString getProjectName() const;
             const QString getProjectPath() const;
+            bool getProjectIgnoreReadOnly() const;
             bool isProjectLoaded() const;
+            void loadComponentSet(const QString& projectPath, ComponentSet& componentSet);
+            void loadCustomTypeSet(const QString& projectPath, CustomTypeSet& customTypeSet);
+            void loadExportTemplate(const QString& projectPath, RecordExportTemplate& exportTemplate);
+            void loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet);
+            void loadRecordSet(const QString& projectPath, RecordSet& recordSet);
             void openProject(const QString& projectFileName);
             void saveProject();
 
-        signals:
-            void projectChanged(QSharedPointer<Tome::Project> project);
-
-        private:
+            static const QString ComponentFileExtension;
             static const QString FieldDefinitionFileExtension;
             static const QString ProjectFileExtension;
             static const QString RecordExportComponentDelimiterExtension;
             static const QString RecordExportComponentTemplateExtension;
+            static const QString RecordExportFieldValueTemplateExtension;
+            static const QString RecordExportFieldValueDelimiterExtension;
             static const QString RecordExportListTemplateExtension;
             static const QString RecordExportListItemTemplateExtension;
             static const QString RecordExportListItemDelimiterExtension;
@@ -62,10 +77,14 @@ namespace Tome
             static const QString RecordExportRecordFileTemplateExtension;
             static const QString RecordExportRecordTemplateExtension;
             static const QString RecordExportRecordDelimiterExtension;
-            static const QString RecordExportFieldValueTemplateExtension;
-            static const QString RecordExportFieldValueDelimiterExtension;
+            static const QString RecordExportTemplateFileExtension;
             static const QString RecordFileExtension;
+            static const QString TypeFileExtension;
 
+        signals:
+            void projectChanged(QSharedPointer<Tome::Project> project);
+
+        private:
             CommandLineOptions* options;
 
             QSharedPointer<Project> project;
@@ -78,13 +97,15 @@ namespace Tome
             SettingsController* settingsController;
             TasksController* tasksController;
             FindUsagesController* findUsagesController;
+            FindRecordController* findRecordController;
+            FacetsController* facetsController;
 
             MainWindow* mainWindow;
 
             const QString getFullProjectPath(QSharedPointer<Project> project) const;
             void saveProject(QSharedPointer<Project> project);
             void setProject(QSharedPointer<Project> project);
-            QString readFile(const QString& path, const QString& fileName);
+            QString readFile(const QString& fullPath);
     };
 }
 

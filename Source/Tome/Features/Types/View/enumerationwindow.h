@@ -24,9 +24,15 @@ class EnumerationWindow : public QDialog
 
         QString getEnumerationName() const;
         QStringList getEnumerationMembers() const;
+        QString getTypeSetName() const;
 
         void setEnumerationName(const QString& typeName);
         void setEnumerationMembers(const QStringList enumeration);
+        void setTypeSetName(const QString& typeSet);
+        void setTypeSetNames(const QStringList& typeSets);
+
+    public slots:
+        void accept();
 
     protected:
         virtual void showEvent(QShowEvent* event);
@@ -41,6 +47,8 @@ class EnumerationWindow : public QDialog
         EnumerationMemberWindow* enumerationMemberWindow;
 
         QStringList enumeration;
+
+        bool validate();
 };
 
 #endif // ENUMERATIONWINDOW_H

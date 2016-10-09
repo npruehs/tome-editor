@@ -33,6 +33,6 @@ Makefile*
 *.qmlproject.user
 *.qmlproject.user.*
 Bin/
-
 Obj/
 /build*
+Doc/Api

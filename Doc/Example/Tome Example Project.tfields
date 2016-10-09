@@ -9,23 +9,45 @@
     <Field Id="AttackRange" DisplayName="Attack Range" Description="Range of attack of this entity, in m." Type="Real" Component="RangeComponent" DefaultValue="18.250"/>
     <Field Id="Cooldown" DisplayName="Cooldown" Description="Time between two attacks of this entity, in seconds." Type="Real" Component="AttackComponent" DefaultValue="1.200"/>
     <Field Id="DamageType" DisplayName="Damage Type" Description="Type of the damage dealt by this entity. Affects actual damage dealt by its attacks, depending on the target's armor type." Type="Damage Type" Component="AttackComponent" DefaultValue="Normal"/>
-    <Field Id="Health" DisplayName="Health" Description="Maximum health of this entity. If reduced to zero, it dies." Type="Integer" Component="HealthComponent" DefaultValue="200"/>
+    <Field Id="Health" DisplayName="Health" Description="Maximum health of this entity. If reduced to zero, it dies." Type="Integer" Component="HealthComponent" DefaultValue="200">
+        <Facet Key="Max" Value="2147483647"/>
+        <Facet Key="Min" Value="0"/>
+    </Field>
     <Field Id="HealthRegeneration" DisplayName="Health Regeneration" Description="Health regeneration rate of this entity, in health / second." Type="Integer" Component="HealthComponent" DefaultValue="0"/>
     <Field Id="Invulnerable" DisplayName="Invulnerable" Description="Whether this entity can take damage and be targeted, or not." Type="Boolean" Component="InvulnerabilityComponent" DefaultValue="False"/>
-    <Field Id="Mana" DisplayName="Mana" Description="Maximum mana of this entity. Regenerates automatically. Required for most spells." Type="Integer" Component="ManaComponent" DefaultValue="100"/>
+    <Field Id="Mana" DisplayName="Mana" Description="Maximum mana of this entity. Regenerates automatically. Required for most spells." Type="Integer" Component="ManaComponent" DefaultValue="100">
+        <Facet Key="Max" Value="2147483647"/>
+        <Facet Key="Min" Value="0"/>
+    </Field>
     <Field Id="MP5" DisplayName="Mana Regeneration" Description="Mana regeneration rate of this entity, in mana / 5 seconds." Type="Integer" Component="ManaComponent" DefaultValue="3"/>
-    <Field Id="Mass" DisplayName="Mass" Description="Mass of this entity, in kg. Affects physics and collision separation." Type="Real" Component="PhysicsComponent" DefaultValue="1.000"/>
-    <Field Id="MovementSpeed" DisplayName="Movement Speed" Description="Speed of this entity, in m/s." Type="Real" Component="PhysicsComponent" DefaultValue="12.750"/>
-    <Field Id="Name" DisplayName="Name" Description="Name of this entity." Type="String" Component="NameComponent" DefaultValue=""/>
-    <Field Id="Projectile" DisplayName="Projectile" Description="Type of the projectile fired by this entity when attacking." Type="Reference" Component="AttackComponent" DefaultValue=""/>
+    <Field Id="Mass" DisplayName="Mass" Description="Mass of this entity, in kg. Affects physics and collision separation." Type="Real" Component="PhysicsComponent" DefaultValue="1.0000">
+        <Facet Key="Max" Value="3.4028234663852886e+38"/>
+        <Facet Key="Min" Value="0"/>
+    </Field>
+    <Field Id="MovementSpeed" DisplayName="Movement Speed" Description="Speed of this entity, in m/s." Type="Real" Component="PhysicsComponent" DefaultValue="12.7500">
+        <Facet Key="Max" Value="3.4028234663852886e+38"/>
+        <Facet Key="Min" Value="0"/>
+    </Field>
+    <Field Id="Name" DisplayName="Name" Description="Name of this entity." Type="String" Component="NameComponent" DefaultValue="">
+        <Facet Key="MaxLength" Value="64"/>
+    </Field>
+    <Field Id="Projectile" DisplayName="Projectile" Description="Type of the projectile fired by this entity when attacking." Type="Reference" Component="AttackComponent" DefaultValue="">
+        <Facet Key="RequiredAncestor" Value="Projectile"/>
+    </Field>
     <Field Id="ProjectileBase" DisplayName="Projectile Base" Description="Position to spawn projectiles at, relative to the position of this entity." Type="Vector (3D Real)" Component="AttackComponent">
         <DefaultValue Key="X" Value="0"/>
         <DefaultValue Key="Y" Value="5"/>
         <DefaultValue Key="Z" Value="0"/>
     </Field>
     <Field Id="ResourceCosts" DisplayName="Resource Costs" Description="Resources to pay in order to create this entity." Type="ResourceCostMap" Component="CostsComponent" DefaultValue=""/>
-    <Field Id="RotationSpeed" DisplayName="Rotation Speed" Description="Rotation speed of this entity, in degrees / second." Type="Real" Component="PhysicsComponent" DefaultValue="360.000"/>
-    <Field Id="SightRadius" DisplayName="Sight Radius" Description="Range of sight of this entity, in m." Type="Real" Component="SightComponent" DefaultValue="25.000"/>
+    <Field Id="RotationSpeed" DisplayName="Rotation Speed" Description="Rotation speed of this entity, in degrees / second." Type="Real" Component="PhysicsComponent" DefaultValue="360.0000">
+        <Facet Key="Max" Value="3.4028234663852886e+38"/>
+        <Facet Key="Min" Value="0"/>
+    </Field>
+    <Field Id="SightRadius" DisplayName="Sight Radius" Description="Range of sight of this entity, in m." Type="Real" Component="SightComponent" DefaultValue="25.0000">
+        <Facet Key="Max" Value="3.4028234663852886e+38"/>
+        <Facet Key="Min" Value="0"/>
+    </Field>
     <Field Id="Sprite" DisplayName="Sprite" Description="Name of the sprite used to visualize this entity." Type="String" Component="VisualizationComponent" DefaultValue=""/>
     <Field Id="SpriteColor" DisplayName="Sprite Color" Description="Color to render the sprite of this entity with." Type="Color" Component="VisualizationComponent" DefaultValue="#ffffff"/>
 </Fields>

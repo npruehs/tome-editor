@@ -15,6 +15,7 @@ namespace Ui {
 namespace Tome
 {
     class ComponentsController;
+    class FacetsController;
     class FieldDefinition;
     class FieldDefinitionsController;
     class FindUsagesController;
@@ -33,6 +34,7 @@ class FieldDefinitionsWindow : public QMainWindow
                 Tome::RecordsController& recordsController,
                 Tome::TypesController& typesController,
                 Tome::FindUsagesController& findUsagesController,
+                Tome::FacetsController& facetsController,
                 QWidget *parent = 0);
         ~FieldDefinitionsWindow();
 
@@ -61,6 +63,7 @@ class FieldDefinitionsWindow : public QMainWindow
         Tome::RecordsController& recordsController;
         Tome::TypesController& typesController;
         Tome::FindUsagesController& findUsagesController;
+        Tome::FacetsController& facetsController;
 
         FieldDefinitionWindow* fieldDefinitionWindow;
 
@@ -70,8 +73,17 @@ class FieldDefinitionsWindow : public QMainWindow
         void updateTable();
         void updateMenus();
 
-        void updateFieldDefinition(const QString oldId, const QString newId, const QString& displayName, const QString& fieldType, const QVariant& defaultValue, const QString& description, const Tome::Component& component);
-        void updateRow(const int index, const Tome::FieldDefinition& fieldDefinition);
+        void updateFieldDefinition(
+                const QString oldId,
+                const QString newId,
+                const QString& displayName,
+                const QString& fieldType,
+                const QVariant& defaultValue,
+                const QString& description,
+                const Tome::Component& component,
+                const QString& fieldDefinitionSetName,
+                const QVariantMap& facets);
+        void updateRow(const int index, const Tome::FieldDefinition& fieldDefinition, bool disableSorting);
 };
 
 #endif // FIELDDEFINITIONSWINDOW_H

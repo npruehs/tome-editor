@@ -25,20 +25,30 @@ QString ListWindow::getListName() const
 
 QString ListWindow::getListItemType() const
 {
-    return this->ui->comboBox->currentText();
+    return this->ui->comboBoxItemType->currentText();
+}
+
+QString ListWindow::getTypeSetName() const
+{
+    return this->ui->comboBoxTypeSet->currentText();
 }
 
 void ListWindow::init()
 {
     // Set type names.
-    this->ui->comboBox->clear();
+    this->ui->comboBoxItemType->clear();
 
     const QStringList& typeNames = this->typesController.getTypeNames();
 
     for (int i = 0; i < typeNames.length(); ++i)
     {
-        this->ui->comboBox->addItem(typeNames[i]);
+        this->ui->comboBoxItemType->addItem(typeNames[i]);
     }
+
+    // Set type set names.
+    const QStringList typeSetNames = this->typesController.getCustomTypeSetNames();
+    this->setTypeSetNames(typeSetNames);
+    this->setTypeSetName(typeSetNames.first());
 }
 
 void ListWindow::setListName(const QString& listName)
@@ -48,7 +58,18 @@ void ListWindow::setListName(const QString& listName)
 
 void ListWindow::setListItemType(const QString& itemType)
 {
-    this->ui->comboBox->setCurrentText(itemType);
+    this->ui->comboBoxItemType->setCurrentText(itemType);
+}
+
+void ListWindow::setTypeSetName(const QString& typeSet)
+{
+    this->ui->comboBoxTypeSet->setCurrentText(typeSet);
+}
+
+void ListWindow::setTypeSetNames(const QStringList& typeSets)
+{
+    this->ui->comboBoxTypeSet->clear();
+    this->ui->comboBoxTypeSet->addItems(typeSets);
 }
 
 void ListWindow::accept()

@@ -4,5 +4,6 @@ using namespace Tome;
 
 
 Project::Project()
+    : ignoreReadOnly(false)
 {
 }
