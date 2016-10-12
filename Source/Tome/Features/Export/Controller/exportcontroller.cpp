@@ -18,6 +18,7 @@ using namespace Tome;
 const QString ExportController::PlaceholderComponents = "$RECORD_COMPONENTS$";
 const QString ExportController::PlaceholderComponentName = "$COMPONENT_NAME$";
 const QString ExportController::PlaceholderItemType = "$ITEM_TYPE$";
+const QString ExportController::PlaceholderFieldComponent = "$FIELD_COMPONENT$";
 const QString ExportController::PlaceholderFieldId = "$FIELD_ID$";
 const QString ExportController::PlaceholderFieldKey = "$FIELD_KEY$";
 const QString ExportController::PlaceholderFieldType = "$FIELD_TYPE$";
@@ -331,6 +332,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 // Get field type name.
                 const QString fieldType = fieldDefinition.fieldType;
                 const QString exportedFieldType = exportTemplate.typeMap.value(fieldType, fieldType);
+                const QString fieldComponent = fieldDefinition.component;
 
                 // Apply field value template.
                 QString fieldValueString = exportTemplate.fieldValueTemplate;
@@ -391,6 +393,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 fieldValueString = fieldValueString.replace(PlaceholderFieldId, fieldId);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldType, exportedFieldType);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldValue, fieldValueText);
+                fieldValueString = fieldValueString.replace(PlaceholderFieldComponent, fieldComponent);
 
                 fieldValuesString.append(fieldValueString);
 
