@@ -1053,14 +1053,14 @@ void MainWindow::refreshExportMenu()
 {
     this->ui->menuExport->clear();
 
-    const RecordExportTemplateMap& recordExportTemplateMap =
+    const RecordExportTemplateList& recordExportTemplateList =
             this->controller->getExportController().getRecordExportTemplates();
 
-    for (RecordExportTemplateMap::const_iterator it = recordExportTemplateMap.begin();
-         it != recordExportTemplateMap.end();
+    for (RecordExportTemplateList::const_iterator it = recordExportTemplateList.begin();
+         it != recordExportTemplateList.end();
          ++it)
     {
-        QAction* exportAction = new QAction(it.key(), this);
+        QAction* exportAction = new QAction(it->name, this);
         this->ui->menuExport->addAction(exportAction);
     }
 }

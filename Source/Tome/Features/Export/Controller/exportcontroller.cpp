@@ -45,7 +45,7 @@ ExportController::ExportController(const FieldDefinitionsController& fieldDefini
 void ExportController::addRecordExportTemplate(const RecordExportTemplate& exportTemplate)
 {
     // Update model.
-    this->model[exportTemplate.name] = exportTemplate;
+    this->model->push_back(exportTemplate);
 
     // Notify listeners.
     emit this->exportTemplatesChanged();
@@ -53,17 +53,38 @@ void ExportController::addRecordExportTemplate(const RecordExportTemplate& expor
 
 const RecordExportTemplate ExportController::getRecordExportTemplate(const QString& name) const
 {
-    return this->model.value(name);
+    for (RecordExportTemplateList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if (it->name == name)
+        {
+            return *it;
+        }
+    }
+
+    QString errorMessage = QObject::tr("Export template not  found: ") + name;
+    throw std::runtime_error(errorMessage.toStdString());
 }
 
-const RecordExportTemplateMap& ExportController::getRecordExportTemplates() const
+const RecordExportTemplateList ExportController::getRecordExportTemplates() const
 {
-    return this->model;
+    return *this->model;
 }
 
 bool ExportController::hasRecordExportTemplate(const QString& name) const
 {
-    return this->model.contains(name);
+    for (RecordExportTemplateList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if (it->name == name)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void ExportController::exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath)
@@ -492,19 +513,22 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
 void ExportController::removeExportTemplate(const QString& name)
 {
     // Update model.
-    this->model.remove(name);
+    for (RecordExportTemplateList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if (it->name == name)
+        {
+            this->model->erase(it);
 
-    // Notify listeners.
-    emit this->exportTemplatesChanged();
+            // Notify listeners.
+            emit this->exportTemplatesChanged();
+            return;
+        }
+    }
 }
 
-void ExportController::setRecordExportTemplates(const RecordExportTemplateList& exportTemplates)
+void ExportController::setRecordExportTemplates(RecordExportTemplateList& exportTemplates)
 {
-    this->model.clear();
-
-    for (int i = 0; i < exportTemplates.size(); ++i)
-    {
-        const RecordExportTemplate& exportTemplate = exportTemplates[i];
-        this->model.insert(exportTemplate.name, exportTemplate);
-    }
+    this->model = &exportTemplates;
 }

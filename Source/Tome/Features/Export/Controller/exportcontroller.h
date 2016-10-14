@@ -23,20 +23,20 @@ namespace Tome
             void addRecordExportTemplate(const RecordExportTemplate& exportTemplate);
 
             const RecordExportTemplate getRecordExportTemplate(const QString& name) const;
-            const RecordExportTemplateMap& getRecordExportTemplates() const;
+            const RecordExportTemplateList getRecordExportTemplates() const;
 
             bool hasRecordExportTemplate(const QString& name) const;
 
             void exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath);
             void exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device);
             void removeExportTemplate(const QString& name);
-            void setRecordExportTemplates(const RecordExportTemplateList& exportTemplates);
+            void setRecordExportTemplates(RecordExportTemplateList& exportTemplates);
 
         signals:
             void exportTemplatesChanged();
 
         private:
-            RecordExportTemplateMap model;
+            RecordExportTemplateList* model;
 
             static const QString PlaceholderComponents;
             static const QString PlaceholderComponentName;

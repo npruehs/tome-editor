@@ -264,8 +264,8 @@ void ProjectOverviewWindow::updateExportTemplateData()
 {
     // Count export templates.
     ExportController& exportController = this->controller->getExportController();
-    const RecordExportTemplateMap& exportTemplateMap = exportController.getRecordExportTemplates();
-    const int exportTemplateCount = exportTemplateMap.count();
+    const RecordExportTemplateList& exportTemplateList = exportController.getRecordExportTemplates();
+    const int exportTemplateCount = exportTemplateList.count();
     const QString exportTemplatesText = QString(tr("%1 export template%2")).arg(
                 QString::number(exportTemplateCount),
                 exportTemplateCount != 1 ? "s" : "");
@@ -274,8 +274,8 @@ void ProjectOverviewWindow::updateExportTemplateData()
     // Add list items.
     this->ui->listWidgetExportTemplates->clear();
 
-    for (RecordExportTemplateMap::const_iterator it = exportTemplateMap.begin();
-         it != exportTemplateMap.end();
+    for (RecordExportTemplateList::const_iterator it = exportTemplateList.begin();
+         it != exportTemplateList.end();
          ++it)
     {
         const RecordExportTemplate& exportTemplate = *it;
