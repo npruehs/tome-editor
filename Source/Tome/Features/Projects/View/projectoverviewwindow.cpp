@@ -368,6 +368,12 @@ void ProjectOverviewWindow::onAddExistingComponentsFileClicked(bool checked)
                                                                   tr("Add Existing Components File"),
                                                                   projectPath,
                                                                   "Tome Component Files (*.tcomp)");
+
+    if (componentSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeComponentFilePath = projectDirectory.relativeFilePath(componentSetFileName);
 
@@ -405,6 +411,12 @@ void ProjectOverviewWindow::onAddExistingCustomTypesFileClicked(bool checked)
                                                                   tr("Add Existing Types File"),
                                                                   projectPath,
                                                                   "Tome Type Files (*.ttypes)");
+
+    if (customTypeSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeCustomTypeFilePath = projectDirectory.relativeFilePath(customTypeSetFileName);
 
@@ -442,6 +454,12 @@ void ProjectOverviewWindow::onAddExistingExportTemplateFileClicked(bool checked)
                                                                   tr("Add Existing Export Template File"),
                                                                   projectPath,
                                                                   "Tome Export Template Files (*.texport)");
+
+    if (exportTemplateFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeExportTemplateFilePath = projectDirectory.relativeFilePath(exportTemplateFileName);
 
@@ -479,6 +497,12 @@ void ProjectOverviewWindow::onAddExistingFieldDefinitionsFileClicked(bool checke
                                                                   tr("Add Existing Field Definitions File"),
                                                                   projectPath,
                                                                   "Tome Field Definition Files (*.tfields)");
+
+    if (fieldDefinitionSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeFieldDefinitionFilePath = projectDirectory.relativeFilePath(fieldDefinitionSetFileName);
 
@@ -516,6 +540,12 @@ void ProjectOverviewWindow::onAddExistingRecordsFileClicked(bool checked)
                                                                   tr("Add Existing Records File"),
                                                                   projectPath,
                                                                   "Tome Record Files (*.tdata)");
+
+    if (recordSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeRecordFilePath = projectDirectory.relativeFilePath(recordSetFileName);
 
@@ -553,6 +583,12 @@ void ProjectOverviewWindow::onAddNewComponentsFileClicked(bool checked)
                                                                   tr("Add New Components File"),
                                                                   projectPath,
                                                                   "Tome Component Files (*.tcomp)");
+
+    if (componentSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeComponentFilePath = projectDirectory.relativeFilePath(componentSetFileName);
 
@@ -577,6 +613,12 @@ void ProjectOverviewWindow::onAddNewCustomTypesFileClicked(bool checked)
                                                                   tr("Add New Types File"),
                                                                   projectPath,
                                                                   "Tome Type Files (*.ttypes)");
+
+    if (customTypeSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeCustomTypeFilePath = projectDirectory.relativeFilePath(customTypeSetFileName);
 
@@ -601,6 +643,12 @@ void ProjectOverviewWindow::onAddNewFieldDefinitionsFileClicked(bool checked)
                                                                   tr("Add New Field Definitions File"),
                                                                   projectPath,
                                                                   "Tome Field Definition Files (*.tfields)");
+
+    if (fieldDefinitionSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeFieldDefinitionFilePath = projectDirectory.relativeFilePath(fieldDefinitionSetFileName);
 
@@ -625,6 +673,12 @@ void ProjectOverviewWindow::onAddNewRecordsFileClicked(bool checked)
                                                                   tr("Add New Records File"),
                                                                   projectPath,
                                                                   "Tome Record Files (*.tdata)");
+
+    if (recordSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeRecordFilePath = projectDirectory.relativeFilePath(recordSetFileName);
 
