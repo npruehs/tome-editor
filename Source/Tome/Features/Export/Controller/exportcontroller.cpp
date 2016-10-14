@@ -19,12 +19,15 @@ const QString ExportController::PlaceholderComponents = "$RECORD_COMPONENTS$";
 const QString ExportController::PlaceholderComponentName = "$COMPONENT_NAME$";
 const QString ExportController::PlaceholderItemType = "$ITEM_TYPE$";
 const QString ExportController::PlaceholderFieldComponent = "$FIELD_COMPONENT$";
+const QString ExportController::PlaceholderFieldDescription = "$FIELD_DESCRIPTION$";
+const QString ExportController::PlaceholderFieldDisplayName = "$FIELD_DISPLAY_NAME$";
 const QString ExportController::PlaceholderFieldId = "$FIELD_ID$";
 const QString ExportController::PlaceholderFieldKey = "$FIELD_KEY$";
 const QString ExportController::PlaceholderFieldType = "$FIELD_TYPE$";
 const QString ExportController::PlaceholderFieldValue = "$FIELD_VALUE$";
 const QString ExportController::PlaceholderKeyType = "$KEY_TYPE$";
 const QString ExportController::PlaceholderListItem = "$LIST_ITEM$";
+const QString ExportController::PlaceholderRecordDisplayName = "$RECORD_DISPLAY_NAME$";
 const QString ExportController::PlaceholderRecordFields = "$RECORD_FIELDS$";
 const QString ExportController::PlaceholderRecordId = "$RECORD_ID$";
 const QString ExportController::PlaceholderRecordParentId = "$RECORD_PARENT$";
@@ -333,6 +336,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 const QString fieldType = fieldDefinition.fieldType;
                 const QString exportedFieldType = exportTemplate.typeMap.value(fieldType, fieldType);
                 const QString fieldComponent = fieldDefinition.component;
+                const QString fieldDescription = fieldDefinition.description;
+                const QString fieldDisplayName = fieldDefinition.displayName;
 
                 // Apply field value template.
                 QString fieldValueString = exportTemplate.fieldValueTemplate;
@@ -394,6 +399,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 fieldValueString = fieldValueString.replace(PlaceholderFieldType, exportedFieldType);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldValue, fieldValueText);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldComponent, fieldComponent);
+                fieldValueString = fieldValueString.replace(PlaceholderFieldDisplayName, fieldDisplayName);
+                fieldValueString = fieldValueString.replace(PlaceholderFieldDescription, fieldDescription);
 
                 fieldValuesString.append(fieldValueString);
 
@@ -460,6 +467,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             recordString = recordString.replace(PlaceholderRecordParentId, recordParent);
             recordString = recordString.replace(PlaceholderRecordFields, fieldValuesString);
             recordString = recordString.replace(PlaceholderComponents, componentsString);
+            recordString = recordString.replace(PlaceholderRecordDisplayName, record.displayName);
 
             if (!recordsString.isEmpty())
             {
