@@ -665,6 +665,7 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
 {
     RecordList records = this->getRecords();
 
+    // First pass: update reference fields
     for (int i = 0; i < records.count(); ++i)
     {
         const Record& record = records.at(i);
@@ -689,11 +690,14 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
                 }
             }
         }
+    }
 
-        // Update parents.
-        if (record.parentId == oldReference)
+    // Second pass: Update parents.
+    for ( auto &r : records )
+    {
+        if (r.parentId == oldReference)
         {
-            this->reparentRecord(record.id, newReference);
+            this->reparentRecord(r.id, newReference);
         }
     }
 }
