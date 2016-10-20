@@ -74,9 +74,19 @@ const Record RecordsController::duplicateRecord(const QString& existingRecordId,
     newRecord.displayName = newRecordid;
     newRecord.parentId = existingRecord.parentId;
     newRecord.fieldValues = existingRecord.fieldValues;
+    newRecord.recordSetName = existingRecord.recordSetName;
 
     // Add new record.
-    RecordList& records = (*this->model)[0].records;
+    int recordSetIndex = 0;
+    for (int i = 0; this->model->size() > i; ++i)
+    {
+        if ((*this->model)[i].name == existingRecord.recordSetName)
+        {
+            recordSetIndex = i;
+            break;
+        }
+    }
+    RecordList& records = (*this->model)[recordSetIndex].records;
     int index = findInsertionIndex(records, newRecord, recordLessThanDisplayName);
     records.insert(index, newRecord);
 
