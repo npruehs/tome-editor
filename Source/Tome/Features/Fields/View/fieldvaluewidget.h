@@ -23,6 +23,7 @@ namespace Tome
     class Vector2RWidget;
     class Vector3IWidget;
     class Vector3RWidget;
+    class Facet;
 
     /**
      * @brief Changes its appearance depending on the specified type.
@@ -40,6 +41,7 @@ namespace Tome
 
             void setFieldType(const QString& fieldType);
             void setFieldValue(const QVariant& fieldValue);
+            void setFieldFacets(const QList<Facet*> &facets, const QVariantMap &facetValues);
 
         protected:
             virtual void focusInEvent(QFocusEvent* event);
@@ -47,6 +49,8 @@ namespace Tome
         private:
             QWidget* currentWidget;
             QString fieldType;
+            QList<Tome::Facet*> facets;
+            QVariantMap facetValues;
 
             QCheckBox* checkBox;
             QColorDialog* colorDialog;
