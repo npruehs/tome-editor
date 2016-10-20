@@ -79,22 +79,42 @@ void RecordFieldsTableWidget::setRecord(int i, const QString recordId)
     // Show hyperlink for reference fields, and normal text for other fields.
     if (field.fieldType == BuiltInType::Reference)
     {
-        QLabel* valueLabel = new QLabel("<a href='" + valueString + "'>" + valueString + "</a>");
-
-        connect(
-                    valueLabel,
-                    SIGNAL(linkActivated(const QString&)),
-                    SLOT(onRecordLinkActivated(const QString&))
-                    );
-
-        // Add margin for increased readability.
-        valueLabel->setMargin(5);
-
+        QString href = "<a href='" + valueString + "'>" + valueString + "</a>";
         QModelIndex index = this->model()->index(i, 1);
-        this->setIndexWidget(index, valueLabel);
+        // Check for an existing index widget
+        QWidget *indexWidget = this->indexWidget(index);
+        if (nullptr != indexWidget)
+        {
+            QLabel* valueLabel = static_cast<QLabel*>(indexWidget);
+            valueLabel->setText(href);
+        }
+        // Create a new index widget
+        else
+        {
+            QLabel* valueLabel = new QLabel(href);
+
+            connect(
+                        valueLabel,
+                        SIGNAL(linkActivated(const QString&)),
+                        SLOT(onRecordLinkActivated(const QString&))
+                        );
+
+            // Add margin for increased readability.
+            valueLabel->setMargin(5);
+            this->setIndexWidget(index, valueLabel);
+        }
     }
     else
     {
+        // Remove any index widget
+        QModelIndex index = this->model()->index(i, 1);
+        QWidget *indexWidget = this->indexWidget(index);
+        if (nullptr != indexWidget)
+        {
+            this->setIndexWidget(index, nullptr);
+            delete indexWidget;
+        }
+
         // Show normal text.
         this->item(i, 1)->setData(Qt::DisplayRole, valueString);
 
