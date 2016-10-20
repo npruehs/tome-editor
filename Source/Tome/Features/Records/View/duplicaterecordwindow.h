@@ -1,6 +1,8 @@
 #ifndef DUPLICATERECORDWINDOW_H
 #define DUPLICATERECORDWINDOW_H
 
+#include "../../Records/Controller/recordnamevalidator.h"
+
 #include <QDialog>
 
 namespace Ui {
@@ -30,6 +32,7 @@ class DuplicateRecordWindow : public QDialog
         Ui::DuplicateRecordWindow *ui;
 
         QStringList disallowedRecordIds;
+        RecordNameValidator nameValidator;
 
         bool validate();
 };
