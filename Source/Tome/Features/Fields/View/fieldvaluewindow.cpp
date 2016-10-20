@@ -54,6 +54,7 @@ void FieldValueWindow::setFieldFacets(const QList<Facet*> facets, const QVariant
 {
     this->facets = facets;
     this->facetValues = facetValues;
+    this->fieldValueWidget->setFieldFacets(facets, facetValues);
 }
 
 void FieldValueWindow::setFieldValue(const QVariant& fieldValue)

@@ -68,8 +68,9 @@ void RequiredReferenceAncestorFacet::setWidgetValue(QWidget* widget, const QVari
 QString RequiredReferenceAncestorFacet::validateValue(const FacetContext& context, const QVariant value, const QVariant facetValue) const
 {
     QString requiredAncestor = facetValue.toString();
+    QString valueAsString = value.toString();
 
-    if (!requiredAncestor.isEmpty() && !context.recordsController.isAncestorOf(requiredAncestor, value.toString()))
+    if ( !valueAsString.isEmpty() && !requiredAncestor.isEmpty() && !context.recordsController.isAncestorOf(requiredAncestor, valueAsString))
     {
         return tr("Value must be any %1.").arg(requiredAncestor);
     }

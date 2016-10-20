@@ -9,8 +9,10 @@
 #include "vector2rwidget.h"
 #include "vector3iwidget.h"
 #include "vector3rwidget.h"
+#include "../../Facets/Controller/facet.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
+#include "../../Facets/Model/facetcontext.h"
 #include "../../Types/Model/customtype.h"
 #include "../../Types/Model/builtintype.h"
 #include "../../../Util/memoryutils.h"
@@ -215,11 +217,35 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
     if (this->fieldType == BuiltInType::Reference)
     {
         QStringList recordNames = this->recordsController.getRecordNames();
+        QStringList references;
+
+        // Apply field facets to added record list
+        FacetContext context = FacetContext(this->recordsController);
+        for (int i = 0; i < this->facets.count(); ++i)
+        {
+            Facet* facet = this->facets[i];
+            QString facetKey = facet->getKey();
+
+            if (!this->facetValues.contains(facetKey))
+            {
+                continue;
+            }
+
+            QVariant facetValue = this->facetValues[facetKey];
+            for (const auto &r : recordNames )
+            {
+                QVariant value = r;
+                if ( facet->validateValue(context, value, facetValue).isEmpty() )
+                {
+                    references.push_back(r);
+                }
+            }
+        }
 
         // Allow clearing the field.
-        recordNames.push_front(QString());
+        references.push_front(QString());
 
-        this->setEnumeration(recordNames);
+        this->setEnumeration(references);
         this->setCurrentWidget(this->comboBox);
         return;
     }
@@ -440,4 +466,10 @@ void FieldValueWidget::setCurrentWidget(QWidget* widget)
         this->currentWidget->show();
         this->currentWidget->setFocus();
     }
+}
+
+void FieldValueWidget::setFieldFacets(const QList<Facet*> &facets, const QVariantMap &facetValues)
+{
+    this->facets = facets;
+    this->facetValues = facetValues;
 }
