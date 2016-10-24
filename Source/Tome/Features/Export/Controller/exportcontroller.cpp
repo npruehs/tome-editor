@@ -118,6 +118,9 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
         {
             const Record& record = recordSet.records[j];
 
+            // Report progress.
+            emit this->progressChanged(tr("Exporting Data"), record.id, j, recordSet.records.size());
+
             // Check if should export.
             if (record.parentId.isEmpty())
             {
@@ -508,6 +511,9 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
     QTextStream textStream(&device);
     textStream.setCodec("UTF-8");
     textStream << recordFileString;
+
+    // Report finish.
+    emit this->progressChanged(tr("Exporting Data"), QString(), 1, 1);
 }
 
 void ExportController::removeExportTemplate(const QString& name)

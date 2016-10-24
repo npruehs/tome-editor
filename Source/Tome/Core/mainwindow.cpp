@@ -133,6 +133,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
+                &this->controller->getExportController(),
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
+    connect(
                 this->ui->menuExport,
                 SIGNAL(triggered(QAction*)),
                 SLOT(exportRecords(QAction*))
