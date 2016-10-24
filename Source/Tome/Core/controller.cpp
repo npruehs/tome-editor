@@ -76,6 +76,7 @@ Controller::Controller(CommandLineOptions* options) :
     findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findRecordController(new FindRecordController(*this->recordsController)),
     facetsController(new FacetsController()),
+    recordSetSerializer(new RecordSetSerializer()),
     mainWindow(0)
 {
     // Setup tasks.
@@ -94,6 +95,13 @@ Controller::Controller(CommandLineOptions* options) :
     this->facetsController->registerFacet(new MaximumRealValueFacet());
     this->facetsController->registerFacet(new MaximumStringLengthFacet());
     this->facetsController->registerFacet(new RequiredReferenceAncestorFacet());
+
+    // Connect signals.
+    connect(
+                this->recordSetSerializer,
+                SIGNAL(progressChanged(int, int)),
+                SLOT(onProgressChanged(int, int))
+                );
 }
 
 Controller::~Controller()
@@ -113,6 +121,7 @@ Controller::~Controller()
     delete this->findUsagesController;
     delete this->findRecordController;
     delete this->facetsController;
+    delete this->recordSetSerializer;
 
     delete this->options;
 }
@@ -453,18 +462,20 @@ void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinit
 
 void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet)
 {
-    RecordSetSerializer recordSetSerializer = RecordSetSerializer();
-
     // Open record file.
     QString fullRecordSetPath =
             buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
+
+    // Setup async operation.
+    this->currentOperationTitle = tr("Opening Project");
+    this->currentOperationText = fullRecordSetPath;
 
     QFile recordFile(fullRecordSetPath);
     if (recordFile.open(QIODevice::ReadOnly))
     {
         try
         {
-            recordSetSerializer.deserialize(recordFile, recordSet);
+            this->recordSetSerializer->deserialize(recordFile, recordSet);
         }
         catch (const std::runtime_error& e)
         {
@@ -560,6 +571,11 @@ void Controller::saveProject()
     this->saveProject(this->project);
 }
 
+void Controller::onProgressChanged(const int currentValue, const int maximumValue)
+{
+    emit this->progressChanged(this->currentOperationTitle, this->currentOperationText, currentValue, maximumValue);
+}
+
 QString Controller::buildFullFilePath(QString filePath, QString projectPath, QString desiredExtension) const
 {
     if (!filePath.endsWith(desiredExtension))
@@ -647,8 +663,6 @@ void Controller::saveProject(QSharedPointer<Project> project)
     }
 
     // Write record sets.
-    Tome::RecordSetSerializer recordSetSerializer = RecordSetSerializer();
-
     for (int i = 0; i < project->recordSets.size(); ++i)
     {
         const RecordSet& recordSet = project->recordSets[i];
@@ -657,12 +671,16 @@ void Controller::saveProject(QSharedPointer<Project> project)
         QString fullRecordSetPath =
                 buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
 
+        // Setup async operation.
+        this->currentOperationTitle = tr("Saving Project");
+        this->currentOperationText = fullRecordSetPath;
+
         // Write file.
         QFile recordSetFile(fullRecordSetPath);
 
         if (recordSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
-            recordSetSerializer.serialize(recordSetFile, recordSet);
+            this->recordSetSerializer->serialize(recordSetFile, recordSet);
         }
         else
         {

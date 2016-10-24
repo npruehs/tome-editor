@@ -19,11 +19,6 @@ const QString RecordSetSerializer::ElementRecords = "Records";
 const QString RecordSetSerializer::ElementValue = "Value";
 
 
-RecordSetSerializer::RecordSetSerializer()
-{
-
-}
-
 void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSet) const
 {
     // Open device stream.
@@ -40,6 +35,9 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
             for (int i = 0; i < recordSet.records.size(); ++i)
             {
                 const Record& record = recordSet.records[i];
+
+                // Report progress.
+                emit progressChanged(i, recordSet.records.size());
 
                 // Begin record.
                 stream.writeStartElement(ElementRecord);
@@ -111,8 +109,10 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
     }
     // End document.
     stream.writeEndDocument();
-}
 
+    // Report progress.
+    emit progressChanged(recordSet.records.size(), recordSet.records.size());
+}
 
 void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) const
 {
@@ -129,6 +129,9 @@ void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) c
             // Read records.
             while (reader.isAtElement(ElementRecord))
             {
+                // Report progress.
+                emit progressChanged(device.pos(), device.size());
+
                 // Add new record.
                 Record record = Record();
 
@@ -201,4 +204,7 @@ void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) c
     }
     // End document.
     reader.readEndDocument();
+
+    // Report progress.
+    emit progressChanged(device.size(), device.size());
 }

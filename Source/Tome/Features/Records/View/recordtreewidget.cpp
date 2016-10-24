@@ -126,7 +126,13 @@ void RecordTreeWidget::setRecords(const RecordList& records)
                 new RecordTreeWidgetItem(record.id, record.displayName, record.parentId, record.readOnly);
         recordItems.insert(record.id, recordItem);
         updateRecordItem( recordItem );
+
+        // Report progress.
+        emit this->progressChanged(i, records.size());
     }
+
+    // Report progress.
+    emit this->progressChanged(records.size(), records.size());
 
     // Build hierarchy and prepare item list for tree widget.
     QList<QTreeWidgetItem* > items;
