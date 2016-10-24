@@ -607,13 +607,22 @@ void RecordsController::revertRecord(const QString& recordId)
     const RecordFieldValueMap& fields = this->getRecordFieldValues(recordId);
 
     // Revert all fields.
+    int i = 0;
+
     for (RecordFieldValueMap::const_iterator it = fields.begin();
          it != fields.end();
-         ++it)
+         ++it, ++i)
     {
         const QString& fieldId = it.key();
+
+        // Report progress.
+        emit this->progressChanged(tr("Reverting fields"), fieldId, i, fields.count());
+
         this->revertFieldValue(recordId, fieldId);
     }
+
+    // Report finish.
+    emit this->progressChanged(tr("Reverting fields"), QString(), 1, 1);
 }
 
 void RecordsController::reparentRecord(const QString& recordId, const QString& newParentId)
