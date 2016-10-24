@@ -110,8 +110,8 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
     // End document.
     stream.writeEndDocument();
 
-    // Report progress.
-    emit progressChanged(recordSet.records.size(), recordSet.records.size());
+    // Report finish.
+    emit progressChanged(1, 1);
 }
 
 void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) const
@@ -205,6 +205,6 @@ void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) c
     // End document.
     reader.readEndDocument();
 
-    // Report progress.
-    emit progressChanged(device.size(), device.size());
+    // Report finish.
+    emit progressChanged(1, 1);
 }

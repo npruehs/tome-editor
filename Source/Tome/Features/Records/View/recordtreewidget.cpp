@@ -131,8 +131,8 @@ void RecordTreeWidget::setRecords(const RecordList& records)
         emit this->progressChanged(i, records.size());
     }
 
-    // Report progress.
-    emit this->progressChanged(records.size(), records.size());
+    // Report finish.
+    emit this->progressChanged(1, 1);
 
     // Build hierarchy and prepare item list for tree widget.
     QList<QTreeWidgetItem* > items;

@@ -467,7 +467,7 @@ void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet)
             buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
 
     // Setup async operation.
-    this->currentOperationTitle = tr("Opening Project");
+    this->currentOperationTitle = tr("Loading Records");
     this->currentOperationText = fullRecordSetPath;
 
     QFile recordFile(fullRecordSetPath);
@@ -672,7 +672,7 @@ void Controller::saveProject(QSharedPointer<Project> project)
                 buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
 
         // Setup async operation.
-        this->currentOperationTitle = tr("Saving Project");
+        this->currentOperationTitle = tr("Saving Records");
         this->currentOperationText = fullRecordSetPath;
 
         // Write file.
