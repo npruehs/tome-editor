@@ -685,6 +685,9 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
     {
         const Record& record = records.at(i);
 
+        // Report progress.
+        emit this->progressChanged(tr("Updating references"), record.id, i, records.count());
+
         // Update references.
         const RecordFieldValueMap fieldValues = this->getRecordFieldValues(record.id);
 
@@ -708,13 +711,21 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
     }
 
     // Second pass: Update parents.
-    for ( auto &r : records )
+    for (int i = 0; i < records.count(); ++i)
     {
-        if (r.parentId == oldReference)
+        const Record& record = records.at(i);
+
+        // Report progress.
+        emit this->progressChanged(tr("Reparenting records"), record.id, i, records.count());
+
+        if (record.parentId == oldReference)
         {
-            this->reparentRecord(r.id, newReference);
+            this->reparentRecord(record.id, newReference);
         }
     }
+
+    // Report finish.
+    emit this->progressChanged(tr("Reparenting records"), QString(), 1, 1);
 }
 
 Record* RecordsController::getRecordById(const QString& id) const
