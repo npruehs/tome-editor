@@ -673,6 +673,11 @@ void RecordsController::updateRecordFieldValue(const QString& recordId, const QS
 
 void RecordsController::updateRecordReferences(const QString oldReference, const QString newReference)
 {
+    if (oldReference == newReference)
+    {
+        return;
+    }
+
     RecordList records = this->getRecords();
 
     // First pass: update reference fields
