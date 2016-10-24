@@ -30,7 +30,7 @@ namespace Tome
             void setRecords(const RecordList& records);
 
         signals:
-            void progressChanged(const int currentValue, const int maximumValue) const;
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
             void recordReparented(const QString& recordId, const QString& newParentId);
 
         protected:

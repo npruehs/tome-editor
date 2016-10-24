@@ -27,7 +27,7 @@ namespace Tome
             void deserialize(QIODevice& device, RecordSet& recordSet) const;
 
         signals:
-            void progressChanged(const int currentValue, const int maximumValue) const;
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
 
         private:
             static const QString ElementDisplayName;

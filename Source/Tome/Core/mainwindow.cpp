@@ -224,8 +224,8 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     connect(
                 this->recordTreeWidget,
-                SIGNAL(progressChanged(int,int)),
-                SLOT(onRecordTreeProgressChanged(int,int))
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
                 );
 
     // Maximize window.
@@ -1097,11 +1097,6 @@ void MainWindow::onRecordFieldsChanged(const QString& recordId)
 void MainWindow::onRecordSetsChanged()
 {
     this->refreshRecordTree();
-}
-
-void MainWindow::onRecordTreeProgressChanged(const int currentValue, const int maximumValue)
-{
-    this->onProgressChanged(tr("Record Tree"), tr("Refreshing..."), currentValue, maximumValue);
 }
 
 void MainWindow::onRecordLinkActivated(const QString& recordId)

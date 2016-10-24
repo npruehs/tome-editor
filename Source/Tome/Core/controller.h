@@ -87,7 +87,7 @@ namespace Tome
             void projectChanged(QSharedPointer<Tome::Project> project);
 
         private slots:
-            void onProgressChanged(const int currentValue, const int maximumValue);
+            void onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
 
         private:
             CommandLineOptions* options;
@@ -108,9 +108,6 @@ namespace Tome
             RecordSetSerializer* recordSetSerializer;
 
             MainWindow* mainWindow;
-
-            QString currentOperationText;
-            QString currentOperationTitle;
 
             const QString getFullProjectPath(QSharedPointer<Project> project) const;
             void saveProject(QSharedPointer<Project> project);

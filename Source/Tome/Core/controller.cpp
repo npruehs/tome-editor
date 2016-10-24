@@ -99,8 +99,8 @@ Controller::Controller(CommandLineOptions* options) :
     // Connect signals.
     connect(
                 this->recordSetSerializer,
-                SIGNAL(progressChanged(int, int)),
-                SLOT(onProgressChanged(int, int))
+                SIGNAL(progressChanged(QString, QString, int, int)),
+                SLOT(onProgressChanged(QString, QString, int, int))
                 );
 }
 
@@ -466,10 +466,6 @@ void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet)
     QString fullRecordSetPath =
             buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
 
-    // Setup async operation.
-    this->currentOperationTitle = tr("Loading Records");
-    this->currentOperationText = fullRecordSetPath;
-
     QFile recordFile(fullRecordSetPath);
     if (recordFile.open(QIODevice::ReadOnly))
     {
@@ -571,9 +567,9 @@ void Controller::saveProject()
     this->saveProject(this->project);
 }
 
-void Controller::onProgressChanged(const int currentValue, const int maximumValue)
+void Controller::onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue)
 {
-    emit this->progressChanged(this->currentOperationTitle, this->currentOperationText, currentValue, maximumValue);
+    emit this->progressChanged(title, text, currentValue, maximumValue);
 }
 
 QString Controller::buildFullFilePath(QString filePath, QString projectPath, QString desiredExtension) const
@@ -670,10 +666,6 @@ void Controller::saveProject(QSharedPointer<Project> project)
         // Build file name.
         QString fullRecordSetPath =
                 buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
-
-        // Setup async operation.
-        this->currentOperationTitle = tr("Saving Records");
-        this->currentOperationText = fullRecordSetPath;
 
         // Write file.
         QFile recordSetFile(fullRecordSetPath);

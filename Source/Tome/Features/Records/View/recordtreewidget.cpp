@@ -128,11 +128,11 @@ void RecordTreeWidget::setRecords(const RecordList& records)
         updateRecordItem( recordItem );
 
         // Report progress.
-        emit this->progressChanged(i, records.size());
+        emit this->progressChanged(tr("Refreshing Records"), record.id, i, records.size());
     }
 
     // Report finish.
-    emit this->progressChanged(1, 1);
+    emit this->progressChanged(tr("Refreshing Records"), QString(), 1, 1);
 
     // Build hierarchy and prepare item list for tree widget.
     QList<QTreeWidgetItem* > items;
