@@ -181,15 +181,33 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
+                &this->controller->getFindUsagesController(),
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
+    connect(
                 &this->controller->getFindRecordController(),
                 SIGNAL(searchResultChanged(const QString&, const Tome::SearchResultList)),
                 SLOT(searchResultChanged(const QString&, const Tome::SearchResultList))
                 );
 
     connect(
+                &this->controller->getFindRecordController(),
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
+    connect(
                 this->searchResultsDockWidget,
                 SIGNAL(recordLinkActivated(const QString&)),
                 SLOT(onRecordLinkActivated(const QString&))
+                );
+
+    connect(
+                this->searchResultsDockWidget,
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
                 );
 
     connect(
