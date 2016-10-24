@@ -20,6 +20,7 @@ namespace Tome
     class Project;
     class RecordExportTemplate;
     class RecordSet;
+    class RecordSetSerializer;
     class RecordsController;
     class SettingsController;
     class TasksController;
@@ -82,7 +83,11 @@ namespace Tome
             static const QString TypeFileExtension;
 
         signals:
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
             void projectChanged(QSharedPointer<Tome::Project> project);
+
+        private slots:
+            void onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
 
         private:
             CommandLineOptions* options;
@@ -99,6 +104,8 @@ namespace Tome
             FindUsagesController* findUsagesController;
             FindRecordController* findRecordController;
             FacetsController* facetsController;
+
+            RecordSetSerializer* recordSetSerializer;
 
             MainWindow* mainWindow;
 

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QProgressDialog>
 #include <QSharedPointer>
 #include <QTableWidget>
 
@@ -80,6 +81,7 @@ class MainWindow : public QMainWindow
         void exportRecords(QAction* exportAction);
         void onExportTemplatesChanged();
         void onFieldChanged();
+        void onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
         void onProjectChanged(QSharedPointer<Tome::Project> project);
         void onRecordFieldsChanged(const QString& recordId);
         void onRecordSetsChanged();
@@ -113,6 +115,8 @@ class MainWindow : public QMainWindow
         FindRecordWindow* findRecordWindow;
         ProjectOverviewWindow* projectOverviewWindow;
         UserSettingsWindow* userSettingsWindow;
+
+        QProgressDialog* progressDialog;
 
         Tome::MessageList messages;
 

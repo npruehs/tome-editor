@@ -94,6 +94,7 @@ namespace Tome
             void updateRecordReferences(const QString oldReference, const QString newReference);
 
         signals:
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
             void recordFieldsChanged(const QString& recordId);
             void recordSetsChanged();
 

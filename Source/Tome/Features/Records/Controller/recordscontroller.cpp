@@ -607,13 +607,22 @@ void RecordsController::revertRecord(const QString& recordId)
     const RecordFieldValueMap& fields = this->getRecordFieldValues(recordId);
 
     // Revert all fields.
+    int i = 0;
+
     for (RecordFieldValueMap::const_iterator it = fields.begin();
          it != fields.end();
-         ++it)
+         ++it, ++i)
     {
         const QString& fieldId = it.key();
+
+        // Report progress.
+        emit this->progressChanged(tr("Reverting fields"), fieldId, i, fields.count());
+
         this->revertFieldValue(recordId, fieldId);
     }
+
+    // Report finish.
+    emit this->progressChanged(tr("Reverting fields"), QString(), 1, 1);
 }
 
 void RecordsController::reparentRecord(const QString& recordId, const QString& newParentId)
@@ -673,12 +682,20 @@ void RecordsController::updateRecordFieldValue(const QString& recordId, const QS
 
 void RecordsController::updateRecordReferences(const QString oldReference, const QString newReference)
 {
+    if (oldReference == newReference)
+    {
+        return;
+    }
+
     RecordList records = this->getRecords();
 
     // First pass: update reference fields
     for (int i = 0; i < records.count(); ++i)
     {
         const Record& record = records.at(i);
+
+        // Report progress.
+        emit this->progressChanged(tr("Updating references"), record.id, i, records.count());
 
         // Update references.
         const RecordFieldValueMap fieldValues = this->getRecordFieldValues(record.id);
@@ -703,13 +720,21 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
     }
 
     // Second pass: Update parents.
-    for ( auto &r : records )
+    for (int i = 0; i < records.count(); ++i)
     {
-        if (r.parentId == oldReference)
+        const Record& record = records.at(i);
+
+        // Report progress.
+        emit this->progressChanged(tr("Reparenting records"), record.id, i, records.count());
+
+        if (record.parentId == oldReference)
         {
-            this->reparentRecord(r.id, newReference);
+            this->reparentRecord(record.id, newReference);
         }
     }
+
+    // Report finish.
+    emit this->progressChanged(tr("Reparenting records"), QString(), 1, 1);
 }
 
 Record* RecordsController::getRecordById(const QString& id) const

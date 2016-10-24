@@ -21,6 +21,9 @@ const SearchResultList FindRecordController::findRecord(const QString& searchPat
     {
         const Record& record = records[i];
 
+        // Report progress.
+        emit this->progressChanged(tr("Searching"), record.id, i, records.length());
+
         if (record.id.toLower().contains(searchPattern.toLower()) ||
                 record.displayName.toLower().contains(searchPattern.toLower()))
         {
@@ -32,6 +35,9 @@ const SearchResultList FindRecordController::findRecord(const QString& searchPat
             results.append(result);
         }
     }
+
+    // Report finish.
+    emit this->progressChanged(tr("Searching"), QString(), 1, 1);
 
     emit searchResultChanged("Find " + searchPattern, results);
     return results;

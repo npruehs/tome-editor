@@ -26,6 +26,10 @@ const SearchResultList FindUsagesController::findUsagesOfField(const QString& fi
     for (int i = 0; i < records.length(); ++i)
     {
         const Record& record = records[i];
+
+        // Report progress.
+        emit this->progressChanged(tr("Searching"), record.id, i, records.length());
+
         const RecordFieldValueMap& fieldValues = this->recordsController.getRecordFieldValues(record.id);
 
         for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
@@ -46,6 +50,9 @@ const SearchResultList FindUsagesController::findUsagesOfField(const QString& fi
         }
     }
 
+    // Report finish.
+    emit this->progressChanged(tr("Searching"), QString(), 1, 1);
+
     emit searchResultChanged("Usages of " + fieldId, results);
     return results;
 }
@@ -61,6 +68,10 @@ const SearchResultList FindUsagesController::findUsagesOfRecord(const QString& r
     for (int i = 0; i < records.length(); ++i)
     {
         const Record& record = records[i];
+
+        // Report progress.
+        emit this->progressChanged(tr("Searching"), record.id, i, records.length());
+
         const RecordFieldValueMap& fieldValues = this->recordsController.getRecordFieldValues(record.id);
 
         for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
@@ -82,6 +93,9 @@ const SearchResultList FindUsagesController::findUsagesOfRecord(const QString& r
         }
     }
 
+    // Report finish.
+    emit this->progressChanged(tr("Searching"), QString(), 1, 1);
+
     emit searchResultChanged("Usages of " + recordId, results);
     return results;
 }
@@ -97,6 +111,10 @@ const SearchResultList FindUsagesController::findUsagesOfType(const QString& typ
     for (int i = 0; i < records.length(); ++i)
     {
         const Record& record = records[i];
+
+        // Report progress.
+        emit this->progressChanged(tr("Searching"), record.id, i, records.length());
+
         const RecordFieldValueMap& fieldValues = this->recordsController.getRecordFieldValues(record.id);
 
         for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
@@ -116,6 +134,9 @@ const SearchResultList FindUsagesController::findUsagesOfType(const QString& typ
             }
         }
     }
+
+    // Report finish.
+    emit this->progressChanged(tr("Searching"), QString(), 1, 1);
 
     emit searchResultChanged("Usages of " + typeName, results);
     return results;

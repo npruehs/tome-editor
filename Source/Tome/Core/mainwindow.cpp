@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
+#include <QProgressDialog>
 #include <QStandardPaths>
 #include <QTextStream>
 #include <QXmlStreamWriter>
@@ -71,7 +72,8 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     duplicateRecordWindow(0),
     findRecordWindow(0),
     projectOverviewWindow(0),
-    userSettingsWindow(0)
+    userSettingsWindow(0),
+    progressDialog(0)
 {
     ui->setupUi(this);
 
@@ -119,9 +121,21 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
+                &this->controller->getRecordsController(),
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
+    connect(
                 &this->controller->getExportController(),
                 SIGNAL(exportTemplatesChanged()),
                 SLOT(onExportTemplatesChanged())
+                );
+
+    connect(
+                &this->controller->getExportController(),
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
                 );
 
     connect(
@@ -173,15 +187,45 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
+                &this->controller->getFindUsagesController(),
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
+    connect(
                 &this->controller->getFindRecordController(),
                 SIGNAL(searchResultChanged(const QString&, const Tome::SearchResultList)),
                 SLOT(searchResultChanged(const QString&, const Tome::SearchResultList))
                 );
 
     connect(
+                &this->controller->getFindRecordController(),
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
+    connect(
                 this->searchResultsDockWidget,
                 SIGNAL(recordLinkActivated(const QString&)),
                 SLOT(onRecordLinkActivated(const QString&))
+                );
+
+    connect(
+                this->searchResultsDockWidget,
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
+    connect(
+                this->controller,
+                SIGNAL(progressChanged(QString, QString, int, int)),
+                SLOT(onProgressChanged(QString, QString, int, int))
+                );
+
+    connect(
+                this->recordTreeWidget,
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
                 );
 
     // Maximize window.
@@ -193,6 +237,14 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     // Can't access some functionality until project created or loaded.
     this->updateMenus();
     this->updateRecentProjects();
+
+    // Setup progress dialog.
+    this->progressDialog = new QProgressDialog(this);
+    this->progressDialog->setMinimumDuration(500);
+    this->progressDialog->setModal(true);
+    this->progressDialog->setCancelButton(0);
+    this->progressDialog->setMaximum(1);
+    this->progressDialog->setValue(1);
 }
 
 MainWindow::~MainWindow()
@@ -1001,6 +1053,14 @@ void MainWindow::removeRecordField(const QString& fieldId)
 void MainWindow::onFieldChanged()
 {
     this->refreshRecordTable();
+}
+
+void MainWindow::onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue)
+{
+    this->progressDialog->setWindowTitle(title);
+    this->progressDialog->setLabelText(text);
+    this->progressDialog->setMaximum(maximumValue);
+    this->progressDialog->setValue(currentValue);
 }
 
 void MainWindow::onProjectChanged(QSharedPointer<Project> project)

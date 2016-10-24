@@ -34,6 +34,7 @@ namespace Tome
 
         signals:
             void exportTemplatesChanged();
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
 
         private:
             RecordExportTemplateList* model;
