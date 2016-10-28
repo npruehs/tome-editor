@@ -220,24 +220,31 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
         QStringList references;
 
         // Apply field facets to added record list
-        FacetContext context = FacetContext(this->recordsController);
-        for (int i = 0; i < this->facets.count(); ++i)
+        if (this->facets.empty())
         {
-            Facet* facet = this->facets[i];
-            QString facetKey = facet->getKey();
-
-            if (!this->facetValues.contains(facetKey))
+            references.swap(recordNames);
+        }
+        else
+        {
+            FacetContext context = FacetContext(this->recordsController);
+            for (int i = 0; i < this->facets.count(); ++i)
             {
-                continue;
-            }
+                Facet* facet = this->facets[i];
+                QString facetKey = facet->getKey();
 
-            QVariant facetValue = this->facetValues[facetKey];
-            for (const auto &r : recordNames )
-            {
-                QVariant value = r;
-                if ( facet->validateValue(context, value, facetValue).isEmpty() )
+                if (!this->facetValues.contains(facetKey))
                 {
-                    references.push_back(r);
+                    continue;
+                }
+
+                QVariant facetValue = this->facetValues[facetKey];
+                for (const auto &r : recordNames )
+                {
+                    QVariant value = r;
+                    if ( facet->validateValue(context, value, facetValue).isEmpty() )
+                    {
+                        references.push_back(r);
+                    }
                 }
             }
         }
