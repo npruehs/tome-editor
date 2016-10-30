@@ -11,6 +11,8 @@ FindRecordController::FindRecordController(const Tome::RecordsController& record
 
 const SearchResultList FindRecordController::findRecord(const QString& searchPattern)
 {
+    qInfo(QString("Finding records matching pattern %1.").arg(searchPattern).toUtf8().constData());
+
     // Build search result list.
     SearchResultList results;
 

@@ -21,6 +21,8 @@ void TypesController::addCustomTypeSet(const CustomTypeSet& customTypeSet)
 
 const CustomType TypesController::addEnumeration(const QString& name, const QStringList& enumeration, const QString& customTypeSetName)
 {
+    qInfo(QString("Adding enumeration %1.").arg(name).toUtf8().constData());
+
     CustomType newType = CustomType();
     newType.name = name;
     newType.setEnumeration(enumeration);
@@ -32,6 +34,8 @@ const CustomType TypesController::addEnumeration(const QString& name, const QStr
 
 const CustomType TypesController::addList(const QString& name, const QString& itemType, const QString& customTypeSetName)
 {
+    qInfo(QString("Adding list %1.").arg(name).toUtf8().constData());
+
     CustomType newType = CustomType();
     newType.name = name;
     newType.setItemType(itemType);
@@ -43,6 +47,8 @@ const CustomType TypesController::addList(const QString& name, const QString& it
 
 const CustomType TypesController::addMap(const QString& name, const QString& keyType, const QString& valueType, const QString& customTypeSetName)
 {
+    qInfo(QString("Adding map %1.").arg(name).toUtf8().constData());
+
     CustomType newType = CustomType();
     newType.name = name;
     newType.setKeyType(keyType);
@@ -151,6 +157,8 @@ bool TypesController::isCustomType(const QString& name) const
 
 void TypesController::moveCustomTypeToSet(const QString& customTypeName, const QString& customTypeSetName)
 {
+    qInfo(QString("Moving type %1 to set %2.").arg(customTypeName, customTypeSetName).toUtf8().constData());
+
     CustomType customType = this->getCustomType(customTypeName);
 
     for (CustomTypeSetList::iterator itSets = this->model->begin();
@@ -187,6 +195,8 @@ void TypesController::moveCustomTypeToSet(const QString& customTypeName, const Q
 
 void TypesController::removeCustomType(const QString& typeName)
 {
+    qInfo(QString("Removing custom type %1.").arg(typeName).toUtf8().constData());
+
     for (CustomTypeSetList::iterator itSets = this->model->begin();
          itSets != this->model->end();
          ++itSets)
@@ -228,6 +238,8 @@ void TypesController::removeCustomTypeSet(const QString& name)
 
 void TypesController::renameType(const QString oldName, const QString newName)
 {
+    qInfo(QString("Renaming custom type %1 to %2.").arg(oldName, newName).toUtf8().constData());
+
     CustomType& type = *this->getCustomTypeByName(oldName);
 
     // Rename type.
@@ -417,6 +429,7 @@ void TypesController::addCustomType(CustomType customType, const QString& custom
     }
 
     const QString errorMessage = "Custom type set not found: " + customTypeSetName;
+    qCritical(errorMessage.toUtf8().constData());
     throw std::out_of_range(errorMessage.toStdString());
 }
 
@@ -438,5 +451,6 @@ CustomType* TypesController::getCustomTypeByName(const QString& name) const
     }
 
     const QString errorMessage = "Type not found: " + name;
+    qCritical(errorMessage.toUtf8().constData());
     throw std::out_of_range(errorMessage.toStdString());
 }

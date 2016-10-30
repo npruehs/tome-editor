@@ -188,9 +188,15 @@ int Controller::start()
 
     if (!this->options->noGui)
     {
+        qInfo("Setting up main window.");
+
         // Setup view.
         this->mainWindow = new MainWindow(this);
         this->mainWindow->show();
+    }
+    else
+    {
+        qInfo("Running without main window.");
     }
 
     if (!this->options->projectPath.isEmpty())
@@ -199,9 +205,9 @@ int Controller::start()
         {
             this->openProject(this->options->projectPath);
         }
-        catch (std::runtime_error&)
+        catch (std::runtime_error& e)
         {
-            // TODO(np): Write error log.
+            qCritical(e.what());
             return 1;
         }
     }
@@ -212,7 +218,7 @@ int Controller::start()
     {
         if (!this->exportController->hasRecordExportTemplate(this->options->exportTemplateName))
         {
-            // TODO(np): Write error log.
+            qCritical(QString("Export template not found: %1").arg(this->options->exportTemplateName).toUtf8().constData());
             return 1;
         }
 
@@ -228,9 +234,9 @@ int Controller::start()
         {
             this->exportController->exportRecords(exportTemplate, filePath);
         }
-        catch (std::runtime_error&)
+        catch (std::runtime_error& e)
         {
-            // TODO(np): Write error log.
+            qCritical(e.what());
             return 1;
         }
     }
@@ -240,6 +246,8 @@ int Controller::start()
 
 void Controller::createProject(const QString& projectName, const QString& projectPath)
 {
+    qInfo(QString("Creating new project %1 at %2.").arg(projectName, projectPath).toUtf8().constData());
+
     // Create new project.
     QSharedPointer<Project> newProject = QSharedPointer<Project>::create();
     newProject->name = projectName;
@@ -307,6 +315,9 @@ void Controller::loadComponentSet(const QString& projectPath, ComponentSet& comp
             buildFullFilePath(componentSet.name, projectPath, ComponentFileExtension);
 
     QFile componentFile(fullComponentSetPath);
+
+    qInfo(QString("Opening components file %1.").arg(fullComponentSetPath).toUtf8().constData());
+
     if (componentFile.open(QIODevice::ReadOnly))
     {
         try
@@ -316,6 +327,7 @@ void Controller::loadComponentSet(const QString& projectPath, ComponentSet& comp
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + fullComponentSetPath + "\r\n" + e.what();
+            qCritical(errorMessage.toUtf8().constData());
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -341,6 +353,9 @@ void Controller::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& ty
             buildFullFilePath(typeSet.name, projectPath, TypeFileExtension);
 
     QFile typeFile(fullTypeSetPath);
+
+    qInfo(QString("Opening types file %1.").arg(fullTypeSetPath).toUtf8().constData());
+
     if (typeFile.open(QIODevice::ReadOnly))
     {
         try
@@ -350,6 +365,7 @@ void Controller::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& ty
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + fullTypeSetPath + "\r\n" + e.what();
+            qCritical(errorMessage.toUtf8().constData());
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -372,6 +388,9 @@ void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemp
                 buildFullFilePath(exportTemplate.path, projectPath, RecordExportTemplateFileExtension);
 
         QFile exportTemplateFile(fullExportTemplatePath);
+
+        qInfo(QString("Opening export template file %1.").arg(fullExportTemplatePath).toUtf8().constData());
+
         if (exportTemplateFile.open(QIODevice::ReadOnly))
         {
             try
@@ -381,6 +400,7 @@ void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemp
             catch (const std::runtime_error& e)
             {
                 QString errorMessage = QObject::tr("File could not be read: ") + fullExportTemplatePath + "\r\n" + e.what();
+                qCritical(errorMessage.toUtf8().constData());
                 throw std::runtime_error(errorMessage.toStdString());
             }
         }
@@ -436,6 +456,7 @@ void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemp
     catch (const std::runtime_error& e)
     {
         QString errorMessage = QObject::tr("File could not be read:\r\n") + e.what();
+        qCritical(errorMessage.toUtf8().constData());
         throw std::runtime_error(errorMessage.toStdString());
     }
 }
@@ -449,6 +470,9 @@ void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinit
             buildFullFilePath(fieldDefinitionSet.name, projectPath, FieldDefinitionFileExtension);
 
     QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
+
+    qInfo(QString("Opening field definitions file %1.").arg(fullFieldDefinitionSetPath).toUtf8().constData());
+
     if (fieldDefinitionFile.open(QIODevice::ReadOnly))
     {
         try
@@ -458,6 +482,7 @@ void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinit
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + fullFieldDefinitionSetPath + "\r\n" + e.what();
+            qCritical(errorMessage.toUtf8().constData());
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -475,6 +500,9 @@ void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet)
             buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
 
     QFile recordFile(fullRecordSetPath);
+
+    qInfo(QString("Opening records file %1.").arg(fullRecordSetPath).toUtf8().constData());
+
     if (recordFile.open(QIODevice::ReadOnly))
     {
         try
@@ -484,6 +512,7 @@ void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet)
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + fullRecordSetPath + "\r\n" + e.what();
+            qCritical(errorMessage.toUtf8().constData());
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -507,6 +536,8 @@ void Controller::openProject(const QString& projectFileName)
 
     const QString projectPath = projectFileInfo.path();
 
+    qInfo(QString("Opening project %1.").arg(projectFileName).toUtf8().constData());
+
     if (projectFile.open(QIODevice::ReadOnly))
     {
         // Load project from file.
@@ -521,6 +552,7 @@ void Controller::openProject(const QString& projectFileName)
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + projectFileName + "\r\n" + e.what();
+            qCritical(errorMessage.toUtf8().constData());
             throw std::runtime_error(errorMessage.toStdString());
         }
 
@@ -606,6 +638,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
     // Write project file.
     QFile projectFile(fullProjectPath);
 
+    qInfo(QString("Saving project %1.").arg(fullProjectPath).toUtf8().constData());
+
     if (projectFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
     {
         projectSerializer.serialize(projectFile, project);
@@ -629,6 +663,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
 
         // Write file.
         QFile componentSetFile(fullComponentSetPath);
+
+        qInfo(QString("Saving components file %1.").arg(fullComponentSetPath).toUtf8().constData());
 
         if (componentSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
@@ -655,6 +691,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
         // Write file.
         QFile fieldDefinitionSetFile(fullFieldDefinitionSetPath);
 
+        qInfo(QString("Saving field definitions file %1.").arg(fullFieldDefinitionSetPath).toUtf8().constData());
+
         if (fieldDefinitionSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
             fieldDefinitionSetSerializer.serialize(fieldDefinitionSetFile, fieldDefinitionSet);
@@ -677,6 +715,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
 
         // Write file.
         QFile recordSetFile(fullRecordSetPath);
+
+        qInfo(QString("Saving records file %1.").arg(fullRecordSetPath).toUtf8().constData());
 
         if (recordSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
@@ -705,6 +745,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
         // Write file.
         QFile exportTemplateFile(fullExportTemplatePath);
 
+        qInfo(QString("Saving export template file %1.").arg(fullExportTemplatePath).toUtf8().constData());
+
         if (exportTemplateFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
             exportTemplateSerializer.serialize(exportTemplateFile, exportTemplate);
@@ -729,6 +771,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
 
         // Write file.
         QFile typeSetFile(fullTypeSetPath);
+
+        qInfo(QString("Saving types file %1.").arg(fullTypeSetPath).toUtf8().constData());
 
         if (typeSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {

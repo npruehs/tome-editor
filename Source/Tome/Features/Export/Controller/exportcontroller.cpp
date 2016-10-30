@@ -48,6 +48,8 @@ ExportController::ExportController(const FieldDefinitionsController& fieldDefini
 
 void ExportController::addRecordExportTemplate(const RecordExportTemplate& exportTemplate)
 {
+    qInfo(QString("Adding export template %1.").arg(exportTemplate.name).toUtf8().constData());
+
     // Update model.
     this->model->push_back(exportTemplate);
 
@@ -68,6 +70,7 @@ const RecordExportTemplate ExportController::getRecordExportTemplate(const QStri
     }
 
     QString errorMessage = QObject::tr("Export template not  found: ") + name;
+    qCritical(errorMessage.toUtf8().constData());
     throw std::runtime_error(errorMessage.toStdString());
 }
 
@@ -102,12 +105,15 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
     else
     {
         QString errorMessage = QObject::tr("Destination file could not be written:\r\n") + filePath;
+        qCritical(errorMessage.toUtf8().constData());
         throw std::runtime_error(errorMessage.toStdString());
     }
 }
 
 void ExportController::exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device)
 {
+    qInfo(QString("Exporting records with template %1.").arg(exportTemplate.name).toUtf8().constData());
+
     // Build record file string.
     QString recordsString;
 
@@ -525,6 +531,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
 
 void ExportController::removeExportTemplate(const QString& name)
 {
+    qInfo(QString("Removing export template %1.").arg(name).toUtf8().constData());
+
     // Update model.
     for (RecordExportTemplateList::iterator it = this->model->begin();
          it != this->model->end();
