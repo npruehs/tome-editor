@@ -22,7 +22,7 @@ namespace Tome
             void addRecordField(const QString& recordId, const QString& fieldId);
             void addRecordSet(const RecordSet& recordSet);
 
-            const Record duplicateRecord(const QString& existingRecordId, const QString& newRecordid);
+            const Record duplicateRecord(const QString& existingRecordId, const QString& newRecordId);
 
             /**
              * @brief getAncestors Gets the list of all ancestors of the record with the specified id, direct parent first.

@@ -100,6 +100,7 @@
     <property name="title">
      <string>Window</string>
     </property>
+    <addaction name="actionOutput"/>
     <addaction name="actionError_List"/>
    </widget>
    <widget class="QMenu" name="menuProject">
@@ -355,6 +356,16 @@
   <action name="actionUser_Settings">
    <property name="text">
     <string>User Settings...</string>
+   </property>
+  </action>
+  <action name="actionOutput">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/Output_16xLG.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Output</string>
    </property>
   </action>
  </widget>

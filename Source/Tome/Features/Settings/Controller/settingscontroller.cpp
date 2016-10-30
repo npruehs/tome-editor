@@ -27,6 +27,8 @@ SettingsController::~SettingsController()
 
 void SettingsController::addRecentProject(const QString& path)
 {
+    qInfo(QString("Adding %1 to recent projects list.").arg(path).toUtf8().constData());
+
     QStringList recentProjects = this->getRecentProjects();
 
     recentProjects.removeOne(path);
@@ -63,6 +65,8 @@ bool SettingsController::getShowDescriptionColumnInsteadOfFieldTooltips() const
 
 void SettingsController::removeRecentProject(const QString& path)
 {
+    qInfo(QString("Removing %1 from recent projects list.").arg(path).toUtf8().constData());
+
     QStringList recentProjects = this->getRecentProjects();
     recentProjects.removeOne(path);
     this->setRecentProjects(recentProjects);
@@ -81,10 +85,16 @@ void SettingsController::setRecentProjects(const QStringList& recentProjects)
 
 void SettingsController::setRunIntegrityChecksOnSave(bool runIntegrityChecksOnSave)
 {
+    qInfo(QString("Setting run integrity checks on save to %1.")
+          .arg(runIntegrityChecksOnSave ? "true" : "false")
+          .toUtf8().constData());
     this->settings->setValue(SettingRunIntegrityChecksOnSave, runIntegrityChecksOnSave);
 }
 
 void SettingsController::setShowDescriptionColumnInsteadOfFieldTooltips(bool showDescriptionColumnInsteadOfFieldTooltips)
 {
+    qInfo(QString("Setting show description column in stead of field tooltips to %1.")
+          .arg(showDescriptionColumnInsteadOfFieldTooltips ? "true" : "false")
+          .toUtf8().constData());
     this->settings->setValue(SettingShowDescriptionColumnInsteadOfFieldTooltips, showDescriptionColumnInsteadOfFieldTooltips);
 }

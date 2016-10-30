@@ -17,6 +17,8 @@ FindUsagesController::FindUsagesController(const FieldDefinitionsController& fie
 
 const SearchResultList FindUsagesController::findUsagesOfField(const QString& fieldId)
 {
+    qInfo(QString("Finding usages of field %1.").arg(fieldId).toUtf8().constData());
+
     // Build search result list.
     SearchResultList results;
 
@@ -59,6 +61,8 @@ const SearchResultList FindUsagesController::findUsagesOfField(const QString& fi
 
 const SearchResultList FindUsagesController::findUsagesOfRecord(const QString& recordId)
 {
+    qInfo(QString("Finding usages of record %1.").arg(recordId).toUtf8().constData());
+
     // Build search result list.
     SearchResultList results;
 
@@ -102,6 +106,8 @@ const SearchResultList FindUsagesController::findUsagesOfRecord(const QString& r
 
 const SearchResultList FindUsagesController::findUsagesOfType(const QString& typeName)
 {
+    qInfo(QString("Finding usages of type %1.").arg(typeName).toUtf8().constData());
+
     // Build search result list.
     SearchResultList results;
 

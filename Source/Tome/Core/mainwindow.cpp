@@ -17,6 +17,7 @@
 #include "controller.h"
 #include "../Features/Components/View/componentswindow.h"
 #include "../Features/Components/Controller/componentscontroller.h"
+#include "../Features/Diagnostics/View/outputdockwidget.h"
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Facets/Controller/facet.h"
 #include "../Features/Facets/Controller/facetscontroller.h"
@@ -97,7 +98,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     this->errorListDockWidget = new ErrorListDockWidget(this);
     this->addDockWidget(Qt::BottomDockWidgetArea, this->errorListDockWidget, Qt::Vertical);
 
-    // Hide all dock widgets until required.
+    // Add log window.
+    this->outputDockWidget = new OutputDockWidget(this);
+    this->outputDockWidget->init();
+    this->addDockWidget(Qt::BottomDockWidgetArea, this->outputDockWidget, Qt::Vertical);
+
+    // Hide most dock widgets until required.
     this->searchResultsDockWidget->close();
     this->errorListDockWidget->close();
 
@@ -253,6 +259,7 @@ MainWindow::~MainWindow()
 
     delete this->recordTreeWidget;
     delete this->recordFieldTableWidget;
+    delete this->outputDockWidget;
     delete this->errorListDockWidget;
 
     delete this->aboutWindow;
@@ -784,6 +791,11 @@ void MainWindow::on_actionReleases_triggered()
 void MainWindow::on_actionRoadmap_triggered()
 {
     QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/milestones"));
+}
+
+void MainWindow::on_actionOutput_triggered()
+{
+    this->showWindow(this->outputDockWidget);
 }
 
 void MainWindow::on_actionError_List_triggered()
