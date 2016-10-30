@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 
+#include <QDateTime>
 #include <QFile>
 #include <QStringBuilder>
 #include <QTextStream>
@@ -15,9 +16,11 @@
 
 using namespace Tome;
 
+const QString ExportController::PlaceholderAppVersion = "$APP_VERSION$";
+const QString ExportController::PlaceholderAppVersionName = "$APP_VERSION_NAME$";
 const QString ExportController::PlaceholderComponents = "$RECORD_COMPONENTS$";
 const QString ExportController::PlaceholderComponentName = "$COMPONENT_NAME$";
-const QString ExportController::PlaceholderItemType = "$ITEM_TYPE$";
+const QString ExportController::PlaceholderExportTime = "$EXPORT_TIME$";
 const QString ExportController::PlaceholderFieldComponent = "$FIELD_COMPONENT$";
 const QString ExportController::PlaceholderFieldDescription = "$FIELD_DESCRIPTION$";
 const QString ExportController::PlaceholderFieldDisplayName = "$FIELD_DISPLAY_NAME$";
@@ -25,6 +28,7 @@ const QString ExportController::PlaceholderFieldId = "$FIELD_ID$";
 const QString ExportController::PlaceholderFieldKey = "$FIELD_KEY$";
 const QString ExportController::PlaceholderFieldType = "$FIELD_TYPE$";
 const QString ExportController::PlaceholderFieldValue = "$FIELD_VALUE$";
+const QString ExportController::PlaceholderItemType = "$ITEM_TYPE$";
 const QString ExportController::PlaceholderKeyType = "$KEY_TYPE$";
 const QString ExportController::PlaceholderListItem = "$LIST_ITEM$";
 const QString ExportController::PlaceholderRecordDisplayName = "$RECORD_DISPLAY_NAME$";
@@ -506,6 +510,9 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
     // Apply record file template.
     QString recordFileString = exportTemplate.recordFileTemplate;
     recordFileString = recordFileString.replace(PlaceholderRecords, recordsString);
+    recordFileString = recordFileString.replace(PlaceholderAppVersion, APP_VERSION);
+    recordFileString = recordFileString.replace(PlaceholderAppVersionName, APP_VERSION_NAME);
+    recordFileString = recordFileString.replace(PlaceholderExportTime, QDateTime::currentDateTimeUtc().toString(Qt::ISODate));
 
     // Write record file.
     QTextStream textStream(&device);

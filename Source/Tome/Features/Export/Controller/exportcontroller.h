@@ -39,9 +39,11 @@ namespace Tome
         private:
             RecordExportTemplateList* model;
 
+            static const QString PlaceholderAppVersion;
+            static const QString PlaceholderAppVersionName;
             static const QString PlaceholderComponents;
             static const QString PlaceholderComponentName;
-            static const QString PlaceholderItemType;
+            static const QString PlaceholderExportTime;
             static const QString PlaceholderFieldComponent;
             static const QString PlaceholderFieldDescription;
             static const QString PlaceholderFieldDisplayName;
@@ -49,6 +51,7 @@ namespace Tome
             static const QString PlaceholderFieldKey;
             static const QString PlaceholderFieldType;
             static const QString PlaceholderFieldValue;
+            static const QString PlaceholderItemType;
             static const QString PlaceholderKeyType;
             static const QString PlaceholderListItem;
             static const QString PlaceholderRecordDisplayName;
