@@ -29,6 +29,7 @@ namespace Tome
 {
     class Controller;
     class ErrorListDockWidget;
+    class OutputDockWidget;
     class Project;
     class RecordFieldsTableWidget;
     class RecordTreeWidget;
@@ -76,6 +77,7 @@ class MainWindow : public QMainWindow
         void on_actionReleases_triggered();
         void on_actionRoadmap_triggered();
 
+        void on_actionOutput_triggered();
         void on_actionError_List_triggered();
 
         void exportRecords(QAction* exportAction);
@@ -100,6 +102,7 @@ class MainWindow : public QMainWindow
         Tome::RecordTreeWidget* recordTreeWidget;
         Tome::RecordFieldsTableWidget* recordFieldTableWidget;
         Tome::ErrorListDockWidget* errorListDockWidget;
+        Tome::OutputDockWidget* outputDockWidget;
         Tome::SearchResultsDockWidget* searchResultsDockWidget;
 
         Tome::Controller* controller;

@@ -115,7 +115,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Facets/Model/facetcontext.cpp \
     ../Source/Tome/Features/Records/Controller/recordnamevalidator.cpp \
     ../Source/Tome/Features/Diagnostics/Controller/messagehandlers.cpp \
-    ../Source/Tome/Features/Diagnostics/Controller/filemessagehandler.cpp
+    ../Source/Tome/Features/Diagnostics/Controller/filemessagehandler.cpp \
+    ../Source/Tome/Features/Diagnostics/View/outputdockwidget.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -221,7 +222,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Facets/Model/facetcontext.h \
     ../Source/Tome/Features/Records/Controller/recordnamevalidator.h \
     ../Source/Tome/Features/Diagnostics/Controller/messagehandlers.h \
-    ../Source/Tome/Features/Diagnostics/Controller/filemessagehandler.h
+    ../Source/Tome/Features/Diagnostics/Controller/filemessagehandler.h \
+    ../Source/Tome/Features/Diagnostics/View/outputdockwidget.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
