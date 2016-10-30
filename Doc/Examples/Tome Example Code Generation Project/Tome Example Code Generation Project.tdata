@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Records>
+    <Record Id="CooldownFinishedEvent" DisplayName="CooldownFinishedEvent">
+        <EntityId Value="0"/>
+    </Record>
+    <Record Id="DamageTakenEvent" DisplayName="DamageTakenEvent">
+        <EntityId Value="0"/>
+        <NewHealth Value="0"/>
+        <OldHealth Value="0"/>
+    </Record>
+    <Record Id="EffectAppliedEvent" DisplayName="EffectAppliedEvent">
+        <EffectId Value="0"/>
+        <EntityId Value="0"/>
+    </Record>
+    <Record Id="EntityAttackedEvent" DisplayName="EntityAttackedEvent">
+        <AttackerId Value="0"/>
+        <DefenderId Value="0"/>
+    </Record>
+    <Record Id="EntityCreatedEvent" DisplayName="EntityCreatedEvent">
+        <EntityId Value="0"/>
+    </Record>
+    <Record Id="EventKilledEvent" DisplayName="EventKilledEvent">
+        <EntityId Value="0"/>
+    </Record>
+    <Record Id="LevelLoadedEvent" DisplayName="LevelLoadedEvent">
+        <LevelName Value=""/>
+    </Record>
+    <Record Id="OwnerChangedEvent" DisplayName="OwnerChangedEvent">
+        <EntityId Value="0"/>
+        <NewOwnerId Value="0"/>
+        <OldOwnerId Value="0"/>
+    </Record>
+    <Record Id="TargetAcquiredEvent" DisplayName="TargetAcquiredEvent">
+        <EntityId Value="0"/>
+        <TargetId Value="0"/>
+    </Record>
+    <Record Id="TimerElapsedEvent" DisplayName="TimerElapsedEvent">
+        <EntityId Value="0"/>
+    </Record>
+    <Record Id="TimerStartedEvent" DisplayName="TimerStartedEvent">
+        <EntityId Value="0"/>
+    </Record>
+</Records>

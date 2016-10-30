@@ -1,0 +1,7 @@
+namespace TomeExampleProject.Events
+{
+    public enum EventType
+    {
+$RECORDS$
+    }
+}

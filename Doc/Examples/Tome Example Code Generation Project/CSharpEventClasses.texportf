@@ -1,0 +1,19 @@
+namespace TomeExampleProject.Events
+{
+    using System.Collections.Generic;
+    
+    public class Event
+    {
+        /// <summary>
+        /// Data of this event.
+        /// </summary>
+        public object Data { get; set; }
+
+        /// <summary>
+        /// Type of this event.
+        /// </summary>
+        public EventType Type { get; set; }
+    }
+    
+$RECORDS$
+}

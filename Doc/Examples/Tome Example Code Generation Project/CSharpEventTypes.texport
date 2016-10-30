@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Template Version="2" ExportRoots="true">
-    <Name>CSharp</Name>
+    <Name>Event Types (CSharp)</Name>
     <FileExtension>.cs</FileExtension>
     <TypeMap>
-        <Mapping TomeType="Armor Type" ExportedType="TomeExampleProject.Data.ArmorType"/>
         <Mapping TomeType="Boolean" ExportedType="bool"/>
         <Mapping TomeType="Color" ExportedType="string"/>
-        <Mapping TomeType="Damage Type" ExportedType="TomeExampleProject.Data.DamageType"/>
         <Mapping TomeType="Integer" ExportedType="int"/>
-        <Mapping TomeType="Movement Type" ExportedType="TomeExampleProject.Data.MovementType"/>
         <Mapping TomeType="Real" ExportedType="float"/>
         <Mapping TomeType="Reference" ExportedType="string"/>
-        <Mapping TomeType="Resource" ExportedType="TomeExampleProject.Data.ResourceType"/>
         <Mapping TomeType="String" ExportedType="string"/>
     </TypeMap>
     <IgnoredRecords/>

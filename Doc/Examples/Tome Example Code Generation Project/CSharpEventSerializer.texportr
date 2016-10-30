@@ -1,0 +1,4 @@
+                case EventType.$RECORD_ID$:
+                    $RECORD_ID$ $RECORD_ID$ = ($RECORD_ID$)e.Data;
+$RECORD_FIELDS$
+                    return;

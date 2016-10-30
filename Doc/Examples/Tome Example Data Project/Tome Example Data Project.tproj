@@ -13,7 +13,6 @@
     </Records>
     <RecordExportTemplates>
         <Path>CSV.texport</Path>
-        <Path>CSharp.texport</Path>
         <Path>HTML.texport</Path>
         <Path>INI.texport</Path>
         <Path>JSON.texport</Path>
