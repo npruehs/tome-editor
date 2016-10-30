@@ -1,0 +1,20 @@
+namespace TomeExampleProject.Events
+{
+    using System;
+    using System.IO;
+    
+    public class BinaryEventSerializer
+    {
+        public void Serialize(BinaryWriter writer, Event e)
+        {
+            writer.Write(e.Type.ToString());
+
+            switch (e.Type)
+            {
+$RECORDS$
+            }
+
+            throw new ArgumentException(string.Format("Unknown event type: {0}", e.Type), "e");
+        }
+    }
+}

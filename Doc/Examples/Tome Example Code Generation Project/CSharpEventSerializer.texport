@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Template Version="2" ExportRoots="true">
+    <Name>Event Serializer (CSharp)</Name>
+    <FileExtension>.cs</FileExtension>
+    <TypeMap>
+        <Mapping TomeType="Boolean" ExportedType="bool"/>
+        <Mapping TomeType="Color" ExportedType="string"/>
+        <Mapping TomeType="Integer" ExportedType="int"/>
+        <Mapping TomeType="Real" ExportedType="float"/>
+        <Mapping TomeType="Reference" ExportedType="string"/>
+        <Mapping TomeType="String" ExportedType="string"/>
+    </TypeMap>
+    <IgnoredRecords/>
+    <IgnoredFields/>
+</Template>

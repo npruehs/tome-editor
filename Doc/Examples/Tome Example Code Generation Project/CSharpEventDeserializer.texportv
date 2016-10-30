@@ -1,0 +1,1 @@
+                    $RECORD_ID$.$FIELD_ID$ = reader.Read$FIELD_TYPE$();
