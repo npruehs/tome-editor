@@ -11,6 +11,8 @@
 #include "mainwindow.h"
 #include "../Features/Components/Controller/componentscontroller.h"
 #include "../Features/Components/Controller/componentsetserializer.h"
+#include "../Features/Diagnostics/Controller/filemessagehandler.h"
+#include "../Features/Diagnostics/Controller/messagehandlers.h"
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Export/Controller/exporttemplateserializer.h"
 #include "../Features/Facets/Controller/facetscontroller.h"
@@ -178,6 +180,12 @@ FacetsController&Controller::getFacetsController()
 
 int Controller::start()
 {
+    // Install message handlers.
+    if (FileMessageHandler::init())
+    {
+        MessageHandlers::addMessageHandler(FileMessageHandler::handleMessage);
+    }
+
     if (!this->options->noGui)
     {
         // Setup view.
