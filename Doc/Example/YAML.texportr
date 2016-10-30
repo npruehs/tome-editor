@@ -1,0 +1,7 @@
+--- 
+id: $RECORD_ID$
+parent: $RECORD_PARENT$
+attributes:
+$RECORD_FIELDS$
+components:
+$RECORD_COMPONENTS$

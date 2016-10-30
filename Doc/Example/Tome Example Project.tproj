@@ -19,6 +19,7 @@
         <Path>JSON</Path>
         <Path>Slash XML</Path>
         <Path>StarCraft II XML</Path>
+        <Path>YAML.texport</Path>
     </RecordExportTemplates>
     <Types>
         <Path>Tome Example Project</Path>
