@@ -1073,6 +1073,11 @@ void MainWindow::onProgressChanged(const QString title, const QString text, cons
     this->progressDialog->setLabelText(text);
     this->progressDialog->setMaximum(maximumValue);
     this->progressDialog->setValue(currentValue);
+
+    if (currentValue >= maximumValue)
+    {
+        this->progressDialog->reset();
+    }
 }
 
 void MainWindow::onProjectChanged(QSharedPointer<Project> project)
