@@ -435,6 +435,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 fieldValueString = fieldValueString.replace(PlaceholderFieldComponent, fieldComponent);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldDisplayName, fieldDisplayName);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldDescription, fieldDescription);
+                fieldValueString = fieldValueString.replace(PlaceholderRecordId, record.id);
+                fieldValueString = fieldValueString.replace(PlaceholderRecordDisplayName, record.displayName);
 
                 fieldValuesString.append(fieldValueString);
 
