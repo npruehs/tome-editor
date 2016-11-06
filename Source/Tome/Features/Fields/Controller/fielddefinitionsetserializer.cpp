@@ -82,17 +82,6 @@ void FieldDefinitionSetSerializer::serialize(QIODevice& device, const FieldDefin
                     stream.writeAttribute(AttributeDefaultValue, fieldDefinition.defaultValue.toString());
                 }
 
-                // Write facets.
-                for (QVariantMap::const_iterator it = fieldDefinition.facets.begin();
-                     it != fieldDefinition.facets.end();
-                     ++it)
-                {
-                    stream.writeStartElement(ElementFacet);
-                    stream.writeAttribute(AttributeKey, it.key());
-                    stream.writeAttribute(AttributeValue, it.value().toString());
-                    stream.writeEndElement();
-                }
-
                 stream.writeEndElement();
             }
         }
@@ -169,13 +158,9 @@ void FieldDefinitionSetSerializer::deserialize(QIODevice& device, FieldDefinitio
                 }
 
                 // Read facets.
+                // TODO(np): Remove in next major release.
                 while (reader.isAtElement(ElementFacet))
                 {
-                    QString key = reader.readAttribute(AttributeKey);
-                    QVariant value = reader.readAttribute(AttributeValue);
-
-                    fieldDefinition.facets.insert(key, value);
-
                     reader.readEmptyElement(ElementFacet);
                 }
 

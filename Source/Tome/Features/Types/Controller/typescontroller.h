@@ -14,6 +14,8 @@ namespace Tome
             TypesController();
 
             void addCustomTypeSet(const CustomTypeSet& customTypeSet);
+
+            const CustomType addDerivedType(const QString& name, const QString& baseType, const QVariantMap& facets, const QString& customTypeSetName);
             const CustomType addEnumeration(const QString& name, const QStringList& enumeration, const QString& customTypeSetName);
             const CustomType addList(const QString& name, const QString& itemType, const QString& customTypeSetName);
             const CustomType addMap(const QString& name, const QString& keyType, const QString& valueType, const QString& customTypeSetName);
@@ -46,6 +48,8 @@ namespace Tome
             void removeCustomTypeSet(const QString& name);
             void renameType(const QString oldName, const QString newName);
             void setCustomTypes(CustomTypeSetList& model);
+
+            void updateDerivedType(const QString& oldName, const QString& newName, const QString& baseType, const QVariantMap facets, const QString& typeSetName);
             void updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration, const QString& typeSetName);
             void updateList(const QString& oldName, const QString& newName, const QString& itemType, const QString& typeSetName);
             void updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType, const QString& typeSetName);

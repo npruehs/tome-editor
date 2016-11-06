@@ -333,8 +333,10 @@ void MainWindow::on_actionManage_Custom_Types_triggered()
     {
         this->customTypesWindow = new CustomTypesWindow(
                     this->controller->getTypesController(),
+                    this->controller->getFacetsController(),
                     this->controller->getFieldDefinitionsController(),
                     this->controller->getFindUsagesController(),
+                    this->controller->getRecordsController(),
                     this);
     }
 
@@ -909,23 +911,6 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
     const FieldDefinition& field =
             this->controller->getFieldDefinitionsController().getFieldDefinition(fieldId);
 
-    // Get field facet data.
-    QString facetsDescription;
-    QList<Facet*> facets = this->controller->getFacetsController().getFacets(field.fieldType);
-
-    for (int i = 0; i < facets.count(); ++i)
-    {
-        Facet* facet = facets[i];
-        QString facetKey = facet->getKey();
-
-        if (field.facets.contains(facetKey))
-        {
-            QVariant facetValue = field.facets[facetKey];
-            facetsDescription += facet->getDescriptionForValue(facetValue);
-            facetsDescription += " ";
-        }
-    }
-
     // Prepare window.
     if (!this->fieldValueWindow)
     {
@@ -943,10 +928,39 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
 
     // Update view.
     this->fieldValueWindow->setFieldDisplayName(field.displayName);
-    this->fieldValueWindow->setFieldDescription(field.description + " " + facetsDescription);
-    this->fieldValueWindow->setFieldFacets(facets, field.facets);
+    this->fieldValueWindow->setFieldDescription(field.description);
     this->fieldValueWindow->setFieldType(field.fieldType);
     this->fieldValueWindow->setFieldValue(fieldValue);
+
+    // Apply facets.
+    QString facetsDescription;
+
+    if (this->controller->getTypesController().isCustomType(field.fieldType))
+    {
+        const CustomType& customType = this->controller->getTypesController().getCustomType(field.fieldType);
+
+        if (customType.isDerivedType())
+        {
+            QString baseType = customType.getBaseType();
+            QList<Facet*> facets = this->controller->getFacetsController().getFacets(baseType);
+
+            for (int i = 0; i < facets.count(); ++i)
+            {
+                Facet* facet = facets[i];
+                QString facetKey = facet->getKey();
+
+                if (customType.constrainingFacets.contains(facetKey))
+                {
+                    QVariant facetValue = customType.constrainingFacets[facetKey];
+                    facetsDescription += facet->getDescriptionForValue(facetValue);
+                    facetsDescription += " ";
+                }
+            }
+
+            this->fieldValueWindow->setFieldDescription(field.description + " " + facetsDescription);
+            this->fieldValueWindow->setFieldFacets(facets, customType.constrainingFacets);
+        }
+    }
 
     // Show window.
     int result = this->fieldValueWindow->exec();

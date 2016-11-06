@@ -70,8 +70,11 @@ namespace Tome
             TypesController& typesController;
 
             void addWidget(QWidget* widget);
+            QVariant getFieldValueForType(const QString& typeName) const;
+            void selectWidgetForType(const QString& typeName);
             void setCurrentWidget(QWidget* widget);
             void setEnumeration(const QStringList& enumeration);
+            void setFieldValueForType(const QVariant& fieldValue, const QString& typeName);
     };
 }
 
