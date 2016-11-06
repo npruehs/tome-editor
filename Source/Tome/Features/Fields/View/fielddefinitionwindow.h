@@ -26,12 +26,11 @@ class FieldDefinitionWindow : public QDialog
         Q_OBJECT
 
     public:
-        explicit FieldDefinitionWindow(
-                Tome::FieldDefinitionsController& fieldDefinitionsController,
+        explicit FieldDefinitionWindow(Tome::FieldDefinitionsController& fieldDefinitionsController,
                 Tome::ComponentsController& componentsController,
+                Tome::FacetsController& facetsController,
                 Tome::RecordsController& recordsController,
                 Tome::TypesController& typesController,
-                Tome::FacetsController& facetsController,
                 QWidget *parent = 0);
         ~FieldDefinitionWindow();
 
@@ -71,9 +70,9 @@ class FieldDefinitionWindow : public QDialog
         Ui::FieldDefinitionWindow *ui;
         Tome::FieldDefinitionsController& fieldDefinitionsController;
         Tome::ComponentsController& componentsController;
+        Tome::FacetsController& facetsController;
         Tome::RecordsController& recordsController;
         Tome::TypesController& typesController;
-        Tome::FacetsController& facetsController;
 
         Tome::FieldValueWidget* fieldValueWidget;
 

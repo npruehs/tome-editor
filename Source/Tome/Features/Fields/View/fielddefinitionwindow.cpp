@@ -23,22 +23,22 @@ const int FieldDefinitionWindow::ValueFormRow = 3;
 FieldDefinitionWindow::FieldDefinitionWindow(
         FieldDefinitionsController& fieldDefinitionsController,
         ComponentsController& componentsController,
+        FacetsController& facetsController,
         RecordsController& recordsController,
         TypesController& typesController,
-        FacetsController& facetsController,
         QWidget *parent) :
     QDialog(parent),
     ui(new Ui::FieldDefinitionWindow),
     fieldDefinitionsController(fieldDefinitionsController),
     componentsController(componentsController),
+    facetsController(facetsController),
     recordsController(recordsController),
-    typesController(typesController),
-    facetsController(facetsController)
+    typesController(typesController)
 {
     ui->setupUi(this);
 
     // Add widget for specifying the default field value.
-    this->fieldValueWidget = new FieldValueWidget(this->recordsController, this->typesController, this);
+    this->fieldValueWidget = new FieldValueWidget(this->facetsController, this->recordsController, this->typesController, this);
     QFormLayout* layout = static_cast<QFormLayout*>(this->layout());
     layout->insertRow(ValueFormRow, tr("Default Value:"), this->fieldValueWidget);
 }
@@ -226,6 +226,12 @@ bool FieldDefinitionWindow::validate()
                     tr("Please specify a name for the field."),
                     QMessageBox::Close,
                     QMessageBox::Close);
+        return false;
+    }
+
+    // Default value must be valid.
+    if (!this->fieldValueWidget->validate())
+    {
         return false;
     }
 

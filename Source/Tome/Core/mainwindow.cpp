@@ -915,7 +915,8 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
     if (!this->fieldValueWindow)
     {
         this->fieldValueWindow = new FieldValueWindow
-                (this->controller->getRecordsController(),
+                (this->controller->getFacetsController(),
+                 this->controller->getRecordsController(),
                  this->controller->getTypesController(),
                  this);
 
@@ -958,7 +959,6 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
             }
 
             this->fieldValueWindow->setFieldDescription(field.description + " " + facetsDescription);
-            this->fieldValueWindow->setFieldFacets(facets, customType.constrainingFacets);
         }
     }
 

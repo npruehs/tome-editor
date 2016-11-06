@@ -6,6 +6,7 @@
 
 #include "fieldvaluewidget.h"
 #include "../../Facets/Controller/facet.h"
+#include "../../Facets/Controller/facetscontroller.h"
 #include "../../Facets/Model/facetcontext.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
@@ -14,16 +15,17 @@
 using namespace Tome;
 
 
-FieldValueWindow::FieldValueWindow(RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
+FieldValueWindow::FieldValueWindow(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::FieldValueWindow),
+    facetsController(facetsController),
     recordsController(recordsController),
     typesController(typesController)
 {
     ui->setupUi(this);
 
     // Add widget for specifying the field value.
-    this->fieldValueWidget = new FieldValueWidget(this->recordsController, this->typesController, this);
+    this->fieldValueWidget = new FieldValueWidget(this->facetsController, this->recordsController, this->typesController, this);
     QGridLayout* layout = static_cast<QGridLayout*>(this->layout());
     layout->addWidget(this->fieldValueWidget, 3, 1);
 }
@@ -50,13 +52,6 @@ void FieldValueWindow::setFieldDisplayName(const QString& displayName)
     this->ui->labelDisplayNameValue->setText(displayName);
 }
 
-void FieldValueWindow::setFieldFacets(const QList<Facet*> facets, const QVariantMap& facetValues)
-{
-    this->facets = facets;
-    this->facetValues = facetValues;
-    this->fieldValueWidget->setFieldFacets(facets, facetValues);
-}
-
 void FieldValueWindow::setFieldValue(const QVariant& fieldValue)
 {
     this->fieldValueWidget->setFieldValue(fieldValue);
@@ -71,7 +66,7 @@ void FieldValueWindow::setFieldType(const QString& fieldType) const
 void FieldValueWindow::accept()
 {
     // Validate data.
-    if (this->validate())
+    if (this->fieldValueWidget->validate())
     {
         this->done(Accepted);
     }
@@ -98,41 +93,4 @@ void FieldValueWindow::showEvent(QShowEvent* event)
 void FieldValueWindow::on_toolButtonRevert_clicked()
 {
     emit revert();
-}
-
-bool FieldValueWindow::validate()
-{
-    FacetContext context = FacetContext(this->recordsController);
-
-    // Validate all facets.
-    for (int i = 0; i < this->facets.count(); ++i)
-    {
-        Facet* facet = this->facets[i];
-        QString facetKey = facet->getKey();
-
-        if (!this->facetValues.contains(facetKey))
-        {
-            continue;
-        }
-
-        QVariant facetValue = this->facetValues[facetKey];
-        QVariant value = this->getFieldValue();
-
-        QString validationError = facet->validateValue(context, value, facetValue);
-
-        if (!validationError.isEmpty())
-        {
-            QString facetDisplayName = facet->getDisplayName();
-
-            QMessageBox::information(
-                        this,
-                        facetDisplayName,
-                        validationError,
-                        QMessageBox::Close,
-                        QMessageBox::Close);
-            return false;
-        }
-    }
-
-    return true;
 }

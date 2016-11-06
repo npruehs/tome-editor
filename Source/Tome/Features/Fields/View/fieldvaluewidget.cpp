@@ -3,6 +3,8 @@
 #include <limits>
 #include <stdexcept>
 
+#include <QMessageBox>
+
 #include "listwidget.h"
 #include "mapwidget.h"
 #include "vector2iwidget.h"
@@ -10,6 +12,7 @@
 #include "vector3iwidget.h"
 #include "vector3rwidget.h"
 #include "../../Facets/Controller/facet.h"
+#include "../../Facets/Controller/facetscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Facets/Model/facetcontext.h"
@@ -20,9 +23,10 @@
 using namespace Tome;
 
 
-FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
+FieldValueWidget::FieldValueWidget(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
     QWidget(parent),
     currentWidget(0),
+    facetsController(facetsController),
     recordsController(recordsController),
     typesController(typesController)
 {
@@ -55,7 +59,7 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
     this->comboBox = new QComboBox();
     this->addWidget(this->comboBox);
 
-    this->listWidget = new ListWidget(this->recordsController, this->typesController);
+    this->listWidget = new ListWidget(this->facetsController, this->recordsController, this->typesController);
     this->addWidget(this->listWidget);
 
     this->vector2IWidget = new Vector2IWidget();
@@ -70,7 +74,7 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
     this->vector3RWidget = new Vector3RWidget();
     this->addWidget(this->vector3RWidget);
 
-    this->mapWidget = new MapWidget(this->recordsController, this->typesController);
+    this->mapWidget = new MapWidget(this->facetsController, this->recordsController, this->typesController);
     this->addWidget(this->mapWidget);
 
     // Set layout.
@@ -115,12 +119,6 @@ void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
     this->setFieldValueForType(fieldValue, this->fieldType);
 }
 
-void FieldValueWidget::setFieldFacets(const QList<Facet*> &facets, const QVariantMap &facetValues)
-{
-    this->facets = facets;
-    this->facetValues = facetValues;
-}
-
 void FieldValueWidget::focusInEvent(QFocusEvent* event)
 {
     Q_UNUSED(event);
@@ -134,7 +132,7 @@ void FieldValueWidget::focusInEvent(QFocusEvent* event)
 
         if (this->typesController.isCustomType(this->fieldType))
         {
-                customType = this->typesController.getCustomType(this->fieldType);
+            customType = this->typesController.getCustomType(this->fieldType);
         }
 
         if (this->fieldType == BuiltInType::Integer || customType.getBaseType() == BuiltInType::Integer)
@@ -286,24 +284,39 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
         QStringList recordNames = this->recordsController.getRecordNames();
         QStringList references;
 
-        // Apply field facets to added record list
+        // Apply field facets to added record list.
+        QList<Facet*> facets = this->facetsController.getFacets(BuiltInType::Reference);
+
+        // Get facet values.
+        QVariantMap facetValues;
+
+        if (this->typesController.isCustomType(this->getFieldType()))
+        {
+            const CustomType& customType = this->typesController.getCustomType(this->getFieldType());
+
+            if (customType.isDerivedType())
+            {
+                facetValues = customType.constrainingFacets;
+            }
+        }
+
         FacetContext context = FacetContext(this->recordsController);
 
         for (const QString recordName : recordNames)
         {
             bool valid = true;
 
-            for (int i = 0; i < this->facets.count(); ++i)
+            for (int i = 0; i < facets.count(); ++i)
             {
-                Facet* facet = this->facets[i];
+                Facet* facet = facets[i];
                 QString facetKey = facet->getKey();
 
-                if (!this->facetValues.contains(facetKey))
+                if (!facetValues.contains(facetKey))
                 {
                     continue;
                 }
 
-                QVariant facetValue = this->facetValues[facetKey];
+                QVariant facetValue = facetValues[facetKey];
 
                 if (!facet->validateValue(context, recordName, facetValue).isEmpty())
                 {
@@ -521,4 +534,57 @@ void FieldValueWidget::setFieldValueForType(const QVariant& fieldValue, const QS
 
     const QString errorMessage = "Unknown field type: " + typeName;
     throw std::runtime_error(errorMessage.toStdString());
+}
+
+bool FieldValueWidget::validate()
+{
+    // Get facets.
+    QList<Facet*> facets = this->facetsController.getFacets(this->getFieldType());
+
+    // Get facet values.
+    QVariantMap facetValues;
+
+    if (this->typesController.isCustomType(this->getFieldType()))
+    {
+        const CustomType& customType = this->typesController.getCustomType(this->getFieldType());
+
+        if (customType.isDerivedType())
+        {
+            facetValues = customType.constrainingFacets;
+        }
+    }
+
+    FacetContext context = FacetContext(this->recordsController);
+
+    // Validate all facets.
+    for (int i = 0; i < facets.count(); ++i)
+    {
+        Facet* facet = facets[i];
+        QString facetKey = facet->getKey();
+
+        if (!facetValues.contains(facetKey))
+        {
+            continue;
+        }
+
+        QVariant facetValue = facetValues[facetKey];
+        QVariant value = this->getFieldValue();
+
+        QString validationError = facet->validateValue(context, value, facetValue);
+
+        if (!validationError.isEmpty())
+        {
+            QString facetDisplayName = facet->getDisplayName();
+
+            QMessageBox::information(
+                        this,
+                        facetDisplayName,
+                        validationError,
+                        QMessageBox::Close,
+                        QMessageBox::Close);
+            return false;
+        }
+    }
+
+    return true;
 }

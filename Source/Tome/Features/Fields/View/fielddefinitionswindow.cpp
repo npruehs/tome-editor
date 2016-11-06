@@ -94,9 +94,9 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
         this->fieldDefinitionWindow = new FieldDefinitionWindow(
                     this->fieldDefinitionsController,
                     this->componentsController,
+                    this->facetsController,
                     this->recordsController,
                     this->typesController,
-                    this->facetsController,
                     this);
     }
 
@@ -162,9 +162,9 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
         this->fieldDefinitionWindow = new FieldDefinitionWindow(
                     this->fieldDefinitionsController,
                     this->componentsController,
+                    this->facetsController,
                     this->recordsController,
                     this->typesController,
-                    this->facetsController,
                     this);
     }
 

@@ -11,9 +11,10 @@
 using namespace Tome;
 
 
-MapItemWindow::MapItemWindow(Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent) :
+MapItemWindow::MapItemWindow(Tome::FacetsController& facetsController, Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::MapItemWindow),
+    facetsController(facetsController),
     recordsController(recordsController),
     typesController(typesController)
 {
@@ -22,10 +23,10 @@ MapItemWindow::MapItemWindow(Tome::RecordsController& recordsController, Tome::T
     // Add widgets for specifying key and value.
     QFormLayout* layout = static_cast<QFormLayout*>(this->layout());
 
-    this->keyWidget = new FieldValueWidget(this->recordsController, this->typesController, this);
+    this->keyWidget = new FieldValueWidget(this->facetsController, this->recordsController, this->typesController, this);
     layout->insertRow(0, tr("Key:"), this->keyWidget);
 
-    this->valueWidget = new FieldValueWidget(this->recordsController, this->typesController, this);
+    this->valueWidget = new FieldValueWidget(this->facetsController, this->recordsController, this->typesController, this);
     layout->insertRow(1, tr("Value:"), this->valueWidget);
 }
 
