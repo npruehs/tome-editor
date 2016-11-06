@@ -272,6 +272,11 @@ void FieldDefinitionsWindow::updateTable()
 
     this->ui->tableWidget->setSortingEnabled(false);
 
+    if (fieldDefinitions.count() != this->ui->tableWidget->rowCount())
+    {
+        this->ui->tableWidget->setRowCount(fieldDefinitions.size());
+    }
+
     for (int i = 0; i < fieldDefinitions.size(); ++i)
     {
         this->updateRow(i, fieldDefinitions[i], false);
