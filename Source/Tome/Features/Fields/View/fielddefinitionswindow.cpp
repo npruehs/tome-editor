@@ -94,9 +94,9 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
         this->fieldDefinitionWindow = new FieldDefinitionWindow(
                     this->fieldDefinitionsController,
                     this->componentsController,
+                    this->facetsController,
                     this->recordsController,
                     this->typesController,
-                    this->facetsController,
                     this);
     }
 
@@ -121,8 +121,7 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
                         this->fieldDefinitionWindow->getDefaultValue(),
                         component,
                         this->fieldDefinitionWindow->getFieldDescription(),
-                        this->fieldDefinitionWindow->getFieldDefinitionSetName(),
-                        this->fieldDefinitionWindow->getFieldFacets());
+                        this->fieldDefinitionWindow->getFieldDefinitionSetName());
 
             this->recordsController.moveFieldToComponent(fieldId, QString(), component);
 
@@ -163,9 +162,9 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
         this->fieldDefinitionWindow = new FieldDefinitionWindow(
                     this->fieldDefinitionsController,
                     this->componentsController,
+                    this->facetsController,
                     this->recordsController,
                     this->typesController,
-                    this->facetsController,
                     this);
     }
 
@@ -180,7 +179,6 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
     this->fieldDefinitionWindow->setFieldComponent(fieldDefinition.component);
     this->fieldDefinitionWindow->setFieldDefinitionSetNames(this->fieldDefinitionsController.getFieldDefinitionSetNames());
     this->fieldDefinitionWindow->setFieldDefinitionSetName(fieldDefinition.fieldDefinitionSetName);
-    this->fieldDefinitionWindow->setFieldFacets(fieldDefinition.facets);
 
     int result = this->fieldDefinitionWindow->exec();
 
@@ -195,8 +193,7 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
                  this->fieldDefinitionWindow->getDefaultValue(),
                  this->fieldDefinitionWindow->getFieldDescription(),
                  this->fieldDefinitionWindow->getFieldComponent(),
-                 this->fieldDefinitionWindow->getFieldDefinitionSetName(),
-                 this->fieldDefinitionWindow->getFieldFacets());
+                 this->fieldDefinitionWindow->getFieldDefinitionSetName());
 
         // Notify listeners.
         emit fieldChanged();
@@ -299,8 +296,7 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId,
         const QVariant& defaultValue,
         const QString& description,
         const Component& component,
-        const QString& fieldDefinitionSetName,
-        const QVariantMap& facets)
+        const QString& fieldDefinitionSetName)
 {
     const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(oldId);
 
@@ -317,8 +313,7 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId,
                  defaultValue,
                  component,
                  description,
-                 fieldDefinitionSetName,
-                 facets);
+                 fieldDefinitionSetName);
         this->recordsController.renameRecordField(oldId, newId);
         this->recordsController.moveFieldToComponent(newId, oldComponent, component);
 

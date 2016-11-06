@@ -2,11 +2,13 @@
 
 #include "facet.h"
 
+#include "../../Types/Controller/typescontroller.h"
+
 using namespace Tome;
 
-FacetsController::FacetsController()
+FacetsController::FacetsController(const TypesController& typesController) :
+    typesController(typesController)
 {
-
 }
 
 FacetsController::~FacetsController()
@@ -21,6 +23,19 @@ FacetsController::~FacetsController()
 
 QList<Facet*> FacetsController::getFacets(const QString& targetType)
 {
+    // Check if derived type.
+    if (this->typesController.isCustomType(targetType))
+    {
+        const CustomType& customType = this->typesController.getCustomType(targetType);
+
+        if (customType.isDerivedType())
+        {
+            QString baseType = customType.getBaseType();
+            return getFacets(baseType);
+        }
+    }
+
+    // Get facets for built-in type.
     QList<Facet*> typeFacets;
 
     for (int i = 0; i < this->facets.count(); ++i)

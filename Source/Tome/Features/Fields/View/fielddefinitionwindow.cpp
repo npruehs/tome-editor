@@ -17,29 +17,28 @@
 using namespace Tome;
 
 const int FieldDefinitionWindow::DefaultFormRows = 7;
-const int FieldDefinitionWindow::FacetFormRow = 6;
 const int FieldDefinitionWindow::ValueFormRow = 3;
 
 
 FieldDefinitionWindow::FieldDefinitionWindow(
         FieldDefinitionsController& fieldDefinitionsController,
         ComponentsController& componentsController,
+        FacetsController& facetsController,
         RecordsController& recordsController,
         TypesController& typesController,
-        FacetsController& facetsController,
         QWidget *parent) :
     QDialog(parent),
     ui(new Ui::FieldDefinitionWindow),
     fieldDefinitionsController(fieldDefinitionsController),
     componentsController(componentsController),
+    facetsController(facetsController),
     recordsController(recordsController),
-    typesController(typesController),
-    facetsController(facetsController)
+    typesController(typesController)
 {
     ui->setupUi(this);
 
     // Add widget for specifying the default field value.
-    this->fieldValueWidget = new FieldValueWidget(this->recordsController, this->typesController, this);
+    this->fieldValueWidget = new FieldValueWidget(this->facetsController, this->recordsController, this->typesController, this);
     QFormLayout* layout = static_cast<QFormLayout*>(this->layout());
     layout->insertRow(ValueFormRow, tr("Default Value:"), this->fieldValueWidget);
 }
@@ -89,29 +88,6 @@ QString FieldDefinitionWindow::getFieldDescription() const
 QString FieldDefinitionWindow::getFieldDisplayName() const
 {
     return this->ui->lineEditDisplayName->text();
-}
-
-QVariantMap FieldDefinitionWindow::getFieldFacets() const
-{
-    QVariantMap facetMap;
-
-    // Get all facets registered for the current type.
-    QList<Facet*> typeFacets = this->facetsController.getFacets(this->getFieldType());
-
-    for (int i = 0; i < typeFacets.count(); ++i)
-    {
-        // Get facet.
-        Facet* facet = typeFacets[i];
-
-        // Get current facet value.
-        QString key = facet->getKey();
-        QVariant value = facet->getWidgetValue(this->facetWidgets[i]);
-
-        // Insert into facets map.
-        facetMap.insert(key, value);
-    }
-
-    return facetMap;
 }
 
 QString FieldDefinitionWindow::getFieldId() const
@@ -178,43 +154,6 @@ void FieldDefinitionWindow::setFieldDisplayName(const QString& displayName)
     this->ui->lineEditDisplayName->setText(displayName);
 }
 
-void FieldDefinitionWindow::setFieldFacets(const QVariantMap& facets)
-{
-    // Remove all existing facet widget from previous times this window was shown.
-    QFormLayout* layout = static_cast<QFormLayout*>(this->layout());
-
-    while (!this->facetWidgets.empty())
-    {
-        QWidget* facetWidget = this->facetWidgets.takeAt(0);
-        QWidget* facetLabel = layout->labelForField(facetWidget);
-        layout->removeWidget(facetLabel);
-        layout->removeWidget(facetWidget);
-        delete facetLabel;
-        delete facetWidget;
-    }
-
-    // Add new facet widgets.
-    QList<Facet*> typeFacets = this->facetsController.getFacets(this->getFieldType());
-    FacetContext context = FacetContext(this->recordsController);
-
-    for (int i = 0; i < typeFacets.count(); ++i)
-    {
-        // Create facet widget and label.
-        Facet* facet = typeFacets[i];
-        QString facetDisplayName = facet->getDisplayName();
-        QWidget* facetWidget = facet->createWidget(context);
-
-        // Get current facet value from field definition.
-        QString facetKey = facet->getKey();
-        QVariant facetValue = facets.contains(facetKey) ? facets[facetKey] : facet->getDefaultValue();
-        facet->setWidgetValue(facetWidget, facetValue);
-
-        // Insert into layout and remember for later removal.
-        layout->insertRow(FacetFormRow + i, facetDisplayName + ":", facetWidget);
-        this->facetWidgets.push_back(facetWidget);
-    }
-}
-
 void FieldDefinitionWindow::setFieldId(const QString& fieldId)
 {
     this->ui->lineEditId->setText(fieldId);
@@ -233,7 +172,6 @@ void FieldDefinitionWindow::setFieldType(const QString& fieldType) const
 void FieldDefinitionWindow::on_comboBoxType_currentIndexChanged(const QString &fieldType)
 {
     this->fieldValueWidget->setFieldType(fieldType);
-    this->setFieldFacets(QVariantMap());
 }
 
 void FieldDefinitionWindow::on_lineEditDisplayName_textEdited(const QString &displayName)
@@ -288,6 +226,12 @@ bool FieldDefinitionWindow::validate()
                     tr("Please specify a name for the field."),
                     QMessageBox::Close,
                     QMessageBox::Close);
+        return false;
+    }
+
+    // Default value must be valid.
+    if (!this->fieldValueWidget->validate())
+    {
         return false;
     }
 

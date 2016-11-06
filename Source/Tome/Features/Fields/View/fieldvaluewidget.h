@@ -17,6 +17,7 @@ namespace Tome
     class CustomType;
     class ListWidget;
     class MapWidget;
+    class FacetsController;
     class RecordsController;
     class TypesController;
     class Vector2IWidget;
@@ -33,7 +34,7 @@ namespace Tome
             Q_OBJECT
 
         public:
-            explicit FieldValueWidget(RecordsController& recordsController, TypesController& typesController, QWidget *parent = 0);
+            explicit FieldValueWidget(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController,  QWidget *parent = 0);
             ~FieldValueWidget();
 
             QString getFieldType() const;
@@ -41,7 +42,8 @@ namespace Tome
 
             void setFieldType(const QString& fieldType);
             void setFieldValue(const QVariant& fieldValue);
-            void setFieldFacets(const QList<Facet*> &facets, const QVariantMap &facetValues);
+
+            bool validate();
 
         protected:
             virtual void focusInEvent(QFocusEvent* event);
@@ -49,8 +51,6 @@ namespace Tome
         private:
             QWidget* currentWidget;
             QString fieldType;
-            QList<Tome::Facet*> facets;
-            QVariantMap facetValues;
 
             QCheckBox* checkBox;
             QColorDialog* colorDialog;
@@ -66,12 +66,16 @@ namespace Tome
             Vector2RWidget* vector2RWidget;
             Vector3RWidget* vector3RWidget;
 
+            FacetsController& facetsController;
             RecordsController& recordsController;
             TypesController& typesController;
 
             void addWidget(QWidget* widget);
+            QVariant getFieldValueForType(const QString& typeName) const;
+            void selectWidgetForType(const QString& typeName);
             void setCurrentWidget(QWidget* widget);
             void setEnumeration(const QStringList& enumeration);
+            void setFieldValueForType(const QVariant& fieldValue, const QString& typeName);
     };
 }
 

@@ -18,8 +18,7 @@ namespace Tome
                     const QVariant& defaultValue,
                     const QString& component,
                     const QString& description,
-                    const QString& fieldDefinitionSetName,
-                    const QVariantMap& facets);
+                    const QString& fieldDefinitionSetName);
             void addFieldDefinitionSet(const FieldDefinitionSet& fieldDefinitionSet);
             const FieldDefinition& getFieldDefinition(const QString& id) const;
             const FieldDefinitionList getFieldDefinitions() const;
@@ -33,16 +32,14 @@ namespace Tome
             void removeFieldDefinitionSet(const QString& name);
             void renameFieldType(const QString oldTypeName, const QString newTypeName);
             void setFieldDefinitionSets(FieldDefinitionSetList& model);
-            void updateFieldDefinition(
-                    const QString oldId,
+            void updateFieldDefinition(const QString oldId,
                     const QString newId,
                     const QString& displayName,
                     const QString& fieldType,
                     const QVariant& defaultValue,
                     const QString& component,
                     const QString& description,
-                    const QString& fieldDefinitionSetName,
-                    const QVariantMap& facets);
+                    const QString& fieldDefinitionSetName);
 
         private:
             FieldDefinitionSetList* model;

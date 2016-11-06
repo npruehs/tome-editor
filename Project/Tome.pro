@@ -116,7 +116,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Records/Controller/recordnamevalidator.cpp \
     ../Source/Tome/Features/Diagnostics/Controller/messagehandlers.cpp \
     ../Source/Tome/Features/Diagnostics/Controller/filemessagehandler.cpp \
-    ../Source/Tome/Features/Diagnostics/View/outputdockwidget.cpp
+    ../Source/Tome/Features/Diagnostics/View/outputdockwidget.cpp \
+    ../Source/Tome/Features/Types/View/derivedtypewindow.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -223,7 +224,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Records/Controller/recordnamevalidator.h \
     ../Source/Tome/Features/Diagnostics/Controller/messagehandlers.h \
     ../Source/Tome/Features/Diagnostics/Controller/filemessagehandler.h \
-    ../Source/Tome/Features/Diagnostics/View/outputdockwidget.h
+    ../Source/Tome/Features/Diagnostics/View/outputdockwidget.h \
+    ../Source/Tome/Features/Types/View/derivedtypewindow.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
@@ -244,7 +246,8 @@ FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Fields/View/mapitemwindow.ui \
     ../Source/Tome/Features/Search/View/findrecordwindow.ui \
     ../Source/Tome/Features/Projects/View/projectoverviewwindow.ui \
-    ../Source/Tome/Features/Settings/View/usersettingswindow.ui
+    ../Source/Tome/Features/Settings/View/usersettingswindow.ui \
+    ../Source/Tome/Features/Types/View/derivedtypewindow.ui
 
 RESOURCES += \
     tome.qrc

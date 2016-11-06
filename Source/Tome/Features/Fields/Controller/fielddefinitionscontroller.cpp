@@ -18,8 +18,7 @@ const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QStri
         const QVariant& defaultValue,
         const QString& component,
         const QString& description,
-        const QString& fieldDefinitionSetName,
-        const QVariantMap& facets)
+        const QString& fieldDefinitionSetName)
 {
     qInfo(QString("Adding field definition %1.").arg(id).toUtf8().constData());
 
@@ -40,7 +39,6 @@ const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QStri
     fieldDefinition.component = component;
     fieldDefinition.description = description;
     fieldDefinition.fieldDefinitionSetName = fieldDefinitionSetName;
-    fieldDefinition.facets = facets;
 
     for (FieldDefinitionSetList::iterator it = this->model->begin();
          it != this->model->end();
@@ -257,7 +255,7 @@ void FieldDefinitionsController::updateFieldDefinition(const QString oldId,
         const QVariant& defaultValue,
         const QString& component,
         const QString& description,
-        const QString& fieldDefinitionSetName, const QVariantMap& facets)
+        const QString& fieldDefinitionSetName)
 {
     // Check if already exists.
     if (oldId != newId && this->hasFieldDefinition(newId))
@@ -278,7 +276,6 @@ void FieldDefinitionsController::updateFieldDefinition(const QString oldId,
     fieldDefinition.defaultValue = defaultValue;
     fieldDefinition.description = description;
     fieldDefinition.component = component;
-    fieldDefinition.facets = facets;
 
     // Move field definition, if necessary.
     if (fieldDefinition.fieldDefinitionSetName != fieldDefinitionSetName)

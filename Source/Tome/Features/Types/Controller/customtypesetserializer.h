@@ -18,11 +18,18 @@ namespace Tome
         private:
             static const QString AttributeKey;
             static const QString AttributeValue;
+            static const QString AttributeVersion;
+            static const QString ElementConstrainingFacet;
+            static const QString ElementConstrainingFacets;
+            static const QString ElementFundamentalFacet;
+            static const QString ElementFundamentalFacets;
             static const QString ElementName;
             static const QString ElementRestriction;
             static const QString ElementRestrictions;
             static const QString ElementType;
             static const QString ElementTypes;
+
+            static const int Version;
     };
 }
 

@@ -6,17 +6,20 @@
 namespace Tome
 {
     class Facet;
+    class TypesController;
 
     class FacetsController
     {
         public:
-            FacetsController();
+            FacetsController(const TypesController& typesController);
             ~FacetsController();
 
             QList<Facet*> getFacets(const QString& targetType);
             void registerFacet(Facet* facet);
 
         private:
+            const TypesController& typesController;
+
             QList<Facet*> facets;
     };
 }

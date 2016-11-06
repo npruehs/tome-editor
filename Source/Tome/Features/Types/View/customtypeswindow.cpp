@@ -1,12 +1,15 @@
 #include "customtypeswindow.h"
 #include "ui_customtypeswindow.h"
 
+#include "derivedtypewindow.h"
 #include "enumerationwindow.h"
 #include "listwindow.h"
 #include "mapwindow.h"
 #include "../Controller/typescontroller.h"
 #include "../Model/builtintype.h"
+#include "../../Facets/Controller/facetscontroller.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
+#include "../../Records/Controller/recordscontroller.h"
 #include "../../Search/Controller/findusagescontroller.h"
 #include "../../Types/Model/customtype.h"
 #include "../../../Util/listutils.h"
@@ -14,12 +17,20 @@
 using namespace Tome;
 
 
-CustomTypesWindow::CustomTypesWindow(TypesController& typesController, FieldDefinitionsController& fieldDefinitionsController, FindUsagesController& findUsagesController, QWidget *parent) :
+CustomTypesWindow::CustomTypesWindow(TypesController& typesController,
+                                     FacetsController& facetsController,
+                                     FieldDefinitionsController& fieldDefinitionsController,
+                                     FindUsagesController& findUsagesController,
+                                     RecordsController& recordsController,
+                                     QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::CustomTypesWindow),
     typesController(typesController),
+    facetsController(facetsController),
     fieldDefinitionsController(fieldDefinitionsController),
     findUsagesController(findUsagesController),
+    recordsController(recordsController),
+    derivedTypeWindow(0),
     enumerationWindow(0),
     listWindow(0),
     mapWindow(0)
@@ -49,9 +60,42 @@ CustomTypesWindow::~CustomTypesWindow()
 {
     delete this->ui;
 
+    delete this->derivedTypeWindow;
     delete this->enumerationWindow;
     delete this->listWindow;
     delete this->mapWindow;
+}
+
+void CustomTypesWindow::on_actionNew_Derived_Type_triggered()
+{
+    // Show window.
+    if (!this->derivedTypeWindow)
+    {
+        this->derivedTypeWindow = new DerivedTypeWindow(
+                    this->typesController,
+                    this->facetsController,
+                    this->recordsController,
+                    this);
+    }
+
+    this->derivedTypeWindow->init();
+
+    int result = this->derivedTypeWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        // Update model.
+        CustomType newType =
+                this->typesController.addDerivedType(
+                    this->derivedTypeWindow->getTypeName(),
+                    this->derivedTypeWindow->getBaseType(),
+                    this->derivedTypeWindow->getFacets(),
+                    this->derivedTypeWindow->getTypeSetName());
+
+        // Update view.
+        this->ui->tableWidget->insertRow(0);
+        this->updateRow(0, newType);
+    }
 }
 
 void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
@@ -152,7 +196,11 @@ void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
     const CustomType& type = this->typesController.getCustomType(typeName);
 
     // Check type.
-    if (type.isEnumeration())
+    if (type.isDerivedType())
+    {
+        this->editDerivedType(typeName, type);
+    }
+    else if (type.isEnumeration())
     {
         this->editEnumeration(typeName, type);
     }
@@ -218,6 +266,41 @@ QString CustomTypesWindow::getSelectedTypeName() const
     }
 
     return this->ui->tableWidget->item(selectedIndex, 0)->data(Qt::DisplayRole).toString();
+}
+
+void CustomTypesWindow::editDerivedType(QString typeName, const CustomType& type)
+{
+    // Show window.
+    if (!this->derivedTypeWindow)
+    {
+        this->derivedTypeWindow = new DerivedTypeWindow(
+                    this->typesController,
+                    this->facetsController,
+                    this->recordsController,
+                    this);
+    }
+
+    this->derivedTypeWindow->init();
+
+    // Update view.
+    this->derivedTypeWindow->setTypeName(type.name);
+    this->derivedTypeWindow->setBaseType(type.getBaseType());
+    this->derivedTypeWindow->setFacets(type.constrainingFacets);
+    this->derivedTypeWindow->setTypeSetNames(this->typesController.getCustomTypeSetNames());
+    this->derivedTypeWindow->setTypeSetName(type.typeSetName);
+
+    int result = this->derivedTypeWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        // Update type.
+        this->updateDerivedType(
+                    typeName,
+                    this->derivedTypeWindow->getTypeName(),
+                    this->derivedTypeWindow->getBaseType(),
+                    this->derivedTypeWindow->getFacets(),
+                    this->derivedTypeWindow->getTypeSetName());
+    }
 }
 
 void CustomTypesWindow::editEnumeration(QString typeName, const CustomType& type)
@@ -307,6 +390,16 @@ void CustomTypesWindow::editMap(QString typeName, const CustomType& type)
     }
 }
 
+void CustomTypesWindow::updateDerivedType(const QString& oldName, const QString& newName, const QString& baseType, const QVariantMap facets, const QString& typeSetName)
+{
+    // Update model.
+    this->fieldDefinitionsController.renameFieldType(oldName, newName);
+    this->typesController.updateDerivedType(oldName, newName, baseType, facets, typeSetName);
+
+    // Update view.
+    this->updateTable();
+}
+
 void CustomTypesWindow::updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration, const QString& typeSetName)
 {
     // Update model.
@@ -345,7 +438,12 @@ void CustomTypesWindow::updateRow(const int index, const CustomType& type)
     // Update view.
     this->ui->tableWidget->setItem(index, 0, new QTableWidgetItem(type.name));
 
-    if (type.isEnumeration())
+    if (type.isDerivedType())
+    {
+        this->ui->tableWidget->setItem(index, 1, new QTableWidgetItem("Derived Type"));
+        this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(type.getBaseType()));
+    }
+    else if (type.isEnumeration())
     {
         this->ui->tableWidget->setItem(index, 1, new QTableWidgetItem("Enumeration"));
         this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(type.getEnumeration().join(", ")));

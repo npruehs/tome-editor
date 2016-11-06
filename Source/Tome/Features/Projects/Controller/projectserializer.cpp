@@ -304,7 +304,7 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
                                     QString restrictionKey = reader.readAttribute(AttributeKey);
                                     QString restrictionValue = reader.readAttribute(AttributeValue);
 
-                                    type.restrictions.insert(restrictionKey, restrictionValue);
+                                    type.fundamentalFacets.insert(restrictionKey, restrictionValue);
 
                                     // Advance reader.
                                     reader.readEmptyElement(ElementRestriction);

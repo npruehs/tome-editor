@@ -3,6 +3,8 @@
 #include <limits>
 #include <stdexcept>
 
+#include <QMessageBox>
+
 #include "listwidget.h"
 #include "mapwidget.h"
 #include "vector2iwidget.h"
@@ -10,6 +12,7 @@
 #include "vector3iwidget.h"
 #include "vector3rwidget.h"
 #include "../../Facets/Controller/facet.h"
+#include "../../Facets/Controller/facetscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Facets/Model/facetcontext.h"
@@ -20,9 +23,10 @@
 using namespace Tome;
 
 
-FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
+FieldValueWidget::FieldValueWidget(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
     QWidget(parent),
     currentWidget(0),
+    facetsController(facetsController),
     recordsController(recordsController),
     typesController(typesController)
 {
@@ -55,7 +59,7 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
     this->comboBox = new QComboBox();
     this->addWidget(this->comboBox);
 
-    this->listWidget = new ListWidget(this->recordsController, this->typesController);
+    this->listWidget = new ListWidget(this->facetsController, this->recordsController, this->typesController);
     this->addWidget(this->listWidget);
 
     this->vector2IWidget = new Vector2IWidget();
@@ -70,7 +74,7 @@ FieldValueWidget::FieldValueWidget(RecordsController& recordsController, TypesCo
     this->vector3RWidget = new Vector3RWidget();
     this->addWidget(this->vector3RWidget);
 
-    this->mapWidget = new MapWidget(this->recordsController, this->typesController);
+    this->mapWidget = new MapWidget(this->facetsController, this->recordsController, this->typesController);
     this->addWidget(this->mapWidget);
 
     // Set layout.
@@ -93,66 +97,135 @@ QString FieldValueWidget::getFieldType() const
 
 QVariant FieldValueWidget::getFieldValue() const
 {
+    return this->getFieldValueForType(this->fieldType);
+}
+
+void FieldValueWidget::setFieldType(const QString& fieldType)
+{
+    if (fieldType.isEmpty())
+    {
+        return;
+    }
+
+    // Set new field type.
+    this->fieldType = fieldType;
+
+    // Update view.
+    this->selectWidgetForType(fieldType);
+}
+
+void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
+{
+    this->setFieldValueForType(fieldValue, this->fieldType);
+}
+
+void FieldValueWidget::focusInEvent(QFocusEvent* event)
+{
+    Q_UNUSED(event);
+
+    if (this->currentWidget != 0)
+    {
+        this->currentWidget->setFocus();
+
+        // Select content for more convenient editing.
+        CustomType customType;
+
+        if (this->typesController.isCustomType(this->fieldType))
+        {
+            customType = this->typesController.getCustomType(this->fieldType);
+        }
+
+        if (this->fieldType == BuiltInType::Integer || customType.getBaseType() == BuiltInType::Integer)
+        {
+            this->spinBox->selectAll();
+        }
+        else if (this->fieldType == BuiltInType::Real || customType.getBaseType() == BuiltInType::Real)
+        {
+            this->doubleSpinBox->selectAll();
+        }
+        else if (this->fieldType == BuiltInType::String || customType.getBaseType() == BuiltInType::String)
+        {
+            this->lineEdit->selectAll();
+        }
+    }
+}
+
+void FieldValueWidget::addWidget(QWidget* widget)
+{
+    if (widget != 0)
+    {
+        widget->hide();
+        this->layout->addWidget(widget);
+    }
+}
+
+QVariant FieldValueWidget::getFieldValueForType(const QString& typeName) const
+{
     // Check built-in types.
-    if (this->fieldType == BuiltInType::Boolean)
+    if (typeName == BuiltInType::Boolean)
     {
         return this->checkBox->isChecked();
     }
 
-    if (this->fieldType == BuiltInType::Color)
+    if (typeName == BuiltInType::Color)
     {
         return this->colorDialog->currentColor();
     }
 
-    if (this->fieldType == BuiltInType::Integer)
+    if (typeName == BuiltInType::Integer)
     {
         return this->spinBox->text();
     }
 
-    if (this->fieldType == BuiltInType::Real)
+    if (typeName == BuiltInType::Real)
     {
         return this->doubleSpinBox->text();
     }
 
-    if (this->fieldType == BuiltInType::String)
+    if (typeName == BuiltInType::String)
     {
         return this->lineEdit->text();
     }
 
-    if (this->fieldType == BuiltInType::Reference)
+    if (typeName == BuiltInType::Reference)
     {
         return this->comboBox->currentText();
     }
 
-    if (this->fieldType == BuiltInType::Vector2I)
+    if (typeName == BuiltInType::Vector2I)
     {
         return this->vector2IWidget->getValue();
     }
 
-    if (this->fieldType == BuiltInType::Vector2R)
+    if (typeName == BuiltInType::Vector2R)
     {
         return this->vector2RWidget->getValue();
     }
 
-    if (this->fieldType == BuiltInType::Vector3I)
+    if (typeName == BuiltInType::Vector3I)
     {
         return this->vector3IWidget->getValue();
     }
 
-    if (this->fieldType == BuiltInType::Vector3R)
+    if (typeName == BuiltInType::Vector3R)
     {
         return this->vector3RWidget->getValue();
     }
 
     // Custom type - or is it?
-    if (!this->typesController.isCustomType(this->fieldType))
+    if (!this->typesController.isCustomType(typeName))
     {
         // Fall back to string.
         return this->lineEdit->text();
     }
 
     // Check custom data types.
-    const CustomType& customType = this->typesController.getCustomType(this->fieldType);
+    const CustomType& customType = this->typesController.getCustomType(typeName);
+
+    if (customType.isDerivedType())
+    {
+        return this->getFieldValueForType(customType.getBaseType());
+    }
 
     if (customType.isEnumeration())
     {
@@ -169,74 +242,81 @@ QVariant FieldValueWidget::getFieldValue() const
         return this->mapWidget->getMap();
     }
 
-    const QString errorMessage = "Unknown field type: " + this->fieldType;
+    const QString errorMessage = "Unknown field type: " + typeName;
     throw std::runtime_error(errorMessage.toStdString());
 }
 
-void FieldValueWidget::setFieldType(const QString& fieldType)
+void FieldValueWidget::selectWidgetForType(const QString& typeName)
 {
-    if (fieldType.isEmpty())
-    {
-        return;
-    }
-
-    // Set new field type.
-    this->fieldType = fieldType;
-
-    // Update view - check built-in types.
-    if (this->fieldType == BuiltInType::Boolean)
+    // Check built-in types.
+    if (typeName == BuiltInType::Boolean)
     {
         this->setCurrentWidget(this->checkBox);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Color)
+    if (typeName == BuiltInType::Color)
     {
         this->setCurrentWidget(this->colorDialog);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Integer)
+    if (typeName == BuiltInType::Integer)
     {
         this->setCurrentWidget(this->spinBox);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Real)
+    if (typeName == BuiltInType::Real)
     {
         this->setCurrentWidget(this->doubleSpinBox);
         return;
     }
 
-    if (this->fieldType == BuiltInType::String)
+    if (typeName == BuiltInType::String)
     {
         this->setCurrentWidget(this->lineEdit);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Reference)
+    if (typeName == BuiltInType::Reference)
     {
         QStringList recordNames = this->recordsController.getRecordNames();
         QStringList references;
 
-        // Apply field facets to added record list
+        // Apply field facets to added record list.
+        QList<Facet*> facets = this->facetsController.getFacets(BuiltInType::Reference);
+
+        // Get facet values.
+        QVariantMap facetValues;
+
+        if (this->typesController.isCustomType(this->getFieldType()))
+        {
+            const CustomType& customType = this->typesController.getCustomType(this->getFieldType());
+
+            if (customType.isDerivedType())
+            {
+                facetValues = customType.constrainingFacets;
+            }
+        }
+
         FacetContext context = FacetContext(this->recordsController);
 
         for (const QString recordName : recordNames)
         {
             bool valid = true;
 
-            for (int i = 0; i < this->facets.count(); ++i)
+            for (int i = 0; i < facets.count(); ++i)
             {
-                Facet* facet = this->facets[i];
+                Facet* facet = facets[i];
                 QString facetKey = facet->getKey();
 
-                if (!this->facetValues.contains(facetKey))
+                if (!facetValues.contains(facetKey))
                 {
                     continue;
                 }
 
-                QVariant facetValue = this->facetValues[facetKey];
+                QVariant facetValue = facetValues[facetKey];
 
                 if (!facet->validateValue(context, recordName, facetValue).isEmpty())
                 {
@@ -259,32 +339,32 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
         return;
     }
 
-    if (this->fieldType == BuiltInType::Vector2I)
+    if (typeName == BuiltInType::Vector2I)
     {
         this->setCurrentWidget(this->vector2IWidget);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Vector2R)
+    if (typeName == BuiltInType::Vector2R)
     {
         this->setCurrentWidget(this->vector2RWidget);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Vector3I)
+    if (typeName == BuiltInType::Vector3I)
     {
         this->setCurrentWidget(this->vector3IWidget);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Vector3R)
+    if (typeName == BuiltInType::Vector3R)
     {
         this->setCurrentWidget(this->vector3RWidget);
         return;
     }
 
     // Custom type - or is it?
-    if (!this->typesController.isCustomType(this->fieldType))
+    if (!this->typesController.isCustomType(typeName))
     {
         // Fall back to string.
         this->setCurrentWidget(this->lineEdit);
@@ -292,7 +372,13 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
     }
 
     // Update view - check custom types.
-    const CustomType& customType = this->typesController.getCustomType(this->fieldType);
+    const CustomType& customType = this->typesController.getCustomType(typeName);
+
+    if (customType.isDerivedType())
+    {
+        this->selectWidgetForType(customType.getBaseType());
+        return;
+    }
 
     if (customType.isEnumeration())
     {
@@ -316,80 +402,102 @@ void FieldValueWidget::setFieldType(const QString& fieldType)
         return;
     }
 
-    const QString errorMessage = "Unknown field type: " + this->fieldType;
+    const QString errorMessage = "Unknown field type: " + typeName;
     throw std::runtime_error(errorMessage.toStdString());
 }
 
-void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
+void FieldValueWidget::setCurrentWidget(QWidget* widget)
+{
+    if (this->currentWidget != 0)
+    {
+        this->currentWidget->hide();
+    }
+
+    this->currentWidget = widget;
+
+    if (this->currentWidget != 0)
+    {
+        this->currentWidget->show();
+        this->currentWidget->setFocus();
+    }
+}
+
+void FieldValueWidget::setEnumeration(const QStringList& enumeration)
+{
+    this->comboBox->clear();
+    this->comboBox->addItems(enumeration);
+}
+
+void FieldValueWidget::setFieldValueForType(const QVariant& fieldValue, const QString& typeName)
 {
     // Check built-in types.
-    if (this->fieldType == BuiltInType::Boolean)
+    if (typeName == BuiltInType::Boolean)
     {
         bool value = fieldValue.toBool();
         this->checkBox->setChecked(value);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Color)
+    if (typeName == BuiltInType::Color)
     {
         QColor color = fieldValue.value<QColor>();
         this->colorDialog->setCurrentColor(color);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Integer)
+    if (typeName == BuiltInType::Integer)
     {
         int value = fieldValue.toInt();
         this->spinBox->setValue(value);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Real)
+    if (typeName == BuiltInType::Real)
     {
         double value = fieldValue.toDouble();
         this->doubleSpinBox->setValue(value);
         return;
     }
 
-    if (this->fieldType == BuiltInType::String)
+    if (typeName == BuiltInType::String)
     {
         QString value = fieldValue.toString();
         this->lineEdit->setText(value);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Reference)
+    if (typeName == BuiltInType::Reference)
     {
         this->comboBox->setCurrentText(fieldValue.toString());
         return;
     }
 
-    if (this->fieldType == BuiltInType::Vector2I)
+    if (typeName == BuiltInType::Vector2I)
     {
         this->vector2IWidget->setValue(fieldValue);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Vector2R)
+    if (typeName == BuiltInType::Vector2R)
     {
         this->vector2RWidget->setValue(fieldValue);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Vector3I)
+    if (typeName == BuiltInType::Vector3I)
     {
         this->vector3IWidget->setValue(fieldValue);
         return;
     }
 
-    if (this->fieldType == BuiltInType::Vector3R)
+    if (typeName == BuiltInType::Vector3R)
     {
         this->vector3RWidget->setValue(fieldValue);
         return;
     }
 
     // Custom type - or is it?
-    if (!this->typesController.isCustomType(this->fieldType))
+    if (!this->typesController.isCustomType(typeName))
     {
         // Fall back to string.
         QString value = fieldValue.toString();
@@ -398,7 +506,13 @@ void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
     }
 
     // Check custom types.
-    const CustomType& customType = this->typesController.getCustomType(this->fieldType);
+    const CustomType& customType = this->typesController.getCustomType(typeName);
+
+    if (customType.isDerivedType())
+    {
+        this->setFieldValueForType(fieldValue, customType.getBaseType());
+        return;
+    }
 
     if (customType.isEnumeration())
     {
@@ -418,67 +532,59 @@ void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
         return;
     }
 
-    const QString errorMessage = "Unknown field type: " + this->fieldType;
+    const QString errorMessage = "Unknown field type: " + typeName;
     throw std::runtime_error(errorMessage.toStdString());
 }
 
-void FieldValueWidget::setEnumeration(const QStringList& enumeration)
+bool FieldValueWidget::validate()
 {
-    this->comboBox->clear();
-    this->comboBox->addItems(enumeration);
-}
+    // Get facets.
+    QList<Facet*> facets = this->facetsController.getFacets(this->getFieldType());
 
-void FieldValueWidget::focusInEvent(QFocusEvent* event)
-{
-    Q_UNUSED(event);
+    // Get facet values.
+    QVariantMap facetValues;
 
-    if (this->currentWidget != 0)
+    if (this->typesController.isCustomType(this->getFieldType()))
     {
-        this->currentWidget->setFocus();
+        const CustomType& customType = this->typesController.getCustomType(this->getFieldType());
 
-        // Select content for more convenient editing.
-        if (this->fieldType == BuiltInType::Integer)
+        if (customType.isDerivedType())
         {
-            this->spinBox->selectAll();
-        }
-        else if (this->fieldType == BuiltInType::Real)
-        {
-            this->doubleSpinBox->selectAll();
-        }
-        else if (this->fieldType == BuiltInType::String)
-        {
-            this->lineEdit->selectAll();
+            facetValues = customType.constrainingFacets;
         }
     }
-}
 
-void FieldValueWidget::addWidget(QWidget* widget)
-{
-    if (widget != 0)
+    FacetContext context = FacetContext(this->recordsController);
+
+    // Validate all facets.
+    for (int i = 0; i < facets.count(); ++i)
     {
-        widget->hide();
-        this->layout->addWidget(widget);
+        Facet* facet = facets[i];
+        QString facetKey = facet->getKey();
+
+        if (!facetValues.contains(facetKey))
+        {
+            continue;
+        }
+
+        QVariant facetValue = facetValues[facetKey];
+        QVariant value = this->getFieldValue();
+
+        QString validationError = facet->validateValue(context, value, facetValue);
+
+        if (!validationError.isEmpty())
+        {
+            QString facetDisplayName = facet->getDisplayName();
+
+            QMessageBox::information(
+                        this,
+                        facetDisplayName,
+                        validationError,
+                        QMessageBox::Close,
+                        QMessageBox::Close);
+            return false;
+        }
     }
-}
 
-void FieldValueWidget::setCurrentWidget(QWidget* widget)
-{
-    if (this->currentWidget != 0)
-    {
-        this->currentWidget->hide();
-    }
-
-    this->currentWidget = widget;
-
-    if (this->currentWidget != 0)
-    {
-        this->currentWidget->show();
-        this->currentWidget->setFocus();
-    }
-}
-
-void FieldValueWidget::setFieldFacets(const QList<Facet*> &facets, const QVariantMap &facetValues)
-{
-    this->facets = facets;
-    this->facetValues = facetValues;
+    return true;
 }

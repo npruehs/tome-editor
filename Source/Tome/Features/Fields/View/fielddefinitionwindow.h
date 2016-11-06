@@ -26,12 +26,11 @@ class FieldDefinitionWindow : public QDialog
         Q_OBJECT
 
     public:
-        explicit FieldDefinitionWindow(
-                Tome::FieldDefinitionsController& fieldDefinitionsController,
+        explicit FieldDefinitionWindow(Tome::FieldDefinitionsController& fieldDefinitionsController,
                 Tome::ComponentsController& componentsController,
+                Tome::FacetsController& facetsController,
                 Tome::RecordsController& recordsController,
                 Tome::TypesController& typesController,
-                Tome::FacetsController& facetsController,
                 QWidget *parent = 0);
         ~FieldDefinitionWindow();
 
@@ -39,7 +38,6 @@ class FieldDefinitionWindow : public QDialog
         QString getFieldDefinitionSetName() const;
         QString getFieldDescription() const;
         QString getFieldDisplayName() const;
-        QVariantMap getFieldFacets() const;
         QString getFieldId() const;
         QVariant getDefaultValue() const;
         QString getFieldType() const;
@@ -51,7 +49,6 @@ class FieldDefinitionWindow : public QDialog
         void setFieldDefinitionSetNames(const QStringList& fieldDefinitionSetNames);
         void setFieldDescription(const QString& description);
         void setFieldDisplayName(const QString& displayName);
-        void setFieldFacets(const QVariantMap& facets);
         void setFieldId(const QString& fieldId);
         void setDefaultValue(const QVariant& defaultValue);
         void setFieldType(const QString& fieldType) const;
@@ -68,19 +65,16 @@ class FieldDefinitionWindow : public QDialog
 
     private:
         static const int DefaultFormRows;
-        static const int FacetFormRow;
         static const int ValueFormRow;
 
         Ui::FieldDefinitionWindow *ui;
         Tome::FieldDefinitionsController& fieldDefinitionsController;
         Tome::ComponentsController& componentsController;
+        Tome::FacetsController& facetsController;
         Tome::RecordsController& recordsController;
         Tome::TypesController& typesController;
-        Tome::FacetsController& facetsController;
 
         Tome::FieldValueWidget* fieldValueWidget;
-
-        QList<QWidget*> facetWidgets;
 
         bool validate();
 };

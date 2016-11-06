@@ -13,6 +13,7 @@ namespace Tome
     class CustomType;
     class Facet;
     class FieldValueWidget;
+    class FacetsController;
     class RecordsController;
     class TypesController;
 }
@@ -22,14 +23,13 @@ class FieldValueWindow : public QDialog
         Q_OBJECT
 
     public:
-        explicit FieldValueWindow(Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent = 0);
+        explicit FieldValueWindow(Tome::FacetsController& facetsController, Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent = 0);
         ~FieldValueWindow();
 
         QVariant getFieldValue() const;
 
         void setFieldDescription(const QString& description);
         void setFieldDisplayName(const QString& displayName);
-        void setFieldFacets(const QList<Tome::Facet*> facets, const QVariantMap& facetValues);
         void setFieldValue(const QVariant& fieldValue);
         void setFieldType(const QString& fieldType) const;
 
@@ -49,13 +49,9 @@ class FieldValueWindow : public QDialog
         Ui::FieldValueWindow *ui;
         Tome::FieldValueWidget* fieldValueWidget;
 
+        Tome::FacetsController& facetsController;
         Tome::RecordsController& recordsController;
         Tome::TypesController& typesController;
-
-        QList<Tome::Facet*> facets;
-        QVariantMap facetValues;
-
-        bool validate();
 };
 
 #endif // FIELDVALUEWINDOW_H
