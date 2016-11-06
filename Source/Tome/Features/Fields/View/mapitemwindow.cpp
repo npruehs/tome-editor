@@ -68,6 +68,15 @@ void MapItemWindow::setValueType(const QString& valueType) const
     this->valueWidget->setFieldType(valueType);
 }
 
+void MapItemWindow::accept()
+{
+    // Validate data.
+    if (this->validate())
+    {
+        this->done(Accepted);
+    }
+}
+
 void MapItemWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
@@ -76,4 +85,21 @@ void MapItemWindow::showEvent(QShowEvent* event)
     QPushButton* okButton = this->ui->buttonBox->button(QDialogButtonBox::Ok);
     okButton->setAutoDefault(true);
     okButton->setDefault(true);
+}
+
+bool MapItemWindow::validate()
+{
+    // Key must be valid.
+    if (!this->keyWidget->validate())
+    {
+        return false;
+    }
+
+    // Value must be valid.
+    if (!this->valueWidget->validate())
+    {
+        return false;
+    }
+
+    return true;
 }

@@ -29,6 +29,9 @@ class ListItemWindow : public QDialog
 
         void setFieldType(const QString& fieldType) const;
 
+    public slots:
+        void accept();
+
     protected:
         virtual void showEvent(QShowEvent* event);
 
@@ -39,6 +42,8 @@ class ListItemWindow : public QDialog
         Tome::FacetsController& facetsController;
         Tome::RecordsController& recordsController;
         Tome::TypesController& typesController;
+
+        bool validate();
 };
 
 #endif // LISTITEMWINDOW_H

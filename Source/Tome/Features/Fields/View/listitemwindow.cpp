@@ -49,6 +49,15 @@ void ListItemWindow::setFieldType(const QString& fieldType) const
     this->fieldValueWidget->setFieldType(fieldType);
 }
 
+void ListItemWindow::accept()
+{
+    // Validate data.
+    if (this->validate())
+    {
+        this->done(Accepted);
+    }
+}
+
 void ListItemWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
@@ -57,4 +66,15 @@ void ListItemWindow::showEvent(QShowEvent* event)
     QPushButton* okButton = this->ui->buttonBox->button(QDialogButtonBox::Ok);
     okButton->setAutoDefault(true);
     okButton->setDefault(true);
+}
+
+bool ListItemWindow::validate()
+{
+    // Value must be valid.
+    if (!this->fieldValueWidget->validate())
+    {
+        return false;
+    }
+
+    return true;
 }

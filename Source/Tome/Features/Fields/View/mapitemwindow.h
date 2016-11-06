@@ -30,6 +30,9 @@ class MapItemWindow : public QDialog
         void setValue(const QVariant& value);
         void setValueType(const QString& valueType) const;
 
+    public slots:
+        void accept();
+
     protected:
         virtual void showEvent(QShowEvent* event);
 
@@ -41,6 +44,8 @@ class MapItemWindow : public QDialog
         Tome::FacetsController& facetsController;
         Tome::RecordsController& recordsController;
         Tome::TypesController& typesController;
+
+        bool validate();
 };
 
 #endif // MAPITEMWINDOW_H
