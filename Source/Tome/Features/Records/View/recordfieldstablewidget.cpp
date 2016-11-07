@@ -77,7 +77,15 @@ void RecordFieldsTableWidget::setRecord(int i, const QString recordId)
     }
 
     // Show hyperlink for reference fields, and normal text for other fields.
-    if (field.fieldType == BuiltInType::Reference)
+    bool isReference = (field.fieldType == BuiltInType::Reference);
+    if (!isReference && this->typesController.isCustomType(field.fieldType))
+    {
+        // Check custom types.
+        const CustomType& customType = this->typesController.getCustomType(field.fieldType);
+        isReference = customType.isDerivedType() && (BuiltInType::Reference == customType.getBaseType());
+    }
+
+    if (isReference)
     {
         QString href = "<a href='" + valueString + "'>" + valueString + "</a>";
         QModelIndex index = this->model()->index(i, 1);
