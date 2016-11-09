@@ -102,13 +102,13 @@ void RecordTreeWidget::selectRecord(const QString& id)
 
     while (*it)
     {
-      if ((*it)->text(0) == id)
-      {
-          this->setCurrentItem((*it));
-          break;
-      }
-
-      ++it;
+        RecordTreeWidgetItem *item = static_cast<RecordTreeWidgetItem*>(*it);
+        if (item->getId() == id)
+        {
+            this->setCurrentItem(item);
+            break;
+        }
+        ++it;
     }
 }
 

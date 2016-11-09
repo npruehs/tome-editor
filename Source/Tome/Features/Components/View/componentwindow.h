@@ -18,6 +18,7 @@ class ComponentWindow : public QDialog
         QString getComponentName() const;
         QString getComponentSetName() const;
 
+        void setDisallowedComponentIds(const QStringList disallowedComponentIds);
         void setComponentSetName(const QString& componentSetName);
         void setComponentSetNames(const QStringList& componentSetNames);
 
@@ -26,6 +27,8 @@ class ComponentWindow : public QDialog
 
     private:
         Ui::ComponentWindow *ui;
+
+        QStringList disallowedComponentIds;
 
         bool validate();
 };
