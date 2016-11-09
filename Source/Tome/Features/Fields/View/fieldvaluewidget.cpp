@@ -281,7 +281,7 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
     if (typeName == BuiltInType::Reference)
     {
-        QStringList recordNames = this->recordsController.getRecordNames();
+        QStringList recordIds = this->recordsController.getRecordIds();
         QStringList references;
 
         // Apply field facets to added record list.
@@ -302,7 +302,7 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
         FacetContext context = FacetContext(this->recordsController);
 
-        for (const QString recordName : recordNames)
+        for (const QString recordId : recordIds)
         {
             bool valid = true;
 
@@ -318,7 +318,7 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
                 QVariant facetValue = facetValues[facetKey];
 
-                if (!facet->validateValue(context, recordName, facetValue).isEmpty())
+                if (!facet->validateValue(context, recordId, facetValue).isEmpty())
                 {
                     valid = false;
                     break;
@@ -327,7 +327,7 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
             if (valid)
             {
-                references.push_back(recordName);
+                references.push_back(recordId);
             }
         }
 

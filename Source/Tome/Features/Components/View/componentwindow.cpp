@@ -26,6 +26,11 @@ QString ComponentWindow::getComponentSetName() const
     return this->ui->comboBox->currentText();
 }
 
+void ComponentWindow::setDisallowedComponentIds(const QStringList disallowedComponentIds)
+{
+    this->disallowedComponentIds = disallowedComponentIds;
+}
+
 void ComponentWindow::setComponentSetName(const QString& componentSetName)
 {
     this->ui->comboBox->setCurrentText(componentSetName);
@@ -55,6 +60,18 @@ bool ComponentWindow::validate()
                     this,
                     tr("Missing data"),
                     tr("Please specify a name for the component."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return false;
+    }
+
+    // Component ids must be unique.
+    if (this->disallowedComponentIds.contains(this->getComponentName()))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Duplicate component id"),
+                    tr("Please specify another id for the component."),
                     QMessageBox::Close,
                     QMessageBox::Close);
         return false;
