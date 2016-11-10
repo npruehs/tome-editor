@@ -79,7 +79,7 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     ui->setupUi(this);
 
     // Add record tree.
-    this->recordTreeWidget = new RecordTreeWidget(this->controller->getRecordsController());
+    this->recordTreeWidget = new RecordTreeWidget(this->controller->getRecordsController(), this->controller->getSettingsController());
     this->ui->splitter->addWidget(this->recordTreeWidget);
 
     // Add record table.
@@ -760,6 +760,7 @@ void MainWindow::on_actionUser_Settings_triggered()
     SettingsController& settingsController = this->controller->getSettingsController();
     settingsController.setRunIntegrityChecksOnSave(this->userSettingsWindow->getRunIntegrityChecksOnSave());
     settingsController.setShowDescriptionColumnInsteadOfFieldTooltips(this->userSettingsWindow->getShowDescriptionColumnInsteadOfFieldTooltips());
+    settingsController.setExpandRecordTree(this->userSettingsWindow->getExpandRecordTree());
 
     // Refresh view with updated settings.
     this->refreshRecordTable();
@@ -1007,6 +1008,7 @@ void MainWindow::treeWidgetRecordReparented(const QString& recordId, const QStri
     // Update view.
     this->recordTreeWidget->clear();
     this->refreshRecordTree();
+    this->recordTreeWidget->selectRecord(recordId);
 }
 
 void MainWindow::treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)

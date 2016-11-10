@@ -10,13 +10,14 @@ namespace Tome
 {
     class RecordsController;
     class RecordTreeWidgetItem;
+    class SettingsController;
 
     class RecordTreeWidget : public QTreeWidget
     {
             Q_OBJECT
 
         public:
-            RecordTreeWidget(RecordsController& recordsController);
+            RecordTreeWidget(RecordsController& recordsController, SettingsController& settingsController);
 
             void addRecord(const QString& id, const QString& displayName);
 
@@ -39,6 +40,7 @@ namespace Tome
         private:
 
             RecordsController& recordsController;
+            SettingsController& settingsController;
     };
 }
 

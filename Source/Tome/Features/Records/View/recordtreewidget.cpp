@@ -4,12 +4,14 @@
 
 #include "recordtreewidgetitem.h"
 #include "../Controller/recordscontroller.h"
+#include "../../Settings/Controller/settingscontroller.h"
 
 using namespace Tome;
 
 
-RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController)
+RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController, SettingsController& settingsController)
     : recordsController(recordsController)
+    , settingsController(settingsController)
 {
     this->setDragEnabled(true);
     this->viewport()->setAcceptDrops(true);
@@ -163,7 +165,10 @@ void RecordTreeWidget::setRecords(const RecordList& records)
 
     // Fill tree widget.
     this->insertTopLevelItems(0, items);
-    this->expandAll();
+    if (this->settingsController.getExpandRecordTree())
+    {
+        this->expandAll();
+    }
 }
 
 bool RecordTreeWidget::dropMimeData(QTreeWidgetItem* parent, int index, const QMimeData* data, Qt::DropAction action)

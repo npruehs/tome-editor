@@ -9,6 +9,7 @@ const QString SettingsController::SettingPath = "path";
 const QString SettingsController::SettingRecentProjects = "recentProjects";
 const QString SettingsController::SettingRunIntegrityChecksOnSave = "runIntegrityChecksOnSave";
 const QString SettingsController::SettingShowDescriptionColumnInsteadOfFieldTooltips = "showDetailsColumnInsteadOfFieldTooltips";
+const QString SettingsController::SettingExpandRecordTree = "expandRecordTree";
 
 
 SettingsController::SettingsController()
@@ -63,6 +64,11 @@ bool SettingsController::getShowDescriptionColumnInsteadOfFieldTooltips() const
     return this->settings->value(SettingShowDescriptionColumnInsteadOfFieldTooltips).toBool();
 }
 
+bool SettingsController::getExpandRecordTree() const
+{
+    return this->settings->value(SettingExpandRecordTree).toBool();
+}
+
 void SettingsController::removeRecentProject(const QString& path)
 {
     qInfo(QString("Removing %1 from recent projects list.").arg(path).toUtf8().constData());
@@ -98,3 +104,12 @@ void SettingsController::setShowDescriptionColumnInsteadOfFieldTooltips(bool sho
           .toUtf8().constData());
     this->settings->setValue(SettingShowDescriptionColumnInsteadOfFieldTooltips, showDescriptionColumnInsteadOfFieldTooltips);
 }
+
+void SettingsController::setExpandRecordTree(bool expandRecordTree)
+{
+    qInfo(QString("Setting expand record tree to %1.")
+          .arg(expandRecordTree ? "true" : "false")
+          .toUtf8().constData());
+    this->settings->setValue(SettingExpandRecordTree, expandRecordTree);
+}
+
