@@ -30,6 +30,11 @@ bool UserSettingsWindow::getShowDescriptionColumnInsteadOfFieldTooltips()
     return this->ui->checkBoxShowDescriptionColumnInsteadOfFieldTooltips->isChecked();
 }
 
+bool UserSettingsWindow::getExpandRecordTree()
+{
+    return this->ui->checkBoxExpandRecordTree->isChecked();
+}
+
 void UserSettingsWindow::showEvent(QShowEvent* event)
 {
     Q_UNUSED(event);
@@ -40,4 +45,7 @@ void UserSettingsWindow::showEvent(QShowEvent* event)
 
     bool showDescriptionColumnInsteadOfFieldTooltips = this->settingsController.getShowDescriptionColumnInsteadOfFieldTooltips();
     this->ui->checkBoxShowDescriptionColumnInsteadOfFieldTooltips->setChecked(showDescriptionColumnInsteadOfFieldTooltips);
+
+    bool showExpandRecordTree = this->settingsController.getExpandRecordTree();
+    this->ui->checkBoxExpandRecordTree->setChecked(showExpandRecordTree);
 }
