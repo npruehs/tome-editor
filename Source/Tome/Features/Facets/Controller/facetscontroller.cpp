@@ -84,6 +84,11 @@ QString FacetsController::validateFieldValue(const QString& fieldType, const QVa
         Facet* facet = this->facets[i];
         QString facetKey = facet->getKey();
 
+        if (facet->getTargetType() != customType.getBaseType())
+        {
+            continue;
+        }
+
         if (!customType.constrainingFacets.contains(facetKey))
         {
             continue;
