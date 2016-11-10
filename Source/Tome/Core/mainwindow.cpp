@@ -234,6 +234,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 SLOT(onProgressChanged(QString,QString,int,int))
                 );
 
+    connect(
+                this->errorListDockWidget,
+                SIGNAL(recordLinkActivated(const QString&)),
+                SLOT(onRecordLinkActivated(const QString&))
+                );
+
     // Maximize window.
     this->showMaximized();
 
