@@ -16,19 +16,19 @@ namespace Tome
             const QStringList getRecentProjects() const;
             bool getRunIntegrityChecksOnSave() const;
             bool getShowDescriptionColumnInsteadOfFieldTooltips() const;
-            bool getExpandRecordTree() const;
+            bool getExpandRecordTreeOnRefresh() const;
             void removeRecentProject(const QString& path);
             void setRecentProjects(const QStringList& recentProjects);
             void setRunIntegrityChecksOnSave(bool runIntegrityChecksOnSave);
             void setShowDescriptionColumnInsteadOfFieldTooltips(bool showDescriptionColumnInsteadOfFieldTooltips);
-            void setExpandRecordTree(bool expandRecordTree);
+            void setExpandRecordTreeOnRefresh(bool expandRecordTreeOnRefresh);
 
         private:
             static const QString SettingPath;
             static const QString SettingRecentProjects;
             static const QString SettingRunIntegrityChecksOnSave;
             static const QString SettingShowDescriptionColumnInsteadOfFieldTooltips;
-            static const QString SettingExpandRecordTree;
+            static const QString SettingExpandRecordTreeOnRefresh;
 
             QSettings* settings;
     };

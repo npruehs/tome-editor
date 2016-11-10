@@ -760,7 +760,7 @@ void MainWindow::on_actionUser_Settings_triggered()
     SettingsController& settingsController = this->controller->getSettingsController();
     settingsController.setRunIntegrityChecksOnSave(this->userSettingsWindow->getRunIntegrityChecksOnSave());
     settingsController.setShowDescriptionColumnInsteadOfFieldTooltips(this->userSettingsWindow->getShowDescriptionColumnInsteadOfFieldTooltips());
-    settingsController.setExpandRecordTree(this->userSettingsWindow->getExpandRecordTree());
+    settingsController.setExpandRecordTreeOnRefresh(this->userSettingsWindow->getExpandRecordTreeOnRefresh());
 
     // Refresh view with updated settings.
     this->refreshRecordTable();

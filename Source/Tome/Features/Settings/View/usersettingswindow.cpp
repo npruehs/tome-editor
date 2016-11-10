@@ -30,9 +30,9 @@ bool UserSettingsWindow::getShowDescriptionColumnInsteadOfFieldTooltips()
     return this->ui->checkBoxShowDescriptionColumnInsteadOfFieldTooltips->isChecked();
 }
 
-bool UserSettingsWindow::getExpandRecordTree()
+bool UserSettingsWindow::getExpandRecordTreeOnRefresh()
 {
-    return this->ui->checkBoxExpandRecordTree->isChecked();
+    return this->ui->checkBoxExpandRecordTreeOnRefresh->isChecked();
 }
 
 void UserSettingsWindow::showEvent(QShowEvent* event)
@@ -46,6 +46,6 @@ void UserSettingsWindow::showEvent(QShowEvent* event)
     bool showDescriptionColumnInsteadOfFieldTooltips = this->settingsController.getShowDescriptionColumnInsteadOfFieldTooltips();
     this->ui->checkBoxShowDescriptionColumnInsteadOfFieldTooltips->setChecked(showDescriptionColumnInsteadOfFieldTooltips);
 
-    bool showExpandRecordTree = this->settingsController.getExpandRecordTree();
-    this->ui->checkBoxExpandRecordTree->setChecked(showExpandRecordTree);
+    bool expandRecordTreeOnRefresh = this->settingsController.getExpandRecordTreeOnRefresh();
+    this->ui->checkBoxExpandRecordTreeOnRefresh->setChecked(expandRecordTreeOnRefresh);
 }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>89</height>
+    <height>110</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,9 +29,9 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="checkBoxExpandRecordTree">
+    <widget class="QCheckBox" name="checkBoxExpandRecordTreeOnRefresh">
      <property name="text">
-      <string>Expand record tree</string>
+      <string>Expand record tree on refresh</string>
      </property>
     </widget>
    </item>

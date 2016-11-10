@@ -165,7 +165,7 @@ void RecordTreeWidget::setRecords(const RecordList& records)
 
     // Fill tree widget.
     this->insertTopLevelItems(0, items);
-    if (this->settingsController.getExpandRecordTree())
+    if (this->settingsController.getExpandRecordTreeOnRefresh())
     {
         this->expandAll();
     }

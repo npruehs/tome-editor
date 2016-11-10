@@ -9,7 +9,7 @@ const QString SettingsController::SettingPath = "path";
 const QString SettingsController::SettingRecentProjects = "recentProjects";
 const QString SettingsController::SettingRunIntegrityChecksOnSave = "runIntegrityChecksOnSave";
 const QString SettingsController::SettingShowDescriptionColumnInsteadOfFieldTooltips = "showDetailsColumnInsteadOfFieldTooltips";
-const QString SettingsController::SettingExpandRecordTree = "expandRecordTree";
+const QString SettingsController::SettingExpandRecordTreeOnRefresh = "expandRecordTreeOnRefresh";
 
 
 SettingsController::SettingsController()
@@ -64,9 +64,9 @@ bool SettingsController::getShowDescriptionColumnInsteadOfFieldTooltips() const
     return this->settings->value(SettingShowDescriptionColumnInsteadOfFieldTooltips).toBool();
 }
 
-bool SettingsController::getExpandRecordTree() const
+bool SettingsController::getExpandRecordTreeOnRefresh() const
 {
-    return this->settings->value(SettingExpandRecordTree).toBool();
+    return this->settings->value(SettingExpandRecordTreeOnRefresh).toBool();
 }
 
 void SettingsController::removeRecentProject(const QString& path)
@@ -105,11 +105,11 @@ void SettingsController::setShowDescriptionColumnInsteadOfFieldTooltips(bool sho
     this->settings->setValue(SettingShowDescriptionColumnInsteadOfFieldTooltips, showDescriptionColumnInsteadOfFieldTooltips);
 }
 
-void SettingsController::setExpandRecordTree(bool expandRecordTree)
+void SettingsController::setExpandRecordTreeOnRefresh(bool expandRecordTreeOnRefresh)
 {
-    qInfo(QString("Setting expand record tree to %1.")
-          .arg(expandRecordTree ? "true" : "false")
+    qInfo(QString("Setting expand record tree on refresh to %1.")
+          .arg(expandRecordTreeOnRefresh ? "true" : "false")
           .toUtf8().constData());
-    this->settings->setValue(SettingExpandRecordTree, expandRecordTree);
+    this->settings->setValue(SettingExpandRecordTreeOnRefresh, expandRecordTreeOnRefresh);
 }
 
