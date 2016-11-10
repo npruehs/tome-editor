@@ -201,7 +201,7 @@ void ProjectOverviewWindow::updateComponentData()
     const ComponentSetList& componentSets = componentsController.getComponentSets();
     const int componentSetCount = componentSets.count();
     const int componentCount = componentsController.getComponents().count();
-    const QString componentsText = QString(tr("%1 component%2 (in %3 file%4)")).arg(
+    const QString componentsText = tr("%1 component%2 (in %3 file%4)").arg(
                 QString::number(componentCount),
                 componentCount != 1 ? "s" : "",
                 QString::number(componentSetCount),
@@ -234,7 +234,7 @@ void ProjectOverviewWindow::updateCustomTypeData()
     const CustomTypeSetList& customTypeSets = typesController.getCustomTypeSets();
     const int typeSetCount = customTypeSets.count();
     const int typeCount = typesController.getCustomTypes().count();
-    const QString typesText = QString(tr("%1 type%2 (in %3 file%4)")).arg(
+    const QString typesText = tr("%1 type%2 (in %3 file%4)").arg(
                 QString::number(typeCount),
                 typeCount != 1 ? "s" : "",
                 QString::number(typeSetCount),
@@ -266,7 +266,7 @@ void ProjectOverviewWindow::updateExportTemplateData()
     ExportController& exportController = this->controller->getExportController();
     const RecordExportTemplateList& exportTemplateList = exportController.getRecordExportTemplates();
     const int exportTemplateCount = exportTemplateList.count();
-    const QString exportTemplatesText = QString(tr("%1 export template%2")).arg(
+    const QString exportTemplatesText = tr("%1 export template%2").arg(
                 QString::number(exportTemplateCount),
                 exportTemplateCount != 1 ? "s" : "");
     this->ui->labelExportTemplatesValue->setText(exportTemplatesText);
@@ -299,7 +299,7 @@ void ProjectOverviewWindow::updateFieldDefinitionData()
     const FieldDefinitionSetList& fieldDefinitionSets = fieldDefintionsController.getFieldDefinitionSets();
     const int fieldDefinitionSetCount = fieldDefinitionSets.count();
     const int fieldDefintionCount = fieldDefintionsController.getFieldDefinitions().count();
-    const QString fieldsText = QString(tr("%1 field%2 (in %3 file%4)")).arg(
+    const QString fieldsText = tr("%1 field%2 (in %3 file%4)").arg(
                 QString::number(fieldDefintionCount),
                 fieldDefintionCount != 1 ? "s" : "",
                 QString::number(fieldDefinitionSetCount),
@@ -332,7 +332,7 @@ void ProjectOverviewWindow::updateRecordData()
     const RecordSetList& recordSets = recordsController.getRecordSets();
     const int recordSetCount = recordSets.count();
     const int recordCount = recordsController.getRecords().count();
-    const QString recordsText = QString(tr("%1 record%2 (in %3 file%4)")).arg(
+    const QString recordsText = tr("%1 record%2 (in %3 file%4)").arg(
                 QString::number(recordCount),
                 recordCount != 1 ? "s" : "",
                 QString::number(recordSetCount),

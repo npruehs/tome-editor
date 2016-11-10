@@ -641,7 +641,7 @@ void MainWindow::on_actionRevert_Record_triggered()
     }
 
     // Show question.
-    const QString& question = QString(tr("Are you sure you want to revert %1 to its original state?")).arg(recordId);
+    const QString& question = tr("Are you sure you want to revert %1 to its original state?").arg(recordId);
 
     int answer = QMessageBox::question(
                 this,
