@@ -156,47 +156,10 @@ void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
 
 QString FieldValueWidget::validate()
 {
-    // Get facets.
-    QList<Facet*> facets = this->facetsController.getFacets(this->getFieldType());
+    const QString fieldType = this->getFieldType();
+    const QVariant fieldValue = this->getFieldValue();
 
-    // Get facet values.
-    QVariantMap facetValues;
-
-    if (this->typesController.isCustomType(this->getFieldType()))
-    {
-        const CustomType& customType = this->typesController.getCustomType(this->getFieldType());
-
-        if (customType.isDerivedType())
-        {
-            facetValues = customType.constrainingFacets;
-        }
-    }
-
-    FacetContext context = FacetContext(this->recordsController);
-
-    // Validate all facets.
-    for (int i = 0; i < facets.count(); ++i)
-    {
-        Facet* facet = facets[i];
-        QString facetKey = facet->getKey();
-
-        if (!facetValues.contains(facetKey))
-        {
-            continue;
-        }
-
-        QVariant facetValue = facetValues[facetKey];
-        QVariant value = this->getFieldValue();
-
-        QString validationError = facet->validateValue(context, value, facetValue);
-
-        if (!validationError.isEmpty())
-        {
-            return validationError;
-        }
-    }
-
-    return QString();
+    return this->facetsController.validateFieldValue(fieldType, fieldValue);
 }
 
 void FieldValueWidget::focusInEvent(QFocusEvent* event)
@@ -392,50 +355,16 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
     if (typeName == BuiltInType::Reference)
     {
         QStringList recordNames = this->recordsController.getRecordNames();
+
+        // Only show allowed record references.
         QStringList references;
-
-        // Apply field facets to added record list.
-        QList<Facet*> facets = this->facetsController.getFacets(BuiltInType::Reference);
-
-        // Get facet values.
-        QVariantMap facetValues;
-
-        if (this->typesController.isCustomType(this->getFieldType()))
-        {
-            const CustomType& customType = this->typesController.getCustomType(this->getFieldType());
-
-            if (customType.isDerivedType())
-            {
-                facetValues = customType.constrainingFacets;
-            }
-        }
-
-        FacetContext context = FacetContext(this->recordsController);
 
         for (const QString recordName : recordNames)
         {
-            bool valid = true;
+            const QString& validationError =
+                    this->facetsController.validateFieldValue(this->getFieldType(), recordName);
 
-            for (int i = 0; i < facets.count(); ++i)
-            {
-                Facet* facet = facets[i];
-                QString facetKey = facet->getKey();
-
-                if (!facetValues.contains(facetKey))
-                {
-                    continue;
-                }
-
-                QVariant facetValue = facetValues[facetKey];
-
-                if (!facet->validateValue(context, recordName, facetValue).isEmpty())
-                {
-                    valid = false;
-                    break;
-                }
-            }
-
-            if (valid)
+            if (validationError.isEmpty())
             {
                 references.push_back(recordName);
             }

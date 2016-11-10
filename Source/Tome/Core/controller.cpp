@@ -77,7 +77,7 @@ Controller::Controller(CommandLineOptions* options) :
     tasksController(new TasksController(*this->componentsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findRecordController(new FindRecordController(*this->recordsController)),
-    facetsController(new FacetsController(*this->typesController)),
+    facetsController(new FacetsController(*this->recordsController, *this->typesController)),
     recordSetSerializer(new RecordSetSerializer()),
     mainWindow(0)
 {
