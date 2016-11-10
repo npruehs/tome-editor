@@ -5,6 +5,7 @@
 #include <QColorDialog>
 #include <QComboBox>
 #include <QDoubleSpinBox>
+#include <QLabel>
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QString>
@@ -43,10 +44,17 @@ namespace Tome
             void setFieldType(const QString& fieldType);
             void setFieldValue(const QVariant& fieldValue);
 
-            bool validate();
+            QString validate();
 
         protected:
             virtual void focusInEvent(QFocusEvent* event);
+
+    private slots:
+            void onColorDialogCurrentColorChanged(const QColor& color);
+            void onDoubleSpinBoxValueChanged(double d);
+            void onLineEditTextChanged(const QString& text);
+            void onComboBoxCurrentIndexChanged(const QString& text);
+            void onSpinBoxValueChanged(int i);
 
         private:
             QWidget* currentWidget;
@@ -66,6 +74,8 @@ namespace Tome
             Vector2RWidget* vector2RWidget;
             Vector3RWidget* vector3RWidget;
 
+            QLabel* errorLabel;
+
             FacetsController& facetsController;
             RecordsController& recordsController;
             TypesController& typesController;
@@ -76,6 +86,7 @@ namespace Tome
             void setCurrentWidget(QWidget* widget);
             void setEnumeration(const QStringList& enumeration);
             void setFieldValueForType(const QVariant& fieldValue, const QString& typeName);
+            void updateErrorLabel();
     };
 }
 

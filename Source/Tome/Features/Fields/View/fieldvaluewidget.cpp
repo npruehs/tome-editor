@@ -77,6 +77,41 @@ FieldValueWidget::FieldValueWidget(FacetsController& facetsController, RecordsCo
     this->mapWidget = new MapWidget(this->facetsController, this->recordsController, this->typesController);
     this->addWidget(this->mapWidget);
 
+    // Add error label.
+    this->errorLabel = new QLabel();
+    this->addWidget(this->errorLabel);
+
+    // Connect to signals.
+    connect(
+                this->colorDialog,
+                SIGNAL(currentColorChanged(QColor)),
+                SLOT(onColorDialogCurrentColorChanged(QColor))
+                );
+
+    connect(
+                this->doubleSpinBox,
+                SIGNAL(valueChanged(double)),
+                SLOT(onDoubleSpinBoxValueChanged(double))
+                );
+
+    connect(
+                this->lineEdit,
+                SIGNAL(textChanged(QString)),
+                SLOT(onLineEditTextChanged(QString))
+                );
+
+    connect(
+                this->comboBox,
+                SIGNAL(currentIndexChanged(QString)),
+                SLOT(onComboBoxCurrentIndexChanged(QString))
+                );
+
+    connect(
+                this->spinBox,
+                SIGNAL(valueChanged(int)),
+                SLOT(onSpinBoxValueChanged(int))
+                );
+
     // Set layout.
     this->setLayout(this->layout);
     this->layout->setContentsMargins(0, 0, 0, 0);
@@ -119,6 +154,51 @@ void FieldValueWidget::setFieldValue(const QVariant& fieldValue)
     this->setFieldValueForType(fieldValue, this->fieldType);
 }
 
+QString FieldValueWidget::validate()
+{
+    // Get facets.
+    QList<Facet*> facets = this->facetsController.getFacets(this->getFieldType());
+
+    // Get facet values.
+    QVariantMap facetValues;
+
+    if (this->typesController.isCustomType(this->getFieldType()))
+    {
+        const CustomType& customType = this->typesController.getCustomType(this->getFieldType());
+
+        if (customType.isDerivedType())
+        {
+            facetValues = customType.constrainingFacets;
+        }
+    }
+
+    FacetContext context = FacetContext(this->recordsController);
+
+    // Validate all facets.
+    for (int i = 0; i < facets.count(); ++i)
+    {
+        Facet* facet = facets[i];
+        QString facetKey = facet->getKey();
+
+        if (!facetValues.contains(facetKey))
+        {
+            continue;
+        }
+
+        QVariant facetValue = facetValues[facetKey];
+        QVariant value = this->getFieldValue();
+
+        QString validationError = facet->validateValue(context, value, facetValue);
+
+        if (!validationError.isEmpty())
+        {
+            return validationError;
+        }
+    }
+
+    return QString();
+}
+
 void FieldValueWidget::focusInEvent(QFocusEvent* event)
 {
     Q_UNUSED(event);
@@ -148,6 +228,36 @@ void FieldValueWidget::focusInEvent(QFocusEvent* event)
             this->lineEdit->selectAll();
         }
     }
+}
+
+void FieldValueWidget::onColorDialogCurrentColorChanged(const QColor &color)
+{
+    Q_UNUSED(color)
+    this->updateErrorLabel();
+}
+
+void FieldValueWidget::onDoubleSpinBoxValueChanged(double d)
+{
+    Q_UNUSED(d)
+    this->updateErrorLabel();
+}
+
+void FieldValueWidget::onLineEditTextChanged(const QString &text)
+{
+    Q_UNUSED(text)
+    this->updateErrorLabel();
+}
+
+void FieldValueWidget::onComboBoxCurrentIndexChanged(const QString &text)
+{
+    Q_UNUSED(text)
+    this->updateErrorLabel();
+}
+
+void FieldValueWidget::onSpinBoxValueChanged(int i)
+{
+    Q_UNUSED(i)
+    this->updateErrorLabel();
 }
 
 void FieldValueWidget::addWidget(QWidget* widget)
@@ -281,7 +391,7 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
     if (typeName == BuiltInType::Reference)
     {
-        QStringList recordIds = this->recordsController.getRecordIds();
+        QStringList recordNames = this->recordsController.getRecordNames();
         QStringList references;
 
         // Apply field facets to added record list.
@@ -302,7 +412,7 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
         FacetContext context = FacetContext(this->recordsController);
 
-        for (const QString recordId : recordIds)
+        for (const QString recordName : recordNames)
         {
             bool valid = true;
 
@@ -318,7 +428,7 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
                 QVariant facetValue = facetValues[facetKey];
 
-                if (!facet->validateValue(context, recordId, facetValue).isEmpty())
+                if (!facet->validateValue(context, recordName, facetValue).isEmpty())
                 {
                     valid = false;
                     break;
@@ -327,7 +437,7 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
             if (valid)
             {
-                references.push_back(recordId);
+                references.push_back(recordName);
             }
         }
 
@@ -536,55 +646,19 @@ void FieldValueWidget::setFieldValueForType(const QVariant& fieldValue, const QS
     throw std::runtime_error(errorMessage.toStdString());
 }
 
-bool FieldValueWidget::validate()
+void FieldValueWidget::updateErrorLabel()
 {
-    // Get facets.
-    QList<Facet*> facets = this->facetsController.getFacets(this->getFieldType());
+    QString validationError = this->validate();
 
-    // Get facet values.
-    QVariantMap facetValues;
-
-    if (this->typesController.isCustomType(this->getFieldType()))
+    if (validationError.isEmpty())
     {
-        const CustomType& customType = this->typesController.getCustomType(this->getFieldType());
-
-        if (customType.isDerivedType())
-        {
-            facetValues = customType.constrainingFacets;
-        }
+        this->errorLabel->clear();
+        this->errorLabel->hide();
     }
-
-    FacetContext context = FacetContext(this->recordsController);
-
-    // Validate all facets.
-    for (int i = 0; i < facets.count(); ++i)
+    else
     {
-        Facet* facet = facets[i];
-        QString facetKey = facet->getKey();
-
-        if (!facetValues.contains(facetKey))
-        {
-            continue;
-        }
-
-        QVariant facetValue = facetValues[facetKey];
-        QVariant value = this->getFieldValue();
-
-        QString validationError = facet->validateValue(context, value, facetValue);
-
-        if (!validationError.isEmpty())
-        {
-            QString facetDisplayName = facet->getDisplayName();
-
-            QMessageBox::information(
-                        this,
-                        facetDisplayName,
-                        validationError,
-                        QMessageBox::Close,
-                        QMessageBox::Close);
-            return false;
-        }
+        QString errorMessage = QString("<font color=\"#FF0000\">%1</font>").arg(validationError);
+        this->errorLabel->setText(errorMessage);
+        this->errorLabel->show();
     }
-
-    return true;
 }

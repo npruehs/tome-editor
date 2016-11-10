@@ -230,8 +230,16 @@ bool FieldDefinitionWindow::validate()
     }
 
     // Default value must be valid.
-    if (!this->fieldValueWidget->validate())
+    QString validationError = this->fieldValueWidget->validate();
+
+    if (!validationError.isEmpty())
     {
+        QMessageBox::information(
+                    this,
+                    tr("Invalid data"),
+                    validationError,
+                    QMessageBox::Close,
+                    QMessageBox::Close);
         return false;
     }
 

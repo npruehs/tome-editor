@@ -2,6 +2,7 @@
 #include "ui_mapitemwindow.h"
 
 #include <QPushButton>
+#include <QMessageBox>
 
 #include "fieldvaluewidget.h"
 #include "../../Records/Controller/recordscontroller.h"
@@ -90,14 +91,30 @@ void MapItemWindow::showEvent(QShowEvent* event)
 bool MapItemWindow::validate()
 {
     // Key must be valid.
-    if (!this->keyWidget->validate())
+    QString validationError = this->keyWidget->validate();
+
+    if (!validationError.isEmpty())
     {
+        QMessageBox::information(
+                    this,
+                    tr("Invalid key"),
+                    validationError,
+                    QMessageBox::Close,
+                    QMessageBox::Close);
         return false;
     }
 
     // Value must be valid.
-    if (!this->valueWidget->validate())
+    validationError = this->valueWidget->validate();
+
+    if (!validationError.isEmpty())
     {
+        QMessageBox::information(
+                    this,
+                    tr("Invalid value"),
+                    validationError,
+                    QMessageBox::Close,
+                    QMessageBox::Close);
         return false;
     }
 

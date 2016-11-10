@@ -2,6 +2,7 @@
 #include "ui_listitemwindow.h"
 
 #include <QPushButton>
+#include <QMessageBox>
 
 #include "fieldvaluewidget.h"
 #include "../../Facets/Controller/facetscontroller.h"
@@ -71,8 +72,16 @@ void ListItemWindow::showEvent(QShowEvent* event)
 bool ListItemWindow::validate()
 {
     // Value must be valid.
-    if (!this->fieldValueWidget->validate())
+    QString validationError = this->fieldValueWidget->validate();
+
+    if (!validationError.isEmpty())
     {
+        QMessageBox::information(
+                    this,
+                    tr("Invalid data"),
+                    validationError,
+                    QMessageBox::Close,
+                    QMessageBox::Close);
         return false;
     }
 

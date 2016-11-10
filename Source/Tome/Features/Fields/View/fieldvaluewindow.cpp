@@ -66,10 +66,20 @@ void FieldValueWindow::setFieldType(const QString& fieldType) const
 void FieldValueWindow::accept()
 {
     // Validate data.
-    if (this->fieldValueWidget->validate())
+    QString validationError = this->fieldValueWidget->validate();
+
+    if (!validationError.isEmpty())
     {
-        this->done(Accepted);
+        QMessageBox::information(
+                    this,
+                    tr("Invalid data"),
+                    validationError,
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return;
     }
+
+    this->done(Accepted);
 }
 
 void FieldValueWindow::showEvent(QShowEvent* event)
