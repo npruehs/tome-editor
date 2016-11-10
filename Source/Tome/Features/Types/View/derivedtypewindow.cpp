@@ -73,7 +73,7 @@ void DerivedTypeWindow::init()
     // Set type names.
     this->ui->comboBoxBaseType->clear();
 
-    const QStringList& typeNames = this->typesController.getTypeNames();
+    const QStringList& typeNames = this->typesController.getBuiltInTypes();
 
     for (int i = 0; i < typeNames.length(); ++i)
     {
