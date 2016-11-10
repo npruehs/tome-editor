@@ -47,7 +47,7 @@ const MessageList TypeFacetViolatedTask::execute(const TaskContext& context) con
             }
 
             Message message;
-            message.content = QString("Record %1 field %2 violates a type facet: %3").arg(record.id, fieldId, validationError);
+            message.content = tr("Record %1 field %2 violates a type facet: %3").arg(record.id, fieldId, validationError);
             message.messageCode = MessageCode;
             message.severity = Severity::Error;
             message.targetSiteId = record.id;

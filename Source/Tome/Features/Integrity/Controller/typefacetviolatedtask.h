@@ -1,13 +1,15 @@
 #ifndef TYPEFACETVIOLATEDTASK_H
 #define TYPEFACETVIOLATEDTASK_H
 
+#include <QObject>
+
 #include "../../Tasks/Controller/task.h"
 
 namespace Tome
 {
     class TaskContext;
 
-    class TypeFacetViolatedTask : public Task
+    class TypeFacetViolatedTask : public QObject, public Task
     {
         public:
             TypeFacetViolatedTask();

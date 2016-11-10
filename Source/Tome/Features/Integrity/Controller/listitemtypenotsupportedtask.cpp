@@ -34,7 +34,7 @@ const MessageList ListItemTypeNotSupportedTask::execute(const TaskContext& conte
                 itemType == BuiltInType::Vector3I || itemType == BuiltInType::Vector3R)
             {
                 Message message;
-                message.content = "List item type " + itemType + " is not supported.";
+                message.content = tr("List item type %1 is not supported.").arg(itemType);
                 message.messageCode = MessageCode;
                 message.severity = Severity::Error;
                 message.targetSiteId = type.name;
