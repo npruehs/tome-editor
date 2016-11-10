@@ -758,6 +758,7 @@ void MainWindow::on_actionUser_Settings_triggered()
 
     // Save settings.
     SettingsController& settingsController = this->controller->getSettingsController();
+    settingsController.setRunIntegrityChecksOnLoad(this->userSettingsWindow->getRunIntegrityChecksOnLoad());
     settingsController.setRunIntegrityChecksOnSave(this->userSettingsWindow->getRunIntegrityChecksOnSave());
     settingsController.setShowDescriptionColumnInsteadOfFieldTooltips(this->userSettingsWindow->getShowDescriptionColumnInsteadOfFieldTooltips());
     settingsController.setExpandRecordTreeOnRefresh(this->userSettingsWindow->getExpandRecordTreeOnRefresh());
@@ -1117,6 +1118,12 @@ void MainWindow::onProjectChanged(QSharedPointer<Project> project)
 
     // Update recent projects.
     this->updateRecentProjects();
+
+    // Run integrity checks.
+    if (this->controller->getSettingsController().getRunIntegrityChecksOnLoad())
+    {
+        this->on_actionRun_Integrity_Checks_triggered();
+    }
 }
 
 void MainWindow::onRecordFieldsChanged(const QString& recordId)

@@ -7,6 +7,7 @@ using namespace Tome;
 
 const QString SettingsController::SettingPath = "path";
 const QString SettingsController::SettingRecentProjects = "recentProjects";
+const QString SettingsController::SettingRunIntegrityChecksOnLoad = "runIntegrityChecksOnLoad";
 const QString SettingsController::SettingRunIntegrityChecksOnSave = "runIntegrityChecksOnSave";
 const QString SettingsController::SettingShowDescriptionColumnInsteadOfFieldTooltips = "showDetailsColumnInsteadOfFieldTooltips";
 const QString SettingsController::SettingExpandRecordTreeOnRefresh = "expandRecordTreeOnRefresh";
@@ -54,6 +55,11 @@ const QStringList SettingsController::getRecentProjects() const
     return recentProjects;
 }
 
+bool SettingsController::getRunIntegrityChecksOnLoad() const
+{
+    return this->settings->value(SettingRunIntegrityChecksOnLoad).toBool();
+}
+
 bool SettingsController::getRunIntegrityChecksOnSave() const
 {
     return this->settings->value(SettingRunIntegrityChecksOnSave).toBool();
@@ -87,6 +93,14 @@ void SettingsController::setRecentProjects(const QStringList& recentProjects)
         this->settings->setValue(SettingPath, recentProjects.at(i));
     }
     this->settings->endArray();
+}
+
+void SettingsController::setRunIntegrityChecksOnLoad(bool runIntegrityChecksOnLoad)
+{
+    qInfo(QString("Setting run integrity checks on load to %1.")
+          .arg(runIntegrityChecksOnLoad ? "true" : "false")
+          .toUtf8().constData());
+    this->settings->setValue(SettingRunIntegrityChecksOnLoad, runIntegrityChecksOnLoad);
 }
 
 void SettingsController::setRunIntegrityChecksOnSave(bool runIntegrityChecksOnSave)

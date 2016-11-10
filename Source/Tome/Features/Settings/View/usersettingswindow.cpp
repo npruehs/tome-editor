@@ -20,6 +20,11 @@ UserSettingsWindow::~UserSettingsWindow()
     delete ui;
 }
 
+bool UserSettingsWindow::getRunIntegrityChecksOnLoad()
+{
+    return this->ui->checkBoxRunIntegrityChecksOnLoad->isChecked();
+}
+
 bool UserSettingsWindow::getRunIntegrityChecksOnSave()
 {
     return this->ui->checkBoxRunIntegrityChecksOnSave->isChecked();
@@ -40,6 +45,9 @@ void UserSettingsWindow::showEvent(QShowEvent* event)
     Q_UNUSED(event);
 
     // Update view from model.
+    bool runIntegrityChecksOnLoad = this->settingsController.getRunIntegrityChecksOnLoad();
+    this->ui->checkBoxRunIntegrityChecksOnLoad->setChecked(runIntegrityChecksOnLoad);
+
     bool runIntegrityChecksOnSave = this->settingsController.getRunIntegrityChecksOnSave();
     this->ui->checkBoxRunIntegrityChecksOnSave->setChecked(runIntegrityChecksOnSave);
 
