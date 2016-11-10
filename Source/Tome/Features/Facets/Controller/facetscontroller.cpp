@@ -26,7 +26,7 @@ FacetsController::~FacetsController()
     this->facets.clear();
 }
 
-QList<Facet*> FacetsController::getFacets(const QString& targetType)
+QList<Facet*> FacetsController::getFacets(const QString& targetType) const
 {
     // Check if derived type.
     if (this->typesController.isCustomType(targetType))
@@ -60,7 +60,7 @@ void FacetsController::registerFacet(Tome::Facet* facet)
     this->facets.push_back(facet);
 }
 
-QString FacetsController::validateFieldValue(const QString& fieldType, const QVariant& fieldValue)
+QString FacetsController::validateFieldValue(const QString& fieldType, const QVariant& fieldValue) const
 {
     // Check if custom type.
     if (!this->typesController.isCustomType(fieldType))

@@ -100,10 +100,10 @@ namespace Tome
             RecordsController* recordsController;
             ExportController* exportController;
             SettingsController* settingsController;
+            FacetsController* facetsController;
             TasksController* tasksController;
             FindUsagesController* findUsagesController;
             FindRecordController* findRecordController;
-            FacetsController* facetsController;
 
             RecordSetSerializer* recordSetSerializer;
 

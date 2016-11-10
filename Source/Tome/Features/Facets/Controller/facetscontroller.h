@@ -16,9 +16,9 @@ namespace Tome
             FacetsController(const RecordsController& recordsController, const TypesController& typesController);
             ~FacetsController();
 
-            QList<Facet*> getFacets(const QString& targetType);
+            QList<Facet*> getFacets(const QString& targetType) const;
             void registerFacet(Facet* facet);
-            QString validateFieldValue(const QString& fieldType, const QVariant& fieldValue);
+            QString validateFieldValue(const QString& fieldType, const QVariant& fieldValue) const;
 
         private:
             const RecordsController& recordsController;

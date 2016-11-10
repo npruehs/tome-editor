@@ -31,6 +31,7 @@
 #include "../Features/Integrity/Controller/mapkeytypenotsupportedtask.h"
 #include "../Features/Integrity/Controller/mapvaluetypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/mapvaluetypenotsupportedtask.h"
+#include "../Features/Integrity/Controller/typefacetviolatedtask.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Records/Controller/recordscontroller.h"
@@ -74,10 +75,10 @@ Controller::Controller(CommandLineOptions* options) :
     recordsController(new RecordsController(*this->fieldDefinitionsController)),
     exportController(new ExportController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     settingsController(new SettingsController()),
-    tasksController(new TasksController(*this->componentsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
+    facetsController(new FacetsController(*this->recordsController, *this->typesController)),
+    tasksController(new TasksController(*this->componentsController, *this->facetsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findRecordController(new FindRecordController(*this->recordsController)),
-    facetsController(new FacetsController(*this->recordsController, *this->typesController)),
     recordSetSerializer(new RecordSetSerializer()),
     mainWindow(0)
 {
@@ -89,6 +90,7 @@ Controller::Controller(CommandLineOptions* options) :
     this->tasksController->addTask(new MapKeyTypeNotSupportedTask());
     this->tasksController->addTask(new MapValueTypeDoesNotExistTask());
     this->tasksController->addTask(new MapValueTypeNotSupportedTask());
+    this->tasksController->addTask(new TypeFacetViolatedTask());
 
     // Register facets.
     this->facetsController->registerFacet(new MinimumIntegerValueFacet());

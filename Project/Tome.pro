@@ -117,7 +117,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Diagnostics/Controller/messagehandlers.cpp \
     ../Source/Tome/Features/Diagnostics/Controller/filemessagehandler.cpp \
     ../Source/Tome/Features/Diagnostics/View/outputdockwidget.cpp \
-    ../Source/Tome/Features/Types/View/derivedtypewindow.cpp
+    ../Source/Tome/Features/Types/View/derivedtypewindow.cpp \
+    ../Source/Tome/Features/Integrity/Controller/typefacetviolatedtask.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -225,7 +226,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Diagnostics/Controller/messagehandlers.h \
     ../Source/Tome/Features/Diagnostics/Controller/filemessagehandler.h \
     ../Source/Tome/Features/Diagnostics/View/outputdockwidget.h \
-    ../Source/Tome/Features/Types/View/derivedtypewindow.h
+    ../Source/Tome/Features/Types/View/derivedtypewindow.h \
+    ../Source/Tome/Features/Integrity/Controller/typefacetviolatedtask.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

@@ -4,6 +4,7 @@
 namespace Tome
 {
     class ComponentsController;
+    class FacetsController;
     class FieldDefinitionsController;
     class RecordsController;
     class TypesController;
@@ -13,11 +14,13 @@ namespace Tome
         public:
             TaskContext(
                     const ComponentsController& componentsController,
+                    const FacetsController& facetsController,
                     const FieldDefinitionsController& fieldDefinitionsController,
                     const RecordsController& recordsController,
                     const TypesController& typesController);
 
             const ComponentsController& componentsController;
+            const FacetsController& facetsController;
             const FieldDefinitionsController& fieldDefinitionsController;
             const RecordsController& recordsController;
             const TypesController& typesController;
