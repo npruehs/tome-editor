@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
+#include <QProcess>
 #include <QProgressDialog>
 #include <QStandardPaths>
 #include <QTextStream>
@@ -790,7 +791,8 @@ void MainWindow::on_actionManual_triggered()
 
 void MainWindow::on_actionReport_a_Bug_triggered()
 {
-    QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/issues/new"));
+    QProcess *process = new QProcess();
+    process->start("TomeIssueReporter.exe");
 }
 
 void MainWindow::on_actionReleases_triggered()
