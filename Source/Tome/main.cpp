@@ -14,7 +14,7 @@
 
 
 #ifdef Q_OS_WIN
-LONG WINAPI tomeUnhandledExceptionFilter(_In_ struct _EXCEPTION_POINTERS *exceptionInfo)
+LONG WINAPI tomeUnhandledExceptionFilter(struct _EXCEPTION_POINTERS *exceptionInfo)
 {
     Q_UNUSED(exceptionInfo)
 
