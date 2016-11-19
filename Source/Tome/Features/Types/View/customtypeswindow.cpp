@@ -38,9 +38,6 @@ CustomTypesWindow::CustomTypesWindow(TypesController& typesController,
     ui->setupUi(this);
 
     // Setup view.
-    const CustomTypeList& types = this->typesController.getCustomTypes();
-
-    this->ui->tableWidget->setRowCount(types.length());
     this->ui->tableWidget->setColumnCount(3);
 
     QStringList headers;
@@ -48,12 +45,6 @@ CustomTypesWindow::CustomTypesWindow(TypesController& typesController,
     headers << tr("Type");
     headers << tr("Details");
     this->ui->tableWidget->setHorizontalHeaderLabels(headers);
-
-    // Add all types.
-    this->updateTable();
-
-    // Enable sorting.
-    this->ui->tableWidget->setSortingEnabled(true);
 }
 
 CustomTypesWindow::~CustomTypesWindow()
@@ -64,6 +55,17 @@ CustomTypesWindow::~CustomTypesWindow()
     delete this->enumerationWindow;
     delete this->listWindow;
     delete this->mapWindow;
+}
+
+void CustomTypesWindow::showEvent(QShowEvent* event)
+{
+    Q_UNUSED(event)
+
+    // Custom types might have changed, i.e. by loading another project.
+    this->updateTable();
+
+    // Enable sorting.
+    this->ui->tableWidget->setSortingEnabled(true);
 }
 
 void CustomTypesWindow::on_actionNew_Derived_Type_triggered()
@@ -466,6 +468,11 @@ void CustomTypesWindow::updateRow(const int index, const CustomType& type)
 void CustomTypesWindow::updateTable()
 {
     const CustomTypeList& types = this->typesController.getCustomTypes();
+
+    if (this->ui->tableWidget->rowCount() != types.length())
+    {
+        this->ui->tableWidget->setRowCount(types.length());
+    }
 
     for (int i = 0; i < types.length(); ++i)
     {
