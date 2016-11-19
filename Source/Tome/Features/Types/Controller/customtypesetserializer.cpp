@@ -10,7 +10,8 @@ using namespace Tome;
 
 const QString CustomTypeSetSerializer::AttributeKey = "Key";
 const QString CustomTypeSetSerializer::AttributeValue = "Value";
-const QString CustomTypeSetSerializer::AttributeVersion = "Value";
+const QString CustomTypeSetSerializer::AttributeVersionDeprecated = "Value";
+const QString CustomTypeSetSerializer::AttributeVersion = "Version";
 const QString CustomTypeSetSerializer::ElementConstrainingFacet = "ConstrainingFacet";
 const QString CustomTypeSetSerializer::ElementConstrainingFacets = "ConstrainingFacets";
 const QString CustomTypeSetSerializer::ElementFundamentalFacet = "FundamentalFacet";
@@ -100,6 +101,11 @@ void CustomTypeSetSerializer::deserialize(QIODevice& device, CustomTypeSet& cust
     {
         // Read version.
         int version = reader.readAttribute(AttributeVersion).toInt();
+
+        if (version == 0)
+        {
+            version = reader.readAttribute(AttributeVersionDeprecated).toInt();
+        }
 
         // Read types.
         reader.readStartElement(ElementTypes);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Types Value="2">
+<Types Version="2">
     <Type Name="Armor Type">
         <FundamentalFacets>
             <FundamentalFacet Key="Enumeration" Value="Cloth;Leather;Mail"/>

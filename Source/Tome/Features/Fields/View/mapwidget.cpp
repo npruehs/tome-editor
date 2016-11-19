@@ -178,7 +178,7 @@ void MapWidget::editItem(QTableWidgetItem* item)
     this->mapItemWindow->setValueType(this->valueType);
 
     this->mapItemWindow->setKey(currentKey);
-    this->mapItemWindow->setKey(currentValue);
+    this->mapItemWindow->setValue(currentValue);
 
     // Show window.
     int result = this->mapItemWindow->exec();

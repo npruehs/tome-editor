@@ -1,42 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Fields>
-    <Field Id="AttackerId" DisplayName="AttackerId" Description="Id of the attacking entity." Type="Integer" DefaultValue="0">
-        <Facet Key="Max" Value="2147483647"/>
-        <Facet Key="Min" Value="0"/>
-    </Field>
-    <Field Id="DefenderId" DisplayName="DefenderId" Description="Id of the attacked entity." Type="Integer" DefaultValue="0">
-        <Facet Key="Max" Value="2147483647"/>
-        <Facet Key="Min" Value="0"/>
-    </Field>
-    <Field Id="EffectId" DisplayName="EffectId" Description="Id of the effect." Type="Integer" DefaultValue="0">
-        <Facet Key="Max" Value="2147483647"/>
-        <Facet Key="Min" Value="0"/>
-    </Field>
-    <Field Id="EntityId" DisplayName="EntityId" Description="Id of the entity." Type="Integer" DefaultValue="0">
-        <Facet Key="Max" Value="2147483647"/>
-        <Facet Key="Min" Value="0"/>
-    </Field>
-    <Field Id="LevelName" DisplayName="LevelName" Description="Name of the level." Type="String" DefaultValue="">
-        <Facet Key="MaxLength" Value="0"/>
-    </Field>
-    <Field Id="NewHealth" DisplayName="NewHealth" Description="Health of the entity after the change." Type="Integer" DefaultValue="0">
-        <Facet Key="Max" Value="2147483647"/>
-        <Facet Key="Min" Value="0"/>
-    </Field>
-    <Field Id="NewOwnerId" DisplayName="NewOwnerId" Description="Id of the owner after the change." Type="Integer" DefaultValue="0">
-        <Facet Key="Max" Value="2147483647"/>
-        <Facet Key="Min" Value="0"/>
-    </Field>
-    <Field Id="OldHealth" DisplayName="OldHealth" Description="Health of the entity before the change." Type="Integer" DefaultValue="0">
-        <Facet Key="Max" Value="2147483647"/>
-        <Facet Key="Min" Value="0"/>
-    </Field>
-    <Field Id="OldOwnerId" DisplayName="OldOwnerId" Description="Id of the owner before the change." Type="Integer" DefaultValue="0">
-        <Facet Key="Max" Value="2147483647"/>
-        <Facet Key="Min" Value="0"/>
-    </Field>
-    <Field Id="TargetId" DisplayName="TargetId" Description="Entity id of the target that entered the acquisition range." Type="Integer" DefaultValue="0">
-        <Facet Key="Max" Value="2147483647"/>
-        <Facet Key="Min" Value="0"/>
-    </Field>
+    <Field Id="AttackerId" DisplayName="AttackerId" Description="Id of the attacking entity." Type="Integer" DefaultValue="0"/>
+    <Field Id="DefenderId" DisplayName="DefenderId" Description="Id of the attacked entity." Type="Integer" DefaultValue="0"/>
+    <Field Id="EffectId" DisplayName="EffectId" Description="Id of the effect." Type="Integer" DefaultValue="0"/>
+    <Field Id="EntityId" DisplayName="EntityId" Description="Id of the entity." Type="Integer" DefaultValue="0"/>
+    <Field Id="LevelName" DisplayName="LevelName" Description="Name of the level." Type="String" DefaultValue=""/>
+    <Field Id="NewHealth" DisplayName="NewHealth" Description="Health of the entity after the change." Type="Integer" DefaultValue="0"/>
+    <Field Id="NewOwnerId" DisplayName="NewOwnerId" Description="Id of the owner after the change." Type="Integer" DefaultValue="0"/>
+    <Field Id="OldHealth" DisplayName="OldHealth" Description="Health of the entity before the change." Type="Integer" DefaultValue="0"/>
+    <Field Id="OldOwnerId" DisplayName="OldOwnerId" Description="Id of the owner before the change." Type="Integer" DefaultValue="0"/>
+    <Field Id="TargetId" DisplayName="TargetId" Description="Entity id of the target that entered the acquisition range." Type="Integer" DefaultValue="0"/>
 </Fields>

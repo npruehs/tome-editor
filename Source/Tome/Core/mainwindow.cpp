@@ -94,15 +94,18 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     // Add search results.
     this->searchResultsDockWidget = new SearchResultsDockWidget(this);
     this->addDockWidget(Qt::BottomDockWidgetArea, this->searchResultsDockWidget, Qt::Vertical);
+    this->dockWidgets.push_back(this->searchResultsDockWidget);
 
     // Add error list.
     this->errorListDockWidget = new ErrorListDockWidget(this);
     this->addDockWidget(Qt::BottomDockWidgetArea, this->errorListDockWidget, Qt::Vertical);
+    this->dockWidgets.push_back(this->errorListDockWidget);
 
     // Add log window.
     this->outputDockWidget = new OutputDockWidget(this);
     this->outputDockWidget->init();
     this->addDockWidget(Qt::BottomDockWidgetArea, this->outputDockWidget, Qt::Vertical);
+    this->dockWidgets.push_back(this->outputDockWidget);
 
     // Hide most dock widgets until required.
     this->searchResultsDockWidget->close();
@@ -1233,6 +1236,22 @@ void MainWindow::showWindow(QWidget* widget)
     widget->show();
     widget->raise();
     widget->activateWindow();
+
+    // Check if dock widget.
+    QDockWidget* dockWidget = dynamic_cast<QDockWidget*>(widget);
+    if (dockWidget != NULL)
+    {
+        // Tabify dock widget.
+        for (int i = 0; i < this->dockWidgets.count(); ++i)
+        {
+            QDockWidget* existingDockWidget = this->dockWidgets[i];
+
+            if (dockWidget != existingDockWidget && existingDockWidget->isVisible())
+            {
+                this->tabifyDockWidget(existingDockWidget, dockWidget);
+            }
+        }
+    }
 }
 
 void MainWindow::updateMenus()

@@ -35,6 +35,9 @@ class CustomTypesWindow : public QMainWindow
                                    QWidget *parent = 0);
         ~CustomTypesWindow();
 
+    protected:
+        void showEvent(QShowEvent * event);
+
     private slots:
         void on_actionNew_Derived_Type_triggered();
         void on_actionNew_Custom_Type_triggered();
