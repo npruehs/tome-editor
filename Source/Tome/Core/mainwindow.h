@@ -121,6 +121,8 @@ class MainWindow : public QMainWindow
 
         QProgressDialog* progressDialog;
 
+        QList<QDockWidget*> dockWidgets;
+
         Tome::MessageList messages;
 
         void addRecordField(const QString& fieldId);
