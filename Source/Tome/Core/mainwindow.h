@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QProgressDialog>
 #include <QSharedPointer>
 #include <QTableWidget>
 
@@ -28,6 +29,7 @@ namespace Tome
 {
     class Controller;
     class ErrorListDockWidget;
+    class OutputDockWidget;
     class Project;
     class RecordFieldsTableWidget;
     class RecordTreeWidget;
@@ -75,11 +77,13 @@ class MainWindow : public QMainWindow
         void on_actionReleases_triggered();
         void on_actionRoadmap_triggered();
 
+        void on_actionOutput_triggered();
         void on_actionError_List_triggered();
 
         void exportRecords(QAction* exportAction);
         void onExportTemplatesChanged();
         void onFieldChanged();
+        void onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
         void onProjectChanged(QSharedPointer<Tome::Project> project);
         void onRecordFieldsChanged(const QString& recordId);
         void onRecordSetsChanged();
@@ -98,6 +102,7 @@ class MainWindow : public QMainWindow
         Tome::RecordTreeWidget* recordTreeWidget;
         Tome::RecordFieldsTableWidget* recordFieldTableWidget;
         Tome::ErrorListDockWidget* errorListDockWidget;
+        Tome::OutputDockWidget* outputDockWidget;
         Tome::SearchResultsDockWidget* searchResultsDockWidget;
 
         Tome::Controller* controller;
@@ -113,6 +118,10 @@ class MainWindow : public QMainWindow
         FindRecordWindow* findRecordWindow;
         ProjectOverviewWindow* projectOverviewWindow;
         UserSettingsWindow* userSettingsWindow;
+
+        QProgressDialog* progressDialog;
+
+        QList<QDockWidget*> dockWidgets;
 
         Tome::MessageList messages;
 

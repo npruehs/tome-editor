@@ -10,11 +10,19 @@ using namespace Tome;
 
 const QString CustomTypeSetSerializer::AttributeKey = "Key";
 const QString CustomTypeSetSerializer::AttributeValue = "Value";
+const QString CustomTypeSetSerializer::AttributeVersionDeprecated = "Value";
+const QString CustomTypeSetSerializer::AttributeVersion = "Version";
+const QString CustomTypeSetSerializer::ElementConstrainingFacet = "ConstrainingFacet";
+const QString CustomTypeSetSerializer::ElementConstrainingFacets = "ConstrainingFacets";
+const QString CustomTypeSetSerializer::ElementFundamentalFacet = "FundamentalFacet";
+const QString CustomTypeSetSerializer::ElementFundamentalFacets = "FundamentalFacets";
 const QString CustomTypeSetSerializer::ElementName = "Name";
 const QString CustomTypeSetSerializer::ElementRestriction = "Restriction";
 const QString CustomTypeSetSerializer::ElementRestrictions = "Restrictions";
 const QString CustomTypeSetSerializer::ElementType = "Type";
 const QString CustomTypeSetSerializer::ElementTypes = "Types";
+
+const int CustomTypeSetSerializer::Version = 2;
 
 
 CustomTypeSetSerializer::CustomTypeSetSerializer()
@@ -33,6 +41,9 @@ void CustomTypeSetSerializer::serialize(QIODevice& device, const CustomTypeSet& 
         // Write types.
         writer.writeStartElement(ElementTypes);
         {
+            // Write version.
+            writer.writeAttribute(AttributeVersion, QString::number(Version));
+
             for (int i = 0; i < customTypeSet.types.size(); ++i)
             {
                 const CustomType& type = customTypeSet.types.at(i);
@@ -41,16 +52,30 @@ void CustomTypeSetSerializer::serialize(QIODevice& device, const CustomTypeSet& 
                 {
                     writer.writeAttribute(ElementName, type.name);
 
-                    // Write restrictions map.
-                    writer.writeStartElement(ElementRestrictions);
+                    // Write facet maps.
+                    writer.writeStartElement(ElementFundamentalFacets);
                     {
-                        for (QMap<QString, QString>::const_iterator itRestrictions = type.restrictions.begin();
-                             itRestrictions != type.restrictions.end();
-                             ++itRestrictions)
+                        for (QVariantMap::const_iterator itFundamentalFacets = type.fundamentalFacets.begin();
+                             itFundamentalFacets != type.fundamentalFacets.end();
+                             ++itFundamentalFacets)
                         {
-                            writer.writeStartElement(ElementRestriction);
-                            writer.writeAttribute(AttributeKey, itRestrictions.key());
-                            writer.writeAttribute(AttributeValue, itRestrictions.value());
+                            writer.writeStartElement(ElementFundamentalFacet);
+                            writer.writeAttribute(AttributeKey, itFundamentalFacets.key());
+                            writer.writeAttribute(AttributeValue, itFundamentalFacets.value().toString());
+                            writer.writeEndElement();
+                        }
+                    }
+                    writer.writeEndElement();
+
+                    writer.writeStartElement(ElementConstrainingFacets);
+                    {
+                        for (QVariantMap::const_iterator itConstrainingFacets = type.constrainingFacets.begin();
+                             itConstrainingFacets != type.constrainingFacets.end();
+                             ++itConstrainingFacets)
+                        {
+                            writer.writeStartElement(ElementConstrainingFacet);
+                            writer.writeAttribute(AttributeKey, itConstrainingFacets.key());
+                            writer.writeAttribute(AttributeValue, itConstrainingFacets.value().toString());
                             writer.writeEndElement();
                         }
                     }
@@ -74,6 +99,14 @@ void CustomTypeSetSerializer::deserialize(QIODevice& device, CustomTypeSet& cust
     // Begin document.
     reader.readStartDocument();
     {
+        // Read version.
+        int version = reader.readAttribute(AttributeVersion).toInt();
+
+        if (version == 0)
+        {
+            version = reader.readAttribute(AttributeVersionDeprecated).toInt();
+        }
+
         // Read types.
         reader.readStartElement(ElementTypes);
         {
@@ -86,21 +119,57 @@ void CustomTypeSetSerializer::deserialize(QIODevice& device, CustomTypeSet& cust
 
                 reader.readStartElement(ElementType);
                 {
-                    // Read type restriction map.
-                    reader.readStartElement(ElementRestrictions);
+                    if (version >= 2)
                     {
-                        while (reader.isAtElement(ElementRestriction))
+                        // Read facet maps.
+                        reader.readStartElement(ElementFundamentalFacets);
                         {
-                            QString restrictionKey = reader.readAttribute(AttributeKey);
-                            QString restrictionValue = reader.readAttribute(AttributeValue);
+                            while (reader.isAtElement(ElementFundamentalFacet))
+                            {
+                                QString restrictionKey = reader.readAttribute(AttributeKey);
+                                QString restrictionValue = reader.readAttribute(AttributeValue);
 
-                            type.restrictions.insert(restrictionKey, restrictionValue);
+                                type.fundamentalFacets.insert(restrictionKey, restrictionValue);
 
-                            // Advance reader.
-                            reader.readEmptyElement(ElementRestriction);
+                                // Advance reader.
+                                reader.readEmptyElement(ElementFundamentalFacet);
+                            }
                         }
+                        reader.readEndElement();
+
+                        reader.readStartElement(ElementConstrainingFacets);
+                        {
+                            while (reader.isAtElement(ElementConstrainingFacet))
+                            {
+                                QString restrictionKey = reader.readAttribute(AttributeKey);
+                                QString restrictionValue = reader.readAttribute(AttributeValue);
+
+                                type.constrainingFacets.insert(restrictionKey, restrictionValue);
+
+                                // Advance reader.
+                                reader.readEmptyElement(ElementConstrainingFacet);
+                            }
+                        }
+                        reader.readEndElement();
                     }
-                    reader.readEndElement();
+                    else
+                    {
+                        // Read type restriction map.
+                        reader.readStartElement(ElementRestrictions);
+                        {
+                            while (reader.isAtElement(ElementRestriction))
+                            {
+                                QString restrictionKey = reader.readAttribute(AttributeKey);
+                                QString restrictionValue = reader.readAttribute(AttributeValue);
+
+                                type.fundamentalFacets.insert(restrictionKey, restrictionValue);
+
+                                // Advance reader.
+                                reader.readEmptyElement(ElementRestriction);
+                            }
+                        }
+                        reader.readEndElement();
+                    }
                 }
                 reader.readEndElement();
 

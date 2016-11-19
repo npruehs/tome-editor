@@ -13,25 +13,25 @@ TEMPLATE = app
 
 # Expose application version in Windows property window and in application code.
 # http://www.openguru.com/2009/11/qt-best-way-to-set-application-version.html
-VERSION = 0.6
-VERSION_NAME = Hydra
+VERSION = 0.7
+VERSION_NAME = Manticore
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 DEFINES += APP_VERSION_NAME=\\\"$$VERSION_NAME\\\"
 
 RC_ICONS = ../Media/Icons/Tome.ico
 ICON = ../Media/Icons/Tome.icns
 
-Debug:DESTDIR = ../../Bin/debug
-Debug:OBJECTS_DIR = ../../Obj/debug
-Debug:MOC_DIR = ../../Obj/debug/.moc
-Debug:RCC_DIR = ../../Obj/debug/.rcc
-Debug:UI_DIR = ../../Obj/debug/.ui
+Debug:DESTDIR = ../../Bin/debug/Tome
+Debug:OBJECTS_DIR = ../../Obj/debug/Tome
+Debug:MOC_DIR = ../../Obj/debug/Tome/.moc
+Debug:RCC_DIR = ../../Obj/debug/Tome/.rcc
+Debug:UI_DIR = ../../Obj/debug/Tome/.ui
 
-Release:DESTDIR = ../../Bin/release
-Release:OBJECTS_DIR = ../../Obj/release
-Release:MOC_DIR = ../../Obj/release/.moc
-Release:RCC_DIR = ../../Obj/release/.rcc
-Release:UI_DIR = ../../Obj/release/.ui
+Release:DESTDIR = ../../Bin/release/Tome
+Release:OBJECTS_DIR = ../../Obj/release/Tome
+Release:MOC_DIR = ../../Obj/release/Tome/.moc
+Release:RCC_DIR = ../../Obj/release/Tome/.rcc
+Release:UI_DIR = ../../Obj/release/Tome/.ui
 
 SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Core/mainwindow.cpp \
@@ -112,7 +112,13 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Facets/Controller/minimumrealvaluefacet.cpp \
     ../Source/Tome/Features/Facets/Controller/maximumstringlengthfacet.cpp \
     ../Source/Tome/Features/Facets/Controller/requiredreferenceancestorfacet.cpp \
-    ../Source/Tome/Features/Facets/Model/facetcontext.cpp
+    ../Source/Tome/Features/Facets/Model/facetcontext.cpp \
+    ../Source/Tome/Features/Records/Controller/recordnamevalidator.cpp \
+    ../Source/Tome/Features/Diagnostics/Controller/messagehandlers.cpp \
+    ../Source/Tome/Features/Diagnostics/Controller/filemessagehandler.cpp \
+    ../Source/Tome/Features/Diagnostics/View/outputdockwidget.cpp \
+    ../Source/Tome/Features/Types/View/derivedtypewindow.cpp \
+    ../Source/Tome/Features/Integrity/Controller/typefacetviolatedtask.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -215,7 +221,13 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Facets/Controller/minimumrealvaluefacet.h \
     ../Source/Tome/Features/Facets/Controller/maximumstringlengthfacet.h \
     ../Source/Tome/Features/Facets/Controller/requiredreferenceancestorfacet.h \
-    ../Source/Tome/Features/Facets/Model/facetcontext.h
+    ../Source/Tome/Features/Facets/Model/facetcontext.h \
+    ../Source/Tome/Features/Records/Controller/recordnamevalidator.h \
+    ../Source/Tome/Features/Diagnostics/Controller/messagehandlers.h \
+    ../Source/Tome/Features/Diagnostics/Controller/filemessagehandler.h \
+    ../Source/Tome/Features/Diagnostics/View/outputdockwidget.h \
+    ../Source/Tome/Features/Types/View/derivedtypewindow.h \
+    ../Source/Tome/Features/Integrity/Controller/typefacetviolatedtask.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
@@ -236,7 +248,8 @@ FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Fields/View/mapitemwindow.ui \
     ../Source/Tome/Features/Search/View/findrecordwindow.ui \
     ../Source/Tome/Features/Projects/View/projectoverviewwindow.ui \
-    ../Source/Tome/Features/Settings/View/usersettingswindow.ui
+    ../Source/Tome/Features/Settings/View/usersettingswindow.ui \
+    ../Source/Tome/Features/Types/View/derivedtypewindow.ui
 
 RESOURCES += \
     tome.qrc

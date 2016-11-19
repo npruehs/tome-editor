@@ -175,8 +175,27 @@ void ErrorListDockWidget::refreshMessages()
         this->tableWidgetErrorList->setItem(i, 2, new QTableWidgetItem(message.content));
 
         // Show location.
-        QString location = TargetSiteType::toString(message.targetSiteType) + " - " + message.targetSiteId;
-        this->tableWidgetErrorList->setItem(i, 3, new QTableWidgetItem(location));
+        QLabel* locationLabel;
+
+        if (message.targetSiteType == TargetSiteType::Record)
+        {
+            QString locationLink = QString("Record - <a href='%1'>%1</a>").arg(message.targetSiteId);
+            locationLabel = new QLabel(locationLink);
+
+            connect(
+                        locationLabel,
+                        SIGNAL(linkActivated(const QString&)),
+                        SLOT(onRecordLinkActivated(const QString&))
+                        );
+        }
+        else
+        {
+            QString locationString = TargetSiteType::toString(message.targetSiteType) + " - " + message.targetSiteId;
+            locationLabel = new QLabel(locationString);
+        }
+
+        index = this->tableWidgetErrorList->model()->index(i, 3);
+        this->tableWidgetErrorList->setIndexWidget(index, locationLabel);
 
         // Increase row counter.
         ++messagesShown;
@@ -193,4 +212,9 @@ void ErrorListDockWidget::refreshMessages()
 
     this->tableWidgetErrorList->setHorizontalHeaderLabels(headers);
     this->tableWidgetErrorList->resizeColumnsToContents();
+}
+
+void ErrorListDockWidget::onRecordLinkActivated(const QString& recordId)
+{
+    emit this->recordLinkActivated(recordId);
 }

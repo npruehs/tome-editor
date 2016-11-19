@@ -201,7 +201,7 @@ void ProjectOverviewWindow::updateComponentData()
     const ComponentSetList& componentSets = componentsController.getComponentSets();
     const int componentSetCount = componentSets.count();
     const int componentCount = componentsController.getComponents().count();
-    const QString componentsText = QString(tr("%1 component%2 (in %3 file%4)")).arg(
+    const QString componentsText = tr("%1 component%2 (in %3 file%4)").arg(
                 QString::number(componentCount),
                 componentCount != 1 ? "s" : "",
                 QString::number(componentSetCount),
@@ -234,7 +234,7 @@ void ProjectOverviewWindow::updateCustomTypeData()
     const CustomTypeSetList& customTypeSets = typesController.getCustomTypeSets();
     const int typeSetCount = customTypeSets.count();
     const int typeCount = typesController.getCustomTypes().count();
-    const QString typesText = QString(tr("%1 type%2 (in %3 file%4)")).arg(
+    const QString typesText = tr("%1 type%2 (in %3 file%4)").arg(
                 QString::number(typeCount),
                 typeCount != 1 ? "s" : "",
                 QString::number(typeSetCount),
@@ -264,9 +264,9 @@ void ProjectOverviewWindow::updateExportTemplateData()
 {
     // Count export templates.
     ExportController& exportController = this->controller->getExportController();
-    const RecordExportTemplateMap& exportTemplateMap = exportController.getRecordExportTemplates();
-    const int exportTemplateCount = exportTemplateMap.count();
-    const QString exportTemplatesText = QString(tr("%1 export template%2")).arg(
+    const RecordExportTemplateList& exportTemplateList = exportController.getRecordExportTemplates();
+    const int exportTemplateCount = exportTemplateList.count();
+    const QString exportTemplatesText = tr("%1 export template%2").arg(
                 QString::number(exportTemplateCount),
                 exportTemplateCount != 1 ? "s" : "");
     this->ui->labelExportTemplatesValue->setText(exportTemplatesText);
@@ -274,8 +274,8 @@ void ProjectOverviewWindow::updateExportTemplateData()
     // Add list items.
     this->ui->listWidgetExportTemplates->clear();
 
-    for (RecordExportTemplateMap::const_iterator it = exportTemplateMap.begin();
-         it != exportTemplateMap.end();
+    for (RecordExportTemplateList::const_iterator it = exportTemplateList.begin();
+         it != exportTemplateList.end();
          ++it)
     {
         const RecordExportTemplate& exportTemplate = *it;
@@ -299,7 +299,7 @@ void ProjectOverviewWindow::updateFieldDefinitionData()
     const FieldDefinitionSetList& fieldDefinitionSets = fieldDefintionsController.getFieldDefinitionSets();
     const int fieldDefinitionSetCount = fieldDefinitionSets.count();
     const int fieldDefintionCount = fieldDefintionsController.getFieldDefinitions().count();
-    const QString fieldsText = QString(tr("%1 field%2 (in %3 file%4)")).arg(
+    const QString fieldsText = tr("%1 field%2 (in %3 file%4)").arg(
                 QString::number(fieldDefintionCount),
                 fieldDefintionCount != 1 ? "s" : "",
                 QString::number(fieldDefinitionSetCount),
@@ -332,7 +332,7 @@ void ProjectOverviewWindow::updateRecordData()
     const RecordSetList& recordSets = recordsController.getRecordSets();
     const int recordSetCount = recordSets.count();
     const int recordCount = recordsController.getRecords().count();
-    const QString recordsText = QString(tr("%1 record%2 (in %3 file%4)")).arg(
+    const QString recordsText = tr("%1 record%2 (in %3 file%4)").arg(
                 QString::number(recordCount),
                 recordCount != 1 ? "s" : "",
                 QString::number(recordSetCount),
@@ -368,6 +368,12 @@ void ProjectOverviewWindow::onAddExistingComponentsFileClicked(bool checked)
                                                                   tr("Add Existing Components File"),
                                                                   projectPath,
                                                                   "Tome Component Files (*.tcomp)");
+
+    if (componentSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeComponentFilePath = projectDirectory.relativeFilePath(componentSetFileName);
 
@@ -405,6 +411,12 @@ void ProjectOverviewWindow::onAddExistingCustomTypesFileClicked(bool checked)
                                                                   tr("Add Existing Types File"),
                                                                   projectPath,
                                                                   "Tome Type Files (*.ttypes)");
+
+    if (customTypeSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeCustomTypeFilePath = projectDirectory.relativeFilePath(customTypeSetFileName);
 
@@ -442,6 +454,12 @@ void ProjectOverviewWindow::onAddExistingExportTemplateFileClicked(bool checked)
                                                                   tr("Add Existing Export Template File"),
                                                                   projectPath,
                                                                   "Tome Export Template Files (*.texport)");
+
+    if (exportTemplateFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeExportTemplateFilePath = projectDirectory.relativeFilePath(exportTemplateFileName);
 
@@ -479,6 +497,12 @@ void ProjectOverviewWindow::onAddExistingFieldDefinitionsFileClicked(bool checke
                                                                   tr("Add Existing Field Definitions File"),
                                                                   projectPath,
                                                                   "Tome Field Definition Files (*.tfields)");
+
+    if (fieldDefinitionSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeFieldDefinitionFilePath = projectDirectory.relativeFilePath(fieldDefinitionSetFileName);
 
@@ -516,6 +540,12 @@ void ProjectOverviewWindow::onAddExistingRecordsFileClicked(bool checked)
                                                                   tr("Add Existing Records File"),
                                                                   projectPath,
                                                                   "Tome Record Files (*.tdata)");
+
+    if (recordSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeRecordFilePath = projectDirectory.relativeFilePath(recordSetFileName);
 
@@ -553,6 +583,12 @@ void ProjectOverviewWindow::onAddNewComponentsFileClicked(bool checked)
                                                                   tr("Add New Components File"),
                                                                   projectPath,
                                                                   "Tome Component Files (*.tcomp)");
+
+    if (componentSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeComponentFilePath = projectDirectory.relativeFilePath(componentSetFileName);
 
@@ -577,6 +613,12 @@ void ProjectOverviewWindow::onAddNewCustomTypesFileClicked(bool checked)
                                                                   tr("Add New Types File"),
                                                                   projectPath,
                                                                   "Tome Type Files (*.ttypes)");
+
+    if (customTypeSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeCustomTypeFilePath = projectDirectory.relativeFilePath(customTypeSetFileName);
 
@@ -601,6 +643,12 @@ void ProjectOverviewWindow::onAddNewFieldDefinitionsFileClicked(bool checked)
                                                                   tr("Add New Field Definitions File"),
                                                                   projectPath,
                                                                   "Tome Field Definition Files (*.tfields)");
+
+    if (fieldDefinitionSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeFieldDefinitionFilePath = projectDirectory.relativeFilePath(fieldDefinitionSetFileName);
 
@@ -625,6 +673,12 @@ void ProjectOverviewWindow::onAddNewRecordsFileClicked(bool checked)
                                                                   tr("Add New Records File"),
                                                                   projectPath,
                                                                   "Tome Record Files (*.tdata)");
+
+    if (recordSetFileName.isEmpty())
+    {
+        return;
+    }
+
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeRecordFilePath = projectDirectory.relativeFilePath(recordSetFileName);
 

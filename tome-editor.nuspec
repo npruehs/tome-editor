@@ -26,7 +26,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <!-- version should MATCH as closely as possible with the underlying software -->
     <!-- Is the version a prerelease of a version? https://docs.nuget.org/create/versioning#creating-prerelease-packages -->
     <!-- Note that unstable versions like 0.0.1 can be considered a released version, but it's possible that one can release a 0.0.1-beta before you release a 0.0.1 version. If the version number is final, that is considered a released version and not a prerelease. -->
-    <version>0.6-alpha</version>
+    <version>0.7-alpha</version>
     <packageSourceUrl>https://github.com/npruehs/tome-editor</packageSourceUrl>
     <!-- owners is a poor name for maintainers of the package. It sticks around by this name for compatibility reasons. It basically means you. -->
     <owners>Nick Prühs</owners>
@@ -55,53 +55,46 @@ Developing games is all about data. With game systems for modifying data and use
 Tome solves two problems that arise with every new game you build: First, you can import the definition of your game's data so game designers can create new data records and modify existing ones very conveniently. Second, you can export the results to any format your game engine understands.
     </description>
     <releaseNotes>
-Advanced export release.
+Stability release.
 
-This release adds a lot of customizability for exporting data, along with automatically enforced field value constraints and project and user settings. 
+Approaching the first major release, this version addresses many stability and usability issues and provides improved diagnostics tools.
 
 ## New Features
 
-* **Field Facets.** Specify [custom constraints](https://github.com/npruehs/tome-editor/wiki/Field-Definitions#field-facets) such as the minimum value of an integer, the maximum length of a string, or the required parent of a record reference.
-* **Project Overview.** [Add new or existing files](https://github.com/npruehs/tome-editor/wiki/Project-Structure#addingremoving-project-data-files) to and/or remove files from the project. Specify which file to add new data to and move data between files.
-* **Search.** [Find records](https://github.com/npruehs/tome-editor/wiki/Search#finding-records) by id or display name.
-* **User Settings.** Specify whether to show a Description column in the records table or to run integrity checks on save. 
+* **Derived Types.** Field definition facets have been moved to custom types, introducing [derived types](https://github.com/npruehs/tome-editor/wiki/Custom-Data-Types#adding-derived-types) for fields. This allows fields to share common facets (such as a minimum value of zero), and validation of these facets in other custom types such as lists and maps. 
+* **On-the-fly validation.** Field values are automatically validated against all facets while being entered by the user, showing immediate feedback when violating any facet.
+* **Progress Bars.** Time-consuming operations, such as loading or saving very large projects (> 10,000 records), or renaming, reverting, searching or exporting records in very large projects, cause a progress bar to be displayed now.
+* **Log File.** All operations are now logged to an output window and a file on disk for easier diagnostics.
+* **Issue Reporter.** (Windows only) Whenever Tome crashes or the user selects "Report a Bug", he or she is presented with an Issue Reporter window that will automatically create GitHub issues.
+
 
 ## Data
 
-* Added placeholders for list item types and map key and value types in export templates. 
-* Added placeholders for specific field values in export templates.
-* Added possibility for ignoring specific records and/or fields in exports.
-* Using $ characters in record names is now prohibited.
-
-See https://github.com/npruehs/tome-editor/wiki/Exporting-Data for details.
-
-* Added read-only records that can't be edited, reverted, removed or reparented.
-
-See https://github.com/npruehs/tome-editor/wiki/Data-Records#read-only-records for details.
+* Added new integrity check for violated facets.
+* Added export placeholders for field component, description and display name.
+* Added export placeholders for application version and export time.
+* Record id and display name placeholders are now available in field value templates as well.
+* Documentation of all available export placeholders has been updated, avoiding confusion about which placeholder is available for which export template file and/or Tome version. See https://github.com/npruehs/tome-editor/wiki/Exporting-Data for details.
 
 ## Usability
 
-* Initially selecting all content of Integer, Real and String controls for immediate editing.
-* Added hyperlinks to search results and references to other records.
+* Adding dock widgets for Search Results, Output and Integrity Checks as tabs instead of stacking them on top of each other.
+* Enumeration dropdowns provide allowed values, only.
+* Preventing users from entering record names with leading or trailing whitespaces.
+* Added user settings for expanding the record tree on refresh and running integrity checks after a project was opened.
+* Duplicating a record now correctly retains the record set.
 
-## Other
+## Documentation
 
-* Moved components, custom types and export templates from project file to dedicated files.
-* Added link to Roadmap to Help menu.
-* Added application icon.
+* Added YAML example export template.
+* Added code generation example project.
 
 ## Bug Fixes
 
-* Fixed a crash that could occur when removing a field while a record inheriting that field is selected.
-* Fixed a bug that caused the field definitions window not to correctly reflect all changes if any components had been removed since the last time the window was shown.
-* Fixed a bug that caused UTF-8 text not to be correctly exported.
-* Fixed a bug that allowed users to create enumerations without specifying a name.
-* Fixed a bug that caused enumerations without any members to appear as if they had a single empty member.
-* Fixed a bug that caused field values in the record table to overlap with column boundaries.
-* Fixed a bug that caused field values in the record table to overlap with color previews.
-* Fixed a bug that occasionally caused the last column of the record not to fill all available space.
-* Fixed a bug that caused huge empty areas in field value windows with small content (e.g. checkbox) after having shown a window with large content (e.g. color picker) before.
-* Fixed a bug that caused sorting field definitions by any column other than id to occasionally make the table show duplicate rows.
+* Fixed a crash that could occur when changing the name of a record within a hierarchy of three or more levels.
+* Fixed a bug that caused project files not to properly save references to export templates.
+* Fixed a bug that caused the field definitions and custom types windows not to properly refresh when opening multiple projects during the same session.
+* Fixed a bug that caused the map item window not to show the correct current key and value.
     </releaseNotes>
     <!-- =============================== -->      
 

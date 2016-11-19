@@ -4,12 +4,14 @@
 
 #include "recordtreewidgetitem.h"
 #include "../Controller/recordscontroller.h"
+#include "../../Settings/Controller/settingscontroller.h"
 
 using namespace Tome;
 
 
-RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController)
+RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController, SettingsController& settingsController)
     : recordsController(recordsController)
+    , settingsController(settingsController)
 {
     this->setDragEnabled(true);
     this->viewport()->setAcceptDrops(true);
@@ -102,13 +104,13 @@ void RecordTreeWidget::selectRecord(const QString& id)
 
     while (*it)
     {
-      if ((*it)->text(0) == id)
-      {
-          this->setCurrentItem((*it));
-          break;
-      }
-
-      ++it;
+        RecordTreeWidgetItem *item = static_cast<RecordTreeWidgetItem*>(*it);
+        if (item->getId() == id)
+        {
+            this->setCurrentItem(item);
+            break;
+        }
+        ++it;
     }
 }
 
@@ -126,7 +128,13 @@ void RecordTreeWidget::setRecords(const RecordList& records)
                 new RecordTreeWidgetItem(record.id, record.displayName, record.parentId, record.readOnly);
         recordItems.insert(record.id, recordItem);
         updateRecordItem( recordItem );
+
+        // Report progress.
+        emit this->progressChanged(tr("Refreshing Records"), record.id, i, records.size());
     }
+
+    // Report finish.
+    emit this->progressChanged(tr("Refreshing Records"), QString(), 1, 1);
 
     // Build hierarchy and prepare item list for tree widget.
     QList<QTreeWidgetItem* > items;
@@ -157,7 +165,10 @@ void RecordTreeWidget::setRecords(const RecordList& records)
 
     // Fill tree widget.
     this->insertTopLevelItems(0, items);
-    this->expandAll();
+    if (this->settingsController.getExpandRecordTreeOnRefresh())
+    {
+        this->expandAll();
+    }
 }
 
 bool RecordTreeWidget::dropMimeData(QTreeWidgetItem* parent, int index, const QMimeData* data, Qt::DropAction action)

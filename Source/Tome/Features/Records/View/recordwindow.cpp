@@ -16,6 +16,8 @@ RecordWindow::RecordWindow(QWidget *parent) :
     ui(new Ui::RecordWindow)
 {
     ui->setupUi(this);
+
+    this->ui->lineEditId->setValidator(&nameValidator);
 }
 
 RecordWindow::~RecordWindow()

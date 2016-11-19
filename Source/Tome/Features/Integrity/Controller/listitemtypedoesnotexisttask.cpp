@@ -32,7 +32,7 @@ const MessageList ListItemTypeDoesNotExistTask::execute(const TaskContext& conte
             if (!context.typesController.isBuiltInType(itemType) && !context.typesController.isCustomType(itemType))
             {
                 Message message;
-                message.content = "List item type " + itemType + " does not exist.";
+                message.content = tr("List item type %1 does not exist.").arg(itemType);
                 message.messageCode = MessageCode;
                 message.severity = Severity::Error;
                 message.targetSiteId = type.name;

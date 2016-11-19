@@ -1,13 +1,15 @@
 #ifndef MAPVALUETYPEDOESNOTEXISTTASK_H
 #define MAPVALUETYPEDOESNOTEXISTTASK_H
 
+#include <QObject>
+
 #include "../../Tasks/Controller/task.h"
 
 namespace Tome
 {
     class TaskContext;
 
-    class MapValueTypeDoesNotExistTask : public Task
+    class MapValueTypeDoesNotExistTask : public QObject, public Task
     {
         public:
             MapValueTypeDoesNotExistTask();

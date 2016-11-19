@@ -29,7 +29,7 @@ const MessageList FieldTypeDoesNotExistTask::execute(const TaskContext& context)
         if (!context.typesController.isBuiltInType(field.fieldType) && !context.typesController.isCustomType(field.fieldType))
         {
             Message message;
-            message.content = "Field type " + field.fieldType + " does not exist.";
+            message.content = tr("Field type %1 does not exist.").arg(field.fieldType);
             message.messageCode = MessageCode;
             message.severity = Severity::Error;
             message.targetSiteId = field.id;

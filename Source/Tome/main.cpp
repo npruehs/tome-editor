@@ -1,3 +1,10 @@
+#include <QApplication>
+#include <QProcess>
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 #include "Core/commandlineoptions.h"
 #include "Core/mainwindow.h"
 #include "Core/controller.h"
@@ -6,7 +13,20 @@
 #include "Util/pathutils.h"
 
 
-#include <QApplication>
+#ifdef Q_OS_WIN
+LONG WINAPI tomeUnhandledExceptionFilter(struct _EXCEPTION_POINTERS *exceptionInfo)
+{
+    Q_UNUSED(exceptionInfo)
+
+    qCritical("CRASH!!!");
+
+    // Start issue reporter, if we're able to.
+    QProcess *process = new QProcess();
+    process->start("TomeIssueReporter.exe");
+
+    return EXCEPTION_EXECUTE_HANDLER;
+}
+#endif
 
 QCoreApplication* createApplication(Tome::CommandLineOptions* options)
 {
@@ -22,6 +42,10 @@ QCoreApplication* createApplication(Tome::CommandLineOptions* options)
 
 int main(int argc, char *argv[])
 {
+#ifdef Q_OS_WIN
+    SetUnhandledExceptionFilter(tomeUnhandledExceptionFilter);
+#endif
+
     // Parse command line options.
     Tome::CommandLineOptions* options = new Tome::CommandLineOptions();
     options->parse(argc, argv);

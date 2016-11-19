@@ -2,8 +2,10 @@
 #include "ui_listitemwindow.h"
 
 #include <QPushButton>
+#include <QMessageBox>
 
 #include "fieldvaluewidget.h"
+#include "../../Facets/Controller/facetscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 
@@ -11,16 +13,17 @@
 using namespace Tome;
 
 
-ListItemWindow::ListItemWindow(Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent) :
+ListItemWindow::ListItemWindow(Tome::FacetsController& facetsController, Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ListItemWindow),
+    facetsController(facetsController),
     recordsController(recordsController),
     typesController(typesController)
 {
     ui->setupUi(this);
 
     // Add widget for specifying the list item value.
-    this->fieldValueWidget = new FieldValueWidget(this->recordsController, this->typesController, this);
+    this->fieldValueWidget = new FieldValueWidget(this->facetsController, this->recordsController, this->typesController, this);
     QFormLayout* layout = static_cast<QFormLayout*>(this->layout());
     layout->insertRow(0, tr("Value:"), this->fieldValueWidget);
 }
@@ -47,6 +50,15 @@ void ListItemWindow::setFieldType(const QString& fieldType) const
     this->fieldValueWidget->setFieldType(fieldType);
 }
 
+void ListItemWindow::accept()
+{
+    // Validate data.
+    if (this->validate())
+    {
+        this->done(Accepted);
+    }
+}
+
 void ListItemWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
@@ -55,4 +67,23 @@ void ListItemWindow::showEvent(QShowEvent* event)
     QPushButton* okButton = this->ui->buttonBox->button(QDialogButtonBox::Ok);
     okButton->setAutoDefault(true);
     okButton->setDefault(true);
+}
+
+bool ListItemWindow::validate()
+{
+    // Value must be valid.
+    QString validationError = this->fieldValueWidget->validate();
+
+    if (!validationError.isEmpty())
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Invalid data"),
+                    validationError,
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return false;
+    }
+
+    return true;
 }

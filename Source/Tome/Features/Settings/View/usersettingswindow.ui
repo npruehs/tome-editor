@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>87</height>
+    <height>133</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,9 +22,23 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="checkBoxRunIntegrityChecksOnLoad">
+     <property name="text">
+      <string>Run integrity checks on load</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="checkBoxRunIntegrityChecksOnSave">
      <property name="text">
       <string>Run integrity checks on save</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="checkBoxExpandRecordTreeOnRefresh">
+     <property name="text">
+      <string>Expand record tree on refresh</string>
      </property>
     </widget>
    </item>

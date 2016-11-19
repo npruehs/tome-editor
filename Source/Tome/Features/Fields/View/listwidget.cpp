@@ -1,6 +1,7 @@
 #include "listwidget.h"
 
 #include "listitemwindow.h"
+#include "../../Facets/Controller/facetscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../../Util/memoryutils.h"
@@ -9,9 +10,10 @@
 using namespace Tome;
 
 
-ListWidget::ListWidget(RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
+ListWidget::ListWidget(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
     QWidget(parent),
     listItemWindow(0),
+    facetsController(facetsController),
     recordsController(recordsController),
     typesController(typesController)
 {
@@ -113,7 +115,7 @@ void ListWidget::addItem()
     // Prepare window.
     if (!this->listItemWindow)
     {
-        this->listItemWindow = new ListItemWindow(this->recordsController, this->typesController, this);
+        this->listItemWindow = new ListItemWindow(this->facetsController, this->recordsController, this->typesController, this);
     }
 
     // Update view.
@@ -139,7 +141,7 @@ void ListWidget::editItem(QListWidgetItem* item)
     // Prepare window.
     if (!this->listItemWindow)
     {
-        this->listItemWindow = new ListItemWindow(this->recordsController, this->typesController, this);
+        this->listItemWindow = new ListItemWindow(this->facetsController, this->recordsController, this->typesController, this);
     }
 
     QVariant currentValue = item->text();

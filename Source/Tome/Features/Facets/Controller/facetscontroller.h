@@ -2,21 +2,28 @@
 #define FACETSCONTROLLER_H
 
 #include <QList>
+#include <QVariant>
 
 namespace Tome
 {
     class Facet;
+    class RecordsController;
+    class TypesController;
 
     class FacetsController
     {
         public:
-            FacetsController();
+            FacetsController(const RecordsController& recordsController, const TypesController& typesController);
             ~FacetsController();
 
-            QList<Facet*> getFacets(const QString& targetType);
+            QList<Facet*> getFacets(const QString& targetType) const;
             void registerFacet(Facet* facet);
+            QString validateFieldValue(const QString& fieldType, const QVariant& fieldValue) const;
 
         private:
+            const RecordsController& recordsController;
+            const TypesController& typesController;
+
             QList<Facet*> facets;
     };
 }

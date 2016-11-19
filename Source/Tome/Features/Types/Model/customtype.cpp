@@ -3,14 +3,25 @@
 using namespace Tome;
 
 
-const QString CustomType::RestrictionEnumeration = "Enumeration";
-const QString CustomType::RestrictionItemType = "ItemType";
-const QString CustomType::RestrictionKeyType = "KeyType";
-const QString CustomType::RestrictionValueType = "ValueType";
+const QString CustomType::FacetBaseType = "BaseType";
+const QString CustomType::FacetEnumeration = "Enumeration";
+const QString CustomType::FacetItemType = "ItemType";
+const QString CustomType::FacetKeyType = "KeyType";
+const QString CustomType::FacetValueType = "ValueType";
 
 
 CustomType::CustomType()
 {
+}
+
+QString CustomType::getBaseType() const
+{
+    if (!this->isDerivedType())
+    {
+        return QString();
+    }
+
+    return this->fundamentalFacets[FacetBaseType].toString();
 }
 
 QStringList CustomType::getEnumeration() const
@@ -20,7 +31,7 @@ QStringList CustomType::getEnumeration() const
         return QStringList();
     }
 
-    QString enumerationString = this->restrictions[RestrictionEnumeration];
+    QString enumerationString = this->fundamentalFacets[FacetEnumeration].toString();
 
     if (enumerationString.isEmpty())
     {
@@ -43,7 +54,7 @@ QString CustomType::getItemType() const
         return QString();
     }
 
-    return this->restrictions[RestrictionItemType];
+    return this->fundamentalFacets[FacetItemType].toString();
 }
 
 QString CustomType::getKeyType() const
@@ -53,7 +64,7 @@ QString CustomType::getKeyType() const
         return QString();
     }
 
-    return this->restrictions[RestrictionKeyType];
+    return this->fundamentalFacets[FacetKeyType].toString();
 }
 
 QString CustomType::getValueType() const
@@ -63,42 +74,52 @@ QString CustomType::getValueType() const
         return QString();
     }
 
-    return this->restrictions[RestrictionValueType];
+    return this->fundamentalFacets[FacetValueType].toString();
+}
+
+bool CustomType::isDerivedType() const
+{
+    return this->fundamentalFacets.contains(FacetBaseType);
 }
 
 bool CustomType::isEnumeration() const
 {
-    return this->restrictions.contains(RestrictionEnumeration);
+    return this->fundamentalFacets.contains(FacetEnumeration);
 }
 
 bool CustomType::isList() const
 {
-    return this->restrictions.contains(RestrictionItemType);
+    return this->fundamentalFacets.contains(FacetItemType);
 }
 
 bool CustomType::isMap() const
 {
-    return this->restrictions.contains(RestrictionKeyType) &&
-            this->restrictions.contains(RestrictionValueType);
+    return this->fundamentalFacets.contains(FacetKeyType) &&
+            this->fundamentalFacets.contains(FacetValueType);
+}
+
+void CustomType::setBaseType(const QString& baseType)
+{
+    this->fundamentalFacets[FacetBaseType] = baseType;
 }
 
 void CustomType::setEnumeration(const QStringList& enumeration)
 {
     QString enumerationString = enumeration.join(";");
-    this->restrictions[RestrictionEnumeration] = enumerationString;
+    this->fundamentalFacets[FacetEnumeration] = enumerationString;
 }
 
 void CustomType::setItemType(const QString& itemType)
 {
-    this->restrictions[RestrictionItemType] = itemType;
+    this->fundamentalFacets[FacetItemType] = itemType;
 }
 
 void CustomType::setKeyType(const QString& keyType)
 {
-    this->restrictions[RestrictionKeyType] = keyType;
+    this->fundamentalFacets[FacetKeyType] = keyType;
 }
 
 void CustomType::setValueType(const QString& valueType)
 {
-    this->restrictions[RestrictionValueType] = valueType;
+    this->fundamentalFacets[FacetValueType] = valueType;
 }

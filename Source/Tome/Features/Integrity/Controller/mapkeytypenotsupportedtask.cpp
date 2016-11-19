@@ -34,7 +34,7 @@ const MessageList MapKeyTypeNotSupportedTask::execute(const TaskContext& context
                 keyType == BuiltInType::Vector3I || keyType == BuiltInType::Vector3R)
             {
                 Message message;
-                message.content = "Map key type " + keyType + " is not supported.";
+                message.content = tr("Map key type %1 is not supported.").arg(keyType);
                 message.messageCode = MessageCode;
                 message.severity = Severity::Error;
                 message.targetSiteId = type.name;

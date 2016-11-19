@@ -1,13 +1,15 @@
 #ifndef MAPVALUETYPENOTSUPPORTEDTASK_H
 #define MAPVALUETYPENOTSUPPORTEDTASK_H
 
+#include <QObject>
+
 #include "../../Tasks/Controller/task.h"
 
 namespace Tome
 {
     class TaskContext;
 
-    class MapValueTypeNotSupportedTask : public Task
+    class MapValueTypeNotSupportedTask : public QObject, public Task
     {
         public:
             MapValueTypeNotSupportedTask();

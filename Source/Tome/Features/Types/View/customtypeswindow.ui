@@ -49,6 +49,7 @@
     <property name="title">
      <string>Custom Types</string>
     </property>
+    <addaction name="actionNew_Derived_Type"/>
     <addaction name="actionNew_Custom_Type"/>
     <addaction name="actionNew_List"/>
     <addaction name="actionNew_Map"/>
@@ -118,7 +119,7 @@
   </action>
   <action name="actionFind_Usages">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../../../../Project/tome.qrc">
      <normaloff>:/Media/Icons/FindSymbol_6263.png</normaloff>:/Media/Icons/FindSymbol_6263.png</iconset>
    </property>
    <property name="text">
@@ -133,8 +134,15 @@
     <string>New Map...</string>
    </property>
   </action>
+  <action name="actionNew_Derived_Type">
+   <property name="text">
+    <string>New Derived Type...</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../../../Project/tome.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionClose</sender>

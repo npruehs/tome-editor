@@ -52,6 +52,9 @@ void SearchResultsDockWidget::showResults(const QString& title, const SearchResu
     {
         const SearchResult& result = this->results.at(i);
 
+        // Report progress.
+        emit this->progressChanged(tr("Collecting results"), result.content, i, this->results.count());
+
         // Create table row.
         this->tableWidget->setItem(i, 0, new QTableWidgetItem());
         QLabel* resultLabel;
@@ -77,6 +80,9 @@ void SearchResultsDockWidget::showResults(const QString& title, const SearchResu
         QModelIndex index = this->tableWidget->model()->index(i, 0);
         this->tableWidget->setIndexWidget(index, resultLabel);
     }
+
+    // Report finish.
+    emit this->progressChanged(tr("Collecting results"), QString(), 1, 1);
 }
 
 void SearchResultsDockWidget::onRecordLinkActivated(const QString& recordId)

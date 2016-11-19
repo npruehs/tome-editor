@@ -46,8 +46,10 @@ void ComponentsWindow::on_actionNew_Component_triggered()
 
     // Set component sets.
     const QStringList componentSetNames = this->componentsController.getComponentSetNames();
+    const QStringList componentIds = this->componentsController.getComponents();
     this->componentWindow->setComponentSetNames(componentSetNames);
     this->componentWindow->setComponentSetName(componentSetNames.first());
+    this->componentWindow->setDisallowedComponentIds(componentIds);
 
     int result = this->componentWindow->exec();
 
