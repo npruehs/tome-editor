@@ -2,9 +2,11 @@
 
 #include <stdexcept>
 
+#include <QApplication>
 #include <QFile>
 #include <QFileInfo>
 #include <QObject>
+#include <QSysInfo>
 #include <QTextStream>
 
 #include "commandlineoptions.h"
@@ -188,6 +190,13 @@ int Controller::start()
         MessageHandlers::addMessageHandler(FileMessageHandler::handleMessage);
     }
 
+    // Log system information.
+    qInfo(QString("Tome Version: %1").arg(QApplication::instance()->applicationVersion()).toUtf8().constData());
+    qInfo(QString("Qt Build Architecture: %1").arg(QSysInfo::buildAbi()).toUtf8().constData());
+    qInfo(QString("CPU Architecture: %1").arg(QSysInfo::currentCpuArchitecture()).toUtf8().constData());
+    qInfo(QString("OS: %1 %2").arg(QSysInfo::prettyProductName(), QSysInfo::kernelVersion()).toUtf8().constData());
+    qInfo(QString("Machine Host Name: %1").arg(QSysInfo::machineHostName()).toUtf8().constData());
+
     if (!this->options->noGui)
     {
         qInfo("Setting up main window.");
@@ -325,6 +334,8 @@ void Controller::loadComponentSet(const QString& projectPath, ComponentSet& comp
         try
         {
             componentSerializer.deserialize(componentFile, componentSet);
+            qInfo(QString("Opened components file %1 with %2 components.")
+                  .arg(fullComponentSetPath, QString::number(componentSet.components.count())).toUtf8().constData());
         }
         catch (const std::runtime_error& e)
         {
@@ -363,6 +374,8 @@ void Controller::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& ty
         try
         {
             typesSerializer.deserialize(typeFile, typeSet);
+            qInfo(QString("Opened types file %1 with %2 custom types.")
+                  .arg(fullTypeSetPath, QString::number(typeSet.types.count())).toUtf8().constData());
         }
         catch (const std::runtime_error& e)
         {
@@ -480,6 +493,8 @@ void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinit
         try
         {
             fieldDefinitionSerializer.deserialize(fieldDefinitionFile, fieldDefinitionSet);
+            qInfo(QString("Opened field definitions file %1 with %2 fields.")
+                  .arg(fullFieldDefinitionSetPath, QString::number(fieldDefinitionSet.fieldDefinitions.count())).toUtf8().constData());
         }
         catch (const std::runtime_error& e)
         {
@@ -510,6 +525,8 @@ void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet)
         try
         {
             this->recordSetSerializer->deserialize(recordFile, recordSet);
+            qInfo(QString("Opened records file %1 with %2 records.")
+                  .arg(fullRecordSetPath, QString::number(recordSet.records.count())).toUtf8().constData());
         }
         catch (const std::runtime_error& e)
         {
