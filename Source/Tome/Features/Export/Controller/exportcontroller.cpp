@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 
+#include <QDateTime>
 #include <QFile>
 #include <QStringBuilder>
 #include <QTextStream>
@@ -15,15 +16,22 @@
 
 using namespace Tome;
 
+const QString ExportController::PlaceholderAppVersion = "$APP_VERSION$";
+const QString ExportController::PlaceholderAppVersionName = "$APP_VERSION_NAME$";
 const QString ExportController::PlaceholderComponents = "$RECORD_COMPONENTS$";
 const QString ExportController::PlaceholderComponentName = "$COMPONENT_NAME$";
-const QString ExportController::PlaceholderItemType = "$ITEM_TYPE$";
+const QString ExportController::PlaceholderExportTime = "$EXPORT_TIME$";
+const QString ExportController::PlaceholderFieldComponent = "$FIELD_COMPONENT$";
+const QString ExportController::PlaceholderFieldDescription = "$FIELD_DESCRIPTION$";
+const QString ExportController::PlaceholderFieldDisplayName = "$FIELD_DISPLAY_NAME$";
 const QString ExportController::PlaceholderFieldId = "$FIELD_ID$";
 const QString ExportController::PlaceholderFieldKey = "$FIELD_KEY$";
 const QString ExportController::PlaceholderFieldType = "$FIELD_TYPE$";
 const QString ExportController::PlaceholderFieldValue = "$FIELD_VALUE$";
+const QString ExportController::PlaceholderItemType = "$ITEM_TYPE$";
 const QString ExportController::PlaceholderKeyType = "$KEY_TYPE$";
 const QString ExportController::PlaceholderListItem = "$LIST_ITEM$";
+const QString ExportController::PlaceholderRecordDisplayName = "$RECORD_DISPLAY_NAME$";
 const QString ExportController::PlaceholderRecordFields = "$RECORD_FIELDS$";
 const QString ExportController::PlaceholderRecordId = "$RECORD_ID$";
 const QString ExportController::PlaceholderRecordParentId = "$RECORD_PARENT$";
@@ -40,8 +48,10 @@ ExportController::ExportController(const FieldDefinitionsController& fieldDefini
 
 void ExportController::addRecordExportTemplate(const RecordExportTemplate& exportTemplate)
 {
+    qInfo(QString("Adding export template %1.").arg(exportTemplate.name).toUtf8().constData());
+
     // Update model.
-    this->model[exportTemplate.name] = exportTemplate;
+    this->model->push_back(exportTemplate);
 
     // Notify listeners.
     emit this->exportTemplatesChanged();
@@ -49,17 +59,39 @@ void ExportController::addRecordExportTemplate(const RecordExportTemplate& expor
 
 const RecordExportTemplate ExportController::getRecordExportTemplate(const QString& name) const
 {
-    return this->model.value(name);
+    for (RecordExportTemplateList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if (it->name == name)
+        {
+            return *it;
+        }
+    }
+
+    QString errorMessage = QObject::tr("Export template not  found: ") + name;
+    qCritical(errorMessage.toUtf8().constData());
+    throw std::runtime_error(errorMessage.toStdString());
 }
 
-const RecordExportTemplateMap& ExportController::getRecordExportTemplates() const
+const RecordExportTemplateList ExportController::getRecordExportTemplates() const
 {
-    return this->model;
+    return *this->model;
 }
 
 bool ExportController::hasRecordExportTemplate(const QString& name) const
 {
-    return this->model.contains(name);
+    for (RecordExportTemplateList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if (it->name == name)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void ExportController::exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath)
@@ -73,12 +105,15 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
     else
     {
         QString errorMessage = QObject::tr("Destination file could not be written:\r\n") + filePath;
+        qCritical(errorMessage.toUtf8().constData());
         throw std::runtime_error(errorMessage.toStdString());
     }
 }
 
 void ExportController::exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device)
 {
+    qInfo(QString("Exporting records with template %1.").arg(exportTemplate.name).toUtf8().constData());
+
     // Build record file string.
     QString recordsString;
 
@@ -92,6 +127,9 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
         for (int j = 0; j < recordSet.records.size(); ++j)
         {
             const Record& record = recordSet.records[j];
+
+            // Report progress.
+            emit this->progressChanged(tr("Exporting Data"), record.id, j, recordSet.records.size());
 
             // Check if should export.
             if (record.parentId.isEmpty())
@@ -331,6 +369,9 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 // Get field type name.
                 const QString fieldType = fieldDefinition.fieldType;
                 const QString exportedFieldType = exportTemplate.typeMap.value(fieldType, fieldType);
+                const QString fieldComponent = fieldDefinition.component;
+                const QString fieldDescription = fieldDefinition.description;
+                const QString fieldDisplayName = fieldDefinition.displayName;
 
                 // Apply field value template.
                 QString fieldValueString = exportTemplate.fieldValueTemplate;
@@ -391,6 +432,11 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 fieldValueString = fieldValueString.replace(PlaceholderFieldId, fieldId);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldType, exportedFieldType);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldValue, fieldValueText);
+                fieldValueString = fieldValueString.replace(PlaceholderFieldComponent, fieldComponent);
+                fieldValueString = fieldValueString.replace(PlaceholderFieldDisplayName, fieldDisplayName);
+                fieldValueString = fieldValueString.replace(PlaceholderFieldDescription, fieldDescription);
+                fieldValueString = fieldValueString.replace(PlaceholderRecordId, record.id);
+                fieldValueString = fieldValueString.replace(PlaceholderRecordDisplayName, record.displayName);
 
                 fieldValuesString.append(fieldValueString);
 
@@ -457,6 +503,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             recordString = recordString.replace(PlaceholderRecordParentId, recordParent);
             recordString = recordString.replace(PlaceholderRecordFields, fieldValuesString);
             recordString = recordString.replace(PlaceholderComponents, componentsString);
+            recordString = recordString.replace(PlaceholderRecordDisplayName, record.displayName);
 
             if (!recordsString.isEmpty())
             {
@@ -471,29 +518,40 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
     // Apply record file template.
     QString recordFileString = exportTemplate.recordFileTemplate;
     recordFileString = recordFileString.replace(PlaceholderRecords, recordsString);
+    recordFileString = recordFileString.replace(PlaceholderAppVersion, APP_VERSION);
+    recordFileString = recordFileString.replace(PlaceholderAppVersionName, APP_VERSION_NAME);
+    recordFileString = recordFileString.replace(PlaceholderExportTime, QDateTime::currentDateTimeUtc().toString(Qt::ISODate));
 
     // Write record file.
     QTextStream textStream(&device);
     textStream.setCodec("UTF-8");
     textStream << recordFileString;
+
+    // Report finish.
+    emit this->progressChanged(tr("Exporting Data"), QString(), 1, 1);
 }
 
 void ExportController::removeExportTemplate(const QString& name)
 {
-    // Update model.
-    this->model.remove(name);
+    qInfo(QString("Removing export template %1.").arg(name).toUtf8().constData());
 
-    // Notify listeners.
-    emit this->exportTemplatesChanged();
+    // Update model.
+    for (RecordExportTemplateList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if (it->name == name)
+        {
+            this->model->erase(it);
+
+            // Notify listeners.
+            emit this->exportTemplatesChanged();
+            return;
+        }
+    }
 }
 
-void ExportController::setRecordExportTemplates(const RecordExportTemplateList& exportTemplates)
+void ExportController::setRecordExportTemplates(RecordExportTemplateList& exportTemplates)
 {
-    this->model.clear();
-
-    for (int i = 0; i < exportTemplates.size(); ++i)
-    {
-        const RecordExportTemplate& exportTemplate = exportTemplates[i];
-        this->model.insert(exportTemplate.name, exportTemplate);
-    }
+    this->model = &exportTemplates;
 }

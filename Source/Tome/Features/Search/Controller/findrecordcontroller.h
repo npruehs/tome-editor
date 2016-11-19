@@ -19,6 +19,7 @@ namespace Tome
             const SearchResultList findRecord(const QString& searchPattern);
 
         signals:
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
             void searchResultChanged(const QString& title, const Tome::SearchResultList results);
 
         private:

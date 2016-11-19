@@ -34,6 +34,13 @@ void CommandLineOptions::parse(int argc, char* argv[])
             i = i + 2;
             continue;
         }
+
+        // Parse project path.
+        if (argv[i][0] != '-')
+        {
+            this->projectPath = QString(argv[i]);
+            continue;
+        }
     }
     this->argc = argc;
     this->argv = argv;

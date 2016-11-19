@@ -7,6 +7,7 @@
 #include "../../Fields/Model/fielddefinitionlist.h"
 #include "../../Components/Model/componentlist.h"
 #include "../../Records/Model/recordfieldvaluemap.h"
+#include "../../Records/Controller/recordnamevalidator.h"
 
 namespace Ui {
     class RecordWindow;
@@ -60,6 +61,7 @@ class RecordWindow : public QDialog
         Ui::RecordWindow *ui;
 
         QStringList disallowedRecordIds;
+        RecordNameValidator nameValidator;
 
         // Whether to automatically update the record id to reflect the display name, or not.
         bool recordIdLocked;

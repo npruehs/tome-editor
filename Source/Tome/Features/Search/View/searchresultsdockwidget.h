@@ -20,6 +20,7 @@ namespace Tome
             void showResults(const QString& title, const SearchResultList& results);
 
         signals:
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
             void recordLinkActivated(const QString& recordId);
 
         private:

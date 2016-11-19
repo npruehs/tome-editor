@@ -2,6 +2,7 @@
 #include "ui_mapitemwindow.h"
 
 #include <QPushButton>
+#include <QMessageBox>
 
 #include "fieldvaluewidget.h"
 #include "../../Records/Controller/recordscontroller.h"
@@ -11,9 +12,10 @@
 using namespace Tome;
 
 
-MapItemWindow::MapItemWindow(Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent) :
+MapItemWindow::MapItemWindow(Tome::FacetsController& facetsController, Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::MapItemWindow),
+    facetsController(facetsController),
     recordsController(recordsController),
     typesController(typesController)
 {
@@ -22,10 +24,10 @@ MapItemWindow::MapItemWindow(Tome::RecordsController& recordsController, Tome::T
     // Add widgets for specifying key and value.
     QFormLayout* layout = static_cast<QFormLayout*>(this->layout());
 
-    this->keyWidget = new FieldValueWidget(this->recordsController, this->typesController, this);
+    this->keyWidget = new FieldValueWidget(this->facetsController, this->recordsController, this->typesController, this);
     layout->insertRow(0, tr("Key:"), this->keyWidget);
 
-    this->valueWidget = new FieldValueWidget(this->recordsController, this->typesController, this);
+    this->valueWidget = new FieldValueWidget(this->facetsController, this->recordsController, this->typesController, this);
     layout->insertRow(1, tr("Value:"), this->valueWidget);
 }
 
@@ -67,6 +69,15 @@ void MapItemWindow::setValueType(const QString& valueType) const
     this->valueWidget->setFieldType(valueType);
 }
 
+void MapItemWindow::accept()
+{
+    // Validate data.
+    if (this->validate())
+    {
+        this->done(Accepted);
+    }
+}
+
 void MapItemWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
@@ -75,4 +86,37 @@ void MapItemWindow::showEvent(QShowEvent* event)
     QPushButton* okButton = this->ui->buttonBox->button(QDialogButtonBox::Ok);
     okButton->setAutoDefault(true);
     okButton->setDefault(true);
+}
+
+bool MapItemWindow::validate()
+{
+    // Key must be valid.
+    QString validationError = this->keyWidget->validate();
+
+    if (!validationError.isEmpty())
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Invalid key"),
+                    validationError,
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return false;
+    }
+
+    // Value must be valid.
+    validationError = this->valueWidget->validate();
+
+    if (!validationError.isEmpty())
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Invalid value"),
+                    validationError,
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return false;
+    }
+
+    return true;
 }

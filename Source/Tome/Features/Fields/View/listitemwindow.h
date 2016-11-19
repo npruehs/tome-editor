@@ -11,6 +11,7 @@ namespace Tome
 {
     class CustomType;
     class FieldValueWidget;
+    class FacetsController;
     class RecordsController;
     class TypesController;
 }
@@ -20,13 +21,16 @@ class ListItemWindow : public QDialog
         Q_OBJECT
 
     public:
-        explicit ListItemWindow(Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent = 0);
+        explicit ListItemWindow(Tome::FacetsController& facetsController, Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent = 0);
         ~ListItemWindow();
 
         QVariant getValue() const;
         void setValue(const QVariant& value);
 
         void setFieldType(const QString& fieldType) const;
+
+    public slots:
+        void accept();
 
     protected:
         virtual void showEvent(QShowEvent* event);
@@ -35,8 +39,11 @@ class ListItemWindow : public QDialog
         Ui::ListItemWindow *ui;
         Tome::FieldValueWidget* fieldValueWidget;
 
+        Tome::FacetsController& facetsController;
         Tome::RecordsController& recordsController;
         Tome::TypesController& typesController;
+
+        bool validate();
 };
 
 #endif // LISTITEMWINDOW_H

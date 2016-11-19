@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TomeProject Version="4">
+    <Name>Tome Example Code Generation Project</Name>
+    <Locale>en_US</Locale>
+    <Components>
+        <Path>Tome Example Code Generation Project</Path>
+    </Components>
+    <FieldDefinitions>
+        <Path>Tome Example Code Generation Project</Path>
+    </FieldDefinitions>
+    <Records>
+        <Path>Tome Example Code Generation Project</Path>
+    </Records>
+    <RecordExportTemplates>
+        <Path>CSharpEventTypes.texport</Path>
+        <Path>CSharpEventClasses.texport</Path>
+        <Path>CSharpEventSerializer.texport</Path>
+        <Path>CSharpEventDeserializer.texport</Path>
+    </RecordExportTemplates>
+    <Types>
+        <Path>Tome Example Code Generation Project</Path>
+    </Types>
+</TomeProject>

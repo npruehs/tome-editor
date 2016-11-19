@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Types Version="2">
+    <Type Name="Armor Type">
+        <FundamentalFacets>
+            <FundamentalFacet Key="Enumeration" Value="Cloth;Leather;Mail"/>
+        </FundamentalFacets>
+        <ConstrainingFacets/>
+    </Type>
+    <Type Name="Damage Type">
+        <FundamentalFacets>
+            <FundamentalFacet Key="Enumeration" Value="Magic;Normal;Pierce"/>
+        </FundamentalFacets>
+        <ConstrainingFacets/>
+    </Type>
+    <Type Name="Movement Type">
+        <FundamentalFacets>
+            <FundamentalFacet Key="Enumeration" Value="Air;Ground"/>
+        </FundamentalFacets>
+        <ConstrainingFacets/>
+    </Type>
+    <Type Name="Movement Types">
+        <FundamentalFacets>
+            <FundamentalFacet Key="ItemType" Value="Movement Type"/>
+        </FundamentalFacets>
+        <ConstrainingFacets/>
+    </Type>
+    <Type Name="NonNegativeInteger">
+        <FundamentalFacets>
+            <FundamentalFacet Key="BaseType" Value="Integer"/>
+        </FundamentalFacets>
+        <ConstrainingFacets>
+            <ConstrainingFacet Key="Max" Value="2147483647"/>
+            <ConstrainingFacet Key="Min" Value="0"/>
+        </ConstrainingFacets>
+    </Type>
+    <Type Name="NonNegativeReal">
+        <FundamentalFacets>
+            <FundamentalFacet Key="BaseType" Value="Real"/>
+        </FundamentalFacets>
+        <ConstrainingFacets>
+            <ConstrainingFacet Key="Max" Value="3.4028234663852886e+38"/>
+            <ConstrainingFacet Key="Min" Value="0"/>
+        </ConstrainingFacets>
+    </Type>
+    <Type Name="ProjectileReference">
+        <FundamentalFacets>
+            <FundamentalFacet Key="BaseType" Value="Reference"/>
+        </FundamentalFacets>
+        <ConstrainingFacets>
+            <ConstrainingFacet Key="RequiredAncestor" Value="Projectile"/>
+        </ConstrainingFacets>
+    </Type>
+    <Type Name="Resource">
+        <FundamentalFacets>
+            <FundamentalFacet Key="Enumeration" Value="Gold;Lumber"/>
+        </FundamentalFacets>
+        <ConstrainingFacets/>
+    </Type>
+    <Type Name="ResourceCostMap">
+        <FundamentalFacets>
+            <FundamentalFacet Key="KeyType" Value="Resource"/>
+            <FundamentalFacet Key="ValueType" Value="Integer"/>
+        </FundamentalFacets>
+        <ConstrainingFacets/>
+    </Type>
+    <Type Name="ShortString">
+        <FundamentalFacets>
+            <FundamentalFacet Key="BaseType" Value="String"/>
+        </FundamentalFacets>
+        <ConstrainingFacets>
+            <ConstrainingFacet Key="MaxLength" Value="64"/>
+        </ConstrainingFacets>
+    </Type>
+</Types>

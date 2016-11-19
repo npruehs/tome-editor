@@ -81,8 +81,7 @@ class FieldDefinitionsWindow : public QMainWindow
                 const QVariant& defaultValue,
                 const QString& description,
                 const Tome::Component& component,
-                const QString& fieldDefinitionSetName,
-                const QVariantMap& facets);
+                const QString& fieldDefinitionSetName);
         void updateRow(const int index, const Tome::FieldDefinition& fieldDefinition, bool disableSorting);
 };
 

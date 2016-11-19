@@ -10,13 +10,14 @@ namespace Tome
 {
     class RecordsController;
     class RecordTreeWidgetItem;
+    class SettingsController;
 
     class RecordTreeWidget : public QTreeWidget
     {
             Q_OBJECT
 
         public:
-            RecordTreeWidget(RecordsController& recordsController);
+            RecordTreeWidget(RecordsController& recordsController, SettingsController& settingsController);
 
             void addRecord(const QString& id, const QString& displayName);
 
@@ -30,6 +31,7 @@ namespace Tome
             void setRecords(const RecordList& records);
 
         signals:
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
             void recordReparented(const QString& recordId, const QString& newParentId);
 
         protected:
@@ -38,6 +40,7 @@ namespace Tome
         private:
 
             RecordsController& recordsController;
+            SettingsController& settingsController;
     };
 }
 

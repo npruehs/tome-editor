@@ -10,6 +10,7 @@ namespace Ui {
 namespace Tome
 {
     class FieldValueWidget;
+    class FacetsController;
     class RecordsController;
     class TypesController;
 }
@@ -19,7 +20,7 @@ class MapItemWindow : public QDialog
         Q_OBJECT
 
     public:
-        explicit MapItemWindow(Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent = 0);
+        explicit MapItemWindow(Tome::FacetsController& facetsController, Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent = 0);
         ~MapItemWindow();
 
         QVariant getKey() const;
@@ -29,6 +30,9 @@ class MapItemWindow : public QDialog
         void setValue(const QVariant& value);
         void setValueType(const QString& valueType) const;
 
+    public slots:
+        void accept();
+
     protected:
         virtual void showEvent(QShowEvent* event);
 
@@ -37,8 +41,11 @@ class MapItemWindow : public QDialog
         Tome::FieldValueWidget* keyWidget;
         Tome::FieldValueWidget* valueWidget;
 
+        Tome::FacetsController& facetsController;
         Tome::RecordsController& recordsController;
         Tome::TypesController& typesController;
+
+        bool validate();
 };
 
 #endif // MAPITEMWINDOW_H

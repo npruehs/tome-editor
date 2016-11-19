@@ -9,6 +9,8 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
+#include <QProcess>
+#include <QProgressDialog>
 #include <QStandardPaths>
 #include <QTextStream>
 #include <QXmlStreamWriter>
@@ -16,6 +18,7 @@
 #include "controller.h"
 #include "../Features/Components/View/componentswindow.h"
 #include "../Features/Components/Controller/componentscontroller.h"
+#include "../Features/Diagnostics/View/outputdockwidget.h"
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Facets/Controller/facet.h"
 #include "../Features/Facets/Controller/facetscontroller.h"
@@ -71,12 +74,13 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     duplicateRecordWindow(0),
     findRecordWindow(0),
     projectOverviewWindow(0),
-    userSettingsWindow(0)
+    userSettingsWindow(0),
+    progressDialog(0)
 {
     ui->setupUi(this);
 
     // Add record tree.
-    this->recordTreeWidget = new RecordTreeWidget(this->controller->getRecordsController());
+    this->recordTreeWidget = new RecordTreeWidget(this->controller->getRecordsController(), this->controller->getSettingsController());
     this->ui->splitter->addWidget(this->recordTreeWidget);
 
     // Add record table.
@@ -90,12 +94,20 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     // Add search results.
     this->searchResultsDockWidget = new SearchResultsDockWidget(this);
     this->addDockWidget(Qt::BottomDockWidgetArea, this->searchResultsDockWidget, Qt::Vertical);
+    this->dockWidgets.push_back(this->searchResultsDockWidget);
 
     // Add error list.
     this->errorListDockWidget = new ErrorListDockWidget(this);
     this->addDockWidget(Qt::BottomDockWidgetArea, this->errorListDockWidget, Qt::Vertical);
+    this->dockWidgets.push_back(this->errorListDockWidget);
 
-    // Hide all dock widgets until required.
+    // Add log window.
+    this->outputDockWidget = new OutputDockWidget(this);
+    this->outputDockWidget->init();
+    this->addDockWidget(Qt::BottomDockWidgetArea, this->outputDockWidget, Qt::Vertical);
+    this->dockWidgets.push_back(this->outputDockWidget);
+
+    // Hide most dock widgets until required.
     this->searchResultsDockWidget->close();
     this->errorListDockWidget->close();
 
@@ -119,9 +131,21 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
+                &this->controller->getRecordsController(),
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
+    connect(
                 &this->controller->getExportController(),
                 SIGNAL(exportTemplatesChanged()),
                 SLOT(onExportTemplatesChanged())
+                );
+
+    connect(
+                &this->controller->getExportController(),
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
                 );
 
     connect(
@@ -173,13 +197,49 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
+                &this->controller->getFindUsagesController(),
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
+    connect(
                 &this->controller->getFindRecordController(),
                 SIGNAL(searchResultChanged(const QString&, const Tome::SearchResultList)),
                 SLOT(searchResultChanged(const QString&, const Tome::SearchResultList))
                 );
 
     connect(
+                &this->controller->getFindRecordController(),
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
+    connect(
                 this->searchResultsDockWidget,
+                SIGNAL(recordLinkActivated(const QString&)),
+                SLOT(onRecordLinkActivated(const QString&))
+                );
+
+    connect(
+                this->searchResultsDockWidget,
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
+    connect(
+                this->controller,
+                SIGNAL(progressChanged(QString, QString, int, int)),
+                SLOT(onProgressChanged(QString, QString, int, int))
+                );
+
+    connect(
+                this->recordTreeWidget,
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
+    connect(
+                this->errorListDockWidget,
                 SIGNAL(recordLinkActivated(const QString&)),
                 SLOT(onRecordLinkActivated(const QString&))
                 );
@@ -193,6 +253,14 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     // Can't access some functionality until project created or loaded.
     this->updateMenus();
     this->updateRecentProjects();
+
+    // Setup progress dialog.
+    this->progressDialog = new QProgressDialog(this);
+    this->progressDialog->setMinimumDuration(500);
+    this->progressDialog->setModal(true);
+    this->progressDialog->setCancelButton(0);
+    this->progressDialog->setMaximum(1);
+    this->progressDialog->setValue(1);
 }
 
 MainWindow::~MainWindow()
@@ -201,6 +269,7 @@ MainWindow::~MainWindow()
 
     delete this->recordTreeWidget;
     delete this->recordFieldTableWidget;
+    delete this->outputDockWidget;
     delete this->errorListDockWidget;
 
     delete this->aboutWindow;
@@ -274,8 +343,10 @@ void MainWindow::on_actionManage_Custom_Types_triggered()
     {
         this->customTypesWindow = new CustomTypesWindow(
                     this->controller->getTypesController(),
+                    this->controller->getFacetsController(),
                     this->controller->getFieldDefinitionsController(),
                     this->controller->getFindUsagesController(),
+                    this->controller->getRecordsController(),
                     this);
     }
 
@@ -580,7 +651,7 @@ void MainWindow::on_actionRevert_Record_triggered()
     }
 
     // Show question.
-    const QString& question = QString(tr("Are you sure you want to revert %1 to its original state?")).arg(recordId);
+    const QString& question = tr("Are you sure you want to revert %1 to its original state?").arg(recordId);
 
     int answer = QMessageBox::question(
                 this,
@@ -697,8 +768,10 @@ void MainWindow::on_actionUser_Settings_triggered()
 
     // Save settings.
     SettingsController& settingsController = this->controller->getSettingsController();
+    settingsController.setRunIntegrityChecksOnLoad(this->userSettingsWindow->getRunIntegrityChecksOnLoad());
     settingsController.setRunIntegrityChecksOnSave(this->userSettingsWindow->getRunIntegrityChecksOnSave());
     settingsController.setShowDescriptionColumnInsteadOfFieldTooltips(this->userSettingsWindow->getShowDescriptionColumnInsteadOfFieldTooltips());
+    settingsController.setExpandRecordTreeOnRefresh(this->userSettingsWindow->getExpandRecordTreeOnRefresh());
 
     // Refresh view with updated settings.
     this->refreshRecordTable();
@@ -721,7 +794,8 @@ void MainWindow::on_actionManual_triggered()
 
 void MainWindow::on_actionReport_a_Bug_triggered()
 {
-    QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/issues/new"));
+    QProcess *process = new QProcess();
+    process->start("TomeIssueReporter.exe");
 }
 
 void MainWindow::on_actionReleases_triggered()
@@ -732,6 +806,11 @@ void MainWindow::on_actionReleases_triggered()
 void MainWindow::on_actionRoadmap_triggered()
 {
     QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/milestones"));
+}
+
+void MainWindow::on_actionOutput_triggered()
+{
+    this->showWindow(this->outputDockWidget);
 }
 
 void MainWindow::on_actionError_List_triggered()
@@ -845,28 +924,12 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
     const FieldDefinition& field =
             this->controller->getFieldDefinitionsController().getFieldDefinition(fieldId);
 
-    // Get field facet data.
-    QString facetsDescription;
-    QList<Facet*> facets = this->controller->getFacetsController().getFacets(field.fieldType);
-
-    for (int i = 0; i < facets.count(); ++i)
-    {
-        Facet* facet = facets[i];
-        QString facetKey = facet->getKey();
-
-        if (field.facets.contains(facetKey))
-        {
-            QVariant facetValue = field.facets[facetKey];
-            facetsDescription += facet->getDescriptionForValue(facetValue);
-            facetsDescription += " ";
-        }
-    }
-
     // Prepare window.
     if (!this->fieldValueWindow)
     {
         this->fieldValueWindow = new FieldValueWindow
-                (this->controller->getRecordsController(),
+                (this->controller->getFacetsController(),
+                 this->controller->getRecordsController(),
                  this->controller->getTypesController(),
                  this);
 
@@ -879,10 +942,38 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
 
     // Update view.
     this->fieldValueWindow->setFieldDisplayName(field.displayName);
-    this->fieldValueWindow->setFieldDescription(field.description + " " + facetsDescription);
+    this->fieldValueWindow->setFieldDescription(field.description);
     this->fieldValueWindow->setFieldType(field.fieldType);
     this->fieldValueWindow->setFieldValue(fieldValue);
-    this->fieldValueWindow->setFieldFacets(facets, field.facets);
+
+    // Apply facets.
+    QString facetsDescription;
+
+    if (this->controller->getTypesController().isCustomType(field.fieldType))
+    {
+        const CustomType& customType = this->controller->getTypesController().getCustomType(field.fieldType);
+
+        if (customType.isDerivedType())
+        {
+            QString baseType = customType.getBaseType();
+            QList<Facet*> facets = this->controller->getFacetsController().getFacets(baseType);
+
+            for (int i = 0; i < facets.count(); ++i)
+            {
+                Facet* facet = facets[i];
+                QString facetKey = facet->getKey();
+
+                if (customType.constrainingFacets.contains(facetKey))
+                {
+                    QVariant facetValue = customType.constrainingFacets[facetKey];
+                    facetsDescription += facet->getDescriptionForValue(facetValue);
+                    facetsDescription += " ";
+                }
+            }
+
+            this->fieldValueWindow->setFieldDescription(field.description + " " + facetsDescription);
+        }
+    }
 
     // Show window.
     int result = this->fieldValueWindow->exec();
@@ -929,6 +1020,7 @@ void MainWindow::treeWidgetRecordReparented(const QString& recordId, const QStri
     // Update view.
     this->recordTreeWidget->clear();
     this->refreshRecordTree();
+    this->recordTreeWidget->selectRecord(recordId);
 }
 
 void MainWindow::treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
@@ -1003,6 +1095,19 @@ void MainWindow::onFieldChanged()
     this->refreshRecordTable();
 }
 
+void MainWindow::onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue)
+{
+    this->progressDialog->setWindowTitle(title);
+    this->progressDialog->setLabelText(text);
+    this->progressDialog->setMaximum(maximumValue);
+    this->progressDialog->setValue(currentValue);
+
+    if (currentValue >= maximumValue)
+    {
+        this->progressDialog->reset();
+    }
+}
+
 void MainWindow::onProjectChanged(QSharedPointer<Project> project)
 {
     Q_UNUSED(project);
@@ -1024,6 +1129,12 @@ void MainWindow::onProjectChanged(QSharedPointer<Project> project)
 
     // Update recent projects.
     this->updateRecentProjects();
+
+    // Run integrity checks.
+    if (this->controller->getSettingsController().getRunIntegrityChecksOnLoad())
+    {
+        this->on_actionRun_Integrity_Checks_triggered();
+    }
 }
 
 void MainWindow::onRecordFieldsChanged(const QString& recordId)
@@ -1053,14 +1164,14 @@ void MainWindow::refreshExportMenu()
 {
     this->ui->menuExport->clear();
 
-    const RecordExportTemplateMap& recordExportTemplateMap =
+    const RecordExportTemplateList& recordExportTemplateList =
             this->controller->getExportController().getRecordExportTemplates();
 
-    for (RecordExportTemplateMap::const_iterator it = recordExportTemplateMap.begin();
-         it != recordExportTemplateMap.end();
+    for (RecordExportTemplateList::const_iterator it = recordExportTemplateList.begin();
+         it != recordExportTemplateList.end();
          ++it)
     {
-        QAction* exportAction = new QAction(it.key(), this);
+        QAction* exportAction = new QAction(it->name, this);
         this->ui->menuExport->addAction(exportAction);
     }
 }
@@ -1125,6 +1236,22 @@ void MainWindow::showWindow(QWidget* widget)
     widget->show();
     widget->raise();
     widget->activateWindow();
+
+    // Check if dock widget.
+    QDockWidget* dockWidget = dynamic_cast<QDockWidget*>(widget);
+    if (dockWidget != NULL)
+    {
+        // Tabify dock widget.
+        for (int i = 0; i < this->dockWidgets.count(); ++i)
+        {
+            QDockWidget* existingDockWidget = this->dockWidgets[i];
+
+            if (dockWidget != existingDockWidget && existingDockWidget->isVisible())
+            {
+                this->tabifyDockWidget(existingDockWidget, dockWidget);
+            }
+        }
+    }
 }
 
 void MainWindow::updateMenus()

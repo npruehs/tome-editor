@@ -22,8 +22,10 @@ class UserSettingsWindow : public QDialog
                 QWidget *parent = 0);
         ~UserSettingsWindow();
 
+        bool getRunIntegrityChecksOnLoad();
         bool getRunIntegrityChecksOnSave();
         bool getShowDescriptionColumnInsteadOfFieldTooltips();
+        bool getExpandRecordTreeOnRefresh();
 
     protected:
         void showEvent(QShowEvent * event);

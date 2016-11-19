@@ -13,11 +13,16 @@ namespace Tome
 {
     class ErrorListDockWidget : public QDockWidget
     {
+        Q_OBJECT
+
         public:
             ErrorListDockWidget(QWidget* parent);
             ~ErrorListDockWidget();
 
             void showMessages(const MessageList& messages);
+
+        signals:
+            void recordLinkActivated(const QString& recordId);
 
         private:
             QWidget* widget;
@@ -39,6 +44,9 @@ namespace Tome
             void on_toolButtonMessages_toggled(bool checked);
 
             void refreshMessages();
+
+        private slots:
+            void onRecordLinkActivated(const QString& recordId);
     };
 }
 

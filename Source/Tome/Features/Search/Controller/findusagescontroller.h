@@ -23,6 +23,7 @@ namespace Tome
             const SearchResultList findUsagesOfType(const QString& typeName);
 
         signals:
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
             void searchResultChanged(const QString& title, const Tome::SearchResultList results);
 
         private:

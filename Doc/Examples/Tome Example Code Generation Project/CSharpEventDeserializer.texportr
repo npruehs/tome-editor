@@ -1,0 +1,4 @@
+                case EventType.$RECORD_ID$:
+                    $RECORD_ID$ $RECORD_ID$ = new $RECORD_ID$();
+$RECORD_FIELDS$
+                    return new Event { Type = EventType.$RECORD_ID$, Data = $RECORD_ID$ };

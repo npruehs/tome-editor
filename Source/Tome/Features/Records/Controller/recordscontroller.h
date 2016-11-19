@@ -16,13 +16,13 @@ namespace Tome
         Q_OBJECT
 
         public:
-            RecordsController(const FieldDefinitionsController& fieldDefinitionsController);
+            RecordsController(const FieldDefinitionsController& fieldDefinitionsController, const TypesController& typesController);
 
             const Record addRecord(const QString& id, const QString& displayName, const QString& recordSetName);
             void addRecordField(const QString& recordId, const QString& fieldId);
             void addRecordSet(const RecordSet& recordSet);
 
-            const Record duplicateRecord(const QString& existingRecordId, const QString& newRecordid);
+            const Record duplicateRecord(const QString& existingRecordId, const QString& newRecordId);
 
             /**
              * @brief getAncestors Gets the list of all ancestors of the record with the specified id, direct parent first.
@@ -94,6 +94,7 @@ namespace Tome
             void updateRecordReferences(const QString oldReference, const QString newReference);
 
         signals:
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
             void recordFieldsChanged(const QString& recordId);
             void recordSetsChanged();
 
@@ -101,6 +102,7 @@ namespace Tome
             RecordSetList* model;
 
             const FieldDefinitionsController& fieldDefinitionsController;
+            const TypesController& typesController;
 
             Record* getRecordById(const QString& id) const;
     };

@@ -2,15 +2,19 @@
 
 #include <stdexcept>
 
+#include <QApplication>
 #include <QFile>
 #include <QFileInfo>
 #include <QObject>
+#include <QSysInfo>
 #include <QTextStream>
 
 #include "commandlineoptions.h"
 #include "mainwindow.h"
 #include "../Features/Components/Controller/componentscontroller.h"
 #include "../Features/Components/Controller/componentsetserializer.h"
+#include "../Features/Diagnostics/Controller/filemessagehandler.h"
+#include "../Features/Diagnostics/Controller/messagehandlers.h"
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Export/Controller/exporttemplateserializer.h"
 #include "../Features/Facets/Controller/facetscontroller.h"
@@ -29,6 +33,7 @@
 #include "../Features/Integrity/Controller/mapkeytypenotsupportedtask.h"
 #include "../Features/Integrity/Controller/mapvaluetypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/mapvaluetypenotsupportedtask.h"
+#include "../Features/Integrity/Controller/typefacetviolatedtask.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Records/Controller/recordscontroller.h"
@@ -69,13 +74,14 @@ Controller::Controller(CommandLineOptions* options) :
     componentsController(new ComponentsController()),
     fieldDefinitionsController(new FieldDefinitionsController()),
     typesController(new TypesController()),
-    recordsController(new RecordsController(*this->fieldDefinitionsController)),
+    recordsController(new RecordsController(*this->fieldDefinitionsController, *this->typesController)),
     exportController(new ExportController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     settingsController(new SettingsController()),
-    tasksController(new TasksController(*this->componentsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
+    facetsController(new FacetsController(*this->recordsController, *this->typesController)),
+    tasksController(new TasksController(*this->componentsController, *this->facetsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findRecordController(new FindRecordController(*this->recordsController)),
-    facetsController(new FacetsController()),
+    recordSetSerializer(new RecordSetSerializer()),
     mainWindow(0)
 {
     // Setup tasks.
@@ -86,6 +92,7 @@ Controller::Controller(CommandLineOptions* options) :
     this->tasksController->addTask(new MapKeyTypeNotSupportedTask());
     this->tasksController->addTask(new MapValueTypeDoesNotExistTask());
     this->tasksController->addTask(new MapValueTypeNotSupportedTask());
+    this->tasksController->addTask(new TypeFacetViolatedTask());
 
     // Register facets.
     this->facetsController->registerFacet(new MinimumIntegerValueFacet());
@@ -94,6 +101,13 @@ Controller::Controller(CommandLineOptions* options) :
     this->facetsController->registerFacet(new MaximumRealValueFacet());
     this->facetsController->registerFacet(new MaximumStringLengthFacet());
     this->facetsController->registerFacet(new RequiredReferenceAncestorFacet());
+
+    // Connect signals.
+    connect(
+                this->recordSetSerializer,
+                SIGNAL(progressChanged(QString, QString, int, int)),
+                SLOT(onProgressChanged(QString, QString, int, int))
+                );
 }
 
 Controller::~Controller()
@@ -113,6 +127,7 @@ Controller::~Controller()
     delete this->findUsagesController;
     delete this->findRecordController;
     delete this->facetsController;
+    delete this->recordSetSerializer;
 
     delete this->options;
 }
@@ -169,11 +184,30 @@ FacetsController&Controller::getFacetsController()
 
 int Controller::start()
 {
+    // Install message handlers.
+    if (FileMessageHandler::init())
+    {
+        MessageHandlers::addMessageHandler(FileMessageHandler::handleMessage);
+    }
+
+    // Log system information.
+    qInfo(QString("Tome Version: %1").arg(QApplication::instance()->applicationVersion()).toUtf8().constData());
+    qInfo(QString("Qt Build Architecture: %1").arg(QSysInfo::buildAbi()).toUtf8().constData());
+    qInfo(QString("CPU Architecture: %1").arg(QSysInfo::currentCpuArchitecture()).toUtf8().constData());
+    qInfo(QString("OS: %1 %2").arg(QSysInfo::prettyProductName(), QSysInfo::kernelVersion()).toUtf8().constData());
+    qInfo(QString("Machine Host Name: %1").arg(QSysInfo::machineHostName()).toUtf8().constData());
+
     if (!this->options->noGui)
     {
+        qInfo("Setting up main window.");
+
         // Setup view.
         this->mainWindow = new MainWindow(this);
         this->mainWindow->show();
+    }
+    else
+    {
+        qInfo("Running without main window.");
     }
 
     if (!this->options->projectPath.isEmpty())
@@ -182,9 +216,9 @@ int Controller::start()
         {
             this->openProject(this->options->projectPath);
         }
-        catch (std::runtime_error&)
+        catch (std::runtime_error& e)
         {
-            // TODO(np): Write error log.
+            qCritical(e.what());
             return 1;
         }
     }
@@ -195,7 +229,7 @@ int Controller::start()
     {
         if (!this->exportController->hasRecordExportTemplate(this->options->exportTemplateName))
         {
-            // TODO(np): Write error log.
+            qCritical(QString("Export template not found: %1").arg(this->options->exportTemplateName).toUtf8().constData());
             return 1;
         }
 
@@ -211,9 +245,9 @@ int Controller::start()
         {
             this->exportController->exportRecords(exportTemplate, filePath);
         }
-        catch (std::runtime_error&)
+        catch (std::runtime_error& e)
         {
-            // TODO(np): Write error log.
+            qCritical(e.what());
             return 1;
         }
     }
@@ -223,6 +257,8 @@ int Controller::start()
 
 void Controller::createProject(const QString& projectName, const QString& projectPath)
 {
+    qInfo(QString("Creating new project %1 at %2.").arg(projectName, projectPath).toUtf8().constData());
+
     // Create new project.
     QSharedPointer<Project> newProject = QSharedPointer<Project>::create();
     newProject->name = projectName;
@@ -290,15 +326,21 @@ void Controller::loadComponentSet(const QString& projectPath, ComponentSet& comp
             buildFullFilePath(componentSet.name, projectPath, ComponentFileExtension);
 
     QFile componentFile(fullComponentSetPath);
+
+    qInfo(QString("Opening components file %1.").arg(fullComponentSetPath).toUtf8().constData());
+
     if (componentFile.open(QIODevice::ReadOnly))
     {
         try
         {
             componentSerializer.deserialize(componentFile, componentSet);
+            qInfo(QString("Opened components file %1 with %2 components.")
+                  .arg(fullComponentSetPath, QString::number(componentSet.components.count())).toUtf8().constData());
         }
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + fullComponentSetPath + "\r\n" + e.what();
+            qCritical(errorMessage.toUtf8().constData());
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -324,15 +366,21 @@ void Controller::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& ty
             buildFullFilePath(typeSet.name, projectPath, TypeFileExtension);
 
     QFile typeFile(fullTypeSetPath);
+
+    qInfo(QString("Opening types file %1.").arg(fullTypeSetPath).toUtf8().constData());
+
     if (typeFile.open(QIODevice::ReadOnly))
     {
         try
         {
             typesSerializer.deserialize(typeFile, typeSet);
+            qInfo(QString("Opened types file %1 with %2 custom types.")
+                  .arg(fullTypeSetPath, QString::number(typeSet.types.count())).toUtf8().constData());
         }
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + fullTypeSetPath + "\r\n" + e.what();
+            qCritical(errorMessage.toUtf8().constData());
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -355,6 +403,9 @@ void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemp
                 buildFullFilePath(exportTemplate.path, projectPath, RecordExportTemplateFileExtension);
 
         QFile exportTemplateFile(fullExportTemplatePath);
+
+        qInfo(QString("Opening export template file %1.").arg(fullExportTemplatePath).toUtf8().constData());
+
         if (exportTemplateFile.open(QIODevice::ReadOnly))
         {
             try
@@ -364,6 +415,7 @@ void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemp
             catch (const std::runtime_error& e)
             {
                 QString errorMessage = QObject::tr("File could not be read: ") + fullExportTemplatePath + "\r\n" + e.what();
+                qCritical(errorMessage.toUtf8().constData());
                 throw std::runtime_error(errorMessage.toStdString());
             }
         }
@@ -419,6 +471,7 @@ void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemp
     catch (const std::runtime_error& e)
     {
         QString errorMessage = QObject::tr("File could not be read:\r\n") + e.what();
+        qCritical(errorMessage.toUtf8().constData());
         throw std::runtime_error(errorMessage.toStdString());
     }
 }
@@ -432,15 +485,21 @@ void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinit
             buildFullFilePath(fieldDefinitionSet.name, projectPath, FieldDefinitionFileExtension);
 
     QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
+
+    qInfo(QString("Opening field definitions file %1.").arg(fullFieldDefinitionSetPath).toUtf8().constData());
+
     if (fieldDefinitionFile.open(QIODevice::ReadOnly))
     {
         try
         {
             fieldDefinitionSerializer.deserialize(fieldDefinitionFile, fieldDefinitionSet);
+            qInfo(QString("Opened field definitions file %1 with %2 fields.")
+                  .arg(fullFieldDefinitionSetPath, QString::number(fieldDefinitionSet.fieldDefinitions.count())).toUtf8().constData());
         }
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + fullFieldDefinitionSetPath + "\r\n" + e.what();
+            qCritical(errorMessage.toUtf8().constData());
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -453,22 +512,26 @@ void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinit
 
 void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet)
 {
-    RecordSetSerializer recordSetSerializer = RecordSetSerializer();
-
     // Open record file.
     QString fullRecordSetPath =
             buildFullFilePath(recordSet.name, projectPath, RecordFileExtension);
 
     QFile recordFile(fullRecordSetPath);
+
+    qInfo(QString("Opening records file %1.").arg(fullRecordSetPath).toUtf8().constData());
+
     if (recordFile.open(QIODevice::ReadOnly))
     {
         try
         {
-            recordSetSerializer.deserialize(recordFile, recordSet);
+            this->recordSetSerializer->deserialize(recordFile, recordSet);
+            qInfo(QString("Opened records file %1 with %2 records.")
+                  .arg(fullRecordSetPath, QString::number(recordSet.records.count())).toUtf8().constData());
         }
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + fullRecordSetPath + "\r\n" + e.what();
+            qCritical(errorMessage.toUtf8().constData());
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -492,6 +555,8 @@ void Controller::openProject(const QString& projectFileName)
 
     const QString projectPath = projectFileInfo.path();
 
+    qInfo(QString("Opening project %1.").arg(projectFileName).toUtf8().constData());
+
     if (projectFile.open(QIODevice::ReadOnly))
     {
         // Load project from file.
@@ -506,6 +571,7 @@ void Controller::openProject(const QString& projectFileName)
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + projectFileName + "\r\n" + e.what();
+            qCritical(errorMessage.toUtf8().constData());
             throw std::runtime_error(errorMessage.toStdString());
         }
 
@@ -560,6 +626,11 @@ void Controller::saveProject()
     this->saveProject(this->project);
 }
 
+void Controller::onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue)
+{
+    emit this->progressChanged(title, text, currentValue, maximumValue);
+}
+
 QString Controller::buildFullFilePath(QString filePath, QString projectPath, QString desiredExtension) const
 {
     if (!filePath.endsWith(desiredExtension))
@@ -586,6 +657,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
     // Write project file.
     QFile projectFile(fullProjectPath);
 
+    qInfo(QString("Saving project %1.").arg(fullProjectPath).toUtf8().constData());
+
     if (projectFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
     {
         projectSerializer.serialize(projectFile, project);
@@ -609,6 +682,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
 
         // Write file.
         QFile componentSetFile(fullComponentSetPath);
+
+        qInfo(QString("Saving components file %1.").arg(fullComponentSetPath).toUtf8().constData());
 
         if (componentSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
@@ -635,6 +710,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
         // Write file.
         QFile fieldDefinitionSetFile(fullFieldDefinitionSetPath);
 
+        qInfo(QString("Saving field definitions file %1.").arg(fullFieldDefinitionSetPath).toUtf8().constData());
+
         if (fieldDefinitionSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
             fieldDefinitionSetSerializer.serialize(fieldDefinitionSetFile, fieldDefinitionSet);
@@ -647,8 +724,6 @@ void Controller::saveProject(QSharedPointer<Project> project)
     }
 
     // Write record sets.
-    Tome::RecordSetSerializer recordSetSerializer = RecordSetSerializer();
-
     for (int i = 0; i < project->recordSets.size(); ++i)
     {
         const RecordSet& recordSet = project->recordSets[i];
@@ -660,9 +735,11 @@ void Controller::saveProject(QSharedPointer<Project> project)
         // Write file.
         QFile recordSetFile(fullRecordSetPath);
 
+        qInfo(QString("Saving records file %1.").arg(fullRecordSetPath).toUtf8().constData());
+
         if (recordSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
-            recordSetSerializer.serialize(recordSetFile, recordSet);
+            this->recordSetSerializer->serialize(recordSetFile, recordSet);
         }
         else
         {
@@ -686,6 +763,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
 
         // Write file.
         QFile exportTemplateFile(fullExportTemplatePath);
+
+        qInfo(QString("Saving export template file %1.").arg(fullExportTemplatePath).toUtf8().constData());
 
         if (exportTemplateFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
@@ -711,6 +790,8 @@ void Controller::saveProject(QSharedPointer<Project> project)
 
         // Write file.
         QFile typeSetFile(fullTypeSetPath);
+
+        qInfo(QString("Saving types file %1.").arg(fullTypeSetPath).toUtf8().constData());
 
         if (typeSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {

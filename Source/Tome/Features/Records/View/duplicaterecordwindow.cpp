@@ -8,6 +8,7 @@ DuplicateRecordWindow::DuplicateRecordWindow(QWidget *parent) :
     ui(new Ui::DuplicateRecordWindow)
 {
     ui->setupUi(this);
+    this->ui->lineEdit->setValidator(&nameValidator);
 }
 
 DuplicateRecordWindow::~DuplicateRecordWindow()

@@ -11,9 +11,10 @@
 using namespace Tome;
 
 
-MapWidget::MapWidget(RecordsController& recordsController, TypesController& typesController, QWidget* parent) :
+MapWidget::MapWidget(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController, QWidget* parent) :
     QWidget(parent),
     mapItemWindow(0),
+    facetsController(facetsController),
     recordsController(recordsController),
     typesController(typesController)
 {
@@ -131,7 +132,7 @@ void MapWidget::addItem()
     // Prepare window.
     if (!this->mapItemWindow)
     {
-        this->mapItemWindow = new MapItemWindow(this->recordsController, this->typesController, this);
+        this->mapItemWindow = new MapItemWindow(this->facetsController, this->recordsController, this->typesController, this);
     }
 
     // Update view.
@@ -163,7 +164,7 @@ void MapWidget::editItem(QTableWidgetItem* item)
     // Prepare window.
     if (!this->mapItemWindow)
     {
-        this->mapItemWindow = new MapItemWindow(this->recordsController, this->typesController, this);
+        this->mapItemWindow = new MapItemWindow(this->facetsController, this->recordsController, this->typesController, this);
     }
 
     QTableWidgetItem* keyTableWidgetItem = this->tableWidget->item(item->row(), 0);
@@ -177,7 +178,7 @@ void MapWidget::editItem(QTableWidgetItem* item)
     this->mapItemWindow->setValueType(this->valueType);
 
     this->mapItemWindow->setKey(currentKey);
-    this->mapItemWindow->setKey(currentValue);
+    this->mapItemWindow->setValue(currentValue);
 
     // Show window.
     int result = this->mapItemWindow->exec();

@@ -7,11 +7,11 @@ namespace Tome
 {
     class RecordSet;
 
-    class RecordSetSerializer
+    class RecordSetSerializer : public QObject
     {
-        public:
-            RecordSetSerializer();
+            Q_OBJECT
 
+        public:
             /**
              * @brief serialize Writes the passed record set to the specified device.
              * @param device Device to write the record set to.
@@ -25,6 +25,9 @@ namespace Tome
              * @param recordSet Record set to fill.
              */
             void deserialize(QIODevice& device, RecordSet& recordSet) const;
+
+        signals:
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
 
         private:
             static const QString ElementDisplayName;
