@@ -11,8 +11,9 @@
 using namespace Tome;
 
 
-RecordsController::RecordsController(const FieldDefinitionsController& fieldDefinitionsController)
-    : fieldDefinitionsController(fieldDefinitionsController)
+RecordsController::RecordsController(const FieldDefinitionsController& fieldDefinitionsController, const TypesController& typesController)
+    : fieldDefinitionsController(fieldDefinitionsController),
+      typesController(typesController)
 {
 }
 
@@ -726,7 +727,7 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
             const QString fieldId = it.key();
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
 
-            if (field.fieldType == BuiltInType::Reference)
+            if (this->typesController.isReferenceType(field.fieldType))
             {
                 const QString reference = it.value().toString();
 

@@ -85,7 +85,7 @@ const SearchResultList FindUsagesController::findUsagesOfRecord(const QString& r
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(it.key());
             const QVariant& fieldValue = it.value();
 
-            if (field.fieldType == BuiltInType::Reference && fieldValue == recordId)
+            if (this->typesController.isReferenceType(field.fieldType) && fieldValue == recordId)
             {
                 SearchResult result;
                 result.content = field.id;

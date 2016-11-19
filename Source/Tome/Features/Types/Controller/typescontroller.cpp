@@ -169,6 +169,22 @@ bool TypesController::isCustomType(const QString& name) const
     return false;
 }
 
+bool TypesController::isReferenceType(const QString& name) const
+{
+    if (name == BuiltInType::Reference)
+    {
+        return true;
+    }
+
+    if (!this->isCustomType(name))
+    {
+        return false;
+    }
+
+    const CustomType& type = this->getCustomType(name);
+    return type.isDerivedType() && type.getBaseType() == BuiltInType::Reference;
+}
+
 void TypesController::moveCustomTypeToSet(const QString& customTypeName, const QString& customTypeSetName)
 {
     qInfo(QString("Moving type %1 to set %2.").arg(customTypeName, customTypeSetName).toUtf8().constData());

@@ -42,6 +42,7 @@ namespace Tome
             int indexOf(const CustomType& customType) const;
             bool isBuiltInType(const QString& name) const;
             bool isCustomType(const QString& name) const;
+            bool isReferenceType(const QString& name) const;
             void moveCustomTypeToSet(const QString& customTypeName, const QString& customTypeSetName);
             void removeCustomType(const QString& typeName);
             void removeCustomTypeAt(const int index);

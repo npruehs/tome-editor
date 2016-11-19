@@ -16,7 +16,7 @@ namespace Tome
         Q_OBJECT
 
         public:
-            RecordsController(const FieldDefinitionsController& fieldDefinitionsController);
+            RecordsController(const FieldDefinitionsController& fieldDefinitionsController, const TypesController& typesController);
 
             const Record addRecord(const QString& id, const QString& displayName, const QString& recordSetName);
             void addRecordField(const QString& recordId, const QString& fieldId);
@@ -102,6 +102,7 @@ namespace Tome
             RecordSetList* model;
 
             const FieldDefinitionsController& fieldDefinitionsController;
+            const TypesController& typesController;
 
             Record* getRecordById(const QString& id) const;
     };
