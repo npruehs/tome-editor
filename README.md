@@ -64,7 +64,7 @@ Tome is developed using the [GitFlow branching model](http://nvie.com/posts/a-su
 
 ### Step 3: Implement your feature or bugfix
 
-Tome is based on [Qt 5.4](http://www.qt.io/).
+Tome is based on [Qt 5.7](http://www.qt.io/).
 
 You might also take a look at our [development wiki](https://github.com/npruehs/game-data-editor/wiki) in order to get a better understanding of how everything's tied together.
 
