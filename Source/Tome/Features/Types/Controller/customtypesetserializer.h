@@ -19,6 +19,7 @@ namespace Tome
             static const QString AttributeKey;
             static const QString AttributeValue;
             static const QString AttributeVersion;
+            static const QString AttributeVersionDeprecated;
             static const QString ElementConstrainingFacet;
             static const QString ElementConstrainingFacets;
             static const QString ElementFundamentalFacet;
