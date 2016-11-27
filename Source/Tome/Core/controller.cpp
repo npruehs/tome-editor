@@ -44,6 +44,7 @@
 #include "../Features/Tasks/Controller/taskscontroller.h"
 #include "../Features/Types/Controller/typescontroller.h"
 #include "../Features/Types/Controller/customtypesetserializer.h"
+#include "../Features/Undo/Controller/undocontroller.h"
 #include "../Util/pathutils.h"
 
 using namespace Tome;
@@ -71,6 +72,7 @@ const QString Controller::TypeFileExtension = ".ttypes";
 
 Controller::Controller(CommandLineOptions* options) :
     options(options),
+    undoController(new UndoController()),
     componentsController(new ComponentsController()),
     fieldDefinitionsController(new FieldDefinitionsController()),
     typesController(new TypesController()),
@@ -117,6 +119,7 @@ Controller::~Controller()
         delete this->mainWindow;
     }
 
+    delete this->undoController;
     delete this->componentsController;
     delete this->fieldDefinitionsController;
     delete this->recordsController;
@@ -130,6 +133,11 @@ Controller::~Controller()
     delete this->recordSetSerializer;
 
     delete this->options;
+}
+
+UndoController&Controller::getUndoController()
+{
+    return *this->undoController;
 }
 
 ComponentsController& Controller::getComponentsController()

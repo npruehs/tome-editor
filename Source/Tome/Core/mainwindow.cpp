@@ -33,6 +33,7 @@
 #include "../Features/Projects/View/projectoverviewwindow.h"
 #include "../Features/Records/Controller/recordscontroller.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
+#include "../Features/Records/Controller/Commands/updaterecordfieldvaluecommand.h"
 #include "../Features/Records/Model/recordfieldstate.h"
 #include "../Features/Records/View/recordfieldstablewidget.h"
 #include "../Features/Records/View/recordtreewidget.h"
@@ -52,6 +53,7 @@
 #include "../Features/Types/Controller/typescontroller.h"
 #include "../Features/Types/Model/builtintype.h"
 #include "../Features/Types/View/customtypeswindow.h"
+#include "../Features/Undo/Controller/undocontroller.h"
 #include "../Util/listutils.h"
 #include "../Util/pathutils.h"
 #include "../Util/stringutils.h"
@@ -261,6 +263,17 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     this->progressDialog->setCancelButton(0);
     this->progressDialog->setMaximum(1);
     this->progressDialog->setValue(1);
+
+    // Setup undo.
+    this->ui->menuProject->addSeparator();
+
+    QAction* undoAction = this->controller->getUndoController().createUndoAction(this, tr("Undo"));
+    undoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z));
+    this->ui->menuProject->addAction(undoAction);
+
+    QAction* redoAction = this->controller->getUndoController().createRedoAction(this, tr("Redo"));
+    redoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Y));
+    this->ui->menuProject->addAction(redoAction);
 }
 
 MainWindow::~MainWindow()
@@ -983,7 +996,9 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
         QVariant fieldValue = this->fieldValueWindow->getFieldValue();
 
         // Update model.
-        this->controller->getRecordsController().updateRecordFieldValue(id, fieldId, fieldValue);
+        UpdateRecordFieldValueCommand* command =
+                new UpdateRecordFieldValueCommand(this->controller->getRecordsController(), id, fieldId, fieldValue);
+        this->controller->getUndoController().doCommand(command);
 
         // Update view.
         this->updateRecordRow(index.row());

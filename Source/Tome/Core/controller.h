@@ -25,6 +25,7 @@ namespace Tome
     class SettingsController;
     class TasksController;
     class TypesController;
+    class UndoController;
 
     class Controller : public QObject
     {
@@ -34,6 +35,7 @@ namespace Tome
             Controller(Tome::CommandLineOptions* options);
             ~Controller();
 
+            UndoController& getUndoController();
             ComponentsController& getComponentsController();
             FieldDefinitionsController& getFieldDefinitionsController();
             RecordsController& getRecordsController();
@@ -94,6 +96,7 @@ namespace Tome
 
             QSharedPointer<Project> project;
 
+            UndoController* undoController;
             ComponentsController* componentsController;
             FieldDefinitionsController* fieldDefinitionsController;
             TypesController* typesController;
