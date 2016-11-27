@@ -805,7 +805,7 @@ void MainWindow::on_actionReleases_triggered()
 
 void MainWindow::on_actionRoadmap_triggered()
 {
-    QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/milestones"));
+    QDesktopServices::openUrl(QUrl("https://github.com/npruehs/tome-editor/milestones?direction=asc&sort=due_date&state=open"));
 }
 
 void MainWindow::on_actionOutput_triggered()
