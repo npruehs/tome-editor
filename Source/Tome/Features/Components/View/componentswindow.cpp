@@ -4,6 +4,7 @@
 #include "componentwindow.h"
 #include "../Controller/componentscontroller.h"
 #include "../Controller/Commands/addcomponentcommand.h"
+#include "../Controller/Commands/removecomponentcommand.h"
 #include "../Model/component.h"
 #include "../Model/componentlist.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
@@ -91,8 +92,9 @@ void ComponentsWindow::on_actionDelete_Component_triggered()
     Component component = selectedItems.first()->text();
 
     // Update model.
-    this->componentsController.removeComponent(component);
-    this->fieldDefinitionsController.removeFieldComponent(component);
+    RemoveComponentCommand* command =
+            new RemoveComponentCommand(this->componentsController, this->fieldDefinitionsController, component);
+    this->undoController.doCommand(command);
 }
 
 void ComponentsWindow::onComponentAdded(const Component& component)
@@ -107,4 +109,8 @@ void ComponentsWindow::onComponentRemoved(const Component& component)
     // Update view.
     int index = this->componentsController.indexOf(component);
     this->ui->listWidget->takeItem(index);
+
+    // Notify further listeners.
+    // TODO(np): Turn into signal.
+    this->fieldDefinitionsController.removeFieldComponent(component);
 }

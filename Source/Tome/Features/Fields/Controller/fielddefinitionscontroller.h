@@ -22,6 +22,7 @@ namespace Tome
             void addFieldDefinitionSet(const FieldDefinitionSet& fieldDefinitionSet);
             const FieldDefinition& getFieldDefinition(const QString& id) const;
             const FieldDefinitionList getFieldDefinitions() const;
+            const FieldDefinitionList getFieldDefinitionsOfComponent(const QString& component) const;
             const FieldDefinitionSetList& getFieldDefinitionSets() const;
             const QStringList getFieldDefinitionSetNames() const;
             bool hasFieldDefinition(const QString& id) const;

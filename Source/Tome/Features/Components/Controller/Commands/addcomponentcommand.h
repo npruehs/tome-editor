@@ -17,15 +17,13 @@ namespace Tome
             virtual void undo();
             virtual void redo();
 
-            Component component;
-
         private:
             ComponentsController& componentsController;
 
             const QString componentName;
             const QString componentSetName;
 
-
+            Component component;
     };
 }
 

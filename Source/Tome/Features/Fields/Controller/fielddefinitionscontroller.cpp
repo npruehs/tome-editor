@@ -89,6 +89,28 @@ const FieldDefinitionList FieldDefinitionsController::getFieldDefinitions() cons
     return fieldDefinitions;
 }
 
+const FieldDefinitionList FieldDefinitionsController::getFieldDefinitionsOfComponent(const QString& component) const
+{
+    FieldDefinitionList fieldDefinitions;
+
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.count(); ++j)
+        {
+            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+
+            if (fieldDefinition.component == component)
+            {
+                fieldDefinitions << fieldDefinition;
+            }
+        }
+    }
+
+    return fieldDefinitions;
+}
+
 const FieldDefinitionSetList& FieldDefinitionsController::getFieldDefinitionSets() const
 {
     return *this->model;

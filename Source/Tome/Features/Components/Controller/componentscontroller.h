@@ -21,6 +21,7 @@ namespace Tome
             const ComponentList getComponents() const;
             const ComponentSetList& getComponentSets() const;
             const QStringList getComponentSetNames() const;
+            const QString getSetNameOfComponent(const Component component) const;
             int indexOf(const Component& component) const;
             void removeComponent(const Component component);
             void removeComponentSet(const QString& name);

@@ -121,7 +121,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Integrity/Controller/typefacetviolatedtask.cpp \
     ../Source/Tome/Features/Records/Controller/Commands/updaterecordfieldvaluecommand.cpp \
     ../Source/Tome/Features/Undo/Controller/undocontroller.cpp \
-    ../Source/Tome/Features/Components/Controller/Commands/addcomponentcommand.cpp
+    ../Source/Tome/Features/Components/Controller/Commands/addcomponentcommand.cpp \
+    ../Source/Tome/Features/Components/Controller/Commands/removecomponentcommand.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -233,7 +234,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Integrity/Controller/typefacetviolatedtask.h \
     ../Source/Tome/Features/Records/Controller/Commands/updaterecordfieldvaluecommand.h \
     ../Source/Tome/Features/Undo/Controller/undocontroller.h \
-    ../Source/Tome/Features/Components/Controller/Commands/addcomponentcommand.h
+    ../Source/Tome/Features/Components/Controller/Commands/addcomponentcommand.h \
+    ../Source/Tome/Features/Components/Controller/Commands/removecomponentcommand.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
