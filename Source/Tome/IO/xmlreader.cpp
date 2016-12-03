@@ -19,7 +19,7 @@ bool XmlReader::isAtElement(const QString& elementName) const
     return this->getElementName() == elementName;
 }
 
-QString XmlReader::readAttribute(const QString& attributeName)
+QString XmlReader::readAttribute(const QString& attributeName) const
 {
     return this->reader.attributes().value(attributeName).toString();
 }

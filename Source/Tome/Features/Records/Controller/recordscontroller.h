@@ -91,7 +91,6 @@ namespace Tome
             void setRecordSets(RecordSetList& model);
             void updateRecord(const QString& oldId, const QString& newId, const QString& displayName);
             void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue);
-            void updateRecordReferences(const QString oldReference, const QString newReference);
 
         signals:
             void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
@@ -105,6 +104,7 @@ namespace Tome
             const TypesController& typesController;
 
             Record* getRecordById(const QString& id) const;
+            void updateRecordReferences(const QString oldReference, const QString newReference);
     };
 }
 

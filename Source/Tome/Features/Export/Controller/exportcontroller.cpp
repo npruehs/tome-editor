@@ -94,7 +94,7 @@ bool ExportController::hasRecordExportTemplate(const QString& name) const
     return false;
 }
 
-void ExportController::exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath)
+void ExportController::exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath) const
 {
     QFile file(filePath);
 
@@ -110,7 +110,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
     }
 }
 
-void ExportController::exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device)
+void ExportController::exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device) const
 {
     qInfo(QString("Exporting records with template %1.").arg(exportTemplate.name).toUtf8().constData());
 

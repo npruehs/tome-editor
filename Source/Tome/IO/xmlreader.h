@@ -26,7 +26,7 @@ class XmlReader
          * @param attributeName Name of the attribute to read.
          * @return Value of the attribute of the specified name, or an empty string, if the attribute could not be found.
          */
-        QString readAttribute(const QString& attributeName);
+        QString readAttribute(const QString& attributeName) const;
 
         /**
          * @brief readEmptyElement Verifies that the reader is at an empty element with the specified name, and advances it to the next token.

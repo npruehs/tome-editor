@@ -246,11 +246,6 @@ void TypesController::removeCustomType(const QString& typeName)
     }
 }
 
-void TypesController::removeCustomTypeAt(const int index)
-{
-    this->model->removeAt(index);
-}
-
 void TypesController::removeCustomTypeSet(const QString& name)
 {
     for (CustomTypeSetList::iterator it = this->model->begin();
@@ -417,7 +412,7 @@ void TypesController::updateMap(const QString& oldName, const QString& newName, 
     }
 }
 
-QString TypesController::valueToString(const QVariant& value, const QString& typeName)
+QString TypesController::valueToString(const QVariant& value, const QString& typeName) const
 {
     // Vector2I.
     if (typeName == BuiltInType::Vector2I || typeName == BuiltInType::Vector2R ||
