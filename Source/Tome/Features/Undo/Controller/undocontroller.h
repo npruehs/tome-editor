@@ -12,6 +12,7 @@ namespace Tome
         public:
             UndoController();
 
+            void clear();
             QAction* createRedoAction(QObject* parent, const QString& prefix);
             QAction* createUndoAction(QObject* parent, const QString& prefix);
             void doCommand(QUndoCommand* command);

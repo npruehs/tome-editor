@@ -8,6 +8,11 @@ UndoController::UndoController()
 {
 }
 
+void UndoController::clear()
+{
+    this->undoStack->clear();
+}
+
 QAction* UndoController::createRedoAction(QObject* parent, const QString& prefix)
 {
     return this->undoStack->createRedoAction(parent, prefix);

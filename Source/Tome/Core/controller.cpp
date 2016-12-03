@@ -845,6 +845,9 @@ void Controller::setProject(QSharedPointer<Project> project)
     // Set the default locale.
     QLocale::setDefault(project->locale);
 
+    // Reset undo stack.
+    this->undoController->clear();
+
     // Notify listeners.
     emit projectChanged(this->project);
 }
