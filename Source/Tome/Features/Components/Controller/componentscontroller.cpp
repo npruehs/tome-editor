@@ -27,6 +27,7 @@ const Component ComponentsController::addComponent(const QString& componentName,
             ComponentList& components = componentSet.components;
             int index = findInsertionIndex(components, component, qStringLessThanLowerCase);
             components.insert(index, component);
+            emit this->componentAdded(component);
             return component;
         }
     }
@@ -97,6 +98,7 @@ void ComponentsController::removeComponent(const Component component)
         {
             if (*it == component)
             {
+                emit this->componentRemoved(component);
                 components.erase(it);
                 return;
             }

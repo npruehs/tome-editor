@@ -344,6 +344,7 @@ void MainWindow::on_actionManage_Components_triggered()
         this->componentsWindow = new ComponentsWindow(
                     this->controller->getComponentsController(),
                     this->controller->getFieldDefinitionsController(),
+                    this->controller->getUndoController(),
                     this);
     }
 

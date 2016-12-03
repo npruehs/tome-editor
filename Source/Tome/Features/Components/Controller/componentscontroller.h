@@ -1,14 +1,18 @@
 #ifndef COMPONENTSCONTROLLER_H
 #define COMPONENTSCONTROLLER_H
 
+#include <QObject>
+
 #include "../Model/component.h"
 #include "../Model/componentlist.h"
 #include "../Model/componentsetlist.h"
 
 namespace Tome
 {
-    class ComponentsController
+    class ComponentsController : public QObject
     {
+            Q_OBJECT
+
         public:
             ComponentsController();
 
@@ -21,6 +25,10 @@ namespace Tome
             void removeComponent(const Component component);
             void removeComponentSet(const QString& name);
             void setComponents(ComponentSetList& model);
+
+        signals:
+            void componentAdded(const Tome::Component& component);
+            void componentRemoved(const Tome::Component& component);
 
         private:
             ComponentSetList* model;
