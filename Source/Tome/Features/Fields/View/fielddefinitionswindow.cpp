@@ -8,6 +8,7 @@
 #include "fielddefinitionwindow.h"
 #include "../Controller/fielddefinitionscontroller.h"
 #include "../Controller/Commands/addfielddefinitioncommand.h"
+#include "../Controller/Commands/removefielddefinitioncommand.h"
 #include "../Model/fielddefinition.h"
 #include "../../Facets/Controller/facetscontroller.h"
 #include "../../Components/Controller/componentscontroller.h"
@@ -226,7 +227,11 @@ void FieldDefinitionsWindow::on_actionDelete_Field_triggered()
     }
 
     // Update model.
-    this->fieldDefinitionsController.removeFieldDefinition(fieldId);
+    RemoveFieldDefinitionCommand* command = new RemoveFieldDefinitionCommand(
+                this->fieldDefinitionsController,
+                this->recordsController,
+                fieldId);
+    this->undoController.doCommand(command);
 }
 
 void FieldDefinitionsWindow::on_actionFind_Usages_triggered()
