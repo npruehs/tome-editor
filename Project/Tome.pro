@@ -122,7 +122,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Records/Controller/Commands/updaterecordfieldvaluecommand.cpp \
     ../Source/Tome/Features/Undo/Controller/undocontroller.cpp \
     ../Source/Tome/Features/Components/Controller/Commands/addcomponentcommand.cpp \
-    ../Source/Tome/Features/Components/Controller/Commands/removecomponentcommand.cpp
+    ../Source/Tome/Features/Components/Controller/Commands/removecomponentcommand.cpp \
+    ../Source/Tome/Features/Fields/Controller/Commands/addfielddefinitioncommand.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -235,7 +236,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Records/Controller/Commands/updaterecordfieldvaluecommand.h \
     ../Source/Tome/Features/Undo/Controller/undocontroller.h \
     ../Source/Tome/Features/Components/Controller/Commands/addcomponentcommand.h \
-    ../Source/Tome/Features/Components/Controller/Commands/removecomponentcommand.h
+    ../Source/Tome/Features/Components/Controller/Commands/removecomponentcommand.h \
+    ../Source/Tome/Features/Fields/Controller/Commands/addfielddefinitioncommand.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

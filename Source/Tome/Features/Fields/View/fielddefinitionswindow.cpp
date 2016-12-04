@@ -7,12 +7,15 @@
 
 #include "fielddefinitionwindow.h"
 #include "../Controller/fielddefinitionscontroller.h"
+#include "../Controller/Commands/addfielddefinitioncommand.h"
+#include "../Model/fielddefinition.h"
 #include "../../Facets/Controller/facetscontroller.h"
 #include "../../Components/Controller/componentscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Search/Controller/findusagescontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/builtintype.h"
+#include "../../Undo/Controller/undocontroller.h"
 #include "../../../Util/listutils.h"
 
 using namespace Tome;
@@ -24,6 +27,7 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
         TypesController& typesController,
         FindUsagesController& findUsagesController,
         FacetsController& facetsController,
+        UndoController& undoController,
         QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::FieldDefinitionsWindow),
@@ -33,6 +37,7 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
     typesController(typesController),
     findUsagesController(findUsagesController),
     facetsController(facetsController),
+    undoController(undoController),
     fieldDefinitionWindow(0)
 {
     ui->setupUi(this);
@@ -60,6 +65,17 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
 
     // Enable sorting.
     this->ui->tableWidget->setSortingEnabled(true);
+
+    // Connect signals.
+    connect(
+                &this->fieldDefinitionsController,
+                SIGNAL(fieldDefinitionAdded(const Tome::FieldDefinition&)),
+                SLOT(onFieldDefinitionAdded(const Tome::FieldDefinition&)));
+
+    connect(
+                &this->fieldDefinitionsController,
+                SIGNAL(fieldDefinitionRemoved(const Tome::FieldDefinition&)),
+                SLOT(onFieldDefinitionRemoved(const Tome::FieldDefinition&)));
 
     // Listen for selection changes.
     connect(
@@ -110,24 +126,24 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
         try
         {
             const QString& fieldId = this->fieldDefinitionWindow->getFieldId();
-            const QString& component = this->fieldDefinitionWindow->getFieldComponent();
+            const QString& fieldDisplayName = this->fieldDefinitionWindow->getFieldDisplayName();
+            const QString& fieldType = this->fieldDefinitionWindow->getFieldType();
+            const QVariant& fieldDefaultValue = this->fieldDefinitionWindow->getDefaultValue();
+            const QString& fieldComponent = this->fieldDefinitionWindow->getFieldComponent();
+            const QString& fieldDescription = this->fieldDefinitionWindow->getFieldDescription();
+            const QString& fieldDefinitionSetName = this->fieldDefinitionWindow->getFieldDefinitionSetName();
 
             // Update model.
-            FieldDefinition fieldDefinition =
-                    this->fieldDefinitionsController.addFieldDefinition(
+            AddFieldDefinitionCommand* command = new AddFieldDefinitionCommand(
+                        this->fieldDefinitionsController,
                         fieldId,
-                        this->fieldDefinitionWindow->getFieldDisplayName(),
-                        this->fieldDefinitionWindow->getFieldType(),
-                        this->fieldDefinitionWindow->getDefaultValue(),
-                        component,
-                        this->fieldDefinitionWindow->getFieldDescription(),
-                        this->fieldDefinitionWindow->getFieldDefinitionSetName());
-
-            this->recordsController.moveFieldToComponent(fieldId, QString(), component);
-
-            // Update view.
-            this->ui->tableWidget->insertRow(0);
-            this->updateRow(0, fieldDefinition, true);
+                        fieldDisplayName,
+                        fieldType,
+                        fieldDefaultValue,
+                        fieldComponent,
+                        fieldDescription,
+                        fieldDefinitionSetName);
+            this->undoController.doCommand(command);
         }
         catch (std::out_of_range& e)
         {
@@ -209,17 +225,8 @@ void FieldDefinitionsWindow::on_actionDelete_Field_triggered()
         return;
     }
 
-    const int index = this->getFieldRow(fieldId);
-
     // Update model.
     this->fieldDefinitionsController.removeFieldDefinition(fieldId);
-    this->recordsController.removeRecordField(fieldId);
-
-    // Update view.
-    this->ui->tableWidget->removeRow(index);
-
-    // Notify listeners.
-    emit fieldChanged();
 }
 
 void FieldDefinitionsWindow::on_actionFind_Usages_triggered()
@@ -233,6 +240,29 @@ void FieldDefinitionsWindow::on_tableWidget_doubleClicked(const QModelIndex &ind
 {
     Q_UNUSED(index);
     this->on_actionEdit_Field_triggered();
+}
+
+void FieldDefinitionsWindow::onFieldDefinitionAdded(const FieldDefinition& fieldDefinition)
+{
+    // TODO(np): Turn into signal.
+    this->recordsController.moveFieldToComponent(fieldDefinition.id, QString(), fieldDefinition.component);
+
+    // Update view.
+    this->ui->tableWidget->insertRow(0);
+    this->updateRow(0, fieldDefinition, true);
+}
+
+void FieldDefinitionsWindow::onFieldDefinitionRemoved(const FieldDefinition& fieldDefinition)
+{
+    // TODO(np): Turn into signal.
+    this->recordsController.removeRecordField(fieldDefinition.id);
+
+    // Update view.
+    const int index = this->getFieldRow(fieldDefinition.id);
+    this->ui->tableWidget->removeRow(index);
+
+    // Notify listeners.
+    emit fieldChanged();
 }
 
 void FieldDefinitionsWindow::tableWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)

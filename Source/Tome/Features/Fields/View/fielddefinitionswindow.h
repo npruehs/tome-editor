@@ -21,6 +21,7 @@ namespace Tome
     class FindUsagesController;
     class RecordsController;
     class TypesController;
+    class UndoController;
 }
 
 class FieldDefinitionsWindow : public QMainWindow
@@ -35,6 +36,7 @@ class FieldDefinitionsWindow : public QMainWindow
                 Tome::TypesController& typesController,
                 Tome::FindUsagesController& findUsagesController,
                 Tome::FacetsController& facetsController,
+                Tome::UndoController& undoController,
                 QWidget *parent = 0);
         ~FieldDefinitionsWindow();
 
@@ -53,6 +55,9 @@ class FieldDefinitionsWindow : public QMainWindow
 
         void on_tableWidget_doubleClicked(const QModelIndex &index);
 
+        void onFieldDefinitionAdded(const Tome::FieldDefinition& fieldDefinition);
+        void onFieldDefinitionRemoved(const Tome::FieldDefinition& fieldDefinition);
+
         void tableWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
     private:
@@ -64,6 +69,7 @@ class FieldDefinitionsWindow : public QMainWindow
         Tome::TypesController& typesController;
         Tome::FindUsagesController& findUsagesController;
         Tome::FacetsController& facetsController;
+        Tome::UndoController& undoController;
 
         FieldDefinitionWindow* fieldDefinitionWindow;
 

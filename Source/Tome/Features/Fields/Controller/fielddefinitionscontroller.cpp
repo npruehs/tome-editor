@@ -51,6 +51,7 @@ const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QStri
             FieldDefinitionList& fieldDefinitions = fieldDefinitionSet.fieldDefinitions;
             int index = findInsertionIndex(fieldDefinitions, fieldDefinition, fieldDefinitionLessThanDisplayName);
             fieldDefinitions.insert(index, fieldDefinition);
+            emit this->fieldDefinitionAdded(fieldDefinition);
 
             return fieldDefinition;
         }
@@ -225,6 +226,7 @@ void FieldDefinitionsController::removeFieldDefinition(const QString& fieldId)
         {
             if (it->id == fieldId)
             {
+                emit this->fieldDefinitionRemoved(*it);
                 fieldDefinitionSet.fieldDefinitions.erase(it);
                 return;
             }

@@ -6,8 +6,10 @@
 
 namespace Tome
 {
-    class FieldDefinitionsController
+    class FieldDefinitionsController : public QObject
     {
+            Q_OBJECT
+
         public:
             FieldDefinitionsController();
 
@@ -41,6 +43,10 @@ namespace Tome
                     const QString& component,
                     const QString& description,
                     const QString& fieldDefinitionSetName);
+
+        signals:
+            void fieldDefinitionAdded(const Tome::FieldDefinition& fieldDefinition);
+            void fieldDefinitionRemoved(const Tome::FieldDefinition& fieldDefinition);
 
         private:
             FieldDefinitionSetList* model;
