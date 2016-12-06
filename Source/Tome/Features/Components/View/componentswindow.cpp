@@ -109,8 +109,4 @@ void ComponentsWindow::onComponentRemoved(const Component& component)
     // Update view.
     int index = this->componentsController.indexOf(component);
     this->ui->listWidget->takeItem(index);
-
-    // Notify further listeners.
-    // TODO(np): Turn into signal.
-    this->fieldDefinitionsController.removeFieldComponent(component);
 }

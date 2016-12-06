@@ -74,7 +74,7 @@ Controller::Controller(CommandLineOptions* options) :
     options(options),
     undoController(new UndoController()),
     componentsController(new ComponentsController()),
-    fieldDefinitionsController(new FieldDefinitionsController()),
+    fieldDefinitionsController(new FieldDefinitionsController(*this->componentsController)),
     typesController(new TypesController()),
     recordsController(new RecordsController(*this->fieldDefinitionsController, *this->typesController)),
     exportController(new ExportController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
