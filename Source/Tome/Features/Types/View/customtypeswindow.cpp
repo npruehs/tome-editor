@@ -6,12 +6,17 @@
 #include "listwindow.h"
 #include "mapwindow.h"
 #include "../Controller/typescontroller.h"
+#include "../Controller/Commands/addderivedtypecommand.h"
+#include "../Controller/Commands/addenumerationcommand.h"
+#include "../Controller/Commands/addlistcommand.h"
+#include "../Controller/Commands/addmapcommand.h"
 #include "../Model/builtintype.h"
 #include "../../Facets/Controller/facetscontroller.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Search/Controller/findusagescontroller.h"
 #include "../../Types/Model/customtype.h"
+#include "../../Undo/Controller/undocontroller.h"
 #include "../../../Util/listutils.h"
 
 using namespace Tome;
@@ -22,6 +27,7 @@ CustomTypesWindow::CustomTypesWindow(TypesController& typesController,
                                      FieldDefinitionsController& fieldDefinitionsController,
                                      FindUsagesController& findUsagesController,
                                      RecordsController& recordsController,
+                                     UndoController& undoController,
                                      QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::CustomTypesWindow),
@@ -30,6 +36,7 @@ CustomTypesWindow::CustomTypesWindow(TypesController& typesController,
     fieldDefinitionsController(fieldDefinitionsController),
     findUsagesController(findUsagesController),
     recordsController(recordsController),
+    undoController(undoController),
     derivedTypeWindow(0),
     enumerationWindow(0),
     listWindow(0),
@@ -45,6 +52,17 @@ CustomTypesWindow::CustomTypesWindow(TypesController& typesController,
     headers << tr("Type");
     headers << tr("Details");
     this->ui->tableWidget->setHorizontalHeaderLabels(headers);
+
+    // Connect signals.
+    connect(
+                &this->typesController,
+                SIGNAL(typeAdded(const Tome::CustomType&)),
+                SLOT(onTypeAdded(const Tome::CustomType&)));
+
+    connect(
+                &this->typesController,
+                SIGNAL(typeRemoved(const Tome::CustomType&)),
+                SLOT(onTypeRemoved(const Tome::CustomType&)));
 }
 
 CustomTypesWindow::~CustomTypesWindow()
@@ -87,16 +105,13 @@ void CustomTypesWindow::on_actionNew_Derived_Type_triggered()
     if (result == QDialog::Accepted)
     {
         // Update model.
-        CustomType newType =
-                this->typesController.addDerivedType(
+        AddDerivedTypeCommand* command = new AddDerivedTypeCommand(
+                    this->typesController,
                     this->derivedTypeWindow->getTypeName(),
                     this->derivedTypeWindow->getBaseType(),
                     this->derivedTypeWindow->getFacets(),
                     this->derivedTypeWindow->getTypeSetName());
-
-        // Update view.
-        this->ui->tableWidget->insertRow(0);
-        this->updateRow(0, newType);
+        this->undoController.doCommand(command);
     }
 }
 
@@ -120,15 +135,12 @@ void CustomTypesWindow::on_actionNew_Custom_Type_triggered()
     if (result == QDialog::Accepted)
     {
         // Update model.
-        CustomType newType =
-                this->typesController.addEnumeration(
+        AddEnumerationCommand* command = new AddEnumerationCommand(
+                    this->typesController,
                     this->enumerationWindow->getEnumerationName(),
                     this->enumerationWindow->getEnumerationMembers(),
                     this->enumerationWindow->getTypeSetName());
-
-        // Update view.
-        this->ui->tableWidget->insertRow(0);
-        this->updateRow(0, newType);
+        this->undoController.doCommand(command);
     }
 }
 
@@ -146,15 +158,11 @@ void CustomTypesWindow::on_actionNew_List_triggered()
     if (result == QDialog::Accepted)
     {
         // Update model.
-        CustomType newType =
-                this->typesController.addList(
-                    this->listWindow->getListName(),
-                    this->listWindow->getListItemType(),
-                    this->listWindow->getTypeSetName());
-
-        // Update view.
-        this->ui->tableWidget->insertRow(0);
-        this->updateRow(0, newType);
+        AddListCommand* command = new AddListCommand(this->typesController,
+                                                     this->listWindow->getListName(),
+                                                     this->listWindow->getListItemType(),
+                                                     this->listWindow->getTypeSetName());
+        this->undoController.doCommand(command);
     }
 }
 
@@ -172,16 +180,12 @@ void CustomTypesWindow::on_actionNew_Map_triggered()
     if (result == QDialog::Accepted)
     {
         // Update model.
-        CustomType newType =
-                this->typesController.addMap(
-                    this->mapWindow->getMapName(),
-                    this->mapWindow->getMapKeyType(),
-                    this->mapWindow->getMapValueType(),
-                    this->mapWindow->getTypeSetName());
-
-        // Update view.
-        this->ui->tableWidget->insertRow(0);
-        this->updateRow(0, newType);
+        AddMapCommand* command = new AddMapCommand(this->typesController,
+                                                   this->mapWindow->getMapName(),
+                                                   this->mapWindow->getMapKeyType(),
+                                                   this->mapWindow->getMapValueType(),
+                                                   this->mapWindow->getTypeSetName());
+        this->undoController.doCommand(command);
     }
 }
 
@@ -227,10 +231,6 @@ void CustomTypesWindow::on_actionDelete_Custom_Type_triggered()
     }
 
     this->typesController.removeCustomType(typeName);
-
-    // Update view.
-    const int index = this->getSelectedTypeIndex();
-    this->ui->tableWidget->removeRow(index);
 }
 
 void CustomTypesWindow::on_actionFind_Usages_triggered()
@@ -250,6 +250,28 @@ void CustomTypesWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
 {
     Q_UNUSED(index);
     this->on_actionEdit_Custom_Type_triggered();
+}
+
+void CustomTypesWindow::onTypeAdded(const CustomType& type)
+{
+    // Update view.
+    this->ui->tableWidget->insertRow(0);
+    this->updateRow(0, type);
+}
+
+void CustomTypesWindow::onTypeRemoved(const CustomType& type)
+{
+    // Update view.
+    for (int i = 0; i < this->ui->tableWidget->rowCount(); ++i)
+    {
+        QTableWidgetItem* item = this->ui->tableWidget->item(i, 0);
+
+        if (item->text() == type.name)
+        {
+            this->ui->tableWidget->removeRow(i);
+            return;
+        }
+    }
 }
 
 int CustomTypesWindow::getSelectedTypeIndex() const

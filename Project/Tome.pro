@@ -125,7 +125,11 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Components/Controller/Commands/removecomponentcommand.cpp \
     ../Source/Tome/Features/Fields/Controller/Commands/addfielddefinitioncommand.cpp \
     ../Source/Tome/Features/Fields/Controller/Commands/removefielddefinitioncommand.cpp \
-    ../Source/Tome/Features/Fields/Controller/Commands/updatefielddefinitioncommand.cpp
+    ../Source/Tome/Features/Fields/Controller/Commands/updatefielddefinitioncommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/addderivedtypecommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/addenumerationcommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/addlistcommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/addmapcommand.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -241,7 +245,11 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Components/Controller/Commands/removecomponentcommand.h \
     ../Source/Tome/Features/Fields/Controller/Commands/addfielddefinitioncommand.h \
     ../Source/Tome/Features/Fields/Controller/Commands/removefielddefinitioncommand.h \
-    ../Source/Tome/Features/Fields/Controller/Commands/updatefielddefinitioncommand.h
+    ../Source/Tome/Features/Fields/Controller/Commands/updatefielddefinitioncommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/addderivedtypecommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/addenumerationcommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/addlistcommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/addmapcommand.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

@@ -362,6 +362,7 @@ void MainWindow::on_actionManage_Custom_Types_triggered()
                     this->controller->getFieldDefinitionsController(),
                     this->controller->getFindUsagesController(),
                     this->controller->getRecordsController(),
+                    this->controller->getUndoController(),
                     this);
     }
 

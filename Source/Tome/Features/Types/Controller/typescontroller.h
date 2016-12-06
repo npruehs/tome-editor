@@ -58,8 +58,9 @@ namespace Tome
             QString valueToString(const QVariant& value, const QString& typeName) const;
 
         signals:
+            void typeAdded(const Tome::CustomType& type);
             void typeRenamed(const QString& oldName, const QString& newName);
-
+            void typeRemoved(const Tome::CustomType& type);
         private:
             CustomTypeSetList* model;
 

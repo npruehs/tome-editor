@@ -239,6 +239,7 @@ void TypesController::removeCustomType(const QString& typeName)
         {
             if (it->name == typeName)
             {
+                emit this->typeRemoved(*it);
                 types.erase(it);
                 return;
             }
@@ -436,6 +437,7 @@ void TypesController::addCustomType(CustomType customType, const QString& custom
             CustomTypeList& types = customTypeSet.types;
             int index = findInsertionIndex(types, customType, customTypeLessThanName);
             types.insert(index, customType);
+            emit this->typeAdded(customType);
             return;
         }
     }
