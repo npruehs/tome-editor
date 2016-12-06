@@ -57,6 +57,7 @@ class FieldDefinitionsWindow : public QMainWindow
 
         void onFieldDefinitionAdded(const Tome::FieldDefinition& fieldDefinition);
         void onFieldDefinitionRemoved(const Tome::FieldDefinition& fieldDefinition);
+        void onFieldDefinitionUpdated(const Tome::FieldDefinition& oldFieldDefinition, const Tome::FieldDefinition& newFieldDefinition);
 
         void tableWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 

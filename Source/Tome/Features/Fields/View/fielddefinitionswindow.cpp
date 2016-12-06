@@ -9,6 +9,7 @@
 #include "../Controller/fielddefinitionscontroller.h"
 #include "../Controller/Commands/addfielddefinitioncommand.h"
 #include "../Controller/Commands/removefielddefinitioncommand.h"
+#include "../Controller/Commands/updatefielddefinitioncommand.h"
 #include "../Model/fielddefinition.h"
 #include "../../Facets/Controller/facetscontroller.h"
 #include "../../Components/Controller/componentscontroller.h"
@@ -77,6 +78,11 @@ FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& field
                 &this->fieldDefinitionsController,
                 SIGNAL(fieldDefinitionRemoved(const Tome::FieldDefinition&)),
                 SLOT(onFieldDefinitionRemoved(const Tome::FieldDefinition&)));
+
+    connect(
+                &this->fieldDefinitionsController,
+                SIGNAL(fieldDefinitionUpdated(const Tome::FieldDefinition&, const Tome::FieldDefinition&)),
+                SLOT(onFieldDefinitionUpdated(const Tome::FieldDefinition&, const Tome::FieldDefinition&)));
 
     // Listen for selection changes.
     connect(
@@ -270,6 +276,18 @@ void FieldDefinitionsWindow::onFieldDefinitionRemoved(const FieldDefinition& fie
     emit fieldChanged();
 }
 
+void FieldDefinitionsWindow::onFieldDefinitionUpdated(const FieldDefinition& oldFieldDefinition, const FieldDefinition& newFieldDefinition)
+{
+    // TODO(np): Turn into signal.
+    this->recordsController.renameRecordField(oldFieldDefinition.id, newFieldDefinition.id);
+
+    // TODO(np): Turn into signal.
+    this->recordsController.moveFieldToComponent(newFieldDefinition.id, oldFieldDefinition.component, newFieldDefinition.component);
+
+    // Update view.
+    this->updateTable();
+}
+
 void FieldDefinitionsWindow::tableWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
 {
     Q_UNUSED(selected);
@@ -342,23 +360,20 @@ void FieldDefinitionsWindow::updateFieldDefinition(const QString oldId,
 
     try
     {
-        // Update model.
         const QString oldComponent = fieldDefinition.component;
 
-        this->fieldDefinitionsController.updateFieldDefinition
-                (oldId,
-                 newId,
-                 displayName,
-                 fieldType,
-                 defaultValue,
-                 component,
-                 description,
-                 fieldDefinitionSetName);
-        this->recordsController.renameRecordField(oldId, newId);
-        this->recordsController.moveFieldToComponent(newId, oldComponent, component);
-
-        // Update view.
-        this->updateTable();
+        // Update model.
+        UpdateFieldDefinitionCommand* command = new UpdateFieldDefinitionCommand(
+                    this->fieldDefinitionsController,
+                    oldId,
+                    newId,
+                    displayName,
+                    fieldType,
+                    defaultValue,
+                    component,
+                    description,
+                    fieldDefinitionSetName);
+        this->undoController.doCommand(command);
     }
     catch (std::out_of_range& e)
     {

@@ -290,6 +290,7 @@ void FieldDefinitionsController::updateFieldDefinition(const QString oldId,
     }
 
     FieldDefinition& fieldDefinition = *this->getFieldDefinitionById(oldId);
+    FieldDefinition oldFieldDefinition = FieldDefinition(fieldDefinition);
 
     bool needsSorting = fieldDefinition.displayName != displayName;
 
@@ -317,6 +318,9 @@ void FieldDefinitionsController::updateFieldDefinition(const QString oldId,
             std::sort((*it).fieldDefinitions.begin(), (*it).fieldDefinitions.end(), fieldDefinitionLessThanDisplayName);
         }
     }
+
+    // Notify listeners.
+    emit this->fieldDefinitionUpdated(oldFieldDefinition, fieldDefinition);
 }
 
 FieldDefinition* FieldDefinitionsController::getFieldDefinitionById(const QString& id) const
