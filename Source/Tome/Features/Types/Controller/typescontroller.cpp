@@ -261,46 +261,6 @@ void TypesController::removeCustomTypeSet(const QString& name)
     }
 }
 
-void TypesController::renameType(const QString oldName, const QString newName)
-{
-    qInfo(QString("Renaming custom type %1 to %2.").arg(oldName, newName).toUtf8().constData());
-
-    CustomType& type = *this->getCustomTypeByName(oldName);
-
-    // Rename type.
-    type.name = newName;
-
-    // Update list item type and map key and value type references.
-
-    for (int i = 0; i < this->model->size(); ++i)
-    {
-        CustomTypeSet& typeSet = (*this->model)[i];
-
-        for (int j = 0; j < typeSet.types.size(); ++j)
-        {
-            CustomType& t = typeSet.types[j];
-
-            if (t.isList() && t.getItemType() == oldName)
-            {
-                t.setItemType(newName);
-            }
-
-            if (t.isMap())
-            {
-                if (t.getKeyType() == oldName)
-                {
-                    t.setKeyType(newName);
-                }
-
-                if (t.getValueType() == oldName)
-                {
-                    t.setValueType(newName);
-                }
-            }
-        }
-    }
-}
-
 void TypesController::setCustomTypes(CustomTypeSetList& model)
 {
     this->model = &model;
@@ -505,4 +465,46 @@ CustomType* TypesController::getCustomTypeByName(const QString& name) const
     const QString errorMessage = "Type not found: " + name;
     qCritical(errorMessage.toUtf8().constData());
     throw std::out_of_range(errorMessage.toStdString());
+}
+
+void TypesController::renameType(const QString oldName, const QString newName)
+{
+    qInfo(QString("Renaming custom type %1 to %2.").arg(oldName, newName).toUtf8().constData());
+
+    CustomType& type = *this->getCustomTypeByName(oldName);
+
+    // Rename type.
+    type.name = newName;
+
+    // Update list item type and map key and value type references.
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        CustomTypeSet& typeSet = (*this->model)[i];
+
+        for (int j = 0; j < typeSet.types.size(); ++j)
+        {
+            CustomType& t = typeSet.types[j];
+
+            if (t.isList() && t.getItemType() == oldName)
+            {
+                t.setItemType(newName);
+            }
+
+            if (t.isMap())
+            {
+                if (t.getKeyType() == oldName)
+                {
+                    t.setKeyType(newName);
+                }
+
+                if (t.getValueType() == oldName)
+                {
+                    t.setValueType(newName);
+                }
+            }
+        }
+    }
+
+    // Notify listeners.
+    emit this->typeRenamed(oldName, newName);
 }

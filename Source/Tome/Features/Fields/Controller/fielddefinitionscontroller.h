@@ -7,13 +7,14 @@
 namespace Tome
 {
     class ComponentsController;
+    class TypesController;
 
     class FieldDefinitionsController : public QObject
     {
             Q_OBJECT
 
         public:
-            FieldDefinitionsController(const ComponentsController& componentsController);
+            FieldDefinitionsController(const ComponentsController& componentsController, const TypesController& typesController);
 
             const FieldDefinition addFieldDefinition(
                     const QString& id,
@@ -33,7 +34,6 @@ namespace Tome
             int indexOf(const FieldDefinition& fieldDefinition) const;
             void removeFieldDefinition(const QString& fieldId);
             void removeFieldDefinitionSet(const QString& name);
-            void renameFieldType(const QString oldTypeName, const QString newTypeName);
             void setFieldDefinitionSets(FieldDefinitionSetList& model);
             void updateFieldDefinition(const QString oldId,
                     const QString newId,
@@ -51,15 +51,16 @@ namespace Tome
 
         private slots:
             void onComponentRemoved(const Tome::Component& component);
+            void onTypeRenamed(const QString& oldName, const QString& newName);
 
         private:
             const ComponentsController& componentsController;
+            const TypesController& typesController;
 
             FieldDefinitionSetList* model;
 
             FieldDefinition* getFieldDefinitionById(const QString& id) const;
             void moveFieldDefinitionToSet(const QString& fieldDefinitionId, const QString& fieldDefinitionSetName);
-
     };
 }
 

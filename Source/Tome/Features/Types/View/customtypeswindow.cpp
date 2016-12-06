@@ -395,7 +395,6 @@ void CustomTypesWindow::editMap(QString typeName, const CustomType& type)
 void CustomTypesWindow::updateDerivedType(const QString& oldName, const QString& newName, const QString& baseType, const QVariantMap facets, const QString& typeSetName)
 {
     // Update model.
-    this->fieldDefinitionsController.renameFieldType(oldName, newName);
     this->typesController.updateDerivedType(oldName, newName, baseType, facets, typeSetName);
 
     // Update view.
@@ -405,7 +404,6 @@ void CustomTypesWindow::updateDerivedType(const QString& oldName, const QString&
 void CustomTypesWindow::updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration, const QString& typeSetName)
 {
     // Update model.
-    this->fieldDefinitionsController.renameFieldType(oldName, newName);
     this->typesController.updateEnumeration(oldName, newName, enumeration, typeSetName);
 
     // Update view.
@@ -415,7 +413,6 @@ void CustomTypesWindow::updateEnumeration(const QString& oldName, const QString&
 void CustomTypesWindow::updateList(const QString& oldName, const QString& newName, const QString& itemType, const QString& typeSetName)
 {
     // Update model.
-    this->fieldDefinitionsController.renameFieldType(oldName, newName);
     this->typesController.updateList(oldName, newName, itemType, typeSetName);
 
     // Update view.
@@ -425,7 +422,6 @@ void CustomTypesWindow::updateList(const QString& oldName, const QString& newNam
 void CustomTypesWindow::updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType, const QString& typeSetName)
 {
     // Update model.
-    this->fieldDefinitionsController.renameFieldType(oldName, newName);
     this->typesController.updateMap(oldName, newName, keyType, valueType, typeSetName);
 
     // Update view.

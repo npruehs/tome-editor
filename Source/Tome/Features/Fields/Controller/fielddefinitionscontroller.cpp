@@ -3,19 +3,26 @@
 #include <stdexcept>
 
 #include "../../Components/Controller/componentscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
 #include "../../../Util/listutils.h"
 #include "../../../Util/stringutils.h"
 
 using namespace Tome;
 
 
-FieldDefinitionsController::FieldDefinitionsController(const ComponentsController& componentsController) :
-    componentsController(componentsController)
+FieldDefinitionsController::FieldDefinitionsController(const ComponentsController& componentsController, const TypesController& typesController) :
+    componentsController(componentsController),
+    typesController(typesController)
 {
     connect(
                 &this->componentsController,
                 SIGNAL(componentRemoved(const Tome::Component&)),
                 SLOT(onComponentRemoved(const Tome::Component&)));
+
+    connect(
+                &this->typesController,
+                SIGNAL(typeRenamed(const QString&, const QString&)),
+                SLOT(onTypeRenamed(const QString&, const QString&)));
 }
 
 const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QString& id,
@@ -198,24 +205,6 @@ void FieldDefinitionsController::removeFieldDefinitionSet(const QString& name)
     }
 }
 
-void FieldDefinitionsController::renameFieldType(const QString oldTypeName, const QString newTypeName)
-{
-    for (int i = 0; i < this->model->size(); ++i)
-    {
-        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
-
-        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
-        {
-            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
-
-            if (fieldDefinition.fieldType == oldTypeName)
-            {
-                fieldDefinition.fieldType = newTypeName;
-            }
-        }
-    }
-}
-
 void FieldDefinitionsController::setFieldDefinitionSets(FieldDefinitionSetList& model)
 {
     this->model = &model;
@@ -286,6 +275,25 @@ void FieldDefinitionsController::onComponentRemoved(const Component& component)
             if (fieldDefinition.component == component)
             {
                 fieldDefinition.component = QString();
+            }
+        }
+    }
+}
+
+void FieldDefinitionsController::onTypeRenamed(const QString& oldName, const QString& newName)
+{
+    // Change type of affected fields.
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
+        {
+            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+
+            if (fieldDefinition.fieldType == oldName)
+            {
+                fieldDefinition.fieldType = newName;
             }
         }
     }

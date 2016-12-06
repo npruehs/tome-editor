@@ -98,8 +98,8 @@ namespace Tome
 
             UndoController* undoController;
             ComponentsController* componentsController;
-            FieldDefinitionsController* fieldDefinitionsController;
             TypesController* typesController;
+            FieldDefinitionsController* fieldDefinitionsController;
             RecordsController* recordsController;
             ExportController* exportController;
             SettingsController* settingsController;

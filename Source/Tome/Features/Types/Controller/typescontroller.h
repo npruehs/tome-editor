@@ -8,8 +8,10 @@
 
 namespace Tome
 {
-    class TypesController
+    class TypesController : public QObject
     {
+            Q_OBJECT
+
         public:
             TypesController();
 
@@ -46,7 +48,6 @@ namespace Tome
             void moveCustomTypeToSet(const QString& customTypeName, const QString& customTypeSetName);
             void removeCustomType(const QString& typeName);
             void removeCustomTypeSet(const QString& name);
-            void renameType(const QString oldName, const QString newName);
             void setCustomTypes(CustomTypeSetList& model);
 
             void updateDerivedType(const QString& oldName, const QString& newName, const QString& baseType, const QVariantMap facets, const QString& typeSetName);
@@ -56,12 +57,15 @@ namespace Tome
 
             QString valueToString(const QVariant& value, const QString& typeName) const;
 
+        signals:
+            void typeRenamed(const QString& oldName, const QString& newName);
 
         private:
             CustomTypeSetList* model;
 
             void addCustomType(CustomType customType, const QString& customTypeSetName);
             CustomType* getCustomTypeByName(const QString& name) const;
+            void renameType(const QString oldName, const QString newName);
     };
 }
 
