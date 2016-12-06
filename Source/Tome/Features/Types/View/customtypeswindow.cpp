@@ -10,6 +10,10 @@
 #include "../Controller/Commands/addenumerationcommand.h"
 #include "../Controller/Commands/addlistcommand.h"
 #include "../Controller/Commands/addmapcommand.h"
+#include "../Controller/Commands/removederivedtypecommand.h"
+#include "../Controller/Commands/removeenumerationcommand.h"
+#include "../Controller/Commands/removelistcommand.h"
+#include "../Controller/Commands/removemapcommand.h"
 #include "../Model/builtintype.h"
 #include "../../Facets/Controller/facetscontroller.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
@@ -222,7 +226,7 @@ void CustomTypesWindow::on_actionEdit_Custom_Type_triggered()
 
 void CustomTypesWindow::on_actionDelete_Custom_Type_triggered()
 {
-    // Update model.
+    // Get selected type.
     QString typeName = this->getSelectedTypeName();
 
     if (typeName.isEmpty())
@@ -230,7 +234,32 @@ void CustomTypesWindow::on_actionDelete_Custom_Type_triggered()
         return;
     }
 
-    this->typesController.removeCustomType(typeName);
+    // Check custom type type (ha ha).
+    QUndoCommand* command;
+
+    const CustomType& type = this->typesController.getCustomType(typeName);
+
+    if (type.isDerivedType())
+    {
+        command = new RemoveDerivedTypeCommand(this->typesController, typeName);
+    }
+    else if (type.isEnumeration())
+    {
+        command = new RemoveEnumerationCommand(this->typesController, typeName);
+    }
+    else if (type.isList())
+    {
+        command = new RemoveListCommand(this->typesController, typeName);
+    }
+    else if (type.isMap())
+    {
+        command = new RemoveMapCommand(this->typesController, typeName);
+    }
+
+    if (command != nullptr)
+    {
+        this->undoController.doCommand(command);
+    }
 }
 
 void CustomTypesWindow::on_actionFind_Usages_triggered()
