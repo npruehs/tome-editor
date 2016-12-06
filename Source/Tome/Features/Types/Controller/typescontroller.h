@@ -45,7 +45,6 @@ namespace Tome
             bool isBuiltInType(const QString& name) const;
             bool isCustomType(const QString& name) const;
             bool isReferenceType(const QString& name) const;
-            void moveCustomTypeToSet(const QString& customTypeName, const QString& customTypeSetName);
             void removeCustomType(const QString& typeName);
             void removeCustomTypeSet(const QString& name);
             void setCustomTypes(CustomTypeSetList& model);
@@ -61,11 +60,14 @@ namespace Tome
             void typeAdded(const Tome::CustomType& type);
             void typeRenamed(const QString& oldName, const QString& newName);
             void typeRemoved(const Tome::CustomType& type);
+            void typeUpdated(const Tome::CustomType& type);
+
         private:
             CustomTypeSetList* model;
 
             void addCustomType(CustomType customType, const QString& customTypeSetName);
             CustomType* getCustomTypeByName(const QString& name) const;
+            void moveCustomTypeToSet(const QString& customTypeName, const QString& customTypeSetName);
             void renameType(const QString oldName, const QString newName);
     };
 }

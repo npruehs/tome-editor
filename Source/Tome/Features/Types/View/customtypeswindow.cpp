@@ -14,6 +14,10 @@
 #include "../Controller/Commands/removeenumerationcommand.h"
 #include "../Controller/Commands/removelistcommand.h"
 #include "../Controller/Commands/removemapcommand.h"
+#include "../Controller/Commands/updatederivedtypecommand.h"
+#include "../Controller/Commands/updateenumerationcommand.h"
+#include "../Controller/Commands/updatelistcommand.h"
+#include "../Controller/Commands/updatemapcommand.h"
 #include "../Model/builtintype.h"
 #include "../../Facets/Controller/facetscontroller.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
@@ -67,6 +71,11 @@ CustomTypesWindow::CustomTypesWindow(TypesController& typesController,
                 &this->typesController,
                 SIGNAL(typeRemoved(const Tome::CustomType&)),
                 SLOT(onTypeRemoved(const Tome::CustomType&)));
+
+    connect(
+                &this->typesController,
+                SIGNAL(typeUpdated(const Tome::CustomType&)),
+                SLOT(onTypeUpdated(const Tome::CustomType&)));
 }
 
 CustomTypesWindow::~CustomTypesWindow()
@@ -303,6 +312,14 @@ void CustomTypesWindow::onTypeRemoved(const CustomType& type)
     }
 }
 
+void CustomTypesWindow::onTypeUpdated(const CustomType& type)
+{
+    Q_UNUSED(type)
+
+    // Update view.
+    this->updateTable();
+}
+
 int CustomTypesWindow::getSelectedTypeIndex() const
 {
     QModelIndexList selectedIndexes = this->ui->tableWidget->selectionModel()->selectedRows();
@@ -446,37 +463,51 @@ void CustomTypesWindow::editMap(QString typeName, const CustomType& type)
 void CustomTypesWindow::updateDerivedType(const QString& oldName, const QString& newName, const QString& baseType, const QVariantMap facets, const QString& typeSetName)
 {
     // Update model.
-    this->typesController.updateDerivedType(oldName, newName, baseType, facets, typeSetName);
-
-    // Update view.
-    this->updateTable();
+    UpdateDerivedTypeCommand* command = new UpdateDerivedTypeCommand(
+                this->typesController,
+                oldName,
+                newName,
+                baseType,
+                facets,
+                typeSetName);
+   this->undoController.doCommand(command);
 }
 
 void CustomTypesWindow::updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration, const QString& typeSetName)
 {
     // Update model.
-    this->typesController.updateEnumeration(oldName, newName, enumeration, typeSetName);
-
-    // Update view.
-    this->updateTable();
+    UpdateEnumerationCommand* command = new UpdateEnumerationCommand(
+                this->typesController,
+                oldName,
+                newName,
+                enumeration,
+                typeSetName);
+    this->undoController.doCommand(command);
 }
 
 void CustomTypesWindow::updateList(const QString& oldName, const QString& newName, const QString& itemType, const QString& typeSetName)
 {
     // Update model.
-    this->typesController.updateList(oldName, newName, itemType, typeSetName);
-
-    // Update view.
-    this->updateTable();
+    UpdateListCommand* command = new UpdateListCommand(
+                this->typesController,
+                oldName,
+                newName,
+                itemType,
+                typeSetName);
+    this->undoController.doCommand(command);
 }
 
 void CustomTypesWindow::updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType, const QString& typeSetName)
 {
     // Update model.
-    this->typesController.updateMap(oldName, newName, keyType, valueType, typeSetName);
-
-    // Update view.
-    this->updateTable();
+    UpdateMapCommand* command = new UpdateMapCommand(
+                this->typesController,
+                oldName,
+                newName,
+                keyType,
+                valueType,
+                typeSetName);
+    this->undoController.doCommand(command);
 }
 
 void CustomTypesWindow::updateRow(const int index, const CustomType& type)

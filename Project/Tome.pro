@@ -133,7 +133,11 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Types/Controller/Commands/removederivedtypecommand.cpp \
     ../Source/Tome/Features/Types/Controller/Commands/removeenumerationcommand.cpp \
     ../Source/Tome/Features/Types/Controller/Commands/removelistcommand.cpp \
-    ../Source/Tome/Features/Types/Controller/Commands/removemapcommand.cpp
+    ../Source/Tome/Features/Types/Controller/Commands/removemapcommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/updatederivedtypecommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/updateenumerationcommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/updatelistcommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/updatemapcommand.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -257,7 +261,11 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Controller/Commands/removederivedtypecommand.h \
     ../Source/Tome/Features/Types/Controller/Commands/removeenumerationcommand.h \
     ../Source/Tome/Features/Types/Controller/Commands/removelistcommand.h \
-    ../Source/Tome/Features/Types/Controller/Commands/removemapcommand.h
+    ../Source/Tome/Features/Types/Controller/Commands/removemapcommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/updatederivedtypecommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/updateenumerationcommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/updatelistcommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/updatemapcommand.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

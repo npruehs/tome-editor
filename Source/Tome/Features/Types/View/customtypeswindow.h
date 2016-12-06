@@ -55,6 +55,7 @@ class CustomTypesWindow : public QMainWindow
 
         void onTypeAdded(const Tome::CustomType& type);
         void onTypeRemoved(const Tome::CustomType& type);
+        void onTypeUpdated(const Tome::CustomType& type);
 
     private:
         Ui::CustomTypesWindow *ui;
