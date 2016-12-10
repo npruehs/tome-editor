@@ -74,11 +74,7 @@ namespace Tome
              */
             bool isAncestorOf(const QString& possibleAncestor, const QString& recordId) const;
 
-            void moveRecordToSet(const QString& recordId, const QString& recordSetName);
-
             void removeRecord(const QString& recordId);
-            void removeRecordField(const QString fieldId);
-            void removeRecordField(const QString& recordId, const QString& fieldId);
             void removeRecordSet(const QString& name);
 
             void renameRecordField(const QString oldFieldId, const QString newFieldId);
@@ -101,6 +97,7 @@ namespace Tome
 
         private slots:
             void onFieldAdded(const Tome::FieldDefinition& fieldDefinition);
+            void onFieldRemoved(const Tome::FieldDefinition& fieldDefinition);
             void onFieldUpdated(const Tome::FieldDefinition& oldFieldDefinition, const Tome::FieldDefinition& newFieldDefinition);
 
         private:
@@ -112,6 +109,8 @@ namespace Tome
             void addRecordField(const QString& recordId, const QString& fieldId);
             Record* getRecordById(const QString& id) const;
             void moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent);
+            void moveRecordToSet(const QString& recordId, const QString& recordSetName);
+            void removeRecordField(const QString& recordId, const QString& fieldId);
             void updateRecordReferences(const QString oldReference, const QString newReference);
     };
 }

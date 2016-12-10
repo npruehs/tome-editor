@@ -1062,20 +1062,6 @@ void MainWindow::openProject(QString path)
     }
 }
 
-void MainWindow::removeRecordField(const QString& fieldId)
-{
-    QString id = this->recordTreeWidget->getSelectedRecordId();
-    const Record& record =
-            this->controller->getRecordsController().getRecord(id);
-
-    // Update model.
-    this->controller->getRecordsController().removeRecordField(record.id, fieldId);
-
-    // Update view.
-    int index = findInsertionIndex(record.fieldValues.keys(), fieldId, qStringLessThanLowerCase);
-    this->recordFieldTableWidget->removeRow(index);
-}
-
 void MainWindow::onFieldChanged()
 {
     this->refreshRecordTable();

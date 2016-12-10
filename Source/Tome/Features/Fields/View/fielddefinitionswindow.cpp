@@ -262,9 +262,6 @@ void FieldDefinitionsWindow::onFieldDefinitionAdded(const FieldDefinition& field
 
 void FieldDefinitionsWindow::onFieldDefinitionRemoved(const FieldDefinition& fieldDefinition)
 {
-    // TODO(np): Turn into signal.
-    this->recordsController.removeRecordField(fieldDefinition.id);
-
     // Update view.
     const int index = this->getFieldRow(fieldDefinition.id);
     this->ui->tableWidget->removeRow(index);
@@ -275,6 +272,9 @@ void FieldDefinitionsWindow::onFieldDefinitionRemoved(const FieldDefinition& fie
 
 void FieldDefinitionsWindow::onFieldDefinitionUpdated(const FieldDefinition& oldFieldDefinition, const FieldDefinition& newFieldDefinition)
 {
+    Q_UNUSED(oldFieldDefinition)
+    Q_UNUSED(newFieldDefinition)
+
     // Update view.
     this->updateTable();
 }

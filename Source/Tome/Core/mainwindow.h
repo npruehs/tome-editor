@@ -130,7 +130,6 @@ class MainWindow : public QMainWindow
 
         QString getReadOnlyMessage(const QString& recordId);
         void openProject(QString path);
-        void removeRecordField(const QString& fieldId);
         void refreshErrorList();
         void refreshExportMenu();
         void refreshRecordTree();
