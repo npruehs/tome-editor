@@ -33,6 +33,7 @@
 #include "../Features/Projects/View/projectoverviewwindow.h"
 #include "../Features/Records/Controller/recordscontroller.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
+#include "../Features/Records/Controller/Commands/addrecordcommand.h"
 #include "../Features/Records/Controller/Commands/updaterecordfieldvaluecommand.h"
 #include "../Features/Records/Model/recordfieldstate.h"
 #include "../Features/Records/View/recordfieldstablewidget.h"
@@ -122,8 +123,19 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     connect(
                 &this->controller->getRecordsController(),
+                SIGNAL(recordAdded(const QString&, const QString&)),
+                SLOT(onRecordAdded(const QString&, const QString&))
+                );
+    connect(
+                &this->controller->getRecordsController(),
                 SIGNAL(recordFieldsChanged(const QString&)),
                 SLOT(onRecordFieldsChanged(const QString&))
+                );
+
+    connect(
+                &this->controller->getRecordsController(),
+                SIGNAL(recordRemoved(const QString&)),
+                SLOT(onRecordRemoved(const QString&))
                 );
 
     connect(
@@ -471,13 +483,9 @@ void MainWindow::on_actionNew_Record_triggered()
         const QString& recordDisplayName = this->recordWindow->getRecordDisplayName();
         const QString& recordSetName = this->recordWindow->getRecordSetName();
 
-        // Update model.
-        recordsController.addRecord(recordId, recordDisplayName, recordSetName);
+        // Collect record fields.
+        QStringList recordFieldIds;
 
-        // Update view.
-        this->recordTreeWidget->addRecord(recordId, recordDisplayName);
-
-        // Add record fields.
         const QMap<QString, RecordFieldState::RecordFieldState> recordFields = this->recordWindow->getRecordFields();
 
         for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.begin();
@@ -489,13 +497,17 @@ void MainWindow::on_actionNew_Record_triggered()
 
             if (fieldState == RecordFieldState::Enabled)
             {
-                this->addRecordField(fieldId);
+                recordFieldIds << fieldId;
             }
         }
 
-        // Update view.
-        this->refreshRecordTable();
-        this->recordTreeWidget->updateRecordItem();
+        // Update model.
+        AddRecordCommand* command = new AddRecordCommand(recordsController,
+                                                         recordId,
+                                                         recordDisplayName,
+                                                         recordFieldIds,
+                                                         recordSetName);
+        this->controller->getUndoController().doCommand(command);
     }
 }
 
@@ -709,19 +721,6 @@ void MainWindow::on_actionRemove_Record_triggered()
 
     // Update model.
     this->controller->getRecordsController().removeRecord(recordId);
-
-    // Update view.
-    if (recordItem->parent() != 0)
-    {
-        recordItem->parent()->removeChild(recordItem);
-    }
-    else
-    {
-        int index = this->recordTreeWidget->indexOfTopLevelItem(recordItem);
-        this->recordTreeWidget->takeTopLevelItem(index);
-    }
-
-    delete recordItem;
 }
 
 void MainWindow::on_actionFindRecord_triggered()
@@ -1155,12 +1154,25 @@ void MainWindow::onProjectChanged(QSharedPointer<Project> project)
     }
 }
 
+void MainWindow::onRecordAdded(const QString& recordId, const QString& recordDisplayName)
+{
+    // Update view.
+    this->recordTreeWidget->addRecord(recordId, recordDisplayName);
+    this->refreshRecordTable();
+    this->recordTreeWidget->updateRecordItem();
+}
+
 void MainWindow::onRecordFieldsChanged(const QString& recordId)
 {
     if (this->recordTreeWidget->getSelectedRecordId() == recordId)
     {
         this->refreshRecordTable();
     }
+}
+
+void MainWindow::onRecordRemoved(const QString& recordId)
+{
+    this->recordTreeWidget->removeRecord(recordId);
 }
 
 void MainWindow::onRecordSetsChanged()

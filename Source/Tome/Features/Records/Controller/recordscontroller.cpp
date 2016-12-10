@@ -17,7 +17,7 @@ RecordsController::RecordsController(const FieldDefinitionsController& fieldDefi
 {
 }
 
-const Record RecordsController::addRecord(const QString& id, const QString& displayName, const QString& recordSetName)
+const Record RecordsController::addRecord(const QString& id, const QString& displayName, const QStringList& fieldIds, const QString& recordSetName)
 {
     qInfo(QString("Adding record %1.").arg(id).toUtf8().constData());
 
@@ -25,6 +25,16 @@ const Record RecordsController::addRecord(const QString& id, const QString& disp
     record.id = id;
     record.displayName = displayName;
     record.recordSetName = recordSetName;
+
+    for (QStringList::const_iterator it = fieldIds.begin();
+         it != fieldIds.end();
+         ++it)
+    {
+        const QString fieldId = *it;
+        const FieldDefinition& field =
+                this->fieldDefinitionsController.getFieldDefinition(fieldId);
+        record.fieldValues.insert(fieldId, field.defaultValue);
+    }
 
     for (RecordSetList::iterator it = this->model->begin();
          it != this->model->end();
@@ -37,7 +47,7 @@ const Record RecordsController::addRecord(const QString& id, const QString& disp
             RecordList& records = recordSet.records;
             int index = findInsertionIndex(records, record, recordLessThanDisplayName);
             records.insert(index, record);
-
+            emit this->recordAdded(id, displayName);
             return record;
         }
     }
@@ -500,6 +510,7 @@ void RecordsController::removeRecord(const QString& recordId)
             if (record.id == recordId)
             {
                 records.erase(it);
+                emit this->recordRemoved(recordId);
                 return;
             }
         }
