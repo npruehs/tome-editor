@@ -34,6 +34,7 @@
 #include "../Features/Records/Controller/recordscontroller.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
 #include "../Features/Records/Controller/Commands/addrecordcommand.h"
+#include "../Features/Records/Controller/Commands/duplicaterecordcommand.h"
 #include "../Features/Records/Controller/Commands/updaterecordcommand.h"
 #include "../Features/Records/Controller/Commands/updaterecordfieldvaluecommand.h"
 #include "../Features/Records/Model/recordfieldstate.h"
@@ -124,9 +125,10 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     connect(
                 &this->controller->getRecordsController(),
-                SIGNAL(recordAdded(const QString&, const QString&)),
-                SLOT(onRecordAdded(const QString&, const QString&))
+                SIGNAL(recordAdded(const QString&, const QString&, const QString&)),
+                SLOT(onRecordAdded(const QString&, const QString&, const QString&))
                 );
+
     connect(
                 &this->controller->getRecordsController(),
                 SIGNAL(recordFieldsChanged(const QString&)),
@@ -635,13 +637,10 @@ void MainWindow::on_actionDuplicate_Record_triggered()
     const QString& newRecordId = this->duplicateRecordWindow->getRecordId();
 
     // Update model.
-    this->controller->getRecordsController().duplicateRecord(recordId, newRecordId);
-
-    // Update view.
-    this->recordTreeWidget->clear();
-    this->refreshRecordTree();
-
-    this->recordTreeWidget->selectRecord(newRecordId);
+    DuplicateRecordCommand* command = new DuplicateRecordCommand(this->controller->getRecordsController(),
+                                                                 recordId,
+                                                                 newRecordId);
+    this->controller->getUndoController().doCommand(command);
 }
 
 void MainWindow::on_actionRevert_Record_triggered()
@@ -1034,21 +1033,6 @@ void MainWindow::treeWidgetSelectionChanged(const QItemSelection& selected, cons
     this->refreshRecordTable();
 }
 
-void MainWindow::addRecordField(const QString& fieldId)
-{
-    QString id = this->recordTreeWidget->getSelectedRecordId();
-    const Record& record =
-            this->controller->getRecordsController().getRecord(id);
-
-    int index = findInsertionIndex(record.fieldValues.keys(), fieldId, qStringLessThanLowerCase);
-
-    // Update model.
-    this->controller->getRecordsController().addRecordField(record.id, fieldId);
-
-    // Update view.
-    this->recordFieldTableWidget->insertRow(index);
-}
-
 QString MainWindow::getReadOnlyMessage(const QString& recordId)
 {
     return tr("The record %1 has been marked as read-only. You cannot edit, reparent or remove read-only records.").arg(recordId);
@@ -1139,10 +1123,10 @@ void MainWindow::onProjectChanged(QSharedPointer<Project> project)
     }
 }
 
-void MainWindow::onRecordAdded(const QString& recordId, const QString& recordDisplayName)
+void MainWindow::onRecordAdded(const QString& recordId, const QString& recordDisplayName, const QString& parentId)
 {
     // Update view.
-    this->recordTreeWidget->addRecord(recordId, recordDisplayName);
+    this->recordTreeWidget->addRecord(recordId, recordDisplayName, parentId);
     this->refreshRecordTable();
 }
 

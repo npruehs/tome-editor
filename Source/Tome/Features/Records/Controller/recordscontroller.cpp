@@ -47,7 +47,7 @@ const Record RecordsController::addRecord(const QString& id, const QString& disp
             RecordList& records = recordSet.records;
             int index = findInsertionIndex(records, record, recordLessThanDisplayName);
             records.insert(index, record);
-            emit this->recordAdded(id, displayName);
+            emit this->recordAdded(id, displayName, QString());
             return record;
         }
     }
@@ -55,17 +55,6 @@ const Record RecordsController::addRecord(const QString& id, const QString& disp
     const QString errorMessage = "Record set not found: " + recordSetName;
     qCritical(errorMessage.toUtf8().constData());
     throw std::out_of_range(errorMessage.toStdString());
-}
-
-void RecordsController::addRecordField(const QString& recordId, const QString& fieldId)
-{
-    Record& record = *this->getRecordById(recordId);
-    const FieldDefinition& field =
-            this->fieldDefinitionsController.getFieldDefinition(fieldId);
-    record.fieldValues.insert(fieldId, field.defaultValue);
-
-    // Notify listeners.
-    emit recordFieldsChanged(recordId);
 }
 
 void RecordsController::addRecordSet(const RecordSet& recordSet)
@@ -105,6 +94,7 @@ const Record RecordsController::duplicateRecord(const QString& existingRecordId,
     RecordList& records = (*this->model)[recordSetIndex].records;
     int index = findInsertionIndex(records, newRecord, recordLessThanDisplayName);
     records.insert(index, newRecord);
+    emit this->recordAdded(newRecord.id, newRecord.displayName, newRecord.parentId);
 
     return newRecord;
 }
@@ -807,6 +797,18 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
     // Report finish.
     emit this->progressChanged(tr("Reparenting records"), QString(), 1, 1);
 }
+
+void RecordsController::addRecordField(const QString& recordId, const QString& fieldId)
+{
+    Record& record = *this->getRecordById(recordId);
+    const FieldDefinition& field =
+            this->fieldDefinitionsController.getFieldDefinition(fieldId);
+    record.fieldValues.insert(fieldId, field.defaultValue);
+
+    // Notify listeners.
+    emit recordFieldsChanged(recordId);
+}
+
 
 Record* RecordsController::getRecordById(const QString& id) const
 {

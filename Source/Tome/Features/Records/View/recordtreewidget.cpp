@@ -19,16 +19,25 @@ RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController, Setting
     this->setHeaderHidden(true);
 }
 
-void RecordTreeWidget::addRecord(const QString& id, const QString& displayName)
+void RecordTreeWidget::addRecord(const QString& id, const QString& displayName, const QString& parentId)
 {
-    RecordTreeWidgetItem* newItem = new RecordTreeWidgetItem(id, displayName, QString(), false);
+    RecordTreeWidgetItem* recordItem = new RecordTreeWidgetItem(id, displayName, QString(), false);
+    RecordTreeWidgetItem* parentItem = this->getRecordItem(parentId);
 
-    this->insertTopLevelItem(0, newItem);
+    if (parentItem != nullptr)
+    {
+        parentItem->addChild(recordItem);
+    }
+    else
+    {
+        this->insertTopLevelItem(0, recordItem);
+    }
+
     this->sortItems(0, Qt::AscendingOrder);
 
     // Select new record.
-    this->setCurrentItem(newItem);
-    this->updateRecordItem(newItem);
+    this->setCurrentItem(recordItem);
+    this->updateRecordItem(recordItem);
 }
 
 QString RecordTreeWidget::getSelectedRecordId() const

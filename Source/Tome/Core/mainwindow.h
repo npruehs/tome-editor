@@ -85,7 +85,7 @@ class MainWindow : public QMainWindow
         void onFieldChanged();
         void onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
         void onProjectChanged(QSharedPointer<Tome::Project> project);
-        void onRecordAdded(const QString& recordId, const QString& recordDisplayName);
+        void onRecordAdded(const QString& recordId, const QString& recordDisplayName, const QString& parentId);
         void onRecordFieldsChanged(const QString& recordId);
         void onRecordRemoved(const QString& recordId);
         void onRecordSetsChanged();
@@ -128,7 +128,6 @@ class MainWindow : public QMainWindow
 
         Tome::MessageList messages;
 
-        void addRecordField(const QString& fieldId);
         QString getReadOnlyMessage(const QString& recordId);
         void openProject(QString path);
         void removeRecordField(const QString& fieldId);

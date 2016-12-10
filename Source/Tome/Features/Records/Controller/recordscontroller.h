@@ -19,7 +19,6 @@ namespace Tome
             RecordsController(const FieldDefinitionsController& fieldDefinitionsController, const TypesController& typesController);
 
             const Record addRecord(const QString& id, const QString& displayName, const QStringList& fieldIds, const QString& recordSetName);
-            void addRecordField(const QString& recordId, const QString& fieldId);
             void addRecordSet(const RecordSet& recordSet);
 
             const Record duplicateRecord(const QString& existingRecordId, const QString& newRecordId);
@@ -94,7 +93,7 @@ namespace Tome
 
         signals:
             void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
-            void recordAdded(const QString& recordId, const QString& recordDisplayName);
+            void recordAdded(const QString& recordId, const QString& recordDisplayName, const QString& parentId);
             void recordFieldsChanged(const QString& recordId);
             void recordRemoved(const QString& recordId);
             void recordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName);
@@ -106,6 +105,7 @@ namespace Tome
             const FieldDefinitionsController& fieldDefinitionsController;
             const TypesController& typesController;
 
+            void addRecordField(const QString& recordId, const QString& fieldId);
             Record* getRecordById(const QString& id) const;
             void updateRecordReferences(const QString oldReference, const QString newReference);
     };

@@ -19,7 +19,7 @@ namespace Tome
         public:
             RecordTreeWidget(RecordsController& recordsController, SettingsController& settingsController);
 
-            void addRecord(const QString& id, const QString& displayName);
+            void addRecord(const QString& id, const QString& displayName, const QString& parentId);
 
             QString getSelectedRecordId() const;
             RecordTreeWidgetItem* getSelectedRecordItem() const;
