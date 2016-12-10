@@ -35,6 +35,7 @@
 #include "../Features/Records/Controller/recordsetserializer.h"
 #include "../Features/Records/Controller/Commands/addrecordcommand.h"
 #include "../Features/Records/Controller/Commands/duplicaterecordcommand.h"
+#include "../Features/Records/Controller/Commands/reparentrecordcommand.h"
 #include "../Features/Records/Controller/Commands/revertrecordcommand.h"
 #include "../Features/Records/Controller/Commands/updaterecordcommand.h"
 #include "../Features/Records/Controller/Commands/updaterecordfieldvaluecommand.h"
@@ -140,6 +141,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 &this->controller->getRecordsController(),
                 SIGNAL(recordRemoved(const QString&)),
                 SLOT(onRecordRemoved(const QString&))
+                );
+
+    connect(
+                &this->controller->getRecordsController(),
+                SIGNAL(recordReparented(const QString&, const QString&, const QString&)),
+                SLOT(onRecordReparented(const QString&, const QString&, const QString&))
                 );
 
     connect(
@@ -1017,12 +1024,11 @@ void MainWindow::treeWidgetRecordReparented(const QString& recordId, const QStri
     }
 
     // Update model.
-    this->controller->getRecordsController().reparentRecord(recordId, newParentId);
-
-    // Update view.
-    this->recordTreeWidget->clear();
-    this->refreshRecordTree();
-    this->recordTreeWidget->selectRecord(recordId);
+    ReparentRecordCommand* command = new ReparentRecordCommand(
+                this->controller->getRecordsController(),
+                recordId,
+                newParentId);
+    this->controller->getUndoController().doCommand(command);
 }
 
 void MainWindow::treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
@@ -1128,6 +1134,17 @@ void MainWindow::onRecordFieldsChanged(const QString& recordId)
 void MainWindow::onRecordRemoved(const QString& recordId)
 {
     this->recordTreeWidget->removeRecord(recordId);
+}
+
+void MainWindow::onRecordReparented(const QString& recordId, const QString& oldParentId, const QString& newParentId)
+{
+    Q_UNUSED(recordId)
+    Q_UNUSED(oldParentId)
+    Q_UNUSED(newParentId)
+
+    // Update view.
+    this->refreshRecordTree();
+    this->recordTreeWidget->selectRecord(recordId);
 }
 
 void MainWindow::onRecordSetsChanged()

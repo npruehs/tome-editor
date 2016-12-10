@@ -441,7 +441,9 @@ void RecordsController::reparentRecord(const QString& recordId, const QString& n
     qInfo(QString("Reparenting record %1 to %2.").arg(recordId, newParentId).toUtf8().constData());
 
     Record& record = *this->getRecordById(recordId);
+    QString oldParentId = record.parentId;
     record.parentId = newParentId;
+    emit this->recordReparented(recordId, oldParentId, newParentId);
 }
 
 void RecordsController::setRecordSets(RecordSetList& model)

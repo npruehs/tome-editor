@@ -88,6 +88,7 @@ class MainWindow : public QMainWindow
         void onRecordAdded(const QString& recordId, const QString& recordDisplayName, const QString& parentId);
         void onRecordFieldsChanged(const QString& recordId);
         void onRecordRemoved(const QString& recordId);
+        void onRecordReparented(const QString& recordId, const QString& oldParentId, const QString& newParentId);
         void onRecordSetsChanged();
         void onRecordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName);
         void onRecordLinkActivated(const QString& recordId);

@@ -1,0 +1,32 @@
+#include "reparentrecordcommand.h"
+
+#include "../recordscontroller.h"
+
+using namespace Tome;
+
+
+ReparentRecordCommand::ReparentRecordCommand(RecordsController& recordsController,
+                                             const QString& recordId,
+                                             const QString& newParentId)
+    : recordsController(recordsController),
+      recordId(recordId),
+      newParentId(newParentId)
+{
+    this->setText("Reparent Record - " + recordId);
+}
+
+void ReparentRecordCommand::undo()
+{
+    // Restore parent.
+    this->recordsController.reparentRecord(this->recordId, this->oldParentId);
+}
+
+void ReparentRecordCommand::redo()
+{
+    // Store current parent.
+    const Record& record = this->recordsController.getRecord(this->recordId);
+    this->oldParentId = record.parentId;
+
+    // Reparent record.
+    this->recordsController.reparentRecord(this->recordId, this->newParentId);
+}

@@ -89,6 +89,7 @@ namespace Tome
             void recordAdded(const QString& recordId, const QString& recordDisplayName, const QString& parentId);
             void recordFieldsChanged(const QString& recordId);
             void recordRemoved(const QString& recordId);
+            void recordReparented(const QString& recordId, const QString& oldParentId, const QString& newParentId);
             void recordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName);
             void recordSetsChanged();
 
