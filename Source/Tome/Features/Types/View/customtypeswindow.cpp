@@ -286,7 +286,7 @@ void CustomTypesWindow::on_actionFind_Usages_triggered()
 
 void CustomTypesWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
 {
-    Q_UNUSED(index);
+    Q_UNUSED(index)
     this->on_actionEdit_Custom_Type_triggered();
 }
 

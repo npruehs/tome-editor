@@ -993,7 +993,7 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
 
 void MainWindow::treeWidgetDoubleClicked(const QModelIndex &index)
 {
-    Q_UNUSED(index);
+    Q_UNUSED(index)
     this->on_actionEdit_Record_triggered();
 }
 
@@ -1026,8 +1026,8 @@ void MainWindow::treeWidgetRecordReparented(const QString& recordId, const QStri
 
 void MainWindow::treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
 {
-    Q_UNUSED(selected);
-    Q_UNUSED(deselected);
+    Q_UNUSED(selected)
+    Q_UNUSED(deselected)
 
     // Update field table.
     this->refreshRecordTable();
@@ -1082,7 +1082,7 @@ void MainWindow::onProgressChanged(const QString title, const QString text, cons
 
 void MainWindow::onProjectChanged(QSharedPointer<Project> project)
 {
-    Q_UNUSED(project);
+    Q_UNUSED(project)
 
     // Enable project-specific buttons.
     this->updateMenus();

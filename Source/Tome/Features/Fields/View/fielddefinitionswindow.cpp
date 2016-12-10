@@ -103,7 +103,7 @@ FieldDefinitionsWindow::~FieldDefinitionsWindow()
 
 void FieldDefinitionsWindow::showEvent(QShowEvent* event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
 
     // Fields might have changed since last show (e.g. component removed).
     this->updateTable();
@@ -249,7 +249,7 @@ void FieldDefinitionsWindow::on_actionFind_Usages_triggered()
 
 void FieldDefinitionsWindow::on_tableWidget_doubleClicked(const QModelIndex &index)
 {
-    Q_UNUSED(index);
+    Q_UNUSED(index)
     this->on_actionEdit_Field_triggered();
 }
 

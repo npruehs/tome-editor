@@ -164,7 +164,7 @@ QString FieldValueWidget::validate()
 
 void FieldValueWidget::focusInEvent(QFocusEvent* event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
 
     if (this->currentWidget != 0)
     {
