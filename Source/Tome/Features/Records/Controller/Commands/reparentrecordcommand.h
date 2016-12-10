@@ -8,7 +8,7 @@ namespace Tome
 {
     class RecordsController;
 
-    class ReparentRecordCommand : public QUndoCommand
+    class ReparentRecordCommand : public QUndoCommand, public QObject
     {
         public:
             ReparentRecordCommand(RecordsController& recordsController,

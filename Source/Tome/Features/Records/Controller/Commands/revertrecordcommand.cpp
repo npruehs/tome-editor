@@ -8,7 +8,7 @@ using namespace Tome;
 RevertRecordCommand::RevertRecordCommand(RecordsController& recordsController, const QString& recordId)
     : recordsController(recordsController), recordId(recordId)
 {
-    this->setText("Revert Record - " + recordId);
+    this->setText(tr("Revert Record - %1").arg(recordId));
 }
 
 void RevertRecordCommand::undo()

@@ -21,7 +21,7 @@ AddFieldDefinitionCommand::AddFieldDefinitionCommand(FieldDefinitionsController&
     description(description),
     fieldDefinitionSetName(fieldDefinitionSetName)
 {
-    this->setText("Add Field - " + id);
+    this->setText(tr("Add Field - %1").arg(id));
 }
 
 void AddFieldDefinitionCommand::undo()

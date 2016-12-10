@@ -18,7 +18,7 @@ UpdateMapCommand::UpdateMapCommand(TypesController& typesController,
       newValueType(newValueType),
       newTypeSetName(newTypeSetName)
 {
-    this->setText("Update Map - " + oldName);
+    this->setText(tr("Update Map - %1").arg(oldName));
 }
 
 void UpdateMapCommand::undo()

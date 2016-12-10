@@ -9,7 +9,7 @@ namespace Tome
 {
     class TypesController;
 
-    class AddEnumerationCommand : public QUndoCommand
+    class AddEnumerationCommand : public QUndoCommand, public QObject
     {
         public:
             AddEnumerationCommand(TypesController& typesController,

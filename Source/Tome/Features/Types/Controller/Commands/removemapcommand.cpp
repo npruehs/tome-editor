@@ -8,7 +8,7 @@ RemoveMapCommand::RemoveMapCommand(TypesController& typesController, const QStri
     typesController(typesController),
     name(name)
 {
-    this->setText("Remove Map - " + name);
+    this->setText(tr("Remove Map - %1").arg(name));
 }
 
 void RemoveMapCommand::undo()

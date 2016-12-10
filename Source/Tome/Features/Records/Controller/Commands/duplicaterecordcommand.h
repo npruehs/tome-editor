@@ -8,7 +8,7 @@ namespace Tome
 {
     class RecordsController;
 
-    class DuplicateRecordCommand : public QUndoCommand
+    class DuplicateRecordCommand : public QUndoCommand, public QObject
     {
         public:
             DuplicateRecordCommand(RecordsController& recordsController,

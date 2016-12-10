@@ -16,7 +16,7 @@ RemoveRecordCommand::RemoveRecordCommand(RecordsController& recordsController,
       typesController(typesController),
       id(id)
 {
-    this->setText("Remove Record - " + id);
+    this->setText(tr("Remove Record - %1").arg(id));
 }
 
 void RemoveRecordCommand::undo()

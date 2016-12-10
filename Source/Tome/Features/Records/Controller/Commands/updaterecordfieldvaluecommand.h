@@ -8,7 +8,7 @@ namespace Tome
 {
     class RecordsController;
 
-    class UpdateRecordFieldValueCommand : public QUndoCommand
+    class UpdateRecordFieldValueCommand : public QUndoCommand, public QObject
     {
         public:
             UpdateRecordFieldValueCommand(RecordsController& recordsController,

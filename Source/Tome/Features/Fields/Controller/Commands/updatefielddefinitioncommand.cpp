@@ -24,7 +24,7 @@ UpdateFieldDefinitionCommand::UpdateFieldDefinitionCommand(FieldDefinitionsContr
       newDescription(description),
       newFieldDefinitionSetName(fieldDefinitionSetName)
 {
-    this->setText("Update Field - " + oldId);
+    this->setText(tr("Update Field - %1").arg(oldId));
 }
 
 void UpdateFieldDefinitionCommand::undo()

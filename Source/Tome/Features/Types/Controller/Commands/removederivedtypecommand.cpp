@@ -9,7 +9,7 @@ RemoveDerivedTypeCommand::RemoveDerivedTypeCommand(TypesController& typesControl
     typesController(typesController),
     name(name)
 {
-    this->setText("Remove Derived Type - " + name);
+    this->setText(tr("Remove Derived Type - %1").arg(name));
 }
 
 void RemoveDerivedTypeCommand::undo()

@@ -9,7 +9,7 @@ namespace Tome
 {
     class FieldDefinitionsController;
 
-    class AddFieldDefinitionCommand : public QUndoCommand
+    class AddFieldDefinitionCommand : public QUndoCommand, public QObject
     {
         public:
             AddFieldDefinitionCommand(FieldDefinitionsController& fieldDefinitionsController,

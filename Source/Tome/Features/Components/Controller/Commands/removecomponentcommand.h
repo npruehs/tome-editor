@@ -11,7 +11,7 @@ namespace Tome
     class ComponentsController;
     class FieldDefinitionsController;
 
-    class RemoveComponentCommand : public QUndoCommand
+    class RemoveComponentCommand : public QUndoCommand, public QObject
     {
         public:
             RemoveComponentCommand(ComponentsController& componentsController, FieldDefinitionsController& fieldDefinitionsController, const QString& componentName);

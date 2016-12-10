@@ -10,7 +10,7 @@ namespace Tome
     class FieldDefinitionsController;
     class RecordsController;
 
-    class RemoveFieldDefinitionCommand : public QUndoCommand
+    class RemoveFieldDefinitionCommand : public QUndoCommand, public QObject
     {
         public:
             RemoveFieldDefinitionCommand(FieldDefinitionsController& fieldDefinitionsController,

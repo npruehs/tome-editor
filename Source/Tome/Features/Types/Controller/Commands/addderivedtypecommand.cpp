@@ -16,7 +16,7 @@ AddDerivedTypeCommand::AddDerivedTypeCommand(TypesController& typesController,
     facets(facets),
     customTypeSetName(customTypeSetName)
 {
-    this->setText("Add Derived Type - " + name);
+    this->setText(tr("Add Derived Type - %1").arg(name));
 }
 
 void AddDerivedTypeCommand::undo()

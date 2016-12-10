@@ -12,7 +12,7 @@ DuplicateRecordCommand::DuplicateRecordCommand(RecordsController& recordsControl
       existingRecordId(existingRecordId),
       newRecordId(newRecordId)
 {
-    this->setText("Duplicate Record - " + existingRecordId);
+    this->setText(tr("Duplicate Record - %1").arg(existingRecordId));
 }
 
 void DuplicateRecordCommand::undo()

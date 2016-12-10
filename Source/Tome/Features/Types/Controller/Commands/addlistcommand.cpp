@@ -14,7 +14,7 @@ AddListCommand::AddListCommand(TypesController& typesController,
     itemType(itemType),
     customTypeSetName(customTypeSetName)
 {
-    this->setText("Add List - " + name);
+    this->setText(tr("Add List - %1").arg(name));
 }
 
 void AddListCommand::undo()

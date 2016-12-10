@@ -12,7 +12,7 @@ ReparentRecordCommand::ReparentRecordCommand(RecordsController& recordsControlle
       recordId(recordId),
       newParentId(newParentId)
 {
-    this->setText("Reparent Record - " + recordId);
+    this->setText(tr("Reparent Record - %1").arg(recordId));
 }
 
 void ReparentRecordCommand::undo()

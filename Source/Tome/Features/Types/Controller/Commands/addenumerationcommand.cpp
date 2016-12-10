@@ -14,7 +14,7 @@ AddEnumerationCommand::AddEnumerationCommand(TypesController& typesController,
     enumeration(enumeration),
     customTypeSetName(customTypeSetName)
 {
-    this->setText("Add Enumeration - " + name);
+    this->setText(tr("Add Enumeration - %1").arg(name));
 }
 
 void AddEnumerationCommand::undo()

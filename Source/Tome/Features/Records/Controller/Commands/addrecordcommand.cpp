@@ -15,7 +15,7 @@ AddRecordCommand::AddRecordCommand(RecordsController& recordsController,
       fieldIds(fieldIds),
       recordSetName(recordSetName)
 {
-    this->setText("Add Record - " + id);
+    this->setText(tr("Add Record - %1").arg(id));
 }
 
 void AddRecordCommand::undo()

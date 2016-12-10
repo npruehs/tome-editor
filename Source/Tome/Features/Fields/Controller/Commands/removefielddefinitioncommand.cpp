@@ -13,7 +13,7 @@ RemoveFieldDefinitionCommand::RemoveFieldDefinitionCommand(FieldDefinitionsContr
       recordsController(recordsController),
       id(id)
 {
-    this->setText("Remove Field - " + id);
+    this->setText(tr("Remove Field - %1").arg(id));
 }
 
 void RemoveFieldDefinitionCommand::undo()

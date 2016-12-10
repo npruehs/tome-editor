@@ -9,7 +9,7 @@ AddComponentCommand::AddComponentCommand(ComponentsController& componentsControl
     componentName(componentName),
     componentSetName(componentSetName)
 {
-    this->setText("Add Component - " + componentName);
+    this->setText(tr("Add Component - %1").arg(componentName));
 }
 
 void AddComponentCommand::undo()

@@ -17,7 +17,7 @@ UpdateListCommand::UpdateListCommand(TypesController& typesController,
       newItemType(newItemType),
       newTypeSetName(newTypeSetName)
 {
-    this->setText("Update List - " + oldName);
+    this->setText(tr("Update List - %1").arg(oldName));
 }
 
 void UpdateListCommand::undo()

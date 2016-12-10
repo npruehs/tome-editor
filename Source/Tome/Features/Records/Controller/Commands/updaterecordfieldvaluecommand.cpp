@@ -14,7 +14,7 @@ UpdateRecordFieldValueCommand::UpdateRecordFieldValueCommand(RecordsController& 
       fieldId(fieldId),
       newFieldValue(newFieldValue)
 {
-    this->setText("Set Field Value - " + fieldId);
+    this->setText(tr("Set Field Value - %1").arg(fieldId));
 }
 
 void UpdateRecordFieldValueCommand::undo()

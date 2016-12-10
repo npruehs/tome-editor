@@ -9,7 +9,7 @@ namespace Tome
 {
     class RecordsController;
 
-    class RevertRecordCommand : public QUndoCommand
+    class RevertRecordCommand : public QUndoCommand, public QObject
     {
         public:
             RevertRecordCommand(RecordsController& recordsController,

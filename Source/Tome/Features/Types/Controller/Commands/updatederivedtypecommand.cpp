@@ -18,7 +18,7 @@ UpdateDerivedTypeCommand::UpdateDerivedTypeCommand(TypesController& typesControl
       newFacets(facets),
       newTypeSetName(typeSetName)
 {
-    this->setText("Update Derived Type - " + oldName);
+    this->setText(tr("Update Derived Type - %1").arg(oldName));
 }
 
 void UpdateDerivedTypeCommand::undo()

@@ -9,7 +9,7 @@ namespace Tome
 {
     class TypesController;
 
-    class RemoveDerivedTypeCommand : public QUndoCommand
+    class RemoveDerivedTypeCommand : public QUndoCommand, public QObject
     {
         public:
             RemoveDerivedTypeCommand(TypesController& typesController,

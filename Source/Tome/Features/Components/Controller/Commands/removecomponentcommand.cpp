@@ -11,7 +11,7 @@ RemoveComponentCommand::RemoveComponentCommand(Tome::ComponentsController& compo
     fieldDefinitionsController(fieldDefinitionsController),
     componentName(componentName)
 {
-    this->setText("Remove Component - " + componentName);
+    this->setText(tr("Remove Component - %1").arg(componentName));
 }
 
 void RemoveComponentCommand::undo()

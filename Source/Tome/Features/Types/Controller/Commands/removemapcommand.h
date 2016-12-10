@@ -8,7 +8,7 @@ namespace Tome
 {
     class TypesController;
 
-    class RemoveMapCommand : public QUndoCommand
+    class RemoveMapCommand : public QUndoCommand, public QObject
     {
         public:
             RemoveMapCommand(TypesController& typesController,

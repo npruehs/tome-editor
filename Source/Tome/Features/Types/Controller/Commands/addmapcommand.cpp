@@ -16,7 +16,7 @@ AddMapCommand::AddMapCommand(TypesController& typesController,
     valueType(valueType),
     customTypeSetName(customTypeSetName)
 {
-    this->setText("Add Map - " + name);
+    this->setText(tr("Add Map - %1").arg(name));
 }
 
 void AddMapCommand::undo()

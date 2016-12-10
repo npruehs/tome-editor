@@ -8,7 +8,7 @@ RemoveListCommand::RemoveListCommand(TypesController& typesController, const QSt
     typesController(typesController),
     name(name)
 {
-    this->setText("Remove List - " + name);
+    this->setText(tr("Remove List - %1").arg(name));
 }
 
 void RemoveListCommand::undo()

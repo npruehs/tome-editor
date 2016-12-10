@@ -18,7 +18,7 @@ UpdateRecordCommand::UpdateRecordCommand(RecordsController& recordsController,
       newFieldIds(newFieldIds),
       newRecordSetName(newRecordSetName)
 {
-    this->setText("Update Record - " + oldId);
+    this->setText(tr("Update Record - %1").arg(oldId));
 }
 
 void UpdateRecordCommand::undo()

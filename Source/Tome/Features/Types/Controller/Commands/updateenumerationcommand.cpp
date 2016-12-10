@@ -17,7 +17,7 @@ UpdateEnumerationCommand::UpdateEnumerationCommand(TypesController& typesControl
       newEnumeration(newEnumeration),
       newTypeSetName(newTypeSetName)
 {
-    this->setText("Update Enumeration - " + oldName);
+    this->setText(tr("Update Enumeration - %1").arg(oldName));
 }
 
 void UpdateEnumerationCommand::undo()

@@ -9,7 +9,7 @@ RemoveEnumerationCommand::RemoveEnumerationCommand(TypesController& typesControl
     typesController(typesController),
     name(name)
 {
-    this->setText("Remove Enumeration - " + name);
+    this->setText(tr("Remove Enumeration - %1").arg(name));
 }
 
 void RemoveEnumerationCommand::undo()

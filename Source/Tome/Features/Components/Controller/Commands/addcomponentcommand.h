@@ -9,7 +9,7 @@ namespace Tome
 {
     class ComponentsController;
 
-    class AddComponentCommand : public QUndoCommand
+    class AddComponentCommand : public QUndoCommand, public QObject
     {
         public:
             AddComponentCommand(ComponentsController& componentsController, const QString& componentName, const QString& componentSetName);
