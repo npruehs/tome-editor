@@ -23,6 +23,8 @@ UpdateRecordCommand::UpdateRecordCommand(RecordsController& recordsController,
 
 void UpdateRecordCommand::undo()
 {
+    qInfo(QString("Undo update record %1.").arg(this->oldId).toUtf8().constData());
+
     // Restore record.
     this->recordsController.updateRecord(this->newId,
                                          this->oldId,

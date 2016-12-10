@@ -22,6 +22,8 @@ UpdateListCommand::UpdateListCommand(TypesController& typesController,
 
 void UpdateListCommand::undo()
 {
+    qInfo(QString("Undo update list %1.").arg(this->oldName).toUtf8().constData());
+
     // Restore custom type.
     this->typesController.updateList(this->newName,
                                      this->oldName,

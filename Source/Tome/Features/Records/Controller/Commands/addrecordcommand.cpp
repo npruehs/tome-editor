@@ -20,6 +20,8 @@ AddRecordCommand::AddRecordCommand(RecordsController& recordsController,
 
 void AddRecordCommand::undo()
 {
+    qInfo(QString("Undo add record %1.").arg(this->id).toUtf8().constData());
+
     this->recordsController.removeRecord(this->id);
 }
 

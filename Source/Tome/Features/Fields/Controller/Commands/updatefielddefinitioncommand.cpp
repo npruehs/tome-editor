@@ -29,6 +29,8 @@ UpdateFieldDefinitionCommand::UpdateFieldDefinitionCommand(FieldDefinitionsContr
 
 void UpdateFieldDefinitionCommand::undo()
 {
+    qInfo(QString("Undo update field %1.").arg(this->oldId).toUtf8().constData());
+
     // Restore field definition.
     this->fieldDefinitionsController.updateFieldDefinition(this->newId,
                                                            this->oldId,

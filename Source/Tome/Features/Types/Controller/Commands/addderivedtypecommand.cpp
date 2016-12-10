@@ -21,6 +21,8 @@ AddDerivedTypeCommand::AddDerivedTypeCommand(TypesController& typesController,
 
 void AddDerivedTypeCommand::undo()
 {
+    qInfo(QString("Undo add derived type %1.").arg(this->name).toUtf8().constData());
+
     this->typesController.removeCustomType(this->name);
 }
 

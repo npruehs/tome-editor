@@ -19,6 +19,8 @@ AddListCommand::AddListCommand(TypesController& typesController,
 
 void AddListCommand::undo()
 {
+    qInfo(QString("Undo add list %1.").arg(this->name).toUtf8().constData());
+
     this->typesController.removeCustomType(this->name);
 }
 

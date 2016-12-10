@@ -23,6 +23,8 @@ UpdateMapCommand::UpdateMapCommand(TypesController& typesController,
 
 void UpdateMapCommand::undo()
 {
+    qInfo(QString("Undo update map %1.").arg(this->oldName).toUtf8().constData());
+
     // Restore custom type.
     this->typesController.updateMap(this->newName,
                                     this->oldName,

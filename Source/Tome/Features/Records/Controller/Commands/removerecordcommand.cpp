@@ -21,6 +21,8 @@ RemoveRecordCommand::RemoveRecordCommand(RecordsController& recordsController,
 
 void RemoveRecordCommand::undo()
 {
+    qInfo(QString("Undo remove record %1.").arg(this->id).toUtf8().constData());
+
     // Add records again.
     for (RecordList::iterator itRecords = this->removedRecords.begin();
          itRecords != this->removedRecords.end();

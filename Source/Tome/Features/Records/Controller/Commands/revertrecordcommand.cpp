@@ -13,6 +13,8 @@ RevertRecordCommand::RevertRecordCommand(RecordsController& recordsController, c
 
 void RevertRecordCommand::undo()
 {
+    qInfo(QString("Undo revert record %1.").arg(this->recordId).toUtf8().constData());
+
     // Restore record.
     for (RecordFieldValueMap::iterator it = this->oldRecordFieldValues.begin();
          it != this->oldRecordFieldValues.end();

@@ -22,6 +22,8 @@ UpdateEnumerationCommand::UpdateEnumerationCommand(TypesController& typesControl
 
 void UpdateEnumerationCommand::undo()
 {
+    qInfo(QString("Undo update enumeration %1.").arg(this->oldName).toUtf8().constData());
+
     // Restore custom type.
     this->typesController.updateEnumeration(this->newName,
                                             this->oldName,

@@ -23,6 +23,8 @@ UpdateDerivedTypeCommand::UpdateDerivedTypeCommand(TypesController& typesControl
 
 void UpdateDerivedTypeCommand::undo()
 {
+    qInfo(QString("Undo update derived type %1.").arg(this->oldName).toUtf8().constData());
+
     // Restore custom type.
     this->typesController.updateDerivedType(this->newName,
                                             this->oldName,

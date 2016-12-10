@@ -14,6 +14,8 @@ RemoveEnumerationCommand::RemoveEnumerationCommand(TypesController& typesControl
 
 void RemoveEnumerationCommand::undo()
 {
+    qInfo(QString("Undo remove enumeration %1.").arg(this->name).toUtf8().constData());
+
     // Add custom type again.
     this->typesController.addEnumeration(this->name, this->enumeration, this->customTypeSetName);
 }
