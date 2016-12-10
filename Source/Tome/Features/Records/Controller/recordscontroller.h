@@ -8,6 +8,7 @@
 
 namespace Tome
 {
+    class FieldDefinition;
     class FieldDefinitionsController;
     class TypesController;
 
@@ -73,7 +74,6 @@ namespace Tome
              */
             bool isAncestorOf(const QString& possibleAncestor, const QString& recordId) const;
 
-            void moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent);
             void moveRecordToSet(const QString& recordId, const QString& recordSetName);
 
             void removeRecord(const QString& recordId);
@@ -99,6 +99,10 @@ namespace Tome
             void recordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName);
             void recordSetsChanged();
 
+        private slots:
+            void onFieldAdded(const Tome::FieldDefinition& fieldDefinition);
+            void onFieldUpdated(const Tome::FieldDefinition& oldFieldDefinition, const Tome::FieldDefinition& newFieldDefinition);
+
         private:
             RecordSetList* model;
 
@@ -107,6 +111,7 @@ namespace Tome
 
             void addRecordField(const QString& recordId, const QString& fieldId);
             Record* getRecordById(const QString& id) const;
+            void moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent);
             void updateRecordReferences(const QString oldReference, const QString newReference);
     };
 }

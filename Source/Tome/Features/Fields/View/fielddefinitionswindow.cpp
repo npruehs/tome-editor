@@ -255,9 +255,6 @@ void FieldDefinitionsWindow::on_tableWidget_doubleClicked(const QModelIndex &ind
 
 void FieldDefinitionsWindow::onFieldDefinitionAdded(const FieldDefinition& fieldDefinition)
 {
-    // TODO(np): Turn into signal.
-    this->recordsController.moveFieldToComponent(fieldDefinition.id, QString(), fieldDefinition.component);
-
     // Update view.
     this->ui->tableWidget->insertRow(0);
     this->updateRow(0, fieldDefinition, true);
@@ -278,12 +275,6 @@ void FieldDefinitionsWindow::onFieldDefinitionRemoved(const FieldDefinition& fie
 
 void FieldDefinitionsWindow::onFieldDefinitionUpdated(const FieldDefinition& oldFieldDefinition, const FieldDefinition& newFieldDefinition)
 {
-    // TODO(np): Turn into signal.
-    this->recordsController.renameRecordField(oldFieldDefinition.id, newFieldDefinition.id);
-
-    // TODO(np): Turn into signal.
-    this->recordsController.moveFieldToComponent(newFieldDefinition.id, oldFieldDefinition.component, newFieldDefinition.component);
-
     // Update view.
     this->updateTable();
 }

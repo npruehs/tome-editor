@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
+#include "../../Fields/Model/fielddefinition.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/builtintype.h"
 #include "../../../Util/listutils.h"
@@ -15,6 +16,13 @@ RecordsController::RecordsController(const FieldDefinitionsController& fieldDefi
     : fieldDefinitionsController(fieldDefinitionsController),
       typesController(typesController)
 {
+    connect(&this->fieldDefinitionsController,
+            SIGNAL(fieldDefinitionAdded(const Tome::FieldDefinition&)),
+            SLOT(onFieldAdded(const Tome::FieldDefinition&)));
+
+    connect(&this->fieldDefinitionsController,
+            SIGNAL(fieldDefinitionUpdated(const Tome::FieldDefinition&, const Tome::FieldDefinition&)),
+            SLOT(onFieldUpdated(const Tome::FieldDefinition&, const Tome::FieldDefinition&)));
 }
 
 const Record RecordsController::addRecord(const QString& id, const QString& displayName, const QStringList& fieldIds, const QString& recordSetName)
@@ -342,94 +350,6 @@ bool RecordsController::isAncestorOf(const QString& possibleAncestor, const QStr
     return false;
 }
 
-void RecordsController::moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent)
-{
-    if (oldComponent == newComponent)
-    {
-        return;
-    }
-
-    // Get all fields that belong to the old and new component.
-    const FieldDefinitionList& fields = this->fieldDefinitionsController.getFieldDefinitions();
-
-    FieldDefinitionList oldComponentFields;
-    FieldDefinitionList newComponentFields;
-
-    for (int i = 0; i < fields.size(); ++i)
-    {
-        const FieldDefinition& field = fields[i];
-
-        if (field.id == fieldId)
-        {
-            continue;
-        }
-
-        if (field.component == oldComponent)
-        {
-            oldComponentFields.push_back(field);
-        }
-        else if (field.component == newComponent)
-        {
-            newComponentFields.push_back(field);
-        }
-    }
-
-    // Check all records for their current components.
-    for (int i = 0; i < this->model->size(); ++i)
-    {
-        RecordSet& recordSet = (*this->model)[i];
-
-        for (int j = 0; j < recordSet.records.size(); ++j)
-        {
-            Record& record = recordSet.records[j];
-
-            if (!oldComponent.isEmpty() && !oldComponentFields.empty())
-            {
-                // If record has all fields of old component, remove field.
-                bool hasAllFieldsOfOldComponent = true;
-
-                for (int i = 0; i < oldComponentFields.size(); ++i)
-                {
-                    const FieldDefinition& field = oldComponentFields[i];
-
-                    if (!record.fieldValues.contains(field.id))
-                    {
-                        hasAllFieldsOfOldComponent = false;
-                        break;
-                    }
-                }
-
-                if (hasAllFieldsOfOldComponent)
-                {
-                    this->removeRecordField(record.id, fieldId);
-                }
-            }
-
-            if (!newComponent.isEmpty() && !newComponentFields.empty())
-            {
-                // If record has all fields of new component, add field.
-                bool hasAllFieldsOfNewComponent = true;
-
-                for (int i = 0; i < newComponentFields.size(); ++i)
-                {
-                    const FieldDefinition& field = newComponentFields[i];
-
-                    if (!record.fieldValues.contains(field.id))
-                    {
-                        hasAllFieldsOfNewComponent = false;
-                        break;
-                    }
-                }
-
-                if (hasAllFieldsOfNewComponent)
-                {
-                    this->addRecordField(record.id, fieldId);
-                }
-            }
-        }
-    }
-}
-
 void RecordsController::moveRecordToSet(const QString& recordId, const QString& recordSetName)
 {
     qInfo(QString("Moving record %1 to set %2.").arg(recordId, recordSetName).toUtf8().constData());
@@ -551,6 +471,9 @@ void RecordsController::removeRecordField(const QString& recordId, const QString
         Record& record = descendants[i];
         this->removeRecordField(record.id, fieldId);
     }
+
+    // Notify listeners.
+    emit recordFieldsChanged(recordId);
 }
 
 void RecordsController::removeRecordSet(const QString& name)
@@ -741,6 +664,138 @@ void RecordsController::updateRecordFieldValue(const QString& recordId, const QS
     emit recordFieldsChanged(recordId);
 }
 
+void RecordsController::onFieldAdded(const FieldDefinition& fieldDefinition)
+{
+    this->moveFieldToComponent(fieldDefinition.id, QString(), fieldDefinition.component);
+}
+
+void RecordsController::onFieldUpdated(const FieldDefinition& oldFieldDefinition, const FieldDefinition& newFieldDefinition)
+{
+    this->renameRecordField(oldFieldDefinition.id, newFieldDefinition.id);
+    this->moveFieldToComponent(newFieldDefinition.id, oldFieldDefinition.component, newFieldDefinition.component);
+}
+
+void RecordsController::addRecordField(const QString& recordId, const QString& fieldId)
+{
+    Record& record = *this->getRecordById(recordId);
+    const FieldDefinition& field =
+            this->fieldDefinitionsController.getFieldDefinition(fieldId);
+    record.fieldValues.insert(fieldId, field.defaultValue);
+
+    // Notify listeners.
+    emit recordFieldsChanged(recordId);
+}
+
+Record* RecordsController::getRecordById(const QString& id) const
+{
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        RecordSet& recordSet = (*this->model)[i];
+
+        for (int j = 0; j < recordSet.records.size(); ++j)
+        {
+            Record& record = recordSet.records[j];
+
+            if (record.id == id)
+            {
+                return &record;
+            }
+        }
+    }
+
+    const QString errorMessage = "Record not found: " + id;
+    qCritical(errorMessage.toUtf8().constData());
+    throw std::out_of_range(errorMessage.toStdString());
+}
+
+void RecordsController::moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent)
+{
+    if (oldComponent == newComponent)
+    {
+        return;
+    }
+
+    // Get all fields that belong to the old and new component.
+    const FieldDefinitionList& fields = this->fieldDefinitionsController.getFieldDefinitions();
+
+    FieldDefinitionList oldComponentFields;
+    FieldDefinitionList newComponentFields;
+
+    for (int i = 0; i < fields.size(); ++i)
+    {
+        const FieldDefinition& field = fields[i];
+
+        if (field.id == fieldId)
+        {
+            continue;
+        }
+
+        if (field.component == oldComponent)
+        {
+            oldComponentFields.push_back(field);
+        }
+        else if (field.component == newComponent)
+        {
+            newComponentFields.push_back(field);
+        }
+    }
+
+    // Check all records for their current components.
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        RecordSet& recordSet = (*this->model)[i];
+
+        for (int j = 0; j < recordSet.records.size(); ++j)
+        {
+            Record& record = recordSet.records[j];
+
+            if (!oldComponent.isEmpty() && !oldComponentFields.empty())
+            {
+                // If record has all fields of old component, remove field.
+                bool hasAllFieldsOfOldComponent = true;
+
+                for (int i = 0; i < oldComponentFields.size(); ++i)
+                {
+                    const FieldDefinition& field = oldComponentFields[i];
+
+                    if (!record.fieldValues.contains(field.id))
+                    {
+                        hasAllFieldsOfOldComponent = false;
+                        break;
+                    }
+                }
+
+                if (hasAllFieldsOfOldComponent)
+                {
+                    this->removeRecordField(record.id, fieldId);
+                }
+            }
+
+            if (!newComponent.isEmpty() && !newComponentFields.empty())
+            {
+                // If record has all fields of new component, add field.
+                bool hasAllFieldsOfNewComponent = true;
+
+                for (int i = 0; i < newComponentFields.size(); ++i)
+                {
+                    const FieldDefinition& field = newComponentFields[i];
+
+                    if (!record.fieldValues.contains(field.id))
+                    {
+                        hasAllFieldsOfNewComponent = false;
+                        break;
+                    }
+                }
+
+                if (hasAllFieldsOfNewComponent)
+                {
+                    this->addRecordField(record.id, fieldId);
+                }
+            }
+        }
+    }
+}
+
 void RecordsController::updateRecordReferences(const QString oldReference, const QString newReference)
 {
     if (oldReference == newReference)
@@ -796,38 +851,4 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
 
     // Report finish.
     emit this->progressChanged(tr("Reparenting records"), QString(), 1, 1);
-}
-
-void RecordsController::addRecordField(const QString& recordId, const QString& fieldId)
-{
-    Record& record = *this->getRecordById(recordId);
-    const FieldDefinition& field =
-            this->fieldDefinitionsController.getFieldDefinition(fieldId);
-    record.fieldValues.insert(fieldId, field.defaultValue);
-
-    // Notify listeners.
-    emit recordFieldsChanged(recordId);
-}
-
-
-Record* RecordsController::getRecordById(const QString& id) const
-{
-    for (int i = 0; i < this->model->size(); ++i)
-    {
-        RecordSet& recordSet = (*this->model)[i];
-
-        for (int j = 0; j < recordSet.records.size(); ++j)
-        {
-            Record& record = recordSet.records[j];
-
-            if (record.id == id)
-            {
-                return &record;
-            }
-        }
-    }
-
-    const QString errorMessage = "Record not found: " + id;
-    qCritical(errorMessage.toUtf8().constData());
-    throw std::out_of_range(errorMessage.toStdString());
 }
