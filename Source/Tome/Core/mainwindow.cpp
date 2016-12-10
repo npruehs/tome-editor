@@ -36,6 +36,7 @@
 #include "../Features/Records/Controller/Commands/addrecordcommand.h"
 #include "../Features/Records/Controller/Commands/duplicaterecordcommand.h"
 #include "../Features/Records/Controller/Commands/reparentrecordcommand.h"
+#include "../Features/Records/Controller/Commands/removerecordcommand.h"
 #include "../Features/Records/Controller/Commands/revertrecordcommand.h"
 #include "../Features/Records/Controller/Commands/updaterecordcommand.h"
 #include "../Features/Records/Controller/Commands/updaterecordfieldvaluecommand.h"
@@ -712,7 +713,12 @@ void MainWindow::on_actionRemove_Record_triggered()
     }
 
     // Update model.
-    this->controller->getRecordsController().removeRecord(recordId);
+    RemoveRecordCommand* command = new RemoveRecordCommand(
+                this->controller->getRecordsController(),
+                this->controller->getFieldDefinitionsController(),
+                this->controller->getTypesController(),
+                recordId);
+    this->controller->getUndoController().doCommand(command);
 }
 
 void MainWindow::on_actionFindRecord_triggered()

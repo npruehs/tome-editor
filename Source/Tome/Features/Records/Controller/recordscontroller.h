@@ -80,6 +80,7 @@ namespace Tome
             void revertRecord(const QString& recordId);
 
             void reparentRecord(const QString& recordId, const QString& newParentId);
+            void setReadOnly(const QString& recordId, const bool readOnly);
             void setRecordSets(RecordSetList& model);
             void updateRecord(const QString oldId, const QString newId, const QString newDisplayName, const QStringList& fieldIds, const QString& recordSetName);
             void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue);

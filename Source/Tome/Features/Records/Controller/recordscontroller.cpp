@@ -358,9 +358,6 @@ void RecordsController::removeRecord(const QString& recordId)
 {
     qInfo(QString("Removing record %1.").arg(recordId).toUtf8().constData());
 
-    // Remove references to record.
-    this->updateRecordReferences(recordId, QString());
-
     // Remove children.
     RecordList children = this->getChildren(recordId);
 
@@ -369,6 +366,9 @@ void RecordsController::removeRecord(const QString& recordId)
         Record& record = children[i];
         this->removeRecord(record.id);
     }
+
+    // Remove references to record.
+    this->updateRecordReferences(recordId, QString());
 
     // Remove record.
     for (RecordSetList::iterator itSets = this->model->begin();
@@ -444,6 +444,12 @@ void RecordsController::reparentRecord(const QString& recordId, const QString& n
     QString oldParentId = record.parentId;
     record.parentId = newParentId;
     emit this->recordReparented(recordId, oldParentId, newParentId);
+}
+
+void RecordsController::setReadOnly(const QString& recordId, const bool readOnly)
+{
+    Record& record = *this->getRecordById(recordId);
+    record.readOnly = readOnly;
 }
 
 void RecordsController::setRecordSets(RecordSetList& model)
