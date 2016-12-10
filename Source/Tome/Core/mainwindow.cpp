@@ -296,14 +296,19 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     // Setup undo.
     this->ui->menuProject->addSeparator();
+    this->ui->mainToolBar->addSeparator();
 
     QAction* undoAction = this->controller->getUndoController().createUndoAction(this, tr("Undo"));
     undoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z));
+    undoAction->setIcon(QIcon(":/Media/Icons/Undo_16x.png"));
     this->ui->menuProject->addAction(undoAction);
+    this->ui->mainToolBar->addAction(undoAction);
 
     QAction* redoAction = this->controller->getUndoController().createRedoAction(this, tr("Redo"));
     redoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Y));
+    redoAction->setIcon(QIcon(":/Media/Icons/Redo_16x.png"));
     this->ui->menuProject->addAction(redoAction);
+    this->ui->mainToolBar->addAction(redoAction);
 }
 
 MainWindow::~MainWindow()
