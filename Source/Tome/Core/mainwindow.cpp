@@ -35,6 +35,7 @@
 #include "../Features/Records/Controller/recordsetserializer.h"
 #include "../Features/Records/Controller/Commands/addrecordcommand.h"
 #include "../Features/Records/Controller/Commands/duplicaterecordcommand.h"
+#include "../Features/Records/Controller/Commands/revertrecordcommand.h"
 #include "../Features/Records/Controller/Commands/updaterecordcommand.h"
 #include "../Features/Records/Controller/Commands/updaterecordfieldvaluecommand.h"
 #include "../Features/Records/Model/recordfieldstate.h"
@@ -678,10 +679,10 @@ void MainWindow::on_actionRevert_Record_triggered()
     }
 
     // Revert record.
-    this->controller->getRecordsController().revertRecord(recordId);
-
-    // Update view.
-    this->refreshRecordTable();
+    RevertRecordCommand* command = new RevertRecordCommand(
+                this->controller->getRecordsController(),
+                recordId);
+    this->controller->getUndoController().doCommand(command);
 }
 
 void MainWindow::on_actionRemove_Record_triggered()

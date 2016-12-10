@@ -1,0 +1,32 @@
+#include "revertrecordcommand.h"
+
+#include "../recordscontroller.h"
+
+using namespace Tome;
+
+
+RevertRecordCommand::RevertRecordCommand(RecordsController& recordsController, const QString& recordId)
+    : recordsController(recordsController), recordId(recordId)
+{
+    this->setText("Revert Record - " + recordId);
+}
+
+void RevertRecordCommand::undo()
+{
+    // Restore record.
+    for (RecordFieldValueMap::iterator it = this->oldRecordFieldValues.begin();
+         it != this->oldRecordFieldValues.end();
+         ++it)
+    {
+        this->recordsController.updateRecordFieldValue(this->recordId, it.key(), it.value());
+    }
+}
+
+void RevertRecordCommand::redo()
+{
+    // Store current data.
+    this->oldRecordFieldValues = this->recordsController.getRecordFieldValues(this->recordId);
+
+    // Revert record.
+    this->recordsController.revertRecord(this->recordId);
+}

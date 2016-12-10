@@ -411,52 +411,6 @@ void RecordsController::removeRecordSet(const QString& name)
     }
 }
 
-void RecordsController::renameRecordField(const QString oldFieldId, const QString newFieldId)
-{
-    for (int i = 0; i < this->model->size(); ++i)
-    {
-        RecordSet& recordSet = (*this->model)[i];
-
-        for (int j = 0; j < recordSet.records.size(); ++j)
-        {
-            Record& record = recordSet.records[j];
-
-            if (record.fieldValues.contains(oldFieldId))
-            {
-                const QVariant fieldValue = record.fieldValues[oldFieldId];
-                record.fieldValues.remove(oldFieldId);
-                record.fieldValues.insert(newFieldId, fieldValue);
-
-                // Notify listeners.
-                emit recordFieldsChanged(record.id);
-            }
-        }
-    }
-}
-
-QVariant RecordsController::revertFieldValue(const QString& recordId, const QString& fieldId)
-{
-    qInfo(QString("Reverting field %1 of record %2.").arg(fieldId, recordId).toUtf8().constData());
-
-    // Check if there's anything to revert to.
-    QVariant valueToRevertTo = this->getInheritedFieldValue(recordId, fieldId);
-
-    if (valueToRevertTo == QVariant())
-    {
-        // Revert to field default value.
-        const FieldDefinition& field =
-                this->fieldDefinitionsController.getFieldDefinition(fieldId);
-
-        valueToRevertTo = field.defaultValue;
-    }
-
-    // Revert field value.
-    this->updateRecordFieldValue(recordId, fieldId, valueToRevertTo);
-
-    // Return reverted value.
-    return valueToRevertTo;
-}
-
 void RecordsController::revertRecord(const QString& recordId)
 {
     qInfo(QString("Reverting record %1.").arg(recordId).toUtf8().constData());
@@ -798,6 +752,52 @@ void RecordsController::removeRecordField(const QString& recordId, const QString
 
     // Notify listeners.
     emit recordFieldsChanged(recordId);
+}
+
+void RecordsController::renameRecordField(const QString oldFieldId, const QString newFieldId)
+{
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        RecordSet& recordSet = (*this->model)[i];
+
+        for (int j = 0; j < recordSet.records.size(); ++j)
+        {
+            Record& record = recordSet.records[j];
+
+            if (record.fieldValues.contains(oldFieldId))
+            {
+                const QVariant fieldValue = record.fieldValues[oldFieldId];
+                record.fieldValues.remove(oldFieldId);
+                record.fieldValues.insert(newFieldId, fieldValue);
+
+                // Notify listeners.
+                emit recordFieldsChanged(record.id);
+            }
+        }
+    }
+}
+
+QVariant RecordsController::revertFieldValue(const QString& recordId, const QString& fieldId)
+{
+    qInfo(QString("Reverting field %1 of record %2.").arg(fieldId, recordId).toUtf8().constData());
+
+    // Check if there's anything to revert to.
+    QVariant valueToRevertTo = this->getInheritedFieldValue(recordId, fieldId);
+
+    if (valueToRevertTo == QVariant())
+    {
+        // Revert to field default value.
+        const FieldDefinition& field =
+                this->fieldDefinitionsController.getFieldDefinition(fieldId);
+
+        valueToRevertTo = field.defaultValue;
+    }
+
+    // Revert field value.
+    this->updateRecordFieldValue(recordId, fieldId, valueToRevertTo);
+
+    // Return reverted value.
+    return valueToRevertTo;
 }
 
 void RecordsController::updateRecordReferences(const QString oldReference, const QString newReference)

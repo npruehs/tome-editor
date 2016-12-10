@@ -77,9 +77,6 @@ namespace Tome
             void removeRecord(const QString& recordId);
             void removeRecordSet(const QString& name);
 
-            void renameRecordField(const QString oldFieldId, const QString newFieldId);
-
-            QVariant revertFieldValue(const QString& recordId, const QString& fieldId);
             void revertRecord(const QString& recordId);
 
             void reparentRecord(const QString& recordId, const QString& newParentId);
@@ -111,6 +108,8 @@ namespace Tome
             void moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent);
             void moveRecordToSet(const QString& recordId, const QString& recordSetName);
             void removeRecordField(const QString& recordId, const QString& fieldId);
+            void renameRecordField(const QString oldFieldId, const QString newFieldId);
+            QVariant revertFieldValue(const QString& recordId, const QString& fieldId);
             void updateRecordReferences(const QString oldReference, const QString newReference);
     };
 }

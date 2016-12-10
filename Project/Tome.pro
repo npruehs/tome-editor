@@ -140,7 +140,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Types/Controller/Commands/updatemapcommand.cpp \
     ../Source/Tome/Features/Records/Controller/Commands/addrecordcommand.cpp \
     ../Source/Tome/Features/Records/Controller/Commands/updaterecordcommand.cpp \
-    ../Source/Tome/Features/Records/Controller/Commands/duplicaterecordcommand.cpp
+    ../Source/Tome/Features/Records/Controller/Commands/duplicaterecordcommand.cpp \
+    ../Source/Tome/Features/Records/Controller/Commands/revertrecordcommand.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -271,7 +272,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Controller/Commands/updatemapcommand.h \
     ../Source/Tome/Features/Records/Controller/Commands/addrecordcommand.h \
     ../Source/Tome/Features/Records/Controller/Commands/updaterecordcommand.h \
-    ../Source/Tome/Features/Records/Controller/Commands/duplicaterecordcommand.h
+    ../Source/Tome/Features/Records/Controller/Commands/duplicaterecordcommand.h \
+    ../Source/Tome/Features/Records/Controller/Commands/revertrecordcommand.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
