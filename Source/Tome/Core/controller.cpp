@@ -44,6 +44,7 @@
 #include "../Features/Tasks/Controller/taskscontroller.h"
 #include "../Features/Types/Controller/typescontroller.h"
 #include "../Features/Types/Controller/customtypesetserializer.h"
+#include "../Features/Undo/Controller/undocontroller.h"
 #include "../Util/pathutils.h"
 
 using namespace Tome;
@@ -71,9 +72,10 @@ const QString Controller::TypeFileExtension = ".ttypes";
 
 Controller::Controller(CommandLineOptions* options) :
     options(options),
+    undoController(new UndoController()),
     componentsController(new ComponentsController()),
-    fieldDefinitionsController(new FieldDefinitionsController()),
     typesController(new TypesController()),
+    fieldDefinitionsController(new FieldDefinitionsController(*this->componentsController, *this->typesController)),
     recordsController(new RecordsController(*this->fieldDefinitionsController, *this->typesController)),
     exportController(new ExportController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     settingsController(new SettingsController()),
@@ -117,6 +119,7 @@ Controller::~Controller()
         delete this->mainWindow;
     }
 
+    delete this->undoController;
     delete this->componentsController;
     delete this->fieldDefinitionsController;
     delete this->recordsController;
@@ -132,52 +135,57 @@ Controller::~Controller()
     delete this->options;
 }
 
-ComponentsController& Controller::getComponentsController()
+UndoController&Controller::getUndoController() const
+{
+    return *this->undoController;
+}
+
+ComponentsController& Controller::getComponentsController() const
 {
     return *this->componentsController;
 }
 
-FieldDefinitionsController& Controller::getFieldDefinitionsController()
+FieldDefinitionsController& Controller::getFieldDefinitionsController() const
 {
     return *this->fieldDefinitionsController;
 }
 
-RecordsController& Controller::getRecordsController()
+RecordsController& Controller::getRecordsController() const
 {
     return *this->recordsController;
 }
 
-ExportController& Controller::getExportController()
+ExportController& Controller::getExportController() const
 {
     return *this->exportController;
 }
 
-SettingsController& Controller::getSettingsController()
+SettingsController& Controller::getSettingsController() const
 {
     return *this->settingsController;
 }
 
-TasksController& Controller::getTasksController()
+TasksController& Controller::getTasksController() const
 {
     return *this->tasksController;
 }
 
-TypesController& Controller::getTypesController()
+TypesController& Controller::getTypesController() const
 {
     return *this->typesController;
 }
 
-FindUsagesController& Controller::getFindUsagesController()
+FindUsagesController& Controller::getFindUsagesController() const
 {
     return *this->findUsagesController;
 }
 
-FindRecordController&Controller::getFindRecordController()
+FindRecordController&Controller::getFindRecordController() const
 {
     return *this->findRecordController;
 }
 
-FacetsController&Controller::getFacetsController()
+FacetsController&Controller::getFacetsController() const
 {
     return *this->facetsController;
 }
@@ -311,7 +319,7 @@ bool Controller::isProjectLoaded() const
     return this->project != 0;
 }
 
-void Controller::loadComponentSet(const QString& projectPath, ComponentSet& componentSet)
+void Controller::loadComponentSet(const QString& projectPath, ComponentSet& componentSet) const
 {
     ComponentSetSerializer componentSerializer = ComponentSetSerializer();
 
@@ -351,7 +359,7 @@ void Controller::loadComponentSet(const QString& projectPath, ComponentSet& comp
     }
 }
 
-void Controller::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& typeSet)
+void Controller::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& typeSet) const
 {
     CustomTypeSetSerializer typesSerializer = CustomTypeSetSerializer();
 
@@ -391,7 +399,7 @@ void Controller::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& ty
     }
 }
 
-void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemplate& exportTemplate)
+void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemplate& exportTemplate) const
 {
     ExportTemplateSerializer exportTemplateSerializer = ExportTemplateSerializer();
 
@@ -476,7 +484,7 @@ void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemp
     }
 }
 
-void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet)
+void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet) const
 {
     FieldDefinitionSetSerializer fieldDefinitionSerializer = FieldDefinitionSetSerializer();
 
@@ -510,7 +518,7 @@ void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinit
     }
 }
 
-void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet)
+void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet) const
 {
     // Open record file.
     QString fullRecordSetPath =
@@ -621,7 +629,7 @@ void Controller::openProject(const QString& projectFileName)
     }
 }
 
-void Controller::saveProject()
+void Controller::saveProject() const
 {
     this->saveProject(this->project);
 }
@@ -646,7 +654,7 @@ QString Controller::buildFullFilePath(QString filePath, QString projectPath, QSt
     return filePath;
 }
 
-void Controller::saveProject(QSharedPointer<Project> project)
+void Controller::saveProject(QSharedPointer<Project> project) const
 {
     QString& projectPath = project->path;
     ProjectSerializer projectSerializer = ProjectSerializer();
@@ -805,7 +813,7 @@ void Controller::saveProject(QSharedPointer<Project> project)
     }
 }
 
-QString Controller::readFile(const QString& fullPath)
+QString Controller::readFile(const QString& fullPath) const
 {
     QFile file(fullPath);
 
@@ -836,6 +844,9 @@ void Controller::setProject(QSharedPointer<Project> project)
 
     // Set the default locale.
     QLocale::setDefault(project->locale);
+
+    // Reset undo stack.
+    this->undoController->clear();
 
     // Notify listeners.
     emit projectChanged(this->project);

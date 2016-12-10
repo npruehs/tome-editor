@@ -85,8 +85,12 @@ class MainWindow : public QMainWindow
         void onFieldChanged();
         void onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
         void onProjectChanged(QSharedPointer<Tome::Project> project);
+        void onRecordAdded(const QString& recordId, const QString& recordDisplayName, const QString& parentId);
         void onRecordFieldsChanged(const QString& recordId);
+        void onRecordRemoved(const QString& recordId);
+        void onRecordReparented(const QString& recordId, const QString& oldParentId, const QString& newParentId);
         void onRecordSetsChanged();
+        void onRecordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName);
         void onRecordLinkActivated(const QString& recordId);
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();
@@ -125,10 +129,8 @@ class MainWindow : public QMainWindow
 
         Tome::MessageList messages;
 
-        void addRecordField(const QString& fieldId);
         QString getReadOnlyMessage(const QString& recordId);
         void openProject(QString path);
-        void removeRecordField(const QString& fieldId);
         void refreshErrorList();
         void refreshExportMenu();
         void refreshRecordTree();
@@ -137,7 +139,6 @@ class MainWindow : public QMainWindow
         void showWindow(QWidget* widget);
         void updateMenus();
         void updateRecentProjects();
-        void updateRecord(const QString& id, const QString& displayName);
         void updateRecordRow(const int i);
         void updateWindowTitle();
 };

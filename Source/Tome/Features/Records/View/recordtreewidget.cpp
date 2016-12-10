@@ -19,15 +19,25 @@ RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController, Setting
     this->setHeaderHidden(true);
 }
 
-void RecordTreeWidget::addRecord(const QString& id, const QString& displayName)
+void RecordTreeWidget::addRecord(const QString& id, const QString& displayName, const QString& parentId)
 {
-    QTreeWidgetItem* newItem = new RecordTreeWidgetItem(id, displayName, QString(), false);
+    RecordTreeWidgetItem* recordItem = new RecordTreeWidgetItem(id, displayName, QString(), false);
+    RecordTreeWidgetItem* parentItem = this->getRecordItem(parentId);
 
-    this->insertTopLevelItem(0, newItem);
+    if (parentItem != nullptr)
+    {
+        parentItem->addChild(recordItem);
+    }
+    else
+    {
+        this->insertTopLevelItem(0, recordItem);
+    }
+
     this->sortItems(0, Qt::AscendingOrder);
 
     // Select new record.
-    this->setCurrentItem(newItem);
+    this->setCurrentItem(recordItem);
+    this->updateRecordItem(recordItem);
 }
 
 QString RecordTreeWidget::getSelectedRecordId() const
@@ -54,9 +64,24 @@ RecordTreeWidgetItem* RecordTreeWidget::getSelectedRecordItem() const
     return static_cast<RecordTreeWidgetItem*>(selectedItems.first());
 }
 
-void RecordTreeWidget::updateRecordItem()
+void RecordTreeWidget::updateRecord(const QString& oldId, const QString& newId, const QString& newDisplayName)
 {
-    this->updateRecordItem(this->getSelectedRecordItem());
+    // Update view.
+    RecordTreeWidgetItem* recordItem = this->getRecordItem(oldId);
+
+    const QString oldDisplayName = recordItem->getDisplayName();
+    bool needsSorting = oldDisplayName != newDisplayName;
+
+    recordItem->setId(newId);
+    recordItem->setDisplayName(newDisplayName);
+
+    // Sort by display name.
+    if (needsSorting)
+    {
+        this->sortItems(0, Qt::AscendingOrder);
+    }
+
+    this->updateRecordItem(recordItem);
 }
 
 void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
@@ -100,18 +125,14 @@ void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
 
 void RecordTreeWidget::selectRecord(const QString& id)
 {
-    QTreeWidgetItemIterator it(this);
+    RecordTreeWidgetItem* item = this->getRecordItem(id);
 
-    while (*it)
+    if (item == nullptr)
     {
-        RecordTreeWidgetItem *item = static_cast<RecordTreeWidgetItem*>(*it);
-        if (item->getId() == id)
-        {
-            this->setCurrentItem(item);
-            break;
-        }
-        ++it;
+        return;
     }
+
+    this->setCurrentItem(item);
 }
 
 void RecordTreeWidget::setRecords(const RecordList& records)
@@ -171,6 +192,24 @@ void RecordTreeWidget::setRecords(const RecordList& records)
     }
 }
 
+void RecordTreeWidget::removeRecord(const QString& id)
+{
+    // Update view.
+    RecordTreeWidgetItem* recordItem = this->getRecordItem(id);
+
+    if (recordItem->parent() != 0)
+    {
+        recordItem->parent()->removeChild(recordItem);
+    }
+    else
+    {
+        int index = this->indexOfTopLevelItem(recordItem);
+        this->takeTopLevelItem(index);
+    }
+
+    delete recordItem;
+}
+
 bool RecordTreeWidget::dropMimeData(QTreeWidgetItem* parent, int index, const QMimeData* data, Qt::DropAction action)
 {
     Q_UNUSED(index)
@@ -206,4 +245,21 @@ bool RecordTreeWidget::dropMimeData(QTreeWidgetItem* parent, int index, const QM
     }
 
     return true;
+}
+
+RecordTreeWidgetItem* RecordTreeWidget::getRecordItem(const QString& id)
+{
+    QTreeWidgetItemIterator it(this);
+
+    while (*it)
+    {
+        RecordTreeWidgetItem *item = static_cast<RecordTreeWidgetItem*>(*it);
+        if (item->getId() == id)
+        {
+            return item;
+        }
+        ++it;
+    }
+
+    return nullptr;
 }

@@ -42,7 +42,7 @@ bool UserSettingsWindow::getExpandRecordTreeOnRefresh()
 
 void UserSettingsWindow::showEvent(QShowEvent* event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
 
     // Update view from model.
     bool runIntegrityChecksOnLoad = this->settingsController.getRunIntegrityChecksOnLoad();

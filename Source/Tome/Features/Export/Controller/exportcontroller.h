@@ -27,14 +27,14 @@ namespace Tome
 
             bool hasRecordExportTemplate(const QString& name) const;
 
-            void exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath);
-            void exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device);
+            void exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath) const;
+            void exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device) const;
             void removeExportTemplate(const QString& name);
             void setRecordExportTemplates(RecordExportTemplateList& exportTemplates);
 
         signals:
             void exportTemplatesChanged();
-            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
 
         private:
             RecordExportTemplateList* model;

@@ -185,44 +185,6 @@ bool TypesController::isReferenceType(const QString& name) const
     return type.isDerivedType() && type.getBaseType() == BuiltInType::Reference;
 }
 
-void TypesController::moveCustomTypeToSet(const QString& customTypeName, const QString& customTypeSetName)
-{
-    qInfo(QString("Moving type %1 to set %2.").arg(customTypeName, customTypeSetName).toUtf8().constData());
-
-    CustomType customType = this->getCustomType(customTypeName);
-
-    for (CustomTypeSetList::iterator itSets = this->model->begin();
-         itSets != this->model->end();
-         ++itSets)
-    {
-        CustomTypeSet& customTypeSet = *itSets;
-        CustomTypeList& customTypes = customTypeSet.types;
-
-        // Check if should add custom type.
-        if (customTypeSet.name == customTypeSetName)
-        {
-            int index = findInsertionIndex(customTypes, customType, customTypeLessThanName);
-            customType.typeSetName = customTypeSetName;
-            customTypes.insert(index, customType);
-            continue;
-        }
-        else
-        {
-            // Check if should remove custom type.
-            for (CustomTypeList::iterator it = customTypes.begin();
-                 it != customTypes.end();
-                 ++it)
-            {
-                if ((*it).name == customTypeName)
-                {
-                    customTypes.erase(it);
-                    break;
-                }
-            }
-        }
-    }
-}
-
 void TypesController::removeCustomType(const QString& typeName)
 {
     qInfo(QString("Removing custom type %1.").arg(typeName).toUtf8().constData());
@@ -239,16 +201,12 @@ void TypesController::removeCustomType(const QString& typeName)
         {
             if (it->name == typeName)
             {
+                emit this->typeRemoved(*it);
                 types.erase(it);
                 return;
             }
         }
     }
-}
-
-void TypesController::removeCustomTypeAt(const int index)
-{
-    this->model->removeAt(index);
 }
 
 void TypesController::removeCustomTypeSet(const QString& name)
@@ -262,46 +220,6 @@ void TypesController::removeCustomTypeSet(const QString& name)
             // Update model.
             this->model->erase(it);
             return;
-        }
-    }
-}
-
-void TypesController::renameType(const QString oldName, const QString newName)
-{
-    qInfo(QString("Renaming custom type %1 to %2.").arg(oldName, newName).toUtf8().constData());
-
-    CustomType& type = *this->getCustomTypeByName(oldName);
-
-    // Rename type.
-    type.name = newName;
-
-    // Update list item type and map key and value type references.
-
-    for (int i = 0; i < this->model->size(); ++i)
-    {
-        CustomTypeSet& typeSet = (*this->model)[i];
-
-        for (int j = 0; j < typeSet.types.size(); ++j)
-        {
-            CustomType& t = typeSet.types[j];
-
-            if (t.isList() && t.getItemType() == oldName)
-            {
-                t.setItemType(newName);
-            }
-
-            if (t.isMap())
-            {
-                if (t.getKeyType() == oldName)
-                {
-                    t.setKeyType(newName);
-                }
-
-                if (t.getValueType() == oldName)
-                {
-                    t.setValueType(newName);
-                }
-            }
         }
     }
 }
@@ -336,6 +254,9 @@ void TypesController::updateDerivedType(const QString& oldName, const QString& n
             std::sort((*it).types.begin(), (*it).types.end(), customTypeLessThanName);
         }
     }
+
+    // Notify listeners.
+    emit this->typeUpdated(type);
 }
 
 void TypesController::updateEnumeration(const QString& oldName, const QString& newName, const QStringList& enumeration, const QString& typeSetName)
@@ -362,6 +283,9 @@ void TypesController::updateEnumeration(const QString& oldName, const QString& n
             std::sort((*it).types.begin(), (*it).types.end(), customTypeLessThanName);
         }
     }
+
+    // Notify listeners.
+    emit this->typeUpdated(type);
 }
 
 void TypesController::updateList(const QString& oldName, const QString& newName, const QString& itemType, const QString& typeSetName)
@@ -388,6 +312,9 @@ void TypesController::updateList(const QString& oldName, const QString& newName,
             std::sort((*it).types.begin(), (*it).types.end(), customTypeLessThanName);
         }
     }
+
+    // Notify listeners.
+    emit this->typeUpdated(type);
 }
 
 void TypesController::updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType, const QString& typeSetName)
@@ -415,9 +342,12 @@ void TypesController::updateMap(const QString& oldName, const QString& newName, 
             std::sort((*it).types.begin(), (*it).types.end(), customTypeLessThanName);
         }
     }
+
+    // Notify listeners.
+    emit this->typeUpdated(type);
 }
 
-QString TypesController::valueToString(const QVariant& value, const QString& typeName)
+QString TypesController::valueToString(const QVariant& value, const QString& typeName) const
 {
     // Vector2I.
     if (typeName == BuiltInType::Vector2I || typeName == BuiltInType::Vector2R ||
@@ -481,6 +411,7 @@ void TypesController::addCustomType(CustomType customType, const QString& custom
             CustomTypeList& types = customTypeSet.types;
             int index = findInsertionIndex(types, customType, customTypeLessThanName);
             types.insert(index, customType);
+            emit this->typeAdded(customType);
             return;
         }
     }
@@ -510,4 +441,89 @@ CustomType* TypesController::getCustomTypeByName(const QString& name) const
     const QString errorMessage = "Type not found: " + name;
     qCritical(errorMessage.toUtf8().constData());
     throw std::out_of_range(errorMessage.toStdString());
+}
+
+void TypesController::moveCustomTypeToSet(const QString& customTypeName, const QString& customTypeSetName)
+{
+    qInfo(QString("Moving type %1 to set %2.").arg(customTypeName, customTypeSetName).toUtf8().constData());
+
+    CustomType customType = this->getCustomType(customTypeName);
+
+    for (CustomTypeSetList::iterator itSets = this->model->begin();
+         itSets != this->model->end();
+         ++itSets)
+    {
+        CustomTypeSet& customTypeSet = *itSets;
+        CustomTypeList& customTypes = customTypeSet.types;
+
+        // Check if should add custom type.
+        if (customTypeSet.name == customTypeSetName)
+        {
+            int index = findInsertionIndex(customTypes, customType, customTypeLessThanName);
+            customType.typeSetName = customTypeSetName;
+            customTypes.insert(index, customType);
+            continue;
+        }
+        else
+        {
+            // Check if should remove custom type.
+            for (CustomTypeList::iterator it = customTypes.begin();
+                 it != customTypes.end();
+                 ++it)
+            {
+                if ((*it).name == customTypeName)
+                {
+                    customTypes.erase(it);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void TypesController::renameType(const QString oldName, const QString newName)
+{
+    if (oldName == newName)
+    {
+        return;
+    }
+
+    qInfo(QString("Renaming custom type %1 to %2.").arg(oldName, newName).toUtf8().constData());
+
+    CustomType& type = *this->getCustomTypeByName(oldName);
+
+    // Rename type.
+    type.name = newName;
+
+    // Update list item type and map key and value type references.
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        CustomTypeSet& typeSet = (*this->model)[i];
+
+        for (int j = 0; j < typeSet.types.size(); ++j)
+        {
+            CustomType& t = typeSet.types[j];
+
+            if (t.isList() && t.getItemType() == oldName)
+            {
+                t.setItemType(newName);
+            }
+
+            if (t.isMap())
+            {
+                if (t.getKeyType() == oldName)
+                {
+                    t.setKeyType(newName);
+                }
+
+                if (t.getValueType() == oldName)
+                {
+                    t.setValueType(newName);
+                }
+            }
+        }
+    }
+
+    // Notify listeners.
+    emit this->typeRenamed(oldName, newName);
 }

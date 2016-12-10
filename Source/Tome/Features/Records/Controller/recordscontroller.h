@@ -8,6 +8,7 @@
 
 namespace Tome
 {
+    class FieldDefinition;
     class FieldDefinitionsController;
     class TypesController;
 
@@ -18,8 +19,7 @@ namespace Tome
         public:
             RecordsController(const FieldDefinitionsController& fieldDefinitionsController, const TypesController& typesController);
 
-            const Record addRecord(const QString& id, const QString& displayName, const QString& recordSetName);
-            void addRecordField(const QString& recordId, const QString& fieldId);
+            const Record addRecord(const QString& id, const QString& displayName, const QStringList& fieldIds, const QString& recordSetName);
             void addRecordSet(const RecordSet& recordSet);
 
             const Record duplicateRecord(const QString& existingRecordId, const QString& newRecordId);
@@ -74,29 +74,30 @@ namespace Tome
              */
             bool isAncestorOf(const QString& possibleAncestor, const QString& recordId) const;
 
-            void moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent);
-            void moveRecordToSet(const QString& recordId, const QString& recordSetName);
-
             void removeRecord(const QString& recordId);
-            void removeRecordField(const QString fieldId);
-            void removeRecordField(const QString& recordId, const QString& fieldId);
             void removeRecordSet(const QString& name);
 
-            void renameRecordField(const QString oldFieldId, const QString newFieldId);
-
-            QVariant revertFieldValue(const QString& recordId, const QString& fieldId);
             void revertRecord(const QString& recordId);
 
             void reparentRecord(const QString& recordId, const QString& newParentId);
+            void setReadOnly(const QString& recordId, const bool readOnly);
             void setRecordSets(RecordSetList& model);
-            void updateRecord(const QString& oldId, const QString& newId, const QString& displayName);
+            void updateRecord(const QString oldId, const QString newId, const QString newDisplayName, const QStringList& fieldIds, const QString& recordSetName);
             void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue);
-            void updateRecordReferences(const QString oldReference, const QString newReference);
 
         signals:
             void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
+            void recordAdded(const QString& recordId, const QString& recordDisplayName, const QString& parentId);
             void recordFieldsChanged(const QString& recordId);
+            void recordRemoved(const QString& recordId);
+            void recordReparented(const QString& recordId, const QString& oldParentId, const QString& newParentId);
+            void recordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName);
             void recordSetsChanged();
+
+        private slots:
+            void onFieldAdded(const Tome::FieldDefinition& fieldDefinition);
+            void onFieldRemoved(const Tome::FieldDefinition& fieldDefinition);
+            void onFieldUpdated(const Tome::FieldDefinition& oldFieldDefinition, const Tome::FieldDefinition& newFieldDefinition);
 
         private:
             RecordSetList* model;
@@ -104,7 +105,14 @@ namespace Tome
             const FieldDefinitionsController& fieldDefinitionsController;
             const TypesController& typesController;
 
+            void addRecordField(const QString& recordId, const QString& fieldId);
             Record* getRecordById(const QString& id) const;
+            void moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent);
+            void moveRecordToSet(const QString& recordId, const QString& recordSetName);
+            void removeRecordField(const QString& recordId, const QString& fieldId);
+            void renameRecordField(const QString oldFieldId, const QString newFieldId);
+            QVariant revertFieldValue(const QString& recordId, const QString& fieldId);
+            void updateRecordReferences(const QString oldReference, const QString newReference);
     };
 }
 

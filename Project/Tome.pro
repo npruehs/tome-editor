@@ -118,7 +118,32 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Diagnostics/Controller/filemessagehandler.cpp \
     ../Source/Tome/Features/Diagnostics/View/outputdockwidget.cpp \
     ../Source/Tome/Features/Types/View/derivedtypewindow.cpp \
-    ../Source/Tome/Features/Integrity/Controller/typefacetviolatedtask.cpp
+    ../Source/Tome/Features/Integrity/Controller/typefacetviolatedtask.cpp \
+    ../Source/Tome/Features/Records/Controller/Commands/updaterecordfieldvaluecommand.cpp \
+    ../Source/Tome/Features/Undo/Controller/undocontroller.cpp \
+    ../Source/Tome/Features/Components/Controller/Commands/addcomponentcommand.cpp \
+    ../Source/Tome/Features/Components/Controller/Commands/removecomponentcommand.cpp \
+    ../Source/Tome/Features/Fields/Controller/Commands/addfielddefinitioncommand.cpp \
+    ../Source/Tome/Features/Fields/Controller/Commands/removefielddefinitioncommand.cpp \
+    ../Source/Tome/Features/Fields/Controller/Commands/updatefielddefinitioncommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/addderivedtypecommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/addenumerationcommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/addlistcommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/addmapcommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/removederivedtypecommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/removeenumerationcommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/removelistcommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/removemapcommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/updatederivedtypecommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/updateenumerationcommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/updatelistcommand.cpp \
+    ../Source/Tome/Features/Types/Controller/Commands/updatemapcommand.cpp \
+    ../Source/Tome/Features/Records/Controller/Commands/addrecordcommand.cpp \
+    ../Source/Tome/Features/Records/Controller/Commands/updaterecordcommand.cpp \
+    ../Source/Tome/Features/Records/Controller/Commands/duplicaterecordcommand.cpp \
+    ../Source/Tome/Features/Records/Controller/Commands/revertrecordcommand.cpp \
+    ../Source/Tome/Features/Records/Controller/Commands/reparentrecordcommand.cpp \
+    ../Source/Tome/Features/Records/Controller/Commands/removerecordcommand.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -227,7 +252,32 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Diagnostics/Controller/filemessagehandler.h \
     ../Source/Tome/Features/Diagnostics/View/outputdockwidget.h \
     ../Source/Tome/Features/Types/View/derivedtypewindow.h \
-    ../Source/Tome/Features/Integrity/Controller/typefacetviolatedtask.h
+    ../Source/Tome/Features/Integrity/Controller/typefacetviolatedtask.h \
+    ../Source/Tome/Features/Records/Controller/Commands/updaterecordfieldvaluecommand.h \
+    ../Source/Tome/Features/Undo/Controller/undocontroller.h \
+    ../Source/Tome/Features/Components/Controller/Commands/addcomponentcommand.h \
+    ../Source/Tome/Features/Components/Controller/Commands/removecomponentcommand.h \
+    ../Source/Tome/Features/Fields/Controller/Commands/addfielddefinitioncommand.h \
+    ../Source/Tome/Features/Fields/Controller/Commands/removefielddefinitioncommand.h \
+    ../Source/Tome/Features/Fields/Controller/Commands/updatefielddefinitioncommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/addderivedtypecommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/addenumerationcommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/addlistcommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/addmapcommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/removederivedtypecommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/removeenumerationcommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/removelistcommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/removemapcommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/updatederivedtypecommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/updateenumerationcommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/updatelistcommand.h \
+    ../Source/Tome/Features/Types/Controller/Commands/updatemapcommand.h \
+    ../Source/Tome/Features/Records/Controller/Commands/addrecordcommand.h \
+    ../Source/Tome/Features/Records/Controller/Commands/updaterecordcommand.h \
+    ../Source/Tome/Features/Records/Controller/Commands/duplicaterecordcommand.h \
+    ../Source/Tome/Features/Records/Controller/Commands/revertrecordcommand.h \
+    ../Source/Tome/Features/Records/Controller/Commands/reparentrecordcommand.h \
+    ../Source/Tome/Features/Records/Controller/Commands/removerecordcommand.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
