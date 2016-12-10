@@ -138,7 +138,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Types/Controller/Commands/updateenumerationcommand.cpp \
     ../Source/Tome/Features/Types/Controller/Commands/updatelistcommand.cpp \
     ../Source/Tome/Features/Types/Controller/Commands/updatemapcommand.cpp \
-    ../Source/Tome/Features/Records/Controller/Commands/addrecordcommand.cpp
+    ../Source/Tome/Features/Records/Controller/Commands/addrecordcommand.cpp \
+    ../Source/Tome/Features/Records/Controller/Commands/updaterecordcommand.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -267,7 +268,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Controller/Commands/updateenumerationcommand.h \
     ../Source/Tome/Features/Types/Controller/Commands/updatelistcommand.h \
     ../Source/Tome/Features/Types/Controller/Commands/updatemapcommand.h \
-    ../Source/Tome/Features/Records/Controller/Commands/addrecordcommand.h
+    ../Source/Tome/Features/Records/Controller/Commands/addrecordcommand.h \
+    ../Source/Tome/Features/Records/Controller/Commands/updaterecordcommand.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

@@ -24,8 +24,7 @@ namespace Tome
             QString getSelectedRecordId() const;
             RecordTreeWidgetItem* getSelectedRecordItem() const;
 
-            void updateRecordItem();
-            void updateRecordItem(RecordTreeWidgetItem* recordTreeItem);
+            void updateRecord(const QString& oldId, const QString& newId, const QString& newDisplayName);
 
             void selectRecord(const QString& id);
             void setRecords(const RecordList& records);
@@ -44,6 +43,7 @@ namespace Tome
             SettingsController& settingsController;
 
             RecordTreeWidgetItem* getRecordItem(const QString& id);
+            void updateRecordItem(RecordTreeWidgetItem* recordTreeItem);
     };
 }
 

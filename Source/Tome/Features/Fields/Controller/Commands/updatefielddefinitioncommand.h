@@ -13,7 +13,8 @@ namespace Tome
     {
         public:
             UpdateFieldDefinitionCommand(FieldDefinitionsController& fieldDefinitionsController,
-                                         const QString& oldId, const QString& newId,
+                                         const QString& oldId,
+                                         const QString& newId,
                                          const QString& displayName,
                                          const QString& fieldType,
                                          const QVariant& defaultValue,

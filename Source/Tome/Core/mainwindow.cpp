@@ -34,6 +34,7 @@
 #include "../Features/Records/Controller/recordscontroller.h"
 #include "../Features/Records/Controller/recordsetserializer.h"
 #include "../Features/Records/Controller/Commands/addrecordcommand.h"
+#include "../Features/Records/Controller/Commands/updaterecordcommand.h"
 #include "../Features/Records/Controller/Commands/updaterecordfieldvaluecommand.h"
 #include "../Features/Records/Model/recordfieldstate.h"
 #include "../Features/Records/View/recordfieldstablewidget.h"
@@ -142,6 +143,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 &this->controller->getRecordsController(),
                 SIGNAL(recordSetsChanged()),
                 SLOT(onRecordSetsChanged())
+                );
+
+    connect(
+                &this->controller->getRecordsController(),
+                SIGNAL(recordUpdated(const QString&, const QString&, const QString&, const QString&)),
+                SLOT(onRecordUpdated(const QString&, const QString&, const QString&, const QString&))
                 );
 
     connect(
@@ -568,55 +575,33 @@ void MainWindow::on_actionEdit_Record_triggered()
     {
         const QString recordId = this->recordWindow->getRecordId();
         const QString recordDisplayName = this->recordWindow->getRecordDisplayName();
+        const QString recordSetName = this->recordWindow->getRecordSetName();
 
-        // Update record.
-        this->updateRecord(recordId, recordDisplayName);
+        QStringList recordFieldIds;
 
-        // Get inherited fields.
-        const RecordFieldValueMap inheritedFieldValues =
-                recordsController.getInheritedFieldValues(recordId);
-
-        // Update record fields.
-        const QMap<QString, RecordFieldState::RecordFieldState> recordFields =
-                this->recordWindow->getRecordFields();
+        const QMap<QString, RecordFieldState::RecordFieldState> recordFields = this->recordWindow->getRecordFields();
 
         for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.begin();
              it != recordFields.end();
              ++it)
         {
             const QString& fieldId = it.key();
+            const RecordFieldState::RecordFieldState fieldState = it.value();
 
-            // Skip inherited fields.
-            if (inheritedFieldValues.contains(fieldId))
+            if (fieldState == RecordFieldState::Enabled)
             {
-                continue;
-            }
-
-            // Check if field was added or removed.
-            const bool fieldWasEnabled = record.fieldValues.contains(fieldId);
-            const bool fieldIsEnabled = it.value() == RecordFieldState::Enabled;
-
-            if (fieldIsEnabled && !fieldWasEnabled)
-            {
-                this->addRecordField(fieldId);
-            }
-            else if (fieldWasEnabled && !fieldIsEnabled)
-            {
-                this->removeRecordField(fieldId);
+                recordFieldIds << fieldId;
             }
         }
 
-        // Move record, if necessary.
-        const QString recordSetName = this->recordWindow->getRecordSetName();
-
-        if (record.recordSetName != recordSetName)
-        {
-            recordsController.moveRecordToSet(record.id, recordSetName);
-        }
-
-        // Update view.
-        this->refreshRecordTable();
-        this->recordTreeWidget->updateRecordItem();
+        // Update model.
+        UpdateRecordCommand* command = new UpdateRecordCommand(recordsController,
+                                                               record.id,
+                                                               recordId,
+                                                               recordDisplayName,
+                                                               recordFieldIds,
+                                                               recordSetName);
+        this->controller->getUndoController().doCommand(command);
     }
 }
 
@@ -1159,7 +1144,6 @@ void MainWindow::onRecordAdded(const QString& recordId, const QString& recordDis
     // Update view.
     this->recordTreeWidget->addRecord(recordId, recordDisplayName);
     this->refreshRecordTable();
-    this->recordTreeWidget->updateRecordItem();
 }
 
 void MainWindow::onRecordFieldsChanged(const QString& recordId)
@@ -1178,6 +1162,15 @@ void MainWindow::onRecordRemoved(const QString& recordId)
 void MainWindow::onRecordSetsChanged()
 {
     this->refreshRecordTree();
+}
+
+void MainWindow::onRecordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName)
+{
+    Q_UNUSED(oldDisplayName)
+
+    // Update view.
+    this->recordTreeWidget->updateRecord(oldId, newId, newDisplayName);
+    this->refreshRecordTable();
 }
 
 void MainWindow::onRecordLinkActivated(const QString& recordId)
@@ -1319,29 +1312,6 @@ void MainWindow::updateRecentProjects()
         QString path = recentProjects.at(i);
         QAction* action = new QAction(path, this);
         this->ui->menuRecent_Projects->addAction(action);
-    }
-}
-
-void MainWindow::updateRecord(const QString& id, const QString& displayName)
-{
-    QString selectedRecordId = this->recordTreeWidget->getSelectedRecordId();
-    const Record& record =
-            this->controller->getRecordsController().getRecord(selectedRecordId);
-
-    bool needsSorting = record.displayName != displayName;
-
-    // Update model.
-    this->controller->getRecordsController().updateRecord(record.id, id, displayName);
-
-    // Update view.
-    RecordTreeWidgetItem* recordItem = this->recordTreeWidget->getSelectedRecordItem();
-    recordItem->setId(id);
-    recordItem->setDisplayName(displayName);
-
-    // Sort by display name.
-    if (needsSorting)
-    {
-        this->recordTreeWidget->sortItems(0, Qt::AscendingOrder);
     }
 }
 

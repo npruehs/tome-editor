@@ -665,18 +665,55 @@ void RecordsController::setRecordSets(RecordSetList& model)
     this->model = &model;
 }
 
-void RecordsController::updateRecord(const QString& oldId, const QString& newId, const QString& displayName)
+void RecordsController::updateRecord(const QString oldId, const QString newId, const QString newDisplayName, const QStringList& fieldIds, const QString& recordSetName)
 {
     // Update references to record.
     this->updateRecordReferences(oldId, newId);
 
     // Update record itself.
     Record& record = *this->getRecordById(oldId);
+    const QString oldDisplayName = record.displayName;
 
-    bool needsSorting = record.displayName != displayName;
+    bool needsSorting = oldDisplayName != newDisplayName;
 
     record.id = newId;
-    record.displayName = displayName;
+    record.displayName = newDisplayName;
+
+    // Update record fields.
+    const FieldDefinitionList fields = this->fieldDefinitionsController.getFieldDefinitions();
+    const RecordFieldValueMap inheritedFieldValues = this->getInheritedFieldValues(record.id);
+
+    for (FieldDefinitionList::const_iterator it = fields.begin();
+         it != fields.end();
+         ++it)
+    {
+        const FieldDefinition& field = *it;
+
+        // Skip inherited fields.
+        if (inheritedFieldValues.contains(field.id))
+        {
+            continue;
+        }
+
+        // Check if field was added or removed.
+        const bool fieldWasEnabled = record.fieldValues.contains(field.id);
+        const bool fieldIsEnabled = fieldIds.contains(field.id);
+
+        if (fieldIsEnabled && !fieldWasEnabled)
+        {
+            this->addRecordField(record.id, field.id);
+        }
+        else if (fieldWasEnabled && !fieldIsEnabled)
+        {
+            this->removeRecordField(field.id);
+        }
+    }
+
+    // Move record, if necessary.
+    if (record.recordSetName != recordSetName)
+    {
+        this->moveRecordToSet(record.id, recordSetName);
+    }
 
     if (needsSorting)
     {
@@ -687,6 +724,9 @@ void RecordsController::updateRecord(const QString& oldId, const QString& newId,
             std::sort((*it).records.begin(), (*it).records.end(), recordLessThanDisplayName);
         }
     }
+
+    // Notify listeners.
+    emit this->recordUpdated(oldId, oldDisplayName, newId, newDisplayName);
 }
 
 void RecordsController::updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue)

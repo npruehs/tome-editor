@@ -21,13 +21,14 @@ RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController, Setting
 
 void RecordTreeWidget::addRecord(const QString& id, const QString& displayName)
 {
-    QTreeWidgetItem* newItem = new RecordTreeWidgetItem(id, displayName, QString(), false);
+    RecordTreeWidgetItem* newItem = new RecordTreeWidgetItem(id, displayName, QString(), false);
 
     this->insertTopLevelItem(0, newItem);
     this->sortItems(0, Qt::AscendingOrder);
 
     // Select new record.
     this->setCurrentItem(newItem);
+    this->updateRecordItem(newItem);
 }
 
 QString RecordTreeWidget::getSelectedRecordId() const
@@ -54,9 +55,24 @@ RecordTreeWidgetItem* RecordTreeWidget::getSelectedRecordItem() const
     return static_cast<RecordTreeWidgetItem*>(selectedItems.first());
 }
 
-void RecordTreeWidget::updateRecordItem()
+void RecordTreeWidget::updateRecord(const QString& oldId, const QString& newId, const QString& newDisplayName)
 {
-    this->updateRecordItem(this->getSelectedRecordItem());
+    // Update view.
+    RecordTreeWidgetItem* recordItem = this->getRecordItem(oldId);
+
+    const QString oldDisplayName = recordItem->getDisplayName();
+    bool needsSorting = oldDisplayName != newDisplayName;
+
+    recordItem->setId(newId);
+    recordItem->setDisplayName(newDisplayName);
+
+    // Sort by display name.
+    if (needsSorting)
+    {
+        this->sortItems(0, Qt::AscendingOrder);
+    }
+
+    this->updateRecordItem(recordItem);
 }
 
 void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)

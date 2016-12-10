@@ -89,6 +89,7 @@ class MainWindow : public QMainWindow
         void onRecordFieldsChanged(const QString& recordId);
         void onRecordRemoved(const QString& recordId);
         void onRecordSetsChanged();
+        void onRecordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName);
         void onRecordLinkActivated(const QString& recordId);
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();
@@ -139,7 +140,6 @@ class MainWindow : public QMainWindow
         void showWindow(QWidget* widget);
         void updateMenus();
         void updateRecentProjects();
-        void updateRecord(const QString& id, const QString& displayName);
         void updateRecordRow(const int i);
         void updateWindowTitle();
 };

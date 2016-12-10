@@ -89,7 +89,7 @@ namespace Tome
 
             void reparentRecord(const QString& recordId, const QString& newParentId);
             void setRecordSets(RecordSetList& model);
-            void updateRecord(const QString& oldId, const QString& newId, const QString& displayName);
+            void updateRecord(const QString oldId, const QString newId, const QString newDisplayName, const QStringList& fieldIds, const QString& recordSetName);
             void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue);
 
         signals:
@@ -97,6 +97,7 @@ namespace Tome
             void recordAdded(const QString& recordId, const QString& recordDisplayName);
             void recordFieldsChanged(const QString& recordId);
             void recordRemoved(const QString& recordId);
+            void recordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName);
             void recordSetsChanged();
 
         private:
