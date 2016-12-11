@@ -338,6 +338,36 @@ MainWindow::~MainWindow()
     delete this->userSettingsWindow;
 }
 
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    // Check if we have unsaved changes.
+    if (this->controller->getUndoController().getUndoStackIndex() == 0)
+    {
+        event->accept();
+        return;
+    }
+
+    // Ask user whether they want to save their changes.
+    QMessageBox::StandardButton result = QMessageBox::question(this,
+                                                               tr("Tome"),
+                                                               tr("Want to save your changes before exiting?"),
+                                                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                               QMessageBox::Cancel);
+    if (result == QMessageBox::Yes)
+    {
+        this->controller->saveProject();
+        event->accept();
+    }
+    else if (result == QMessageBox::No)
+    {
+        event->accept();
+    }
+    else
+    {
+        event->ignore();
+    }
+}
+
 void MainWindow::on_actionExit_triggered()
 {
     this->close();

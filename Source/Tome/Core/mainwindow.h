@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QCloseEvent>
 #include <QMainWindow>
 #include <QProgressDialog>
 #include <QSharedPointer>
@@ -44,6 +45,9 @@ class MainWindow : public QMainWindow
     public:
         explicit MainWindow(Tome::Controller* controller, QWidget *parent = 0);
         ~MainWindow();
+
+    protected:
+        void closeEvent(QCloseEvent* event);
 
     private slots:
         void on_actionExit_triggered();
