@@ -278,8 +278,8 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     connect(
                 &this->controller->getUndoController(),
-                SIGNAL(undoStackChanged(int)),
-                SLOT(onUndoStackChanged(int))
+                SIGNAL(undoStackChanged(bool)),
+                SLOT(onUndoStackChanged(bool))
                 );
 
     // Maximize window.
@@ -341,7 +341,7 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     // Check if we have unsaved changes.
-    if (this->controller->getUndoController().getUndoStackIndex() == 0)
+    if (this->controller->getUndoController().isClean())
     {
         event->accept();
         return;
@@ -491,6 +491,8 @@ void MainWindow::on_actionSave_Project_triggered()
         {
             this->on_actionRun_Integrity_Checks_triggered();
         }
+
+        this->controller->getUndoController().setClean();
     }
     catch (std::runtime_error& e)
     {
@@ -1213,9 +1215,9 @@ void MainWindow::onRecordLinkActivated(const QString& recordId)
     this->recordTreeWidget->selectRecord(recordId);
 }
 
-void MainWindow::onUndoStackChanged(int index)
+void MainWindow::onUndoStackChanged(bool clean)
 {
-    Q_UNUSED(index)
+    Q_UNUSED(clean)
 
     this->updateWindowTitle();
 }
@@ -1377,7 +1379,7 @@ void MainWindow::updateWindowTitle()
         windowTitle += " - " + this->controller->getFullProjectPath();
     }
 
-    if (this->controller->getUndoController().getUndoStackIndex() > 0)
+    if (!this->controller->getUndoController().isClean())
     {
         windowTitle += "*";
     }

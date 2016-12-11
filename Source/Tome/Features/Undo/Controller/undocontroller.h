@@ -18,14 +18,14 @@ namespace Tome
             QAction* createRedoAction(QObject* parent, const QString& prefix);
             QAction* createUndoAction(QObject* parent, const QString& prefix);
             void doCommand(QUndoCommand* command);
-
-            int getUndoStackIndex() const;
+            bool isClean() const;
+            void setClean();
 
         signals:
-            void undoStackChanged(int index);
+            void undoStackChanged(bool clean);
 
         private slots:
-            void onIndexChanged(int index);
+            void onCleanChanged(bool clean);
 
         private:
             QUndoStack* undoStack;

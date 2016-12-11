@@ -7,8 +7,8 @@ UndoController::UndoController()
     : undoStack(new QUndoStack())
 {
     connect(this->undoStack,
-            SIGNAL(indexChanged(int)),
-            SLOT(onIndexChanged(int)));
+            SIGNAL(cleanChanged(bool)),
+            SLOT(onCleanChanged(bool)));
 }
 
 void UndoController::clear()
@@ -31,13 +31,18 @@ void UndoController::doCommand(QUndoCommand* command)
     this->undoStack->push(command);
 }
 
-int UndoController::getUndoStackIndex() const
+bool UndoController::isClean() const
 {
-    return this->undoStack->index();
+    return this->undoStack->isClean();
 }
 
-void UndoController::onIndexChanged(int index)
+void UndoController::setClean()
+{
+    this->undoStack->setClean();
+}
+
+void UndoController::onCleanChanged(bool clean)
 {
     // Notify listeners.
-    emit this->undoStackChanged(index);
+    emit this->undoStackChanged(clean);
 }
