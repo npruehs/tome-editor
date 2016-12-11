@@ -92,6 +92,7 @@ class MainWindow : public QMainWindow
         void onRecordSetsChanged();
         void onRecordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName);
         void onRecordLinkActivated(const QString& recordId);
+        void onUndoStackChanged(int index);
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();
         void searchResultChanged(const QString& title, const Tome::SearchResultList results);

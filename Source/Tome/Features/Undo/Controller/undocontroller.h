@@ -7,8 +7,10 @@
 
 namespace Tome
 {
-    class UndoController
+    class UndoController : public QObject
     {
+            Q_OBJECT
+
         public:
             UndoController();
 
@@ -16,6 +18,14 @@ namespace Tome
             QAction* createRedoAction(QObject* parent, const QString& prefix);
             QAction* createUndoAction(QObject* parent, const QString& prefix);
             void doCommand(QUndoCommand* command);
+
+            int getUndoStackIndex() const;
+
+        signals:
+            void undoStackChanged(int index);
+
+        private slots:
+            void onIndexChanged(int index);
 
         private:
             QUndoStack* undoStack;
