@@ -91,6 +91,16 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     this->recordTreeWidget = new RecordTreeWidget(this->controller->getRecordsController(), this->controller->getSettingsController());
     this->ui->splitter->addWidget(this->recordTreeWidget);
 
+    // Setup record tree context menu.
+    QList<QAction*> recordTreeContextMenuActions;
+    recordTreeContextMenuActions << this->ui->actionFind_Usages;
+    recordTreeContextMenuActions << this->ui->actionEdit_Record;
+    recordTreeContextMenuActions << this->ui->actionDuplicate_Record;
+    recordTreeContextMenuActions << this->ui->actionRevert_Record;
+    recordTreeContextMenuActions << this->ui->actionRemove_Record;
+
+    this->recordTreeWidget->setContextMenuActions(recordTreeContextMenuActions);
+
     // Add record table.
     this->recordFieldTableWidget = new RecordFieldsTableWidget(
                 this->controller->getFieldDefinitionsController(),

@@ -1,5 +1,6 @@
 #include "recordtreewidget.h"
 
+#include <QMenu>
 #include <QMimeData>
 
 #include "recordtreewidgetitem.h"
@@ -170,6 +171,11 @@ void RecordTreeWidget::selectRecord(const QString& id)
     this->setCurrentItem(item);
 }
 
+void RecordTreeWidget::setContextMenuActions(QList<QAction*> actions)
+{
+    this->contextMenuActions = actions;
+}
+
 void RecordTreeWidget::setRecords(const RecordList& records)
 {
     this->clear();
@@ -246,6 +252,18 @@ void RecordTreeWidget::removeRecord(const QString& id)
     }
 
     delete recordItem;
+}
+
+void RecordTreeWidget::contextMenuEvent(QContextMenuEvent* event)
+{
+    QMenu menu(this);
+
+    for (int i = 0; i < this->contextMenuActions.count(); ++i)
+    {
+        menu.addAction(this->contextMenuActions[i]);
+    }
+
+    menu.exec(event->globalPos());
 }
 
 bool RecordTreeWidget::dropMimeData(QTreeWidgetItem* parent, int index, const QMimeData* data, Qt::DropAction action)

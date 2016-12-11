@@ -1,9 +1,10 @@
 #ifndef RECORDTREEWIDGET_H
 #define RECORDTREEWIDGET_H
 
-#include <QTreeWidget>
+#include <QContextMenuEvent>
 #include <QMimeData>
 #include <QStack>
+#include <QTreeWidget>
 
 #include "../Model/recordlist.h"
 
@@ -31,6 +32,7 @@ namespace Tome
             void updateRecord(const QString& oldId, const QString& newId, const QString& newDisplayName);
 
             void selectRecord(const QString& id);
+            void setContextMenuActions(QList<QAction*> actions);
             void setRecords(const RecordList& records);
 
             void removeRecord(const QString& id);
@@ -40,6 +42,7 @@ namespace Tome
             void recordReparented(const QString& recordId, const QString& newParentId);
 
         protected:
+            void contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
             bool dropMimeData(QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action);
 
         private slots:
@@ -52,6 +55,8 @@ namespace Tome
             QStack<QString> selectedRecordUndoStack;
             QStack<QString> selectedRecordRedoStack;
             bool navigating;
+
+            QList<QAction*> contextMenuActions;
 
             RecordTreeWidgetItem* getRecordItem(const QString& id);
             void updateRecordItem(RecordTreeWidgetItem* recordTreeItem);
