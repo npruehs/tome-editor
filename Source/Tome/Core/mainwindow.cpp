@@ -276,6 +276,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 SLOT(onRecordLinkActivated(const QString&))
                 );
 
+    connect(
+                &this->controller->getUndoController(),
+                SIGNAL(undoStackChanged(int)),
+                SLOT(onUndoStackChanged(int))
+                );
+
     // Maximize window.
     this->showMaximized();
 
@@ -330,6 +336,36 @@ MainWindow::~MainWindow()
     delete this->findRecordWindow;
     delete this->projectOverviewWindow;
     delete this->userSettingsWindow;
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    // Check if we have unsaved changes.
+    if (this->controller->getUndoController().getUndoStackIndex() == 0)
+    {
+        event->accept();
+        return;
+    }
+
+    // Ask user whether they want to save their changes.
+    QMessageBox::StandardButton result = QMessageBox::question(this,
+                                                               tr("Tome"),
+                                                               tr("Want to save your changes before exiting?"),
+                                                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                               QMessageBox::Cancel);
+    if (result == QMessageBox::Yes)
+    {
+        this->controller->saveProject();
+        event->accept();
+    }
+    else if (result == QMessageBox::No)
+    {
+        event->accept();
+    }
+    else
+    {
+        event->ignore();
+    }
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -1177,6 +1213,13 @@ void MainWindow::onRecordLinkActivated(const QString& recordId)
     this->recordTreeWidget->selectRecord(recordId);
 }
 
+void MainWindow::onUndoStackChanged(int index)
+{
+    Q_UNUSED(index)
+
+    this->updateWindowTitle();
+}
+
 void MainWindow::refreshErrorList()
 {
     this->errorListDockWidget->showMessages(this->messages);
@@ -1332,6 +1375,11 @@ void MainWindow::updateWindowTitle()
     {
         // Add project name.
         windowTitle += " - " + this->controller->getFullProjectPath();
+    }
+
+    if (this->controller->getUndoController().getUndoStackIndex() > 0)
+    {
+        windowTitle += "*";
     }
 
     this->setWindowTitle(windowTitle);

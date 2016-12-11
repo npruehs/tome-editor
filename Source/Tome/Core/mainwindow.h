@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QCloseEvent>
 #include <QMainWindow>
 #include <QProgressDialog>
 #include <QSharedPointer>
@@ -44,6 +45,9 @@ class MainWindow : public QMainWindow
     public:
         explicit MainWindow(Tome::Controller* controller, QWidget *parent = 0);
         ~MainWindow();
+
+    protected:
+        void closeEvent(QCloseEvent* event);
 
     private slots:
         void on_actionExit_triggered();
@@ -92,6 +96,7 @@ class MainWindow : public QMainWindow
         void onRecordSetsChanged();
         void onRecordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName);
         void onRecordLinkActivated(const QString& recordId);
+        void onUndoStackChanged(int index);
         void openRecentProject(QAction* recentProjectAction);
         void revertFieldValue();
         void searchResultChanged(const QString& title, const Tome::SearchResultList results);
