@@ -874,6 +874,16 @@ void MainWindow::on_actionError_List_triggered()
     this->showWindow(this->errorListDockWidget);
 }
 
+void MainWindow::on_actionNavigate_Backward_triggered()
+{
+    this->recordTreeWidget->navigateBackward();
+}
+
+void MainWindow::on_actionNavigate_Forward_triggered()
+{
+    this->recordTreeWidget->navigateForward();
+}
+
 void MainWindow::exportRecords(QAction* exportAction)
 {
     // Get export template.

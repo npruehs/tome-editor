@@ -3,6 +3,7 @@
 
 #include <QTreeWidget>
 #include <QMimeData>
+#include <QStack>
 
 #include "../Model/recordlist.h"
 
@@ -24,6 +25,9 @@ namespace Tome
             QString getSelectedRecordId() const;
             RecordTreeWidgetItem* getSelectedRecordItem() const;
 
+            void navigateForward();
+            void navigateBackward();
+
             void updateRecord(const QString& oldId, const QString& newId, const QString& newDisplayName);
 
             void selectRecord(const QString& id);
@@ -38,9 +42,16 @@ namespace Tome
         protected:
             bool dropMimeData(QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action);
 
+        private slots:
+            void onCurrentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+
         private:
             RecordsController& recordsController;
             SettingsController& settingsController;
+
+            QStack<QString> selectedRecordUndoStack;
+            QStack<QString> selectedRecordRedoStack;
+            bool navigating;
 
             RecordTreeWidgetItem* getRecordItem(const QString& id);
             void updateRecordItem(RecordTreeWidgetItem* recordTreeItem);

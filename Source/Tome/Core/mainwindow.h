@@ -83,6 +83,8 @@ class MainWindow : public QMainWindow
 
         void on_actionOutput_triggered();
         void on_actionError_List_triggered();
+        void on_actionNavigate_Backward_triggered();
+        void on_actionNavigate_Forward_triggered();
 
         void exportRecords(QAction* exportAction);
         void onExportTemplatesChanged();

@@ -10,13 +10,18 @@ using namespace Tome;
 
 
 RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController, SettingsController& settingsController)
-    : recordsController(recordsController)
-    , settingsController(settingsController)
+    : recordsController(recordsController),
+      settingsController(settingsController),
+      navigating(false)
 {
     this->setDragEnabled(true);
     this->viewport()->setAcceptDrops(true);
     this->setDropIndicatorShown(true);
     this->setHeaderHidden(true);
+
+    connect(this,
+            SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+            SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 }
 
 void RecordTreeWidget::addRecord(const QString& id, const QString& displayName, const QString& parentId)
@@ -62,6 +67,36 @@ RecordTreeWidgetItem* RecordTreeWidget::getSelectedRecordItem() const
     }
 
     return static_cast<RecordTreeWidgetItem*>(selectedItems.first());
+}
+
+void RecordTreeWidget::navigateForward()
+{
+    if (this->selectedRecordRedoStack.empty())
+    {
+        return;
+    }
+
+    const QString id = this->selectedRecordRedoStack.pop();
+    this->selectedRecordUndoStack.push(id);
+
+    // Prevent redo from affecting navigation stacks.
+    this->navigating = true;
+    this->selectRecord(id);
+}
+
+void RecordTreeWidget::navigateBackward()
+{
+    if (this->selectedRecordUndoStack.count() < 2)
+    {
+        return;
+    }
+
+    const QString id = this->selectedRecordUndoStack.pop();
+    this->selectedRecordRedoStack.push(id);
+
+    // Prevent undo from affecting navigation stacks.
+    this->navigating = true;
+    this->selectRecord(this->selectedRecordUndoStack.top());
 }
 
 void RecordTreeWidget::updateRecord(const QString& oldId, const QString& newId, const QString& newDisplayName)
@@ -138,6 +173,9 @@ void RecordTreeWidget::selectRecord(const QString& id)
 void RecordTreeWidget::setRecords(const RecordList& records)
 {
     this->clear();
+
+    this->selectedRecordUndoStack.clear();
+    this->selectedRecordRedoStack.clear();
 
     // Create record tree items.
     QMap<QString, RecordTreeWidgetItem*> recordItems;
@@ -245,6 +283,26 @@ bool RecordTreeWidget::dropMimeData(QTreeWidgetItem* parent, int index, const QM
     }
 
     return true;
+}
+
+void RecordTreeWidget::onCurrentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+{
+    Q_UNUSED(previous)
+
+    if (this->navigating)
+    {
+        this->navigating = false;
+        return;
+    }
+
+    if (current == nullptr)
+    {
+        return;
+    }
+
+    RecordTreeWidgetItem* item = static_cast<RecordTreeWidgetItem*>(current);
+    this->selectedRecordUndoStack.push(item->getId());
+    this->selectedRecordRedoStack.clear();
 }
 
 RecordTreeWidgetItem* RecordTreeWidget::getRecordItem(const QString& id)
