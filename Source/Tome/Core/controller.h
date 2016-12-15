@@ -17,6 +17,7 @@ namespace Tome
     class FieldDefinitionsController;
     class FindRecordController;
     class FindUsagesController;
+    class ImportController;
     class Project;
     class RecordExportTemplate;
     class RecordSet;
@@ -46,6 +47,7 @@ namespace Tome
             FindUsagesController& getFindUsagesController() const;
             FindRecordController& getFindRecordController() const;
             FacetsController& getFacetsController() const;
+            ImportController& getImportController() const;
 
             int start();
 
@@ -107,6 +109,7 @@ namespace Tome
             TasksController* tasksController;
             FindUsagesController* findUsagesController;
             FindRecordController* findRecordController;
+            ImportController* importController;
 
             RecordSetSerializer* recordSetSerializer;
 

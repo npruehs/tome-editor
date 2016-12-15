@@ -27,6 +27,8 @@
 #include "../Features/Fields/View/fielddefinitionswindow.h"
 #include "../Features/Fields/View/fieldvaluewindow.h"
 #include "../Features/Help/View/aboutwindow.h"
+#include "../Features/Import/Controller/importcontroller.h"
+#include "../Features/Import/Model/recordtableimporttemplatelist.h"
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/View/newprojectwindow.h"
@@ -194,6 +196,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 this->ui->menuExport,
                 SIGNAL(triggered(QAction*)),
                 SLOT(exportRecords(QAction*))
+                );
+
+    connect(
+                this->ui->menuImport,
+                SIGNAL(triggered(QAction*)),
+                SLOT(importRecords(QAction*))
                 );
 
     connect(
@@ -933,6 +941,47 @@ void MainWindow::exportRecords(QAction* exportAction)
     }
 }
 
+void MainWindow::importRecords(QAction* importAction)
+{
+    // Get import template.
+    QString importTemplateName = importAction->text();
+    const RecordTableImportTemplate& importTemplate =
+            this->controller->getImportController().getRecordTableImportTemplate(importTemplateName);
+
+    // Request import source.
+    QString sourceUrl;
+
+    switch (importTemplate.sourceType)
+    {
+        case TableType::Csv:
+            sourceUrl = QFileDialog::getOpenFileName(this,
+                                                     tr("Import Records"),
+                                                     this->controller->getProjectPath(),
+                                                     "CSV (*.csv)");
+            break;
+    }
+
+    if (sourceUrl.isEmpty())
+    {
+        return;
+    }
+
+    // Import records.
+    try
+    {
+        this->controller->getImportController().importRecords(importTemplate, sourceUrl);
+    }
+    catch (std::runtime_error& e)
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to import records"),
+                    e.what(),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+    }
+}
+
 void MainWindow::onExportTemplatesChanged()
 {
     this->refreshExportMenu();
@@ -1172,6 +1221,9 @@ void MainWindow::onProjectChanged(QSharedPointer<Project> project)
     // Setup record exports.
     this->refreshExportMenu();
 
+    // Setup record imports.
+    this->refreshImportMenu();
+
     // Update title.
     this->updateWindowTitle();
 
@@ -1260,6 +1312,22 @@ void MainWindow::refreshExportMenu()
     {
         QAction* exportAction = new QAction(it->name, this);
         this->ui->menuExport->addAction(exportAction);
+    }
+}
+
+void MainWindow::refreshImportMenu()
+{
+    this->ui->menuImport->clear();
+
+    const RecordTableImportTemplateList& recordTableImportTemplateList =
+            this->controller->getImportController().getRecordTableImportTemplates();
+
+    for (RecordTableImportTemplateList::const_iterator it = recordTableImportTemplateList.begin();
+         it != recordTableImportTemplateList.end();
+         ++it)
+    {
+        QAction* importAction = new QAction(it->name, this);
+        this->ui->menuImport->addAction(importAction);
     }
 }
 

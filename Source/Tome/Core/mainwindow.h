@@ -87,6 +87,7 @@ class MainWindow : public QMainWindow
         void on_actionNavigate_Forward_triggered();
 
         void exportRecords(QAction* exportAction);
+        void importRecords(QAction* importAction);
         void onExportTemplatesChanged();
         void onFieldChanged();
         void onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
@@ -140,6 +141,7 @@ class MainWindow : public QMainWindow
         void openProject(QString path);
         void refreshErrorList();
         void refreshExportMenu();
+        void refreshImportMenu();
         void refreshRecordTree();
         void refreshRecordTable();
         void showReadOnlyMessage(const QString& recordId);

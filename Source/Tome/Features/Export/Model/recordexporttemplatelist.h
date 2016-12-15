@@ -2,7 +2,7 @@
 #define RECORDEXPORTTEMPLATELIST_H
 
 #include <QList>
-#include "../Model/recordexporttemplate.h"
+#include "recordexporttemplate.h"
 
 
 namespace Tome

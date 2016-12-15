@@ -143,7 +143,11 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Records/Controller/Commands/duplicaterecordcommand.cpp \
     ../Source/Tome/Features/Records/Controller/Commands/revertrecordcommand.cpp \
     ../Source/Tome/Features/Records/Controller/Commands/reparentrecordcommand.cpp \
-    ../Source/Tome/Features/Records/Controller/Commands/removerecordcommand.cpp
+    ../Source/Tome/Features/Records/Controller/Commands/removerecordcommand.cpp \
+    ../Source/Tome/Features/Import/Model/recordtableimporttemplate.cpp \
+    ../Source/Tome/Features/Import/Controller/importcontroller.cpp \
+    ../Source/Tome/Features/Import/Controller/recorddatasource.cpp \
+    ../Source/Tome/Features/Import/Controller/csvrecorddatasource.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -277,7 +281,13 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Records/Controller/Commands/duplicaterecordcommand.h \
     ../Source/Tome/Features/Records/Controller/Commands/revertrecordcommand.h \
     ../Source/Tome/Features/Records/Controller/Commands/reparentrecordcommand.h \
-    ../Source/Tome/Features/Records/Controller/Commands/removerecordcommand.h
+    ../Source/Tome/Features/Records/Controller/Commands/removerecordcommand.h \
+    ../Source/Tome/Features/Import/Model/recordtableimporttemplate.h \
+    ../Source/Tome/Features/Import/Model/tabletype.h \
+    ../Source/Tome/Features/Import/Model/recordtableimporttemplatelist.h \
+    ../Source/Tome/Features/Import/Controller/importcontroller.h \
+    ../Source/Tome/Features/Import/Controller/recorddatasource.h \
+    ../Source/Tome/Features/Import/Controller/csvrecorddatasource.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

@@ -26,6 +26,7 @@
 #include "../Features/Facets/Controller/requiredreferenceancestorfacet.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
+#include "../Features/Import/Controller/importcontroller.h"
 #include "../Features/Integrity/Controller/fieldtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypenotsupportedtask.h"
@@ -83,6 +84,7 @@ Controller::Controller(CommandLineOptions* options) :
     tasksController(new TasksController(*this->componentsController, *this->facetsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findRecordController(new FindRecordController(*this->recordsController)),
+    importController(new ImportController(*this->fieldDefinitionsController, *this->recordsController)),
     recordSetSerializer(new RecordSetSerializer()),
     mainWindow(0)
 {
@@ -130,6 +132,7 @@ Controller::~Controller()
     delete this->findUsagesController;
     delete this->findRecordController;
     delete this->facetsController;
+    delete this->importController;
     delete this->recordSetSerializer;
 
     delete this->options;
@@ -188,6 +191,11 @@ FindRecordController&Controller::getFindRecordController() const
 FacetsController&Controller::getFacetsController() const
 {
     return *this->facetsController;
+}
+
+ImportController&Controller::getImportController() const
+{
+    return *this->importController;
 }
 
 int Controller::start()
