@@ -4,6 +4,7 @@ using namespace Tome;
 
 #include "recorddatasource.h"
 #include "csvrecorddatasource.h"
+#include "xlsxrecorddatasource.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 
@@ -49,6 +50,10 @@ void ImportController::importRecords(const RecordTableImportTemplate& importTemp
         case TableType::Csv:
             dataSource = new CsvRecordDataSource();
             break;
+
+        case TableType::Xlsx:
+            dataSource = new XlsxRecordDataSource();
+            break;
     }
 
     // Read data from source.
@@ -64,6 +69,7 @@ void ImportController::importRecords(const RecordTableImportTemplate& importTemp
          itRecords != data.end();
          ++itRecords)
     {
+        // Get record.
         const QString& recordId = itRecords.key();
         const RecordFieldValueMap& newRecordFieldValues = itRecords.value();
         const QString& recordSetName = this->recordsController.getRecordSetNames().first();
@@ -78,12 +84,14 @@ void ImportController::importRecords(const RecordTableImportTemplate& importTemp
             qInfo(QString("Updating record %1.").arg(recordId).toUtf8().constData());
         }
 
+        // Get current record field values.
         const RecordFieldValueMap oldRecordFieldValues = this->recordsController.getRecordFieldValues(recordId);
 
         for (RecordFieldValueMap::const_iterator itFields = newRecordFieldValues.begin();
              itFields != newRecordFieldValues.end();
              ++itFields)
         {
+            // Get field.
             const QString& fieldId = itFields.key();
             const QVariant& fieldValue = itFields.value();
 
@@ -94,6 +102,7 @@ void ImportController::importRecords(const RecordTableImportTemplate& importTemp
                 continue;
             }
 
+            // Check if needs update.
             if (oldRecordFieldValues.contains(fieldId) && oldRecordFieldValues[fieldId] == newRecordFieldValues[fieldId])
             {
                 ++fieldsUpToDate;

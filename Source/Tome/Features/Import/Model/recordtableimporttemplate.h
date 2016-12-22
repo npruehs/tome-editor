@@ -21,6 +21,7 @@ namespace Tome
             QMap<QString, QString> columnMapping;
             TableType::TableType sourceType;
             QString rootRecordId;
+            QMap<QString, QString> parameters;
     };
 }
 

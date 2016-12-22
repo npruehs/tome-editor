@@ -7,7 +7,8 @@ namespace Tome
     {
         enum TableType
         {
-            Csv
+            Csv,
+            Xlsx
         };
     }
 }

@@ -957,7 +957,14 @@ void MainWindow::importRecords(QAction* importAction)
             sourceUrl = QFileDialog::getOpenFileName(this,
                                                      tr("Import Records"),
                                                      this->controller->getProjectPath(),
-                                                     "CSV (*.csv)");
+                                                     "Comma-Separated Values (*.csv)");
+            break;
+
+        case TableType::Xlsx:
+            sourceUrl = QFileDialog::getOpenFileName(this,
+                                                     tr("Import Records"),
+                                                     this->controller->getProjectPath(),
+                                                     "Excel Workbook (*.xlsx)");
             break;
     }
 

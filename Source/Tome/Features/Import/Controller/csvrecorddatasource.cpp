@@ -14,6 +14,7 @@ CsvRecordDataSource::CsvRecordDataSource()
 
 const QMap<QString, RecordFieldValueMap> CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemplate, const QVariant& context) const
 {
+    // Open CSV file.
     const QString filePath = context.toString();
     QFile file(filePath);
 
@@ -24,11 +25,10 @@ const QMap<QString, RecordFieldValueMap> CsvRecordDataSource::importData(const R
         throw std::runtime_error(errorMessage.toStdString());
     }
 
-    QMap<QString, RecordFieldValueMap> data;
-
     QTextStream textStream(&file);
     textStream.setCodec("UTF-8");
 
+    // Read headers.
     QString line;
     line = textStream.readLine();
 
@@ -61,6 +61,8 @@ const QMap<QString, RecordFieldValueMap> CsvRecordDataSource::importData(const R
         throw std::runtime_error(errorMessage.toStdString());
     }
 
+    // Read rows.
+    QMap<QString, RecordFieldValueMap> data;
     int rowIndex = 1;
 
     while (!(line = textStream.readLine()).isEmpty())
