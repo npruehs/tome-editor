@@ -116,6 +116,8 @@ void ImportController::setRecordTableImportTemplates(RecordTableImportTemplateLi
 void ImportController::onDataAvailable(const QString& importTemplateName, const QMap<QString, RecordFieldValueMap>& data) const
 {
     const RecordTableImportTemplate& importTemplate = this->getRecordTableImportTemplate(importTemplateName);
+    const QStringList& recordSetNames = this->recordsController.getRecordSetNames();
+    const QString& recordSetName = recordSetNames.first();
 
     // Update records.
     int recordsAdded = 0;
@@ -130,11 +132,11 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
         // Get record.
         const QString& recordId = itRecords.key();
         const RecordFieldValueMap& newRecordFieldValues = itRecords.value();
-        const QString& recordSetName = this->recordsController.getRecordSetNames().first();
 
         if (!this->recordsController.hasRecord(recordId))
         {
             this->recordsController.addRecord(recordId, recordId, QStringList(), recordSetName);
+            this->recordsController.reparentRecord(recordId, importTemplate.rootRecordId);
             ++recordsAdded;
         }
         else
