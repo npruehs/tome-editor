@@ -303,8 +303,8 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     connect(
                 &this->controller->getImportController(),
-                SIGNAL(dataUnavailable(const QString&)),
-                SLOT(onImportDataUnavailable(const QString&))
+                SIGNAL(dataUnavailable(const QString&, const QString&)),
+                SLOT(onImportDataUnavailable(const QString&, const QString&))
                 );
 
     connect(
@@ -1228,8 +1228,10 @@ void MainWindow::onFieldChanged()
     this->refreshRecordTable();
 }
 
-void MainWindow::onImportDataUnavailable(const QString& error)
+void MainWindow::onImportDataUnavailable(const QString& importTemplateName, const QString& error)
 {
+    Q_UNUSED(importTemplateName)
+
     QMessageBox::critical(
                 this,
                 tr("Unable to import records"),

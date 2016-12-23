@@ -72,18 +72,18 @@ void ImportController::importRecords(const RecordTableImportTemplate& importTemp
             break;
 
         default:
-            emit this->dataUnavailable("Unknown import type.");
+            emit this->dataUnavailable(importTemplate.name, "Unknown import type.");
             return;
     }
 
     // Read data from source.
     connect(dataSource,
-            SIGNAL(dataAvailable(const QMap<QString,RecordFieldValueMap>&)),
-            SLOT(onDataAvailable(const QMap<QString,RecordFieldValueMap>&)));
+            SIGNAL(dataAvailable(const QString&, const QMap<QString,RecordFieldValueMap>&)),
+            SLOT(onDataAvailable(const QString&, const QMap<QString,RecordFieldValueMap>&)));
 
     connect(dataSource,
-            SIGNAL(dataUnavailable(const QString&)),
-            SLOT(onDataUnavailable(const QString&)));
+            SIGNAL(dataUnavailable(const QString&, const QString&)),
+            SLOT(onDataUnavailable(const QString&, const QString&)));
 
     dataSource->importData(importTemplate, context);
 }
@@ -113,7 +113,7 @@ void ImportController::setRecordTableImportTemplates(RecordTableImportTemplateLi
     this->model = &importTemplates;
 }
 
-void ImportController::onDataAvailable(const QMap<QString, RecordFieldValueMap>& data) const
+void ImportController::onDataAvailable(const QString& importTemplateName, const QMap<QString, RecordFieldValueMap>& data) const
 {
     // Update records.
     int recordsAdded = 0;
@@ -179,7 +179,7 @@ void ImportController::onDataAvailable(const QMap<QString, RecordFieldValueMap>&
           .toUtf8().constData());
 }
 
-void ImportController::onDataUnavailable(const QString& error) const
+void ImportController::onDataUnavailable(const QString& importTemplateName, const QString& error) const
 {
-    emit this->dataUnavailable(error);
+    emit this->dataUnavailable(importTemplateName, error);
 }

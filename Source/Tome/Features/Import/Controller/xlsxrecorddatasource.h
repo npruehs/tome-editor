@@ -15,8 +15,8 @@ namespace Tome
             void importData(const RecordTableImportTemplate& importTemplate, const QVariant& context);
 
         signals:
-            void dataAvailable(const QMap<QString, RecordFieldValueMap>& data) const;
-            void dataUnavailable(const QString& error) const;
+            void dataAvailable(const QString& importTemplateName, const QMap<QString, RecordFieldValueMap>& data) const;
+            void dataUnavailable(const QString& importTemplateName, const QString& error) const;
 
         private:
             static const QString ParameterSheet;

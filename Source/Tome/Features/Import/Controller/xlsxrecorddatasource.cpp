@@ -30,7 +30,7 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
                 + "\r\n\r\n" + db.lastError().text();
 
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(errorMessage);
+        emit this->dataUnavailable(importTemplate.name, errorMessage);
         return;
     }
 
@@ -42,7 +42,7 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
                 .arg(ParameterSheet, filePath);
 
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(errorMessage);
+        emit this->dataUnavailable(importTemplate.name, errorMessage);
         return;
     }
 
@@ -75,7 +75,7 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
         QString errorMessage = QObject::tr("Could not find id column %1 in source file:\r\n%2")
                 .arg(importTemplate.idColumn, filePath);
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(errorMessage);
+        emit this->dataUnavailable(importTemplate.name, errorMessage);
         return;
     }
 
@@ -109,5 +109,5 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
         data[recordId] = map;
     }
 
-    emit this->dataAvailable(data);
+    emit this->dataAvailable(importTemplate.name, data);
 }

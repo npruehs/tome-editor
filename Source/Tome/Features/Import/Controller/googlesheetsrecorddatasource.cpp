@@ -17,6 +17,7 @@ void GoogleSheetsRecordDataSource::importData(const RecordTableImportTemplate& i
 {
     this->idColumn = importTemplate.idColumn;
     this->ignoredIds = importTemplate.ignoredIds;
+    this->importTemplateName = importTemplate.name;
 
     QString urlString = QString("https://docs.google.com/spreadsheets/d/%1/export?format=csv").arg(context.toString());
     QUrl url(urlString);
@@ -32,7 +33,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qCritical(reply->errorString().toUtf8().constData());
-        emit this->dataUnavailable(reply->errorString());
+        emit this->dataUnavailable(this->importTemplateName, reply->errorString());
         return;
     }
 
@@ -43,7 +44,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
         QString errorMessage = QObject::tr("HTTP %1 while accessing the sheet - is link sharing active?")
                 .arg(QString::number(status));
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(errorMessage);
+        emit this->dataUnavailable(this->importTemplateName, errorMessage);
         return;
     }
 
@@ -58,7 +59,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
     {
         QString errorMessage = QObject::tr("Source sheet is empty.");
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(errorMessage);
+        emit this->dataUnavailable(this->importTemplateName, errorMessage);
         return;
     }
 
@@ -81,7 +82,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
         QString errorMessage = QObject::tr("Could not find id column %1 in source sheet.")
                 .arg(this->idColumn);
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(errorMessage);
+        emit this->dataUnavailable(this->importTemplateName, errorMessage);
         return;
     }
 
@@ -98,7 +99,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
             QString errorMessage = QObject::tr("Row %1 has %2 columns, but the header has %3 columns.")
                     .arg(QString::number(rowIndex), QString::number(row.count()), QString::number(headers.count()));
             qCritical(errorMessage.toUtf8().constData());
-            emit this->dataUnavailable(errorMessage);
+            emit this->dataUnavailable(this->importTemplateName, errorMessage);
             return;
         }
 
@@ -127,5 +128,5 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
         data[recordId] = map;
     }
 
-    emit this->dataAvailable(data);
+    emit this->dataAvailable(this->importTemplateName, data);
 }

@@ -90,7 +90,7 @@ class MainWindow : public QMainWindow
         void importRecords(QAction* importAction);
         void onExportTemplatesChanged();
         void onFieldChanged();
-        void onImportDataUnavailable(const QString& error);
+        void onImportDataUnavailable(const QString& importTemplateName, const QString& error);
         void onImportTemplatesChanged();
         void onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
         void onProjectChanged(QSharedPointer<Tome::Project> project);
