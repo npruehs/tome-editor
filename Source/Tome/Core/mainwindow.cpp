@@ -981,6 +981,14 @@ void MainWindow::importRecords(QAction* importAction)
                                                      this->controller->getProjectPath(),
                                                      "Excel Workbook (*.xlsx)");
             break;
+
+        default:
+            QMessageBox::critical(
+                        this,
+                        tr("Unable to import records"),
+                        tr("Unknown source type."),
+                        QMessageBox::Close,
+                        QMessageBox::Close);
     }
 
     if (sourceUrl.isEmpty())

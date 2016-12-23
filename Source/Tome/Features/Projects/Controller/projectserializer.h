@@ -48,6 +48,7 @@ namespace Tome
             static const QString ElementPath;
             static const QString ElementRecords;
             static const QString ElementRecordExportTemplates;
+            static const QString ElementRecordImportTemplates;
             static const QString ElementRestriction;
             static const QString ElementRestrictions;
             static const QString ElementTemplate;

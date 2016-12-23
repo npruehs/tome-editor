@@ -22,6 +22,7 @@ namespace Tome
     class RecordExportTemplate;
     class RecordSet;
     class RecordSetSerializer;
+    class RecordTableImportTemplate;
     class RecordsController;
     class SettingsController;
     class TasksController;
@@ -62,6 +63,7 @@ namespace Tome
             void loadCustomTypeSet(const QString& projectPath, CustomTypeSet& customTypeSet) const;
             void loadExportTemplate(const QString& projectPath, RecordExportTemplate& exportTemplate) const;
             void loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet) const;
+            void loadImportTemplate(const QString& projectPath, RecordTableImportTemplate& importTemplate) const;
             void loadRecordSet(const QString& projectPath, RecordSet& recordSet) const;
             void openProject(const QString& projectFileName);
             void saveProject() const;
@@ -84,6 +86,7 @@ namespace Tome
             static const QString RecordExportRecordDelimiterExtension;
             static const QString RecordExportTemplateFileExtension;
             static const QString RecordFileExtension;
+            static const QString RecordImportTemplateFileExtension;
             static const QString TypeFileExtension;
 
         signals:

@@ -18,7 +18,7 @@ namespace Tome
             QString path;
             QString idColumn;
             QStringList ignoredIds;
-            QMap<QString, QString> columnMapping;
+            QMap<QString, QString> columnMap;
             TableType::TableType sourceType;
             QString rootRecordId;
             QMap<QString, QString> parameters;

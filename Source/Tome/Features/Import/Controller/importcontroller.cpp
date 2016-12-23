@@ -59,6 +59,10 @@ void ImportController::importRecords(const RecordTableImportTemplate& importTemp
         case TableType::Xlsx:
             dataSource = new XlsxRecordDataSource();
             break;
+
+        default:
+            emit this->dataUnavailable("Unknown import type.");
+            return;
     }
 
     // Read data from source.
