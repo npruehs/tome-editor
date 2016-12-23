@@ -5,7 +5,9 @@
     <IdColumn>ID</IdColumn>
     <RootRecordId>Unit</RootRecordId>
     <ColumnMap/>
-    <IgnoredIds/>
+    <IgnoredIds>
+        <Id>COMMENT</Id>
+    </IgnoredIds>
     <Parameters>
         <Parameter Key="Sheet" Value="Sheet1"/>
     </Parameters>

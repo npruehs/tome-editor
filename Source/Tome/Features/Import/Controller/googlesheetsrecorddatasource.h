@@ -28,6 +28,7 @@ namespace Tome
             QNetworkAccessManager* manager;
 
             QString idColumn;
+            QStringList ignoredIds;
     };
 }
 

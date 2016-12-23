@@ -79,6 +79,16 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
             return;
         }
 
+        // Get record id.
+        QString recordId = row[idColumnIndex];
+
+        // Check if ignored.
+        if (importTemplate.ignoredIds.contains(recordId))
+        {
+            continue;
+        }
+
+        // Get data.
         RecordFieldValueMap map;
 
         for (int i = 0; i < row.count(); ++i)
@@ -91,7 +101,7 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
             map[headers[i]] = row[i];
         }
 
-        data[row[idColumnIndex]] = map;
+        data[recordId] = map;
     }
 
     emit this->dataAvailable(data);

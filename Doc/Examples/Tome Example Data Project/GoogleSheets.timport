@@ -5,6 +5,8 @@
     <IdColumn>ID</IdColumn>
     <RootRecordId>Unit</RootRecordId>
     <ColumnMap/>
-    <IgnoredIds/>
+    <IgnoredIds>
+        <Id>COMMENT</Id>
+    </IgnoredIds>
     <Parameters/>
 </Template>

@@ -101,6 +101,11 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
             }
         }
 
+        if (importTemplate.ignoredIds.contains(recordId))
+        {
+            continue;
+        }
+
         data[recordId] = map;
     }
 

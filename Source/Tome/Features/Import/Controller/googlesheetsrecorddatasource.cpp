@@ -16,6 +16,7 @@ GoogleSheetsRecordDataSource::GoogleSheetsRecordDataSource()
 void GoogleSheetsRecordDataSource::importData(const RecordTableImportTemplate& importTemplate, const QVariant& context)
 {
     this->idColumn = importTemplate.idColumn;
+    this->ignoredIds = importTemplate.ignoredIds;
 
     QString urlString = QString("https://docs.google.com/spreadsheets/d/%1/export?format=csv").arg(context.toString());
     QUrl url(urlString);
@@ -101,6 +102,16 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
             return;
         }
 
+        // Get record id.
+        QString recordId = row[idColumnIndex];
+
+        // Check if ignored.
+        if (this->ignoredIds.contains(recordId))
+        {
+            continue;
+        }
+
+        // Get data.
         RecordFieldValueMap map;
 
         for (int i = 0; i < row.count(); ++i)
@@ -113,7 +124,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
             map[headers[i]] = row[i];
         }
 
-        data[row[idColumnIndex]] = map;
+        data[recordId] = map;
     }
 
     emit this->dataAvailable(data);
