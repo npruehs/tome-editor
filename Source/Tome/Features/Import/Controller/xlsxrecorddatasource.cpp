@@ -15,7 +15,7 @@ XlsxRecordDataSource::XlsxRecordDataSource()
 {
 }
 
-const QMap<QString, RecordFieldValueMap> XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTemplate, const QVariant& context) const
+void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTemplate, const QVariant& context)
 {
     // Open Excel file.
     const QString filePath = context.toString();
@@ -30,7 +30,8 @@ const QMap<QString, RecordFieldValueMap> XlsxRecordDataSource::importData(const 
                 + "\r\n\r\n" + db.lastError().text();
 
         qCritical(errorMessage.toUtf8().constData());
-        throw std::runtime_error(errorMessage.toStdString());
+        emit this->dataUnavailable(errorMessage);
+        return;
     }
 
     // Read headers.
@@ -41,7 +42,8 @@ const QMap<QString, RecordFieldValueMap> XlsxRecordDataSource::importData(const 
                 .arg(ParameterSheet, filePath);
 
         qCritical(errorMessage.toUtf8().constData());
-        throw std::runtime_error(errorMessage.toStdString());
+        emit this->dataUnavailable(errorMessage);
+        return;
     }
 
     QString sheet = importTemplate.parameters[ParameterSheet];
@@ -73,7 +75,8 @@ const QMap<QString, RecordFieldValueMap> XlsxRecordDataSource::importData(const 
         QString errorMessage = QObject::tr("Could not find id column %1 in source file:\r\n%2")
                 .arg(importTemplate.idColumn, filePath);
         qCritical(errorMessage.toUtf8().constData());
-        throw std::runtime_error(errorMessage.toStdString());
+        emit this->dataUnavailable(errorMessage);
+        return;
     }
 
     // Read rows.
@@ -101,5 +104,5 @@ const QMap<QString, RecordFieldValueMap> XlsxRecordDataSource::importData(const 
         data[recordId] = map;
     }
 
-    return data;
+    emit this->dataAvailable(data);
 }

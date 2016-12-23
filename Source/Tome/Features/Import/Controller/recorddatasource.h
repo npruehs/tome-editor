@@ -8,13 +8,18 @@
 
 namespace Tome
 {
-    class RecordDataSource
+    class RecordDataSource : public QObject
     {
+            Q_OBJECT
+
         public:
             RecordDataSource();
             virtual ~RecordDataSource();
 
-            virtual const QMap<QString, RecordFieldValueMap> importData(const RecordTableImportTemplate& importTemplate, const QVariant& context) const = 0;
+            virtual void importData(const RecordTableImportTemplate& importTemplate, const QVariant& context) = 0;
+
+            virtual void dataAvailable(const QMap<QString, RecordFieldValueMap>& data) const = 0;
+            virtual void dataUnavailable(const QString& error) const = 0;
     };
 }
 

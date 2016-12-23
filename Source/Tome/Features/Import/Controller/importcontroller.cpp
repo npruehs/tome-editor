@@ -4,6 +4,7 @@ using namespace Tome;
 
 #include "recorddatasource.h"
 #include "csvrecorddatasource.h"
+#include "googlesheetsrecorddatasource.h"
 #include "xlsxrecorddatasource.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
@@ -51,14 +52,34 @@ void ImportController::importRecords(const RecordTableImportTemplate& importTemp
             dataSource = new CsvRecordDataSource();
             break;
 
+        case TableType::GoogleSheets:
+            dataSource = new GoogleSheetsRecordDataSource();
+            break;
+
         case TableType::Xlsx:
             dataSource = new XlsxRecordDataSource();
             break;
     }
 
     // Read data from source.
-    QMap<QString, RecordFieldValueMap> data = dataSource->importData(importTemplate, context);
+    connect(dataSource,
+            SIGNAL(dataAvailable(const QMap<QString,RecordFieldValueMap>&)),
+            SLOT(onDataAvailable(const QMap<QString,RecordFieldValueMap>&)));
 
+    connect(dataSource,
+            SIGNAL(dataUnavailable(const QString&)),
+            SLOT(onDataUnavailable(const QString&)));
+
+    dataSource->importData(importTemplate, context);
+}
+
+void ImportController::setRecordTableImportTemplates(RecordTableImportTemplateList& importTemplates)
+{
+    this->model = &importTemplates;
+}
+
+void ImportController::onDataAvailable(const QMap<QString, RecordFieldValueMap>& data) const
+{
     // Update records.
     int recordsAdded = 0;
     int fieldsUpdated = 0;
@@ -123,7 +144,7 @@ void ImportController::importRecords(const RecordTableImportTemplate& importTemp
           .toUtf8().constData());
 }
 
-void ImportController::setRecordTableImportTemplates(RecordTableImportTemplateList& importTemplates)
+void ImportController::onDataUnavailable(const QString& error) const
 {
-    this->model = &importTemplates;
+    emit this->dataUnavailable(error);
 }

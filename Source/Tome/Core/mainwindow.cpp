@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QLabel>
 #include <QMessageBox>
 #include <QProcess>
@@ -298,6 +299,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 &this->controller->getUndoController(),
                 SIGNAL(undoStackChanged(bool)),
                 SLOT(onUndoStackChanged(bool))
+                );
+
+    connect(
+                &this->controller->getImportController(),
+                SIGNAL(dataUnavailable(const QString&)),
+                SLOT(onImportDataUnavailable(const QString&))
                 );
 
     // Maximize window.
@@ -960,6 +967,14 @@ void MainWindow::importRecords(QAction* importAction)
                                                      "Comma-Separated Values (*.csv)");
             break;
 
+        case TableType::GoogleSheets:
+            sourceUrl = QInputDialog::getText(this,
+                                              tr("Import Records"),
+                                              tr("Google Sheet ID:"),
+                                              QLineEdit::Normal,
+                                              "1dyN-0I5I9DZGrURGfpOBElq8Ng4tyGtuZp4T3OBDjys");
+            break;
+
         case TableType::Xlsx:
             sourceUrl = QFileDialog::getOpenFileName(this,
                                                      tr("Import Records"),
@@ -1197,6 +1212,16 @@ void MainWindow::openProject(QString path)
 void MainWindow::onFieldChanged()
 {
     this->refreshRecordTable();
+}
+
+void MainWindow::onImportDataUnavailable(const QString& error)
+{
+    QMessageBox::critical(
+                this,
+                tr("Unable to import records"),
+                error,
+                QMessageBox::Close,
+                QMessageBox::Close);
 }
 
 void MainWindow::onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue)

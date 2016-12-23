@@ -1,30 +1,52 @@
-#include "csvrecorddatasource.h"
+#include "googlesheetsrecorddatasource.h"
 
-#include <QFile>
+#include <QNetworkReply>
 #include <QTextStream>
 
 using namespace Tome;
 
-
-CsvRecordDataSource::CsvRecordDataSource()
+GoogleSheetsRecordDataSource::GoogleSheetsRecordDataSource()
+    : manager(new QNetworkAccessManager(this))
 {
+    connect(this->manager,
+            SIGNAL(finished(QNetworkReply*)),
+            SLOT(onFinished(QNetworkReply*)));
 }
 
-void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemplate, const QVariant& context)
+void GoogleSheetsRecordDataSource::importData(const RecordTableImportTemplate& importTemplate, const QVariant& context)
 {
-    // Open CSV file.
-    const QString filePath = context.toString();
-    QFile file(filePath);
+    this->idColumn = importTemplate.idColumn;
 
-    if (!file.open(QIODevice::ReadOnly))
+    QString urlString = QString("https://docs.google.com/spreadsheets/d/%1/export?format=csv").arg(context.toString());
+    QUrl url(urlString);
+    QNetworkRequest request(url);
+    this->manager->get(request);
+}
+
+void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
+{
+    reply->deleteLater();
+
+    // Check for errors.
+    if (reply->error() != QNetworkReply::NoError)
     {
-        QString errorMessage = QObject::tr("Source file could not be read:\r\n") + filePath;
+        qCritical(reply->errorString().toUtf8().constData());
+        emit this->dataUnavailable(reply->errorString());
+        return;
+    }
+
+    int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+    if (status < 200 || status >= 300)
+    {
+        QString errorMessage = QObject::tr("HTTP %1 while accessing the sheet - is link sharing active?")
+                .arg(QString::number(status));
         qCritical(errorMessage.toUtf8().constData());
         emit this->dataUnavailable(errorMessage);
         return;
     }
 
-    QTextStream textStream(&file);
+    QTextStream textStream(reply);
     textStream.setCodec("UTF-8");
 
     // Read headers.
@@ -33,20 +55,20 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
 
     if (line.isEmpty())
     {
-        QString errorMessage = QObject::tr("Source file is empty:\r\n") + filePath;
+        QString errorMessage = QObject::tr("Source sheet is empty.");
         qCritical(errorMessage.toUtf8().constData());
         emit this->dataUnavailable(errorMessage);
         return;
     }
 
-    QStringList headers = line.split(';');
+    QStringList headers = line.split(',');
 
     // Find id column.
     int idColumnIndex = -1;
 
     for (int i = 0; i < headers.count(); ++i)
     {
-        if (headers[i] == importTemplate.idColumn)
+        if (headers[i] == this->idColumn)
         {
             idColumnIndex = i;
             break;
@@ -55,8 +77,8 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
 
     if (idColumnIndex == -1)
     {
-        QString errorMessage = QObject::tr("Could not find id column %1 in source file:\r\n%2")
-                .arg(importTemplate.idColumn, filePath);
+        QString errorMessage = QObject::tr("Could not find id column %1 in source sheet.")
+                .arg(this->idColumn);
         qCritical(errorMessage.toUtf8().constData());
         emit this->dataUnavailable(errorMessage);
         return;
@@ -68,7 +90,7 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
 
     while (!(line = textStream.readLine()).isEmpty())
     {
-        QStringList row = line.split(';');
+        QStringList row = line.split(',');
 
         if (row.count() != headers.count())
         {

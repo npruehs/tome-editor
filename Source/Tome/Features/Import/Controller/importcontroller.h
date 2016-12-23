@@ -5,6 +5,7 @@
 #include <QVariant>
 
 #include "../Model/recordtableimporttemplatelist.h"
+#include "../../Records/Model/recordfieldvaluemap.h"
 
 namespace Tome
 {
@@ -24,6 +25,13 @@ namespace Tome
             void importRecords(const RecordTableImportTemplate& importTemplate, const QVariant& context);
 
             void setRecordTableImportTemplates(RecordTableImportTemplateList& importTemplates);
+
+        signals:
+            void dataUnavailable(const QString& error) const;
+
+        private slots:
+            void onDataAvailable(const QMap<QString, RecordFieldValueMap>& data) const;
+            void onDataUnavailable(const QString& error) const;
 
         private:
             FieldDefinitionsController& fieldDefinitionsController;

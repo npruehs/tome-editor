@@ -8,7 +8,8 @@ namespace Tome
         enum TableType
         {
             Csv,
-            Xlsx
+            GoogleSheets,
+            Xlsx,
         };
     }
 }
