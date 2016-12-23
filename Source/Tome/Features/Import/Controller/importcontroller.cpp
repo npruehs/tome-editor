@@ -115,6 +115,8 @@ void ImportController::setRecordTableImportTemplates(RecordTableImportTemplateLi
 
 void ImportController::onDataAvailable(const QString& importTemplateName, const QMap<QString, RecordFieldValueMap>& data) const
 {
+    const RecordTableImportTemplate& importTemplate = this->getRecordTableImportTemplate(importTemplateName);
+
     // Update records.
     int recordsAdded = 0;
     int fieldsUpdated = 0;
@@ -148,8 +150,14 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
              ++itFields)
         {
             // Get field.
-            const QString& fieldId = itFields.key();
-            const QVariant& fieldValue = itFields.value();
+            QString fieldId = itFields.key();
+            QVariant fieldValue = itFields.value();
+
+            // Check if field is mapped.
+            if (importTemplate.columnMap.contains(fieldId))
+            {
+                fieldId = importTemplate.columnMap[fieldId];
+            }
 
             if (!this->fieldDefinitionsController.hasFieldDefinition(fieldId))
             {

@@ -4,7 +4,9 @@
     <SourceType>GoogleSheets</SourceType>
     <IdColumn>ID</IdColumn>
     <RootRecordId>Unit</RootRecordId>
-    <ColumnMap/>
+    <ColumnMap>
+        <Mapping ColumnName="Attack Damage" FieldId="AttackDamage"/>
+    </ColumnMap>
     <IgnoredIds>
         <Id>COMMENT</Id>
     </IgnoredIds>
