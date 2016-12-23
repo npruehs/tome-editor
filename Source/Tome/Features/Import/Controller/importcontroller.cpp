@@ -16,6 +16,17 @@ ImportController::ImportController(FieldDefinitionsController& fieldDefinitionsC
 {
 }
 
+void ImportController::addRecordImportTemplate(const RecordTableImportTemplate& importTemplate)
+{
+    qInfo(QString("Adding import template %1.").arg(importTemplate.name).toUtf8().constData());
+
+    // Update model.
+    this->model->push_back(importTemplate);
+
+    // Notify listeners.
+    emit this->importTemplatesChanged();
+}
+
 const RecordTableImportTemplate ImportController::getRecordTableImportTemplate(const QString& name) const
 {
     for (RecordTableImportTemplateList::iterator it = this->model->begin();
@@ -75,6 +86,26 @@ void ImportController::importRecords(const RecordTableImportTemplate& importTemp
             SLOT(onDataUnavailable(const QString&)));
 
     dataSource->importData(importTemplate, context);
+}
+
+void ImportController::removeImportTemplate(const QString& name)
+{
+    qInfo(QString("Removing import template %1.").arg(name).toUtf8().constData());
+
+    // Update model.
+    for (RecordTableImportTemplateList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if (it->name == name)
+        {
+            this->model->erase(it);
+
+            // Notify listeners.
+            emit this->importTemplatesChanged();
+            return;
+        }
+    }
 }
 
 void ImportController::setRecordTableImportTemplates(RecordTableImportTemplateList& importTemplates)

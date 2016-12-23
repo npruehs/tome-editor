@@ -307,6 +307,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 SLOT(onImportDataUnavailable(const QString&))
                 );
 
+    connect(
+                &this->controller->getImportController(),
+                SIGNAL(importTemplatesChanged()),
+                SLOT(onImportTemplatesChanged())
+                );
+
     // Maximize window.
     this->showMaximized();
 
@@ -1230,6 +1236,11 @@ void MainWindow::onImportDataUnavailable(const QString& error)
                 error,
                 QMessageBox::Close,
                 QMessageBox::Close);
+}
+
+void MainWindow::onImportTemplatesChanged()
+{
+    this->refreshImportMenu();
 }
 
 void MainWindow::onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue)
