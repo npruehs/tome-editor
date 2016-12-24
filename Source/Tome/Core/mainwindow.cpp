@@ -1275,15 +1275,25 @@ void MainWindow::onImportTemplatesChanged()
 
 void MainWindow::onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue)
 {
+    // Check if finished.
+    if (currentValue >= maximumValue)
+    {
+        this->progressDialog->reset();
+        return;
+    }
+
+    // Setup dialog.
     this->progressDialog->setWindowTitle(title);
     this->progressDialog->setLabelText(text);
     this->progressDialog->setMaximum(maximumValue);
     this->progressDialog->setValue(currentValue);
 
-    if (currentValue >= maximumValue)
-    {
-        this->progressDialog->reset();
-    }
+    // Set dialog width, accounting for dialog buttons in title bar.
+    QFontMetrics fontMetrics(this->progressDialog->font());
+    int titleWidth = fontMetrics.width(title) + 150;
+    int textWidth = fontMetrics.width(text);
+    int dialogWidth = titleWidth > textWidth ? titleWidth : textWidth;
+    this->progressDialog->setFixedWidth(dialogWidth);
 }
 
 void MainWindow::onProjectChanged(QSharedPointer<Project> project)
