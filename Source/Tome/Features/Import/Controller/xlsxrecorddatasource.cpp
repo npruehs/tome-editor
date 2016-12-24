@@ -1,5 +1,6 @@
 #include "xlsxrecorddatasource.h"
 
+#include <QFileInfo>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -19,6 +20,7 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
 {
     // Open Excel file.
     const QString filePath = context.toString();
+    const QFileInfo fileInfo = QFileInfo(filePath);
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QODBC");
     db.setDatabaseName("DRIVER={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};DBQ=" + filePath);
@@ -30,9 +32,13 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
                 + "\r\n\r\n" + db.lastError().text();
 
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(importTemplate.name, errorMessage);
+        emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
     }
+
+    // Show progress bar.
+    QString progressBarTitle = tr("Importing %1 With %2").arg(fileInfo.fileName(), importTemplate.name);
+    emit this->progressChanged(progressBarTitle, tr("Opening File"), 0, 100);
 
     // Read headers.
     if (!importTemplate.parameters.contains(ParameterSheet))
@@ -42,7 +48,7 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
                 .arg(ParameterSheet, filePath);
 
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(importTemplate.name, errorMessage);
+        emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
     }
 
@@ -75,15 +81,18 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
         QString errorMessage = QObject::tr("Could not find id column %1 in source file:\r\n%2")
                 .arg(importTemplate.idColumn, filePath);
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(importTemplate.name, errorMessage);
+        emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
     }
 
     // Read rows.
     QMap<QString, RecordFieldValueMap> data;
+    int rowIndex = 0;
 
     while (sqlQuery.next())
     {
+        ++rowIndex;
+
         RecordFieldValueMap map;
         QString recordId;
 
@@ -101,6 +110,9 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
             }
         }
 
+        // Update progress bar.
+        emit this->progressChanged(progressBarTitle, recordId, rowIndex, sqlQuery.size());
+
         if (importTemplate.ignoredIds.contains(recordId))
         {
             continue;
@@ -109,5 +121,6 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
         data[recordId] = map;
     }
 
-    emit this->dataAvailable(importTemplate.name, data);
+    emit this->progressChanged(progressBarTitle, QString(), 1, 1);
+    emit this->dataAvailable(importTemplate.name, context, data);
 }

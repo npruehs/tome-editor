@@ -15,10 +15,16 @@ GoogleSheetsRecordDataSource::GoogleSheetsRecordDataSource()
 
 void GoogleSheetsRecordDataSource::importData(const RecordTableImportTemplate& importTemplate, const QVariant& context)
 {
+    this->context = context;
     this->idColumn = importTemplate.idColumn;
     this->ignoredIds = importTemplate.ignoredIds;
     this->importTemplateName = importTemplate.name;
 
+    // Show progress bar.
+    QString progressBarTitle = tr("Importing %1 With %2").arg(context.toString(), importTemplate.name);
+    emit this->progressChanged(progressBarTitle, tr("Connecting to Google"), 0, 100);
+
+    // Connect to Google.
     QString urlString = QString("https://docs.google.com/spreadsheets/d/%1/export?format=csv").arg(context.toString());
     QUrl url(urlString);
     QNetworkRequest request(url);
@@ -33,7 +39,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qCritical(reply->errorString().toUtf8().constData());
-        emit this->dataUnavailable(this->importTemplateName, reply->errorString());
+        emit this->dataUnavailable(this->importTemplateName, this->context, reply->errorString());
         return;
     }
 
@@ -44,7 +50,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
         QString errorMessage = QObject::tr("HTTP %1 while accessing the sheet - is link sharing active?")
                 .arg(QString::number(status));
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(this->importTemplateName, errorMessage);
+        emit this->dataUnavailable(this->importTemplateName, this->context, errorMessage);
         return;
     }
 
@@ -59,7 +65,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
     {
         QString errorMessage = QObject::tr("Source sheet is empty.");
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(this->importTemplateName, errorMessage);
+        emit this->dataUnavailable(this->importTemplateName, this->context, errorMessage);
         return;
     }
 
@@ -82,16 +88,18 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
         QString errorMessage = QObject::tr("Could not find id column %1 in source sheet.")
                 .arg(this->idColumn);
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(this->importTemplateName, errorMessage);
+        emit this->dataUnavailable(this->importTemplateName, this->context, errorMessage);
         return;
     }
 
     // Read rows.
     QMap<QString, RecordFieldValueMap> data;
-    int rowIndex = 1;
+    int rowIndex = 0;
+    QString progressBarTitle = tr("Importing %1 With %2").arg(this->context.toString(), this->importTemplateName);
 
     while (!(line = textStream.readLine()).isEmpty())
     {
+        ++rowIndex;
         QStringList row = line.split(',');
 
         if (row.count() != headers.count())
@@ -99,12 +107,15 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
             QString errorMessage = QObject::tr("Row %1 has %2 columns, but the header has %3 columns.")
                     .arg(QString::number(rowIndex), QString::number(row.count()), QString::number(headers.count()));
             qCritical(errorMessage.toUtf8().constData());
-            emit this->dataUnavailable(this->importTemplateName, errorMessage);
+            emit this->dataUnavailable(this->importTemplateName, this->context, errorMessage);
             return;
         }
 
         // Get record id.
         QString recordId = row[idColumnIndex];
+
+        // Update progress bar.
+        emit this->progressChanged(progressBarTitle, recordId, reply->pos(), reply->size());
 
         // Check if ignored.
         if (this->ignoredIds.contains(recordId))
@@ -128,5 +139,6 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
         data[recordId] = map;
     }
 
-    emit this->dataAvailable(this->importTemplateName, data);
+    emit this->progressChanged(progressBarTitle, QString(), 1, 1);
+    emit this->dataAvailable(this->importTemplateName, this->context, data);
 }

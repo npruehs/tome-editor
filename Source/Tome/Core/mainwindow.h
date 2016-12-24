@@ -90,7 +90,9 @@ class MainWindow : public QMainWindow
         void importRecords(QAction* importAction);
         void onExportTemplatesChanged();
         void onFieldChanged();
-        void onImportDataUnavailable(const QString& importTemplateName, const QString& error);
+        void onImportError(const QString& error);
+        void onImportFinished();
+        void onImportStarted();
         void onImportTemplatesChanged();
         void onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
         void onProjectChanged(QSharedPointer<Tome::Project> project);
@@ -138,6 +140,8 @@ class MainWindow : public QMainWindow
         QList<QDockWidget*> dockWidgets;
 
         Tome::MessageList messages;
+
+        bool refreshRecordTreeAfterReparent;
 
         QString getReadOnlyMessage(const QString& recordId);
         void openProject(QString path);

@@ -20,9 +20,13 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
     {
         QString errorMessage = QObject::tr("Source file could not be read:\r\n") + filePath;
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(importTemplate.name, errorMessage);
+        emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
     }
+
+    // Show progress bar.
+    QString progressBarTitle = tr("Importing %1 With %2").arg(file.fileName(), importTemplate.name);
+    emit this->progressChanged(progressBarTitle, tr("Opening File"), 0, 100);
 
     QTextStream textStream(&file);
     textStream.setCodec("UTF-8");
@@ -35,7 +39,7 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
     {
         QString errorMessage = QObject::tr("Source file is empty:\r\n") + filePath;
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(importTemplate.name, errorMessage);
+        emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
     }
 
@@ -58,16 +62,17 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
         QString errorMessage = QObject::tr("Could not find id column %1 in source file:\r\n%2")
                 .arg(importTemplate.idColumn, filePath);
         qCritical(errorMessage.toUtf8().constData());
-        emit this->dataUnavailable(importTemplate.name, errorMessage);
+        emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
     }
 
     // Read rows.
     QMap<QString, RecordFieldValueMap> data;
-    int rowIndex = 1;
+    int rowIndex = 0;
 
     while (!(line = textStream.readLine()).isEmpty())
     {
+        ++rowIndex;
         QStringList row = line.split(';');
 
         if (row.count() != headers.count())
@@ -75,12 +80,15 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
             QString errorMessage = QObject::tr("Row %1 has %2 columns, but the header has %3 columns.")
                     .arg(QString::number(rowIndex), QString::number(row.count()), QString::number(headers.count()));
             qCritical(errorMessage.toUtf8().constData());
-            emit this->dataUnavailable(importTemplate.name, errorMessage);
+            emit this->dataUnavailable(importTemplate.name, context, errorMessage);
             return;
         }
 
         // Get record id.
         QString recordId = row[idColumnIndex];
+
+        // Update progress bar.
+        emit this->progressChanged(progressBarTitle, recordId, file.pos(), file.size());
 
         // Check if ignored.
         if (importTemplate.ignoredIds.contains(recordId))
@@ -104,5 +112,6 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
         data[recordId] = map;
     }
 
-    emit this->dataAvailable(importTemplate.name, data);
+    emit this->progressChanged(progressBarTitle, QString(), 1, 1);
+    emit this->dataAvailable(importTemplate.name, context, data);
 }

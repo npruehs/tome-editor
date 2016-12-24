@@ -2,6 +2,8 @@
 
 using namespace Tome;
 
+#include <QFileInfo>
+
 #include "recorddatasource.h"
 #include "csvrecorddatasource.h"
 #include "googlesheetsrecorddatasource.h"
@@ -72,19 +74,27 @@ void ImportController::importRecords(const RecordTableImportTemplate& importTemp
             break;
 
         default:
-            emit this->dataUnavailable(importTemplate.name, "Unknown import type.");
+            emit this->importError(tr("Unknown import type."));
             return;
     }
 
     // Read data from source.
     connect(dataSource,
-            SIGNAL(dataAvailable(const QString&, const QMap<QString,RecordFieldValueMap>&)),
-            SLOT(onDataAvailable(const QString&, const QMap<QString,RecordFieldValueMap>&)));
+            SIGNAL(dataAvailable(const QString&, const QVariant&, const QMap<QString,RecordFieldValueMap>&)),
+            SLOT(onDataAvailable(const QString&, const QVariant&, const QMap<QString,RecordFieldValueMap>&)));
 
     connect(dataSource,
-            SIGNAL(dataUnavailable(const QString&, const QString&)),
-            SLOT(onDataUnavailable(const QString&, const QString&)));
+            SIGNAL(dataUnavailable(const QString&, const QVariant&, const QString&)),
+            SLOT(onDataUnavailable(const QString&, const QVariant&, const QString&)));
 
+    connect(dataSource,
+            SIGNAL(progressChanged(const QString, const QString, const int, const int)),
+            SLOT(onProgressChanged(const QString, const QString, const int, const int)));
+
+    // Notify listeners.
+    emit this->importStarted();
+
+    // Start import.
     dataSource->importData(importTemplate, context);
 }
 
@@ -113,11 +123,33 @@ void ImportController::setRecordTableImportTemplates(RecordTableImportTemplateLi
     this->model = &importTemplates;
 }
 
-void ImportController::onDataAvailable(const QString& importTemplateName, const QMap<QString, RecordFieldValueMap>& data) const
+void ImportController::onDataAvailable(const QString& importTemplateName, const QVariant& context, const QMap<QString, RecordFieldValueMap>& data) const
 {
+    // Setup parameters.
     const RecordTableImportTemplate& importTemplate = this->getRecordTableImportTemplate(importTemplateName);
     const QStringList& recordSetNames = this->recordsController.getRecordSetNames();
     const QString& recordSetName = recordSetNames.first();
+
+    QString contextName;
+
+    switch (importTemplate.sourceType)
+    {
+        case TableType::Csv:
+        case TableType::Xlsx:
+        {
+            QFileInfo sourceFile = QFileInfo(context.toString());
+            contextName = sourceFile.fileName();
+            break;
+        }
+
+        case TableType::GoogleSheets:
+            contextName = context.toString();
+            break;
+
+        default:
+            contextName = tr("Unknown");
+            break;
+    }
 
     // Update records.
     int recordsAdded = 0;
@@ -125,14 +157,24 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
     int fieldsSkipped = 0;
     int fieldsUpToDate = 0;
 
+    // Show progress bar.
+    QString progressBarTitle = tr("Importing %1 With %2").arg(contextName, importTemplateName);
+    int index = 0;
+
     for (QMap<QString, RecordFieldValueMap>::const_iterator itRecords = data.begin();
          itRecords != data.end();
          ++itRecords)
     {
+        ++index;
+
         // Get record.
         const QString& recordId = itRecords.key();
         const RecordFieldValueMap& newRecordFieldValues = itRecords.value();
 
+        // Update progress bar.
+        emit this->progressChanged(progressBarTitle, recordId, index, data.count());
+
+        // Check if need to add new record.
         if (!this->recordsController.hasRecord(recordId))
         {
             this->recordsController.addRecord(recordId, recordId, QStringList(), recordSetName);
@@ -187,9 +229,24 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
                QString::number(fieldsSkipped),
                QString::number(fieldsUpToDate))
           .toUtf8().constData());
+
+    emit this->importFinished();
 }
 
-void ImportController::onDataUnavailable(const QString& importTemplateName, const QString& error) const
+void ImportController::onDataUnavailable(const QString& importTemplateName, const QVariant& context, const QString& error) const
 {
-    emit this->dataUnavailable(importTemplateName, error);
+    Q_UNUSED(importTemplateName)
+    Q_UNUSED(context)
+
+    // Show error message.
+    emit this->importError(error);
+
+    // Hide progress bar.
+    this->onProgressChanged(QString(), QString(), 1, 1);
+    emit this->importFinished();
+}
+
+void ImportController::onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const
+{
+    emit this->progressChanged(title, text, currentValue, maximumValue);
 }

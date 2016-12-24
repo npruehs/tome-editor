@@ -31,12 +31,16 @@ namespace Tome
             void setRecordTableImportTemplates(RecordTableImportTemplateList& importTemplates);
 
         signals:
-            void dataUnavailable(const QString& importTemplateName, const QString& error) const;
+            void importError(const QString& error) const;
+            void importFinished() const;
+            void importStarted() const;
             void importTemplatesChanged();
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
 
         private slots:
-            void onDataAvailable(const QString& importTemplateName, const QMap<QString, RecordFieldValueMap>& data) const;
-            void onDataUnavailable(const QString& importTemplateName, const QString& error) const;
+            void onDataAvailable(const QString& importTemplateName, const QVariant& context, const QMap<QString, RecordFieldValueMap>& data) const;
+            void onDataUnavailable(const QString& importTemplateName, const QVariant& context, const QString& error) const;
+            void onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
 
         private:
             FieldDefinitionsController& fieldDefinitionsController;
