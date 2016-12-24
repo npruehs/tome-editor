@@ -9,6 +9,7 @@
 #include "../../Components/Model/componentsetlist.h"
 #include "../../Export/Model/recordexporttemplatelist.h"
 #include "../../Fields/Model/fielddefinitionsetlist.h"
+#include "../../Import/Model/recordtableimporttemplatelist.h"
 #include "../../Records/Model/recordsetlist.h"
 #include "../../Types/Model/customtypesetlist.h"
 
@@ -28,6 +29,7 @@ namespace Tome
             ComponentSetList componentSets;
             FieldDefinitionSetList fieldDefinitionSets;
             RecordExportTemplateList recordExportTemplates;
+            RecordTableImportTemplateList recordTableImportTemplates;
             RecordSetList recordSets;
             CustomTypeSetList typeSets;
     };

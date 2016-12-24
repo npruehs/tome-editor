@@ -26,6 +26,8 @@
 #include "../Features/Facets/Controller/requiredreferenceancestorfacet.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
+#include "../Features/Import/Controller/importcontroller.h"
+#include "../Features/Import/Controller/importtemplateserializer.h"
 #include "../Features/Integrity/Controller/fieldtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypenotsupportedtask.h"
@@ -68,6 +70,7 @@ const QString Controller::RecordExportRecordFileTemplateExtension = ".texportf";
 const QString Controller::RecordExportRecordTemplateExtension = ".texportr";
 const QString Controller::RecordExportRecordDelimiterExtension = ".texportrd";
 const QString Controller::RecordExportTemplateFileExtension = ".texport";
+const QString Controller::RecordImportTemplateFileExtension = ".timport";
 const QString Controller::TypeFileExtension = ".ttypes";
 
 Controller::Controller(CommandLineOptions* options) :
@@ -83,6 +86,7 @@ Controller::Controller(CommandLineOptions* options) :
     tasksController(new TasksController(*this->componentsController, *this->facetsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findRecordController(new FindRecordController(*this->recordsController)),
+    importController(new ImportController(*this->fieldDefinitionsController, *this->recordsController)),
     recordSetSerializer(new RecordSetSerializer()),
     mainWindow(0)
 {
@@ -130,6 +134,7 @@ Controller::~Controller()
     delete this->findUsagesController;
     delete this->findRecordController;
     delete this->facetsController;
+    delete this->importController;
     delete this->recordSetSerializer;
 
     delete this->options;
@@ -188,6 +193,11 @@ FindRecordController&Controller::getFindRecordController() const
 FacetsController&Controller::getFacetsController() const
 {
     return *this->facetsController;
+}
+
+ImportController&Controller::getImportController() const
+{
+    return *this->importController;
 }
 
 int Controller::start()
@@ -518,6 +528,40 @@ void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinit
     }
 }
 
+void Controller::loadImportTemplate(const QString& projectPath, RecordTableImportTemplate& importTemplate) const
+{
+    ImportTemplateSerializer importTemplateSerializer = ImportTemplateSerializer();
+
+    // Open import template file.
+    QString fullImportTemplatePath =
+            buildFullFilePath(importTemplate.path, projectPath, RecordImportTemplateFileExtension);
+
+    QFile importTemplateFile(fullImportTemplatePath);
+
+    qInfo(QString("Opening import template file %1.").arg(fullImportTemplatePath).toUtf8().constData());
+
+    if (importTemplateFile.open(QIODevice::ReadOnly))
+    {
+        try
+        {
+            importTemplateSerializer.deserialize(importTemplateFile, importTemplate);
+            qInfo(QString("Opened import template file %1.")
+                  .arg(fullImportTemplatePath).toUtf8().constData());
+        }
+        catch (const std::runtime_error& e)
+        {
+            QString errorMessage = QObject::tr("File could not be read: ") + fullImportTemplatePath + "\r\n" + e.what();
+            qCritical(errorMessage.toUtf8().constData());
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+    else
+    {
+        QString errorMessage = QObject::tr("File could not be read:\r\n") + fullImportTemplatePath;
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+}
+
 void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet) const
 {
     // Open record file.
@@ -613,6 +657,14 @@ void Controller::openProject(const QString& projectFileName)
         for (int i = 0; i < project->typeSets.size(); ++i)
         {
             this->loadCustomTypeSet(projectPath, project->typeSets[i]);
+        }
+
+        // Load record import template files.
+        for (RecordTableImportTemplateList::iterator it = project->recordTableImportTemplates.begin();
+             it != project->recordTableImportTemplates.end();
+             ++it)
+        {
+            this->loadImportTemplate(projectPath, *it);
         }
 
         // Set project reference.
@@ -811,6 +863,35 @@ void Controller::saveProject(QSharedPointer<Project> project) const
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
+
+    // Write import templates.
+    ImportTemplateSerializer importTemplateSerializer = ImportTemplateSerializer();
+
+    for (RecordTableImportTemplateList::const_iterator it = project->recordTableImportTemplates.begin();
+         it != project->recordTableImportTemplates.end();
+         ++it)
+    {
+        const RecordTableImportTemplate& importTemplate = *it;
+
+        // Build file name.
+        QString fullImportTemplatePath =
+                buildFullFilePath(importTemplate.path, projectPath, RecordImportTemplateFileExtension);
+
+        // Write file.
+        QFile importTemplateFile(fullImportTemplatePath);
+
+        qInfo(QString("Saving import template file %1.").arg(fullImportTemplatePath).toUtf8().constData());
+
+        if (importTemplateFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
+        {
+            importTemplateSerializer.serialize(importTemplateFile, importTemplate);
+        }
+        else
+        {
+            QString errorMessage = QObject::tr("Destination file could not be written:\r\n") + fullImportTemplatePath;
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
 }
 
 QString Controller::readFile(const QString& fullPath) const
@@ -837,6 +918,7 @@ void Controller::setProject(QSharedPointer<Project> project)
     this->fieldDefinitionsController->setFieldDefinitionSets(project->fieldDefinitionSets);
     this->recordsController->setRecordSets(project->recordSets);
     this->typesController->setCustomTypes(project->typeSets);
+    this->importController->setRecordTableImportTemplates(project->recordTableImportTemplates);
 
     // Add to recent projects.
     const QString& fullPath = this->getFullProjectPath();

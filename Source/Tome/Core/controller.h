@@ -17,10 +17,12 @@ namespace Tome
     class FieldDefinitionsController;
     class FindRecordController;
     class FindUsagesController;
+    class ImportController;
     class Project;
     class RecordExportTemplate;
     class RecordSet;
     class RecordSetSerializer;
+    class RecordTableImportTemplate;
     class RecordsController;
     class SettingsController;
     class TasksController;
@@ -46,6 +48,7 @@ namespace Tome
             FindUsagesController& getFindUsagesController() const;
             FindRecordController& getFindRecordController() const;
             FacetsController& getFacetsController() const;
+            ImportController& getImportController() const;
 
             int start();
 
@@ -60,6 +63,7 @@ namespace Tome
             void loadCustomTypeSet(const QString& projectPath, CustomTypeSet& customTypeSet) const;
             void loadExportTemplate(const QString& projectPath, RecordExportTemplate& exportTemplate) const;
             void loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet) const;
+            void loadImportTemplate(const QString& projectPath, RecordTableImportTemplate& importTemplate) const;
             void loadRecordSet(const QString& projectPath, RecordSet& recordSet) const;
             void openProject(const QString& projectFileName);
             void saveProject() const;
@@ -82,6 +86,7 @@ namespace Tome
             static const QString RecordExportRecordDelimiterExtension;
             static const QString RecordExportTemplateFileExtension;
             static const QString RecordFileExtension;
+            static const QString RecordImportTemplateFileExtension;
             static const QString TypeFileExtension;
 
         signals:
@@ -107,6 +112,7 @@ namespace Tome
             TasksController* tasksController;
             FindUsagesController* findUsagesController;
             FindRecordController* findRecordController;
+            ImportController* importController;
 
             RecordSetSerializer* recordSetSerializer;
 

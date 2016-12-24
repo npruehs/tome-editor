@@ -87,8 +87,13 @@ class MainWindow : public QMainWindow
         void on_actionNavigate_Forward_triggered();
 
         void exportRecords(QAction* exportAction);
+        void importRecords(QAction* importAction);
         void onExportTemplatesChanged();
         void onFieldChanged();
+        void onImportError(const QString& error);
+        void onImportFinished();
+        void onImportStarted();
+        void onImportTemplatesChanged();
         void onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
         void onProjectChanged(QSharedPointer<Tome::Project> project);
         void onRecordAdded(const QString& recordId, const QString& recordDisplayName, const QString& parentId);
@@ -136,10 +141,13 @@ class MainWindow : public QMainWindow
 
         Tome::MessageList messages;
 
+        bool refreshRecordTreeAfterReparent;
+
         QString getReadOnlyMessage(const QString& recordId);
         void openProject(QString path);
         void refreshErrorList();
         void refreshExportMenu();
+        void refreshImportMenu();
         void refreshRecordTree();
         void refreshRecordTable();
         void showReadOnlyMessage(const QString& recordId);

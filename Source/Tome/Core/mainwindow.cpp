@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QLabel>
 #include <QMessageBox>
 #include <QProcess>
@@ -27,6 +28,8 @@
 #include "../Features/Fields/View/fielddefinitionswindow.h"
 #include "../Features/Fields/View/fieldvaluewindow.h"
 #include "../Features/Help/View/aboutwindow.h"
+#include "../Features/Import/Controller/importcontroller.h"
+#include "../Features/Import/Model/recordtableimporttemplatelist.h"
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/View/newprojectwindow.h"
@@ -83,7 +86,8 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     findRecordWindow(0),
     projectOverviewWindow(0),
     userSettingsWindow(0),
-    progressDialog(0)
+    progressDialog(0),
+    refreshRecordTreeAfterReparent(true)
 {
     ui->setupUi(this);
 
@@ -197,6 +201,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
+                this->ui->menuImport,
+                SIGNAL(triggered(QAction*)),
+                SLOT(importRecords(QAction*))
+                );
+
+    connect(
                 this->ui->menuRecent_Projects,
                 SIGNAL(triggered(QAction*)),
                 SLOT(openRecentProject(QAction*))
@@ -290,6 +300,36 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 &this->controller->getUndoController(),
                 SIGNAL(undoStackChanged(bool)),
                 SLOT(onUndoStackChanged(bool))
+                );
+
+    connect(
+                &this->controller->getImportController(),
+                SIGNAL(importTemplatesChanged()),
+                SLOT(onImportTemplatesChanged())
+                );
+
+    connect(
+                &this->controller->getImportController(),
+                SIGNAL(importError(const QString&)),
+                SLOT(onImportError(const QString&))
+                );
+
+    connect(
+                &this->controller->getImportController(),
+                SIGNAL(importFinished()),
+                SLOT(onImportFinished())
+                );
+
+    connect(
+                &this->controller->getImportController(),
+                SIGNAL(importStarted()),
+                SLOT(onImportStarted())
+                );
+
+    connect(
+                &this->controller->getImportController(),
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
                 );
 
     // Maximize window.
@@ -933,6 +973,70 @@ void MainWindow::exportRecords(QAction* exportAction)
     }
 }
 
+void MainWindow::importRecords(QAction* importAction)
+{
+    // Get import template.
+    QString importTemplateName = importAction->text();
+    const RecordTableImportTemplate& importTemplate =
+            this->controller->getImportController().getRecordTableImportTemplate(importTemplateName);
+
+    // Request import source.
+    QString sourceUrl;
+
+    switch (importTemplate.sourceType)
+    {
+        case TableType::Csv:
+            sourceUrl = QFileDialog::getOpenFileName(this,
+                                                     tr("Import Records"),
+                                                     this->controller->getProjectPath(),
+                                                     "Comma-Separated Values (*.csv)");
+            break;
+
+        case TableType::GoogleSheets:
+            sourceUrl = QInputDialog::getText(this,
+                                              tr("Import Records"),
+                                              tr("Google Sheet ID:"),
+                                              QLineEdit::Normal,
+                                              "1dyN-0I5I9DZGrURGfpOBElq8Ng4tyGtuZp4T3OBDjys");
+            break;
+
+        case TableType::Xlsx:
+            sourceUrl = QFileDialog::getOpenFileName(this,
+                                                     tr("Import Records"),
+                                                     this->controller->getProjectPath(),
+                                                     "Excel Workbook (*.xlsx)");
+            break;
+
+        default:
+            QMessageBox::critical(
+                        this,
+                        tr("Unable to import records"),
+                        tr("Unknown source type."),
+                        QMessageBox::Close,
+                        QMessageBox::Close);
+    }
+
+    if (sourceUrl.isEmpty())
+    {
+        return;
+    }
+
+    // Import records.
+    try
+    {
+        this->controller->getImportController().importRecords(importTemplate, sourceUrl);
+    }
+    catch (std::runtime_error& e)
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to import records"),
+                    e.what(),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+    }
+}
+
 void MainWindow::onExportTemplatesChanged()
 {
     this->refreshExportMenu();
@@ -1143,6 +1247,32 @@ void MainWindow::onFieldChanged()
     this->refreshRecordTable();
 }
 
+void MainWindow::onImportError(const QString& error)
+{
+    QMessageBox::critical(
+                this,
+                tr("Unable to import records"),
+                error,
+                QMessageBox::Close,
+                QMessageBox::Close);
+}
+
+void MainWindow::onImportFinished()
+{
+    this->refreshRecordTreeAfterReparent = true;
+    this->refreshRecordTree();
+}
+
+void MainWindow::onImportStarted()
+{
+    this->refreshRecordTreeAfterReparent = false;
+}
+
+void MainWindow::onImportTemplatesChanged()
+{
+    this->refreshImportMenu();
+}
+
 void MainWindow::onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue)
 {
     this->progressDialog->setWindowTitle(title);
@@ -1171,6 +1301,9 @@ void MainWindow::onProjectChanged(QSharedPointer<Project> project)
 
     // Setup record exports.
     this->refreshExportMenu();
+
+    // Setup record imports.
+    this->refreshImportMenu();
 
     // Update title.
     this->updateWindowTitle();
@@ -1210,6 +1343,11 @@ void MainWindow::onRecordReparented(const QString& recordId, const QString& oldP
     Q_UNUSED(recordId)
     Q_UNUSED(oldParentId)
     Q_UNUSED(newParentId)
+
+    if (!this->refreshRecordTreeAfterReparent)
+    {
+        return;
+    }
 
     // Update view.
     this->refreshRecordTree();
@@ -1260,6 +1398,22 @@ void MainWindow::refreshExportMenu()
     {
         QAction* exportAction = new QAction(it->name, this);
         this->ui->menuExport->addAction(exportAction);
+    }
+}
+
+void MainWindow::refreshImportMenu()
+{
+    this->ui->menuImport->clear();
+
+    const RecordTableImportTemplateList& recordTableImportTemplateList =
+            this->controller->getImportController().getRecordTableImportTemplates();
+
+    for (RecordTableImportTemplateList::const_iterator it = recordTableImportTemplateList.begin();
+         it != recordTableImportTemplateList.end();
+         ++it)
+    {
+        QAction* importAction = new QAction(it->name, this);
+        this->ui->menuImport->addAction(importAction);
     }
 }
 

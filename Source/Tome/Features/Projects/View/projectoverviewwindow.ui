@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="tabRecords">
       <attribute name="title">
@@ -351,6 +351,69 @@
            </item>
            <item>
             <widget class="QPushButton" name="pushButtonNavigateToExportTemplate">
+             <property name="text">
+              <string>Navigate To...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabImportTemplates">
+      <attribute name="title">
+       <string>Import Templates</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayoutImportTemplateCount">
+         <item>
+          <widget class="QLabel" name="labelImportTemplates">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Import Templates:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelImportTemplatesValue">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayoutImportTemplates">
+         <item>
+          <widget class="QListWidget" name="listWidgetImportTemplates"/>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayoutImportTemplatesButtons">
+           <item>
+            <widget class="QPushButton" name="pushButtonAddExistingImportTemplate">
+             <property name="text">
+              <string>Add Existing...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonRemoveImportTemplate">
+             <property name="text">
+              <string>Remove</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonNavigateToImportTemplate">
              <property name="text">
               <string>Navigate To...</string>
              </property>
