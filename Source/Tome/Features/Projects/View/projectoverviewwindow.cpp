@@ -210,10 +210,11 @@ void ProjectOverviewWindow::navigateToSelectedFile(QListWidgetItem* item)
 
     // Get file path.
     const QString& filePath = item->data(Qt::DisplayRole).toString();
-    QFileInfo file(filePath);
+    const QFileInfo file(filePath);
+    const QUrl url = QUrl::fromLocalFile(file.absolutePath());
 
     // Open in explorer or finder.
-    QDesktopServices::openUrl(QUrl(file.absolutePath()));
+    QDesktopServices::openUrl(url);
 }
 
 void ProjectOverviewWindow::updateComponentData()
