@@ -438,13 +438,14 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 fieldValueString = fieldValueString.replace(PlaceholderRecordId, record.id);
                 fieldValueString = fieldValueString.replace(PlaceholderRecordDisplayName, record.displayName);
 
-                fieldValuesString.append(fieldValueString);
-
                 // Add delimiter, if necessary.
-                if (itFields != fieldValues.end() - 1)
+                if (!fieldValuesString.isEmpty())
                 {
+                    // Any previous field export succeeded (e.g. wasn't skipped). Add delimiter.
                     fieldValuesString.append(exportTemplate.fieldValueDelimiter);
                 }
+
+                fieldValuesString.append(fieldValueString);
             }
 
             // Collect components.
