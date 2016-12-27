@@ -493,9 +493,9 @@ void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemp
     }
     catch (const std::runtime_error& e)
     {
-        QString errorMessage = QObject::tr("File could not be read:\r\n") + e.what();
+        QString errorMessage = QObject::tr("Export template %1 is missing a required file: %2")
+                .arg(exportTemplate.name, e.what());
         qCritical(errorMessage.toUtf8().constData());
-        throw std::runtime_error(errorMessage.toStdString());
     }
 }
 
