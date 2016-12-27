@@ -506,7 +506,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             recordString = recordString.replace(PlaceholderComponents, componentsString);
             recordString = recordString.replace(PlaceholderRecordDisplayName, record.displayName);
 
-            if (!recordsString.isEmpty())
+            if (!recordsString.isEmpty() && !recordString.isEmpty())
             {
                 // Any previous record export succeeded (e.g. wasn't skipped). Add delimiter.
                 recordsString.append(exportTemplate.recordDelimiter);
