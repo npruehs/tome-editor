@@ -7,6 +7,8 @@
 #include <QStringBuilder>
 #include <QTextStream>
 
+#include "../../Facets/Controller/facetscontroller.h"
+#include "../../Facets/Controller/localizedstringfacet.h"
 #include "../../Fields//Controller/fielddefinitionscontroller.h"
 #include "../../Fields/Model/fielddefinition.h"
 #include "../../Records/Controller/recordscontroller.h"
@@ -39,8 +41,12 @@ const QString ExportController::PlaceholderRecords = "$RECORDS$";
 const QString ExportController::PlaceholderValueType = "$VALUE_TYPE$";
 
 
-ExportController::ExportController(const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController, const TypesController& typesController)
-    : fieldDefinitionsController(fieldDefinitionsController),
+ExportController::ExportController(const FacetsController& facetsController,
+                                   const FieldDefinitionsController& fieldDefinitionsController,
+                                   const RecordsController& recordsController,
+                                   const TypesController& typesController)
+    : facetsController(facetsController),
+      fieldDefinitionsController(fieldDefinitionsController),
       recordsController(recordsController),
       typesController(typesController)
 {
@@ -349,7 +355,14 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                  itFields != fieldValues.end();
                  ++itFields)
             {
+                // Get field data.
                 const QString fieldId = itFields.key();
+                const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(fieldId);
+
+                const QString fieldType = fieldDefinition.fieldType;
+                const QString fieldComponent = fieldDefinition.component;
+                const QString fieldDescription = fieldDefinition.description;
+                const QString fieldDisplayName = fieldDefinition.displayName;
 
                 if (matchedSpecificFields.contains(fieldId))
                 {
@@ -363,20 +376,23 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                     continue;
                 }
 
-                const QString fieldValueText = fieldValueTexts[fieldId];
-                const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(fieldId);
+                if (exportTemplate.exportLocalizedFieldsOnly)
+                {
+                    QVariant localized = this->facetsController.getFacetValue(fieldType, LocalizedStringFacet::FacetKey);
+                    if (!localized.isValid() || !localized.toBool())
+                    {
+                        // We only want to export localized fields, but this one is not.
+                        continue;
+                    }
+                }
 
-                // Get field type name.
-                const QString fieldType = fieldDefinition.fieldType;
+                const QString fieldValueText = fieldValueTexts[fieldId];
                 const QString exportedFieldType = exportTemplate.typeMap.value(fieldType, fieldType);
-                const QString fieldComponent = fieldDefinition.component;
-                const QString fieldDescription = fieldDefinition.description;
-                const QString fieldDisplayName = fieldDefinition.displayName;
 
                 // Apply field value template.
                 QString fieldValueString = exportTemplate.fieldValueTemplate;
 
-                // Check if list.
+                // Check if custom type.
                 if (this->typesController.isCustomType(fieldType))
                 {
                     const CustomType& customType = this->typesController.getCustomType(fieldType);
@@ -404,6 +420,15 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
 
                         fieldValueString = fieldValueString.replace(PlaceholderKeyType, exportedKeyType);
                         fieldValueString = fieldValueString.replace(PlaceholderValueType, exportedValueType);
+                    }
+                    else if (customType.isDerivedType())
+                    {
+                        QVariant localized = this->facetsController.getFacetValue(fieldType, LocalizedStringFacet::FacetKey);
+                        if (localized.isValid() && localized.toBool())
+                        {
+                            // Use localized template.
+                            fieldValueString = exportTemplate.localizedFieldValueTemplate;
+                        }
                     }
                 }
                 // Check if vector.

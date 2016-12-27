@@ -18,6 +18,7 @@
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Export/Controller/exporttemplateserializer.h"
 #include "../Features/Facets/Controller/facetscontroller.h"
+#include "../Features/Facets/Controller/localizedstringfacet.h"
 #include "../Features/Facets/Controller/maximumintegervaluefacet.h"
 #include "../Features/Facets/Controller/maximumrealvaluefacet.h"
 #include "../Features/Facets/Controller/maximumstringlengthfacet.h"
@@ -63,6 +64,7 @@ const QString Controller::RecordExportFieldValueDelimiterExtension = ".texportvd
 const QString Controller::RecordExportListTemplateExtension = ".texportl";
 const QString Controller::RecordExportListItemTemplateExtension = ".texportli";
 const QString Controller::RecordExportListItemDelimiterExtension = ".texportld";
+const QString Controller::RecordExportLocalizedFieldValueTemplateExtension = ".texportvloc";
 const QString Controller::RecordExportMapTemplateExtension = ".texportm";
 const QString Controller::RecordExportMapItemTemplateExtension = ".texportmi";
 const QString Controller::RecordExportMapItemDelimiterExtension = ".texportmd";
@@ -80,9 +82,9 @@ Controller::Controller(CommandLineOptions* options) :
     typesController(new TypesController()),
     fieldDefinitionsController(new FieldDefinitionsController(*this->componentsController, *this->typesController)),
     recordsController(new RecordsController(*this->fieldDefinitionsController, *this->typesController)),
-    exportController(new ExportController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
-    settingsController(new SettingsController()),
     facetsController(new FacetsController(*this->recordsController, *this->typesController)),
+    exportController(new ExportController(*this->facetsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
+    settingsController(new SettingsController()),
     tasksController(new TasksController(*this->componentsController, *this->facetsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findRecordController(new FindRecordController(*this->recordsController)),
@@ -101,6 +103,7 @@ Controller::Controller(CommandLineOptions* options) :
     this->tasksController->addTask(new TypeFacetViolatedTask());
 
     // Register facets.
+    this->facetsController->registerFacet(new LocalizedStringFacet());
     this->facetsController->registerFacet(new MinimumIntegerValueFacet());
     this->facetsController->registerFacet(new MaximumIntegerValueFacet());
     this->facetsController->registerFacet(new MinimumRealValueFacet());
@@ -485,6 +488,8 @@ void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemp
                 this->readFile(templatePath + RecordExportMapItemTemplateExtension);
         exportTemplate.mapItemDelimiter =
                 this->readFile(templatePath + RecordExportMapItemDelimiterExtension);
+        exportTemplate.localizedFieldValueTemplate =
+                this->readFile(templatePath + RecordExportLocalizedFieldValueTemplateExtension);
     }
     catch (const std::runtime_error& e)
     {

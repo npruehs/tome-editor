@@ -20,12 +20,15 @@ namespace Tome
             bool exportInnerNodes;
             bool exportLeafs;
 
+            bool exportLocalizedFieldsOnly;
+
             QString fieldValueDelimiter;
             QString fieldValueTemplate;
             QString fileExtension;
             QString listTemplate;
             QString listItemTemplate;
             QString listItemDelimiter;
+            QString localizedFieldValueTemplate;
             QString mapTemplate;
             QString mapItemTemplate;
             QString mapItemDelimiter;

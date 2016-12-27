@@ -12,6 +12,7 @@ const QString ExportTemplateSerializer::AttributeExportAsTable = "ExportAsTable"
 const QString ExportTemplateSerializer::AttributeExportRoots = "ExportRoots";
 const QString ExportTemplateSerializer::AttributeExportInnerNodes = "ExportInnerNodes";
 const QString ExportTemplateSerializer::AttributeExportLeafs = "ExportLeafs";
+const QString ExportTemplateSerializer::AttributeExportLocalizedFieldsOnly = "ExportLocalizedFieldsOnly";
 const QString ExportTemplateSerializer::AttributeExportedType = "ExportedType";
 const QString ExportTemplateSerializer::AttributeTomeType = "TomeType";
 const QString ExportTemplateSerializer::AttributeVersion = "Version";
@@ -64,6 +65,11 @@ void ExportTemplateSerializer::serialize(QIODevice& device, const RecordExportTe
             if (exportTemplate.exportLeafs)
             {
                 writer.writeAttribute(AttributeExportLeafs, "true");
+            }
+
+            if (exportTemplate.exportLocalizedFieldsOnly)
+            {
+                writer.writeAttribute(AttributeExportLocalizedFieldsOnly, "true");
             }
 
             // Write name and file extension.
@@ -127,11 +133,13 @@ void ExportTemplateSerializer::deserialize(QIODevice& device, RecordExportTempla
         bool exportRoots = reader.readAttribute(AttributeExportRoots) == "true";
         bool exportInnerNodes = reader.readAttribute(AttributeExportInnerNodes) == "true";
         bool exportLeafs = reader.readAttribute(AttributeExportLeafs) == "true";
+        bool exportLocalizedFieldsOnly = reader.readAttribute(AttributeExportLocalizedFieldsOnly) == "true";
 
         exportTemplate.exportAsTable = exportAsTable;
         exportTemplate.exportRoots = exportRoots;
         exportTemplate.exportInnerNodes = exportInnerNodes;
         exportTemplate.exportLeafs = exportLeafs;
+        exportTemplate.exportLocalizedFieldsOnly = exportLocalizedFieldsOnly;
 
         // Read record export templates.
         reader.readStartElement(ElementTemplate);

@@ -78,6 +78,7 @@ namespace Tome
             static const QString RecordExportListTemplateExtension;
             static const QString RecordExportListItemTemplateExtension;
             static const QString RecordExportListItemDelimiterExtension;
+            static const QString RecordExportLocalizedFieldValueTemplateExtension;
             static const QString RecordExportMapTemplateExtension;
             static const QString RecordExportMapItemTemplateExtension;
             static const QString RecordExportMapItemDelimiterExtension;
@@ -106,9 +107,9 @@ namespace Tome
             TypesController* typesController;
             FieldDefinitionsController* fieldDefinitionsController;
             RecordsController* recordsController;
+            FacetsController* facetsController;
             ExportController* exportController;
             SettingsController* settingsController;
-            FacetsController* facetsController;
             TasksController* tasksController;
             FindUsagesController* findUsagesController;
             FindRecordController* findRecordController;

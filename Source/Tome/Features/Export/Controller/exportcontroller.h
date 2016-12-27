@@ -9,6 +9,7 @@
 
 namespace Tome
 {
+    class FacetsController;
     class FieldDefinitionsController;
     class RecordsController;
     class TypesController;
@@ -18,7 +19,10 @@ namespace Tome
             Q_OBJECT
 
         public:
-            ExportController(const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController, const TypesController& typesController);
+            ExportController(const FacetsController& facetsController,
+                             const FieldDefinitionsController& fieldDefinitionsController,
+                             const RecordsController& recordsController,
+                             const TypesController& typesController);
 
             void addRecordExportTemplate(const RecordExportTemplate& exportTemplate);
 
@@ -61,6 +65,7 @@ namespace Tome
             static const QString PlaceholderRecords;
             static const QString PlaceholderValueType;
 
+            const FacetsController& facetsController;
             const FieldDefinitionsController& fieldDefinitionsController;
             const RecordsController& recordsController;
             const TypesController& typesController;
