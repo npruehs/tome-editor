@@ -308,6 +308,12 @@ const RecordFieldValueMap RecordsController::getRecordFieldValues(const QString&
     return fieldValues;
 }
 
+const QString RecordsController::getRootRecordId(const QString& id) const
+{
+    const RecordList ancestors = this->getAncestors(id);
+    return ancestors.empty() ? id : ancestors.last().id;
+}
+
 bool RecordsController::hasRecord(const QString& id) const
 {
     for (int i = 0; i < this->model->size(); ++i)

@@ -37,6 +37,7 @@ const QString ExportController::PlaceholderRecordDisplayName = "$RECORD_DISPLAY_
 const QString ExportController::PlaceholderRecordFields = "$RECORD_FIELDS$";
 const QString ExportController::PlaceholderRecordId = "$RECORD_ID$";
 const QString ExportController::PlaceholderRecordParentId = "$RECORD_PARENT$";
+const QString ExportController::PlaceholderRecordRootId = "$RECORD_ROOT$";
 const QString ExportController::PlaceholderRecords = "$RECORDS$";
 const QString ExportController::PlaceholderValueType = "$VALUE_TYPE$";
 
@@ -214,6 +215,21 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             if (fieldValues.empty())
             {
                 continue;
+            }
+
+            // Get record data.
+            QString recordRoot = this->recordsController.getRootRecordId(record.id);
+            QString recordParent;
+
+            if (!record.parentId.isEmpty())
+            {
+                RecordFieldValueMap parentFieldValues = recordsController.getRecordFieldValues(record.parentId);
+
+                if (!parentFieldValues.empty())
+                {
+                    // Only export record parent if that parent isn't empty.
+                    recordParent = record.parentId;
+                }
             }
 
             // Build field value text representations.
@@ -461,6 +477,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 fieldValueString = fieldValueString.replace(PlaceholderFieldDisplayName, fieldDisplayName);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldDescription, fieldDescription);
                 fieldValueString = fieldValueString.replace(PlaceholderRecordId, record.id);
+                fieldValueString = fieldValueString.replace(PlaceholderRecordParentId, recordParent);
+                fieldValueString = fieldValueString.replace(PlaceholderRecordRootId, recordRoot);
                 fieldValueString = fieldValueString.replace(PlaceholderRecordDisplayName, record.displayName);
 
                 // Add delimiter, if necessary.
@@ -511,22 +529,10 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 }
             }
 
-            // Only export record parent if that parent isn't empty.
-            QString recordParent;
-
-            if (!record.parentId.isEmpty())
-            {
-                RecordFieldValueMap parentFieldValues = recordsController.getRecordFieldValues(record.parentId);
-
-                if (!parentFieldValues.empty())
-                {
-                    recordParent = record.parentId;
-                }
-            }
-
             // Replace other record placeholders.
             recordString = recordString.replace(PlaceholderRecordId, record.id);
             recordString = recordString.replace(PlaceholderRecordParentId, recordParent);
+            recordString = recordString.replace(PlaceholderRecordRootId, recordRoot);
             recordString = recordString.replace(PlaceholderRecordFields, fieldValuesString);
             recordString = recordString.replace(PlaceholderComponents, componentsString);
             recordString = recordString.replace(PlaceholderRecordDisplayName, record.displayName);
