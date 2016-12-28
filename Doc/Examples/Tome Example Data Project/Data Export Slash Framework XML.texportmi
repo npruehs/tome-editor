@@ -1,1 +1,4 @@
-            <$FIELD_KEY$>$FIELD_VALUE$</$FIELD_KEY$>
+              <item>
+                <key>$FIELD_KEY$</key>
+                <value>$FIELD_VALUE$</value>
+              </item>

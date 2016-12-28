@@ -1,6 +1,8 @@
-        <Attribute keyType="System.String" valueType="$FIELD_TYPE$">
+        <Attribute keyType="System.String" valueType="Slash.Serialization.Xml.SerializableDictionary`2[[$KEY_TYPE$, $VALUE_TYPE$]]">
           <Key>$FIELD_ID$</Key>
           <Value>
+            <SerializableDictionary>
 $FIELD_VALUE$
+            </SerializableDictionary>
           </Value>
         </Attribute>

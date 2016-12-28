@@ -24,6 +24,8 @@
 		<th>Movement Speed</th>
 		<th>Name</th>
 		<th>Projectile</th>
+		<th>Projectile base</th>
+		<th>Resource Costs</th>
 		<th>Rotation Speed</th>
 		<th>Sight Radius</th>
 		<th>Sprite</th>
