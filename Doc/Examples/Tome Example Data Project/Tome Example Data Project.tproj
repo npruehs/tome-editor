@@ -19,6 +19,8 @@
         <Path>Slash XML.texport</Path>
         <Path>StarCraft II XML.texport</Path>
         <Path>YAML.texport</Path>
+        <Path>Localization Export CSV.texport</Path>
+        <Path>Localization Export XLIFF.texport</Path>
     </RecordExportTemplates>
     <Types>
         <Path>Tome Example Data Project.ttypes</Path>
