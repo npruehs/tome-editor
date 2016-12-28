@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Template Version="2" ExportLeafs="true">
-    <Name>JSON</Name>
-    <FileExtension>.json</FileExtension>
+    <Name>Data (StarCraft II XML)</Name>
+    <FileExtension>.xml</FileExtension>
     <TypeMap/>
     <IgnoredRecords/>
     <IgnoredFields/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Template Version="2" ExportLeafs="true">
-    <Name>StarCraft II XML</Name>
-    <FileExtension>.xml</FileExtension>
+    <Name>Data (YAML)</Name>
+    <FileExtension>.yaml</FileExtension>
     <TypeMap/>
     <IgnoredRecords/>
     <IgnoredFields/>
