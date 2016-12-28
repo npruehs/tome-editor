@@ -7,6 +7,8 @@
 #include <QStringBuilder>
 #include <QTextStream>
 
+#include "../../Facets/Controller/facetscontroller.h"
+#include "../../Facets/Controller/localizedstringfacet.h"
 #include "../../Fields//Controller/fielddefinitionscontroller.h"
 #include "../../Fields/Model/fielddefinition.h"
 #include "../../Records/Controller/recordscontroller.h"
@@ -35,12 +37,17 @@ const QString ExportController::PlaceholderRecordDisplayName = "$RECORD_DISPLAY_
 const QString ExportController::PlaceholderRecordFields = "$RECORD_FIELDS$";
 const QString ExportController::PlaceholderRecordId = "$RECORD_ID$";
 const QString ExportController::PlaceholderRecordParentId = "$RECORD_PARENT$";
+const QString ExportController::PlaceholderRecordRootId = "$RECORD_ROOT$";
 const QString ExportController::PlaceholderRecords = "$RECORDS$";
 const QString ExportController::PlaceholderValueType = "$VALUE_TYPE$";
 
 
-ExportController::ExportController(const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController, const TypesController& typesController)
-    : fieldDefinitionsController(fieldDefinitionsController),
+ExportController::ExportController(const FacetsController& facetsController,
+                                   const FieldDefinitionsController& fieldDefinitionsController,
+                                   const RecordsController& recordsController,
+                                   const TypesController& typesController)
+    : facetsController(facetsController),
+      fieldDefinitionsController(fieldDefinitionsController),
       recordsController(recordsController),
       typesController(typesController)
 {
@@ -210,6 +217,21 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 continue;
             }
 
+            // Get record data.
+            QString recordRoot = this->recordsController.getRootRecordId(record.id);
+            QString recordParent;
+
+            if (!record.parentId.isEmpty())
+            {
+                RecordFieldValueMap parentFieldValues = recordsController.getRecordFieldValues(record.parentId);
+
+                if (!parentFieldValues.empty())
+                {
+                    // Only export record parent if that parent isn't empty.
+                    recordParent = record.parentId;
+                }
+            }
+
             // Build field value text representations.
             QMap<QString, QString> fieldValueTexts;
 
@@ -349,7 +371,14 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                  itFields != fieldValues.end();
                  ++itFields)
             {
+                // Get field data.
                 const QString fieldId = itFields.key();
+                const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(fieldId);
+
+                const QString fieldType = fieldDefinition.fieldType;
+                const QString fieldComponent = fieldDefinition.component;
+                const QString fieldDescription = fieldDefinition.description;
+                const QString fieldDisplayName = fieldDefinition.displayName;
 
                 if (matchedSpecificFields.contains(fieldId))
                 {
@@ -363,20 +392,23 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                     continue;
                 }
 
-                const QString fieldValueText = fieldValueTexts[fieldId];
-                const FieldDefinition& fieldDefinition = this->fieldDefinitionsController.getFieldDefinition(fieldId);
+                if (exportTemplate.exportLocalizedFieldsOnly)
+                {
+                    QVariant localized = this->facetsController.getFacetValue(fieldType, LocalizedStringFacet::FacetKey);
+                    if (!localized.isValid() || !localized.toBool())
+                    {
+                        // We only want to export localized fields, but this one is not.
+                        continue;
+                    }
+                }
 
-                // Get field type name.
-                const QString fieldType = fieldDefinition.fieldType;
+                const QString fieldValueText = fieldValueTexts[fieldId];
                 const QString exportedFieldType = exportTemplate.typeMap.value(fieldType, fieldType);
-                const QString fieldComponent = fieldDefinition.component;
-                const QString fieldDescription = fieldDefinition.description;
-                const QString fieldDisplayName = fieldDefinition.displayName;
 
                 // Apply field value template.
                 QString fieldValueString = exportTemplate.fieldValueTemplate;
 
-                // Check if list.
+                // Check if custom type.
                 if (this->typesController.isCustomType(fieldType))
                 {
                     const CustomType& customType = this->typesController.getCustomType(fieldType);
@@ -404,6 +436,15 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
 
                         fieldValueString = fieldValueString.replace(PlaceholderKeyType, exportedKeyType);
                         fieldValueString = fieldValueString.replace(PlaceholderValueType, exportedValueType);
+                    }
+                    else if (customType.isDerivedType())
+                    {
+                        QVariant localized = this->facetsController.getFacetValue(fieldType, LocalizedStringFacet::FacetKey);
+                        if (localized.isValid() && localized.toBool())
+                        {
+                            // Use localized template.
+                            fieldValueString = exportTemplate.localizedFieldValueTemplate;
+                        }
                     }
                 }
                 // Check if vector.
@@ -436,15 +477,18 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 fieldValueString = fieldValueString.replace(PlaceholderFieldDisplayName, fieldDisplayName);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldDescription, fieldDescription);
                 fieldValueString = fieldValueString.replace(PlaceholderRecordId, record.id);
+                fieldValueString = fieldValueString.replace(PlaceholderRecordParentId, recordParent);
+                fieldValueString = fieldValueString.replace(PlaceholderRecordRootId, recordRoot);
                 fieldValueString = fieldValueString.replace(PlaceholderRecordDisplayName, record.displayName);
 
-                fieldValuesString.append(fieldValueString);
-
                 // Add delimiter, if necessary.
-                if (itFields != fieldValues.end() - 1)
+                if (!fieldValuesString.isEmpty())
                 {
+                    // Any previous field export succeeded (e.g. wasn't skipped). Add delimiter.
                     fieldValuesString.append(exportTemplate.fieldValueDelimiter);
                 }
+
+                fieldValuesString.append(fieldValueString);
             }
 
             // Collect components.
@@ -485,27 +529,15 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 }
             }
 
-            // Only export record parent if that parent isn't empty.
-            QString recordParent;
-
-            if (!record.parentId.isEmpty())
-            {
-                RecordFieldValueMap parentFieldValues = recordsController.getRecordFieldValues(record.parentId);
-
-                if (!parentFieldValues.empty())
-                {
-                    recordParent = record.parentId;
-                }
-            }
-
             // Replace other record placeholders.
             recordString = recordString.replace(PlaceholderRecordId, record.id);
             recordString = recordString.replace(PlaceholderRecordParentId, recordParent);
+            recordString = recordString.replace(PlaceholderRecordRootId, recordRoot);
             recordString = recordString.replace(PlaceholderRecordFields, fieldValuesString);
             recordString = recordString.replace(PlaceholderComponents, componentsString);
             recordString = recordString.replace(PlaceholderRecordDisplayName, record.displayName);
 
-            if (!recordsString.isEmpty())
+            if (!recordsString.isEmpty() && !recordString.isEmpty())
             {
                 // Any previous record export succeeded (e.g. wasn't skipped). Add delimiter.
                 recordsString.append(exportTemplate.recordDelimiter);

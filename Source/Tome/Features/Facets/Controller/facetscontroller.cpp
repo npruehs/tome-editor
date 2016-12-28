@@ -54,6 +54,47 @@ QList<Facet*> FacetsController::getFacets(const QString& targetType) const
     return typeFacets;
 }
 
+QVariant FacetsController::getFacetValue(const QString& fieldType, const QString& facetKey) const
+{
+    // Check if custom type.
+    if (!this->typesController.isCustomType(fieldType))
+    {
+        return QVariant();
+    }
+
+    // Check if derived type.
+    const CustomType& customType = this->typesController.getCustomType(fieldType);
+
+    if (!customType.isDerivedType())
+    {
+        return QVariant();
+    }
+
+    for (int i = 0; i < this->facets.count(); ++i)
+    {
+        Facet* facet = this->facets[i];
+
+        if (facet->getKey() != facetKey)
+        {
+            continue;
+        }
+
+        if (facet->getTargetType() != customType.getBaseType())
+        {
+            continue;
+        }
+
+        if (!customType.constrainingFacets.contains(facetKey))
+        {
+            continue;
+        }
+
+        return customType.constrainingFacets[facetKey];
+    }
+
+    return QVariant();
+}
+
 void FacetsController::registerFacet(Tome::Facet* facet)
 {
     qInfo(QString("Registering facet %1.").arg(facet->getKey()).toUtf8().constData());

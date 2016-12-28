@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Template Version="2" ExportLeafs="true">
-    <Name>INI</Name>
-    <FileExtension>.ini</FileExtension>
-    <TypeMap/>
-    <IgnoredRecords/>
-    <IgnoredFields/>
-</Template>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Template Version="2" ExportLeafs="true">
+    <Name>Data (StarCraft II XML)</Name>
+    <FileExtension>.xml</FileExtension>
+    <TypeMap/>
+    <IgnoredRecords/>
+    <IgnoredFields/>
+</Template>

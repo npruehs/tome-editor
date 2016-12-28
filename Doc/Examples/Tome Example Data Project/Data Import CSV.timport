@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Template Version="1">
+    <Name>Units (CSV)</Name>
+    <SourceType>CSV</SourceType>
+    <IdColumn>ID</IdColumn>
+    <RootRecordId>Unit</RootRecordId>
+    <ColumnMap>
+        <Mapping ColumnName="Attack Damage" FieldId="AttackDamage"/>
+    </ColumnMap>
+    <IgnoredIds>
+        <Id>COMMENT</Id>
+    </IgnoredIds>
+    <Parameters/>

@@ -1,0 +1,4 @@
+        <Attribute keyType="System.String" valueType="$FIELD_TYPE$">
+          <Key>$FIELD_ID$</Key>
+          <Value>$RECORD_ROOT$.$RECORD_ID$.$FIELD_ID$</Value>
+        </Attribute>

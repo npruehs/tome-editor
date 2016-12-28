@@ -63,6 +63,8 @@ namespace Tome
              */
             const RecordFieldValueMap getRecordFieldValues(const QString& id) const;
 
+            const QString getRootRecordId(const QString& id) const;
+
             bool hasRecord(const QString& id) const;
             int indexOf(const Record& record) const;
 
