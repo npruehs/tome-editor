@@ -92,7 +92,9 @@ void ImportTemplateSerializer::serialize(QIODevice& device, const RecordTableImp
             }
             writer.writeEndElement();
         }
+        writer.writeEndElement();
     }
+    writer.writeEndDocument();
 }
 
 void ImportTemplateSerializer::deserialize(QIODevice& device, RecordTableImportTemplate& importTemplate) const
@@ -107,52 +109,55 @@ void ImportTemplateSerializer::deserialize(QIODevice& device, RecordTableImportT
         // Read record import template.
         reader.readStartElement(ElementTemplate);
         {
+            // Read name, type, id column and root record.
             importTemplate.name = reader.readTextElement(ElementName);
             importTemplate.sourceType = TableType::fromString(reader.readTextElement(ElementSourceType));
             importTemplate.idColumn = reader.readTextElement(ElementIdColumn);
             importTemplate.rootRecordId = reader.readTextElement(ElementRootRecordId);
-        }
 
-        // Read column map.
-        reader.readStartElement(ElementColumnMap);
-        {
-            while (reader.isAtElement(ElementMapping))
+            // Read column map.
+            reader.readStartElement(ElementColumnMap);
             {
-                QString columnMapKey = reader.readAttribute(AttributeColumnName);
-                QString columnMapValue = reader.readAttribute(AttributeFieldId);
+                while (reader.isAtElement(ElementMapping))
+                {
+                    QString columnMapKey = reader.readAttribute(AttributeColumnName);
+                    QString columnMapValue = reader.readAttribute(AttributeFieldId);
 
-                importTemplate.columnMap.insert(columnMapKey, columnMapValue);
+                    importTemplate.columnMap.insert(columnMapKey, columnMapValue);
 
-                // Advance reader.
-                reader.readEmptyElement(ElementMapping);
+                    // Advance reader.
+                    reader.readEmptyElement(ElementMapping);
+                }
             }
-        }
-        reader.readEndElement();
+            reader.readEndElement();
 
-        // Read ignore list.
-        reader.readStartElement(ElementIgnoredIds);
-        {
-            while (reader.isAtElement(ElementId))
+            // Read ignore list.
+            reader.readStartElement(ElementIgnoredIds);
             {
-                importTemplate.ignoredIds << reader.readTextElement(ElementId);
+                while (reader.isAtElement(ElementId))
+                {
+                    importTemplate.ignoredIds << reader.readTextElement(ElementId);
+                }
             }
-        }
-        reader.readEndElement();
+            reader.readEndElement();
 
-        // Read parameters
-        reader.readStartElement(ElementParameters);
-        {
-            while (reader.isAtElement(ElementParameter))
+            // Read parameters
+            reader.readStartElement(ElementParameters);
             {
-                QString parameterKey = reader.readAttribute(AttributeKey);
-                QString parameterValue = reader.readAttribute(AttributeValue);
+                while (reader.isAtElement(ElementParameter))
+                {
+                    QString parameterKey = reader.readAttribute(AttributeKey);
+                    QString parameterValue = reader.readAttribute(AttributeValue);
 
-                importTemplate.parameters.insert(parameterKey, parameterValue);
+                    importTemplate.parameters.insert(parameterKey, parameterValue);
 
-                // Advance reader.
-                reader.readEmptyElement(ElementParameter);
+                    // Advance reader.
+                    reader.readEmptyElement(ElementParameter);
+                }
             }
+            reader.readEndElement();
         }
         reader.readEndElement();
     }
+    reader.readEndDocument();
 }
