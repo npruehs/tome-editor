@@ -27,6 +27,7 @@ const Component ComponentsController::addComponent(const QString& componentName,
             ComponentList& components = componentSet.components;
             int index = findInsertionIndex(components, component, qStringLessThanLowerCase);
             components.insert(index, component);
+            emit this->componentAdded(component);
             return component;
         }
     }
@@ -76,6 +77,30 @@ const QStringList ComponentsController::getComponentSetNames() const
     return names;
 }
 
+const QString ComponentsController::getSetNameOfComponent(const Component component) const
+{
+    for (ComponentSetList::iterator itSets = this->model->begin();
+         itSets != this->model->end();
+         ++itSets)
+    {
+        ComponentList& components = (*itSets).components;
+
+        for (ComponentList::iterator it = components.begin();
+             it != components.end();
+             ++it)
+        {
+            if (*it == component)
+            {
+                return (*itSets).name;
+            }
+        }
+    }
+
+    const QString errorMessage = "Component not found: " + component;
+    qCritical(errorMessage.toUtf8().constData());
+    throw std::out_of_range(errorMessage.toStdString());
+}
+
 int ComponentsController::indexOf(const Component& component) const
 {
     return this->model->at(0).components.indexOf(component);
@@ -97,6 +122,7 @@ void ComponentsController::removeComponent(const Component component)
         {
             if (*it == component)
             {
+                emit this->componentRemoved(component);
                 components.erase(it);
                 return;
             }

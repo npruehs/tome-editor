@@ -30,13 +30,14 @@ const QString ProjectSerializer::ElementRestriction = "Restriction";
 const QString ProjectSerializer::ElementRestrictions = "Restrictions";
 const QString ProjectSerializer::ElementRecords = "Records";
 const QString ProjectSerializer::ElementRecordExportTemplates = "RecordExportTemplates";
+const QString ProjectSerializer::ElementRecordImportTemplates = "RecordImportTemplates";
 const QString ProjectSerializer::ElementTemplate = "Template";
 const QString ProjectSerializer::ElementTomeProject = "TomeProject";
 const QString ProjectSerializer::ElementType = "Type";
 const QString ProjectSerializer::ElementTypes = "Types";
 const QString ProjectSerializer::ElementTypeMap = "TypeMap";
 
-const int ProjectSerializer::Version = 4;
+const int ProjectSerializer::Version = 5;
 
 
 ProjectSerializer::ProjectSerializer()
@@ -123,6 +124,19 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
                 {
                     const CustomTypeSet& typeSet = project->typeSets[i];
                     writer.writeTextElement(ElementPath, typeSet.name);
+                }
+            }
+            writer.writeEndElement();
+
+            // Write record import template paths.
+            writer.writeStartElement(ElementRecordImportTemplates);
+            {
+                for (RecordTableImportTemplateList::const_iterator it = project->recordTableImportTemplates.begin();
+                     it != project->recordTableImportTemplates.end();
+                     ++it)
+                {
+                    const RecordTableImportTemplate& importTemplate = *it;
+                    writer.writeTextElement(ElementPath, importTemplate.path);
                 }
             }
             writer.writeEndElement();
@@ -321,6 +335,21 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
                 }
             }
             reader.readEndElement();
+
+            // Read record export templates.
+            if (version > 4)
+            {
+                reader.readStartElement(ElementRecordImportTemplates);
+                {
+                    while (reader.isAtElement(ElementPath))
+                    {
+                        RecordTableImportTemplate importTemplate = RecordTableImportTemplate();
+                        importTemplate.path = reader.readTextElement(ElementPath);
+                        project->recordTableImportTemplates << importTemplate;
+                    }
+                }
+                reader.readEndElement();
+            }
         }
         // End project.
         reader.readEndElement();

@@ -17,14 +17,17 @@ namespace Tome
     class FieldDefinitionsController;
     class FindRecordController;
     class FindUsagesController;
+    class ImportController;
     class Project;
     class RecordExportTemplate;
     class RecordSet;
     class RecordSetSerializer;
+    class RecordTableImportTemplate;
     class RecordsController;
     class SettingsController;
     class TasksController;
     class TypesController;
+    class UndoController;
 
     class Controller : public QObject
     {
@@ -34,16 +37,18 @@ namespace Tome
             Controller(Tome::CommandLineOptions* options);
             ~Controller();
 
-            ComponentsController& getComponentsController();
-            FieldDefinitionsController& getFieldDefinitionsController();
-            RecordsController& getRecordsController();
-            ExportController& getExportController();
-            SettingsController& getSettingsController();
-            TasksController& getTasksController();
-            TypesController& getTypesController();
-            FindUsagesController& getFindUsagesController();
-            FindRecordController& getFindRecordController();
-            FacetsController& getFacetsController();
+            UndoController& getUndoController() const;
+            ComponentsController& getComponentsController() const;
+            FieldDefinitionsController& getFieldDefinitionsController() const;
+            RecordsController& getRecordsController() const;
+            ExportController& getExportController() const;
+            SettingsController& getSettingsController() const;
+            TasksController& getTasksController() const;
+            TypesController& getTypesController() const;
+            FindUsagesController& getFindUsagesController() const;
+            FindRecordController& getFindRecordController() const;
+            FacetsController& getFacetsController() const;
+            ImportController& getImportController() const;
 
             int start();
 
@@ -54,13 +59,14 @@ namespace Tome
             const QString getProjectPath() const;
             bool getProjectIgnoreReadOnly() const;
             bool isProjectLoaded() const;
-            void loadComponentSet(const QString& projectPath, ComponentSet& componentSet);
-            void loadCustomTypeSet(const QString& projectPath, CustomTypeSet& customTypeSet);
-            void loadExportTemplate(const QString& projectPath, RecordExportTemplate& exportTemplate);
-            void loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet);
-            void loadRecordSet(const QString& projectPath, RecordSet& recordSet);
+            void loadComponentSet(const QString& projectPath, ComponentSet& componentSet) const;
+            void loadCustomTypeSet(const QString& projectPath, CustomTypeSet& customTypeSet) const;
+            void loadExportTemplate(const QString& projectPath, RecordExportTemplate& exportTemplate) const;
+            void loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet) const;
+            void loadImportTemplate(const QString& projectPath, RecordTableImportTemplate& importTemplate) const;
+            void loadRecordSet(const QString& projectPath, RecordSet& recordSet) const;
             void openProject(const QString& projectFileName);
-            void saveProject();
+            void saveProject() const;
 
             static const QString ComponentFileExtension;
             static const QString FieldDefinitionFileExtension;
@@ -72,6 +78,7 @@ namespace Tome
             static const QString RecordExportListTemplateExtension;
             static const QString RecordExportListItemTemplateExtension;
             static const QString RecordExportListItemDelimiterExtension;
+            static const QString RecordExportLocalizedFieldValueTemplateExtension;
             static const QString RecordExportMapTemplateExtension;
             static const QString RecordExportMapItemTemplateExtension;
             static const QString RecordExportMapItemDelimiterExtension;
@@ -80,6 +87,7 @@ namespace Tome
             static const QString RecordExportRecordDelimiterExtension;
             static const QString RecordExportTemplateFileExtension;
             static const QString RecordFileExtension;
+            static const QString RecordImportTemplateFileExtension;
             static const QString TypeFileExtension;
 
         signals:
@@ -94,25 +102,27 @@ namespace Tome
 
             QSharedPointer<Project> project;
 
+            UndoController* undoController;
             ComponentsController* componentsController;
-            FieldDefinitionsController* fieldDefinitionsController;
             TypesController* typesController;
+            FieldDefinitionsController* fieldDefinitionsController;
             RecordsController* recordsController;
+            FacetsController* facetsController;
             ExportController* exportController;
             SettingsController* settingsController;
-            FacetsController* facetsController;
             TasksController* tasksController;
             FindUsagesController* findUsagesController;
             FindRecordController* findRecordController;
+            ImportController* importController;
 
             RecordSetSerializer* recordSetSerializer;
 
             MainWindow* mainWindow;
 
             const QString getFullProjectPath(QSharedPointer<Project> project) const;
-            void saveProject(QSharedPointer<Project> project);
+            void saveProject(QSharedPointer<Project> project) const;
             void setProject(QSharedPointer<Project> project);
-            QString readFile(const QString& fullPath);
+            QString readFile(const QString& fullPath) const;
     };
 }
 

@@ -11,6 +11,7 @@
 #include "../../Components/Controller/componentscontroller.h"
 #include "../../Export/Controller/exportcontroller.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
+#include "../../Import/Controller/importcontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../../Core/controller.h"
@@ -30,6 +31,7 @@ ProjectOverviewWindow::ProjectOverviewWindow(Controller* controller, QWidget *pa
     this->ui->verticalLayoutExportTemplatesButtons->setAlignment(Qt::AlignTop);
     this->ui->verticalLayoutFieldsButtons->setAlignment(Qt::AlignTop);
     this->ui->verticalLayoutRecordsButtons->setAlignment(Qt::AlignTop);
+    this->ui->verticalLayoutImportTemplatesButtons->setAlignment(Qt::AlignTop);
 
     // Connect component button signals.
     connect(
@@ -125,6 +127,25 @@ ProjectOverviewWindow::ProjectOverviewWindow(Controller* controller, QWidget *pa
                 SLOT(onRemoveFieldDefinitionsFileClicked(bool))
                 );
 
+    // Connect import template button signals.
+    connect(
+                this->ui->pushButtonAddExistingImportTemplate,
+                SIGNAL(clicked(bool)),
+                SLOT(onAddExistingImportTemplateFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonNavigateToImportTemplate,
+                SIGNAL(clicked(bool)),
+                SLOT(onNavigateToImportTemplateFileClicked(bool))
+                );
+
+    connect(
+                this->ui->pushButtonRemoveImportTemplate,
+                SIGNAL(clicked(bool)),
+                SLOT(onRemoveImportTemplateFileClicked(bool))
+                );
+
     // Connect record button signals.
     connect(
                 this->ui->pushButtonAddExistingRecordsFile,
@@ -164,6 +185,7 @@ void ProjectOverviewWindow::showEvent(QShowEvent* event)
     this->updateCustomTypeData();
     this->updateExportTemplateData();
     this->updateFieldDefinitionData();
+    this->updateImportTemplateData();
     this->updateRecordData();
 }
 
@@ -188,10 +210,11 @@ void ProjectOverviewWindow::navigateToSelectedFile(QListWidgetItem* item)
 
     // Get file path.
     const QString& filePath = item->data(Qt::DisplayRole).toString();
-    QFileInfo file(filePath);
+    const QFileInfo file(filePath);
+    const QUrl url = QUrl::fromLocalFile(file.absolutePath());
 
     // Open in explorer or finder.
-    QDesktopServices::openUrl(QUrl(file.absolutePath()));
+    QDesktopServices::openUrl(url);
 }
 
 void ProjectOverviewWindow::updateComponentData()
@@ -322,6 +345,38 @@ void ProjectOverviewWindow::updateFieldDefinitionData()
         item->setData(Qt::DisplayRole, fieldDefinitionSetPath);
         item->setData(Qt::UserRole, fieldDefinitionSet.name);
         this->ui->listWidgetFields->addItem(item);
+    }
+}
+
+void ProjectOverviewWindow::updateImportTemplateData()
+{
+    // Count import templates.
+    ImportController& importController = this->controller->getImportController();
+    const RecordTableImportTemplateList& importTemplateList = importController.getRecordTableImportTemplates();
+    const int importTemplateCount = importTemplateList.count();
+    const QString importTemplatesText = tr("%1 import template%2").arg(
+                QString::number(importTemplateCount),
+                importTemplateCount != 1 ? "s" : "");
+    this->ui->labelImportTemplatesValue->setText(importTemplatesText);
+
+    // Add list items.
+    this->ui->listWidgetImportTemplates->clear();
+
+    for (RecordTableImportTemplateList::const_iterator it = importTemplateList.begin();
+         it != importTemplateList.end();
+         ++it)
+    {
+        const RecordTableImportTemplate& importTemplate = *it;
+        const QString& importTemplatePath = this->controller->buildFullFilePath(
+                    importTemplate.path,
+                    this->controller->getProjectPath(),
+                    Controller::RecordImportTemplateFileExtension);
+
+        // Add list item.
+        QListWidgetItem* item = new QListWidgetItem();
+        item->setData(Qt::DisplayRole, importTemplatePath);
+        item->setData(Qt::UserRole, importTemplate.name);
+        this->ui->listWidgetImportTemplates->addItem(item);
     }
 }
 
@@ -530,6 +585,49 @@ void ProjectOverviewWindow::onAddExistingFieldDefinitionsFileClicked(bool checke
     }
 }
 
+void ProjectOverviewWindow::onAddExistingImportTemplateFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Open file browser dialog.
+    const QString& projectPath = this->controller->getProjectPath();
+    const QString& importTemplateFileName = QFileDialog::getOpenFileName(this,
+                                                                  tr("Add Existing Import Template File"),
+                                                                  projectPath,
+                                                                  "Tome Import Template Files (*.timport)");
+
+    if (importTemplateFileName.isEmpty())
+    {
+        return;
+    }
+
+    QDir projectDirectory = QDir(projectPath);
+    const QString& relativeImportTemplateFilePath = projectDirectory.relativeFilePath(importTemplateFileName);
+
+    try
+    {
+        // Load import template.
+        RecordTableImportTemplate importTemplate = RecordTableImportTemplate();
+        importTemplate.path = relativeImportTemplateFilePath;
+        this->controller->loadImportTemplate(projectPath, importTemplate);
+
+        // Update model.
+        this->controller->getImportController().addRecordImportTemplate(importTemplate);
+
+        // Update view.
+        this->updateImportTemplateData();
+    }
+    catch (std::runtime_error& e)
+    {
+        QMessageBox::critical(
+                    this,
+                    tr("Unable to load import template"),
+                    e.what(),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+    }
+}
+
 void ProjectOverviewWindow::onAddExistingRecordsFileClicked(bool checked)
 {
     Q_UNUSED(checked)
@@ -725,6 +823,14 @@ void ProjectOverviewWindow::onNavigateToFieldDefinitionsFileClicked(bool checked
     this->navigateToSelectedFile(selectedFieldDefinitionSetItem);
 }
 
+void ProjectOverviewWindow::onNavigateToImportTemplateFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    QListWidgetItem* selectedImportTemplateItem = this->getSelectedListWidgetItem(this->ui->listWidgetImportTemplates);
+    this->navigateToSelectedFile(selectedImportTemplateItem);
+}
+
 void ProjectOverviewWindow::onNavigateToRecordsFileClicked(bool checked)
 {
     Q_UNUSED(checked)
@@ -811,6 +917,26 @@ void ProjectOverviewWindow::onRemoveFieldDefinitionsFileClicked(bool checked)
 
     // Update view.
     this->updateFieldDefinitionData();
+}
+
+void ProjectOverviewWindow::onRemoveImportTemplateFileClicked(bool checked)
+{
+    Q_UNUSED(checked)
+
+    // Get selected import template.
+    QListWidgetItem* selectedImportTemplateItem = this->getSelectedListWidgetItem(this->ui->listWidgetImportTemplates);
+
+    if (selectedImportTemplateItem == nullptr)
+    {
+        return;
+    }
+
+    // Update model.
+    const QString& importTemplateName = selectedImportTemplateItem->data(Qt::UserRole).toString();
+    this->controller->getImportController().removeImportTemplate(importTemplateName);
+
+    // Update view.
+    this->updateImportTemplateData();
 }
 
 void ProjectOverviewWindow::onRemoveRecordsFileClicked(bool checked)

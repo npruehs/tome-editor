@@ -2,14 +2,27 @@
 
 #include <stdexcept>
 
+#include "../../Components/Controller/componentscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
 #include "../../../Util/listutils.h"
 #include "../../../Util/stringutils.h"
 
 using namespace Tome;
 
 
-FieldDefinitionsController::FieldDefinitionsController()
+FieldDefinitionsController::FieldDefinitionsController(const ComponentsController& componentsController, const TypesController& typesController) :
+    componentsController(componentsController),
+    typesController(typesController)
 {
+    connect(
+                &this->componentsController,
+                SIGNAL(componentRemoved(const Tome::Component&)),
+                SLOT(onComponentRemoved(const Tome::Component&)));
+
+    connect(
+                &this->typesController,
+                SIGNAL(typeRenamed(const QString&, const QString&)),
+                SLOT(onTypeRenamed(const QString&, const QString&)));
 }
 
 const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QString& id,
@@ -51,6 +64,7 @@ const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QStri
             FieldDefinitionList& fieldDefinitions = fieldDefinitionSet.fieldDefinitions;
             int index = findInsertionIndex(fieldDefinitions, fieldDefinition, fieldDefinitionLessThanDisplayName);
             fieldDefinitions.insert(index, fieldDefinition);
+            emit this->fieldDefinitionAdded(fieldDefinition);
 
             return fieldDefinition;
         }
@@ -83,6 +97,28 @@ const FieldDefinitionList FieldDefinitionsController::getFieldDefinitions() cons
         for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
         {
             fieldDefinitions << fieldDefinitionSet.fieldDefinitions.at(j);
+        }
+    }
+
+    return fieldDefinitions;
+}
+
+const FieldDefinitionList FieldDefinitionsController::getFieldDefinitionsOfComponent(const QString& component) const
+{
+    FieldDefinitionList fieldDefinitions;
+
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.count(); ++j)
+        {
+            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+
+            if (fieldDefinition.component == component)
+            {
+                fieldDefinitions << fieldDefinition;
+            }
         }
     }
 
@@ -132,6 +168,159 @@ int FieldDefinitionsController::indexOf(const FieldDefinition& fieldDefinition) 
     return this->model->at(0).fieldDefinitions.indexOf(fieldDefinition);
 }
 
+void FieldDefinitionsController::removeFieldDefinition(const QString& fieldId)
+{
+    qInfo(QString("Removing field definition %1.").arg(fieldId).toUtf8().constData());
+
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (FieldDefinitionList::iterator it = fieldDefinitionSet.fieldDefinitions.begin();
+             it != fieldDefinitionSet.fieldDefinitions.end();
+             ++it)
+        {
+            if (it->id == fieldId)
+            {
+                emit this->fieldDefinitionRemoved(*it);
+                fieldDefinitionSet.fieldDefinitions.erase(it);
+                return;
+            }
+        }
+    }
+}
+
+void FieldDefinitionsController::removeFieldDefinitionSet(const QString& name)
+{
+    for (FieldDefinitionSetList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        if ((*it).name == name)
+        {
+            // Update model.
+            this->model->erase(it);
+            return;
+        }
+    }
+}
+
+void FieldDefinitionsController::setFieldDefinitionSets(FieldDefinitionSetList& model)
+{
+    this->model = &model;
+}
+
+void FieldDefinitionsController::updateFieldDefinition(const QString oldId,
+        const QString newId,
+        const QString& displayName,
+        const QString& fieldType,
+        const QVariant& defaultValue,
+        const QString& component,
+        const QString& description,
+        const QString& fieldDefinitionSetName)
+{
+    // Check if already exists.
+    if (oldId != newId && this->hasFieldDefinition(newId))
+    {
+        const QString errorMessage = "Field with the specified id already exists: " + newId;
+        qCritical(errorMessage.toUtf8().constData());
+        throw std::out_of_range(errorMessage.toStdString());
+    }
+
+    FieldDefinition& fieldDefinition = *this->getFieldDefinitionById(oldId);
+    FieldDefinition oldFieldDefinition = FieldDefinition(fieldDefinition);
+
+    bool needsSorting = fieldDefinition.displayName != displayName;
+
+    // Update model.
+    fieldDefinition.id = stripWhitespaces(newId);
+    fieldDefinition.displayName = displayName;
+    fieldDefinition.fieldType = fieldType;
+    fieldDefinition.defaultValue = defaultValue;
+    fieldDefinition.description = description;
+    fieldDefinition.component = component;
+
+    // Move field definition, if necessary.
+    if (fieldDefinition.fieldDefinitionSetName != fieldDefinitionSetName)
+    {
+        this->moveFieldDefinitionToSet(fieldDefinition.id, fieldDefinitionSetName);
+    }
+
+    // Sort by display name.
+    if (needsSorting)
+    {
+        for (FieldDefinitionSetList::iterator it = this->model->begin();
+             it != this->model->end();
+             ++it)
+        {
+            std::sort((*it).fieldDefinitions.begin(), (*it).fieldDefinitions.end(), fieldDefinitionLessThanDisplayName);
+        }
+    }
+
+    // Notify listeners.
+    emit this->fieldDefinitionUpdated(oldFieldDefinition, fieldDefinition);
+}
+
+void FieldDefinitionsController::onComponentRemoved(const Component& component)
+{
+    // Reset component for affected fields.
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.count(); ++j)
+        {
+            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+
+            if (fieldDefinition.component == component)
+            {
+                fieldDefinition.component = QString();
+            }
+        }
+    }
+}
+
+void FieldDefinitionsController::onTypeRenamed(const QString& oldName, const QString& newName)
+{
+    // Change type of affected fields.
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
+        {
+            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+
+            if (fieldDefinition.fieldType == oldName)
+            {
+                fieldDefinition.fieldType = newName;
+            }
+        }
+    }
+}
+
+FieldDefinition* FieldDefinitionsController::getFieldDefinitionById(const QString& id) const
+{
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
+
+        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
+        {
+            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
+
+            if (fieldDefinition.id == id)
+            {
+                return &fieldDefinition;
+            }
+        }
+    }
+
+    const QString errorMessage = "Field not found: " + id;
+    qCritical(errorMessage.toUtf8().constData());
+    throw std::out_of_range(errorMessage.toStdString());
+}
+
 void FieldDefinitionsController::moveFieldDefinitionToSet(const QString& fieldDefinitionId, const QString& fieldDefinitionSetName)
 {
     qInfo(QString("Moving field definition %1 to set %2.").arg(fieldDefinitionId, fieldDefinitionSetName)
@@ -169,150 +358,4 @@ void FieldDefinitionsController::moveFieldDefinitionToSet(const QString& fieldDe
             }
         }
     }
-}
-
-void FieldDefinitionsController::removeFieldComponent(const QString componentName)
-{
-    for (int i = 0; i < this->model->size(); ++i)
-    {
-        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
-
-        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.count(); ++j)
-        {
-            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
-
-            if (fieldDefinition.component == componentName)
-            {
-                fieldDefinition.component = QString();
-            }
-        }
-    }
-}
-
-void FieldDefinitionsController::removeFieldDefinition(const QString& fieldId)
-{
-    qInfo(QString("Removing field definition %1.").arg(fieldId).toUtf8().constData());
-
-    for (int i = 0; i < this->model->size(); ++i)
-    {
-        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
-
-        for (FieldDefinitionList::iterator it = fieldDefinitionSet.fieldDefinitions.begin();
-             it != fieldDefinitionSet.fieldDefinitions.end();
-             ++it)
-        {
-            if (it->id == fieldId)
-            {
-                fieldDefinitionSet.fieldDefinitions.erase(it);
-                return;
-            }
-        }
-    }
-}
-
-void FieldDefinitionsController::removeFieldDefinitionSet(const QString& name)
-{
-    for (FieldDefinitionSetList::iterator it = this->model->begin();
-         it != this->model->end();
-         ++it)
-    {
-        if ((*it).name == name)
-        {
-            // Update model.
-            this->model->erase(it);
-            return;
-        }
-    }
-}
-
-void FieldDefinitionsController::renameFieldType(const QString oldTypeName, const QString newTypeName)
-{
-    for (int i = 0; i < this->model->size(); ++i)
-    {
-        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
-
-        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
-        {
-            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
-
-            if (fieldDefinition.fieldType == oldTypeName)
-            {
-                fieldDefinition.fieldType = newTypeName;
-            }
-        }
-    }
-}
-
-void FieldDefinitionsController::setFieldDefinitionSets(FieldDefinitionSetList& model)
-{
-    this->model = &model;
-}
-
-void FieldDefinitionsController::updateFieldDefinition(const QString oldId,
-        const QString newId,
-        const QString& displayName,
-        const QString& fieldType,
-        const QVariant& defaultValue,
-        const QString& component,
-        const QString& description,
-        const QString& fieldDefinitionSetName)
-{
-    // Check if already exists.
-    if (oldId != newId && this->hasFieldDefinition(newId))
-    {
-        const QString errorMessage = "Field with the specified id already exists: " + newId;
-        qCritical(errorMessage.toUtf8().constData());
-        throw std::out_of_range(errorMessage.toStdString());
-    }
-
-    FieldDefinition& fieldDefinition = *this->getFieldDefinitionById(oldId);
-
-    bool needsSorting = fieldDefinition.displayName != displayName;
-
-    // Update model.
-    fieldDefinition.id = stripWhitespaces(newId);
-    fieldDefinition.displayName = displayName;
-    fieldDefinition.fieldType = fieldType;
-    fieldDefinition.defaultValue = defaultValue;
-    fieldDefinition.description = description;
-    fieldDefinition.component = component;
-
-    // Move field definition, if necessary.
-    if (fieldDefinition.fieldDefinitionSetName != fieldDefinitionSetName)
-    {
-        this->moveFieldDefinitionToSet(fieldDefinition.id, fieldDefinitionSetName);
-    }
-
-    // Sort by display name.
-    if (needsSorting)
-    {
-        for (FieldDefinitionSetList::iterator it = this->model->begin();
-             it != this->model->end();
-             ++it)
-        {
-            std::sort((*it).fieldDefinitions.begin(), (*it).fieldDefinitions.end(), fieldDefinitionLessThanDisplayName);
-        }
-    }
-}
-
-FieldDefinition* FieldDefinitionsController::getFieldDefinitionById(const QString& id) const
-{
-    for (int i = 0; i < this->model->size(); ++i)
-    {
-        FieldDefinitionSet& fieldDefinitionSet = (*this->model)[i];
-
-        for (int j = 0; j < fieldDefinitionSet.fieldDefinitions.size(); ++j)
-        {
-            FieldDefinition& fieldDefinition = fieldDefinitionSet.fieldDefinitions[j];
-
-            if (fieldDefinition.id == id)
-            {
-                return &fieldDefinition;
-            }
-        }
-    }
-
-    const QString errorMessage = "Field not found: " + id;
-    qCritical(errorMessage.toUtf8().constData());
-    throw std::out_of_range(errorMessage.toStdString());
 }

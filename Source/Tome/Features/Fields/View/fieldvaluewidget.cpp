@@ -164,7 +164,7 @@ QString FieldValueWidget::validate()
 
 void FieldValueWidget::focusInEvent(QFocusEvent* event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
 
     if (this->currentWidget != 0)
     {
@@ -354,19 +354,19 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
     if (typeName == BuiltInType::Reference)
     {
-        QStringList recordNames = this->recordsController.getRecordNames();
+        QStringList recordIds = this->recordsController.getRecordIds();
 
         // Only show allowed record references.
         QStringList references;
 
-        for (const QString recordName : recordNames)
+        for (const QString recordId : recordIds)
         {
             const QString& validationError =
-                    this->facetsController.validateFieldValue(this->getFieldType(), recordName);
+                    this->facetsController.validateFieldValue(this->getFieldType(), recordId);
 
             if (validationError.isEmpty())
             {
-                references.push_back(recordName);
+                references.push_back(recordId);
             }
         }
 

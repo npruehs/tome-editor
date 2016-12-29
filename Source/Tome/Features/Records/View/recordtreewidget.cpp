@@ -1,5 +1,6 @@
 #include "recordtreewidget.h"
 
+#include <QMenu>
 #include <QMimeData>
 
 #include "recordtreewidgetitem.h"
@@ -10,24 +11,39 @@ using namespace Tome;
 
 
 RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController, SettingsController& settingsController)
-    : recordsController(recordsController)
-    , settingsController(settingsController)
+    : recordsController(recordsController),
+      settingsController(settingsController),
+      navigating(false)
 {
     this->setDragEnabled(true);
     this->viewport()->setAcceptDrops(true);
     this->setDropIndicatorShown(true);
     this->setHeaderHidden(true);
+
+    connect(this,
+            SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+            SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 }
 
-void RecordTreeWidget::addRecord(const QString& id, const QString& displayName)
+void RecordTreeWidget::addRecord(const QString& id, const QString& displayName, const QString& parentId)
 {
-    QTreeWidgetItem* newItem = new RecordTreeWidgetItem(id, displayName, QString(), false);
+    RecordTreeWidgetItem* recordItem = new RecordTreeWidgetItem(id, displayName, QString(), false);
+    RecordTreeWidgetItem* parentItem = this->getRecordItem(parentId);
 
-    this->insertTopLevelItem(0, newItem);
+    if (parentItem != nullptr)
+    {
+        parentItem->addChild(recordItem);
+    }
+    else
+    {
+        this->insertTopLevelItem(0, recordItem);
+    }
+
     this->sortItems(0, Qt::AscendingOrder);
 
     // Select new record.
-    this->setCurrentItem(newItem);
+    this->setCurrentItem(recordItem);
+    this->updateRecordItem(recordItem);
 }
 
 QString RecordTreeWidget::getSelectedRecordId() const
@@ -54,9 +70,54 @@ RecordTreeWidgetItem* RecordTreeWidget::getSelectedRecordItem() const
     return static_cast<RecordTreeWidgetItem*>(selectedItems.first());
 }
 
-void RecordTreeWidget::updateRecordItem()
+void RecordTreeWidget::navigateForward()
 {
-    this->updateRecordItem(this->getSelectedRecordItem());
+    if (this->selectedRecordRedoStack.empty())
+    {
+        return;
+    }
+
+    const QString id = this->selectedRecordRedoStack.pop();
+    this->selectedRecordUndoStack.push(id);
+
+    // Prevent redo from affecting navigation stacks.
+    this->navigating = true;
+    this->selectRecord(id);
+}
+
+void RecordTreeWidget::navigateBackward()
+{
+    if (this->selectedRecordUndoStack.count() < 2)
+    {
+        return;
+    }
+
+    const QString id = this->selectedRecordUndoStack.pop();
+    this->selectedRecordRedoStack.push(id);
+
+    // Prevent undo from affecting navigation stacks.
+    this->navigating = true;
+    this->selectRecord(this->selectedRecordUndoStack.top());
+}
+
+void RecordTreeWidget::updateRecord(const QString& oldId, const QString& newId, const QString& newDisplayName)
+{
+    // Update view.
+    RecordTreeWidgetItem* recordItem = this->getRecordItem(oldId);
+
+    const QString oldDisplayName = recordItem->getDisplayName();
+    bool needsSorting = oldDisplayName != newDisplayName;
+
+    recordItem->setId(newId);
+    recordItem->setDisplayName(newDisplayName);
+
+    // Sort by display name.
+    if (needsSorting)
+    {
+        this->sortItems(0, Qt::AscendingOrder);
+    }
+
+    this->updateRecordItem(recordItem);
 }
 
 void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
@@ -100,23 +161,27 @@ void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
 
 void RecordTreeWidget::selectRecord(const QString& id)
 {
-    QTreeWidgetItemIterator it(this);
+    RecordTreeWidgetItem* item = this->getRecordItem(id);
 
-    while (*it)
+    if (item == nullptr)
     {
-        RecordTreeWidgetItem *item = static_cast<RecordTreeWidgetItem*>(*it);
-        if (item->getId() == id)
-        {
-            this->setCurrentItem(item);
-            break;
-        }
-        ++it;
+        return;
     }
+
+    this->setCurrentItem(item);
+}
+
+void RecordTreeWidget::setContextMenuActions(QList<QAction*> actions)
+{
+    this->contextMenuActions = actions;
 }
 
 void RecordTreeWidget::setRecords(const RecordList& records)
 {
     this->clear();
+
+    this->selectedRecordUndoStack.clear();
+    this->selectedRecordRedoStack.clear();
 
     // Create record tree items.
     QMap<QString, RecordTreeWidgetItem*> recordItems;
@@ -171,6 +236,36 @@ void RecordTreeWidget::setRecords(const RecordList& records)
     }
 }
 
+void RecordTreeWidget::removeRecord(const QString& id)
+{
+    // Update view.
+    RecordTreeWidgetItem* recordItem = this->getRecordItem(id);
+
+    if (recordItem->parent() != 0)
+    {
+        recordItem->parent()->removeChild(recordItem);
+    }
+    else
+    {
+        int index = this->indexOfTopLevelItem(recordItem);
+        this->takeTopLevelItem(index);
+    }
+
+    delete recordItem;
+}
+
+void RecordTreeWidget::contextMenuEvent(QContextMenuEvent* event)
+{
+    QMenu menu(this);
+
+    for (int i = 0; i < this->contextMenuActions.count(); ++i)
+    {
+        menu.addAction(this->contextMenuActions[i]);
+    }
+
+    menu.exec(event->globalPos());
+}
+
 bool RecordTreeWidget::dropMimeData(QTreeWidgetItem* parent, int index, const QMimeData* data, Qt::DropAction action)
 {
     Q_UNUSED(index)
@@ -206,4 +301,41 @@ bool RecordTreeWidget::dropMimeData(QTreeWidgetItem* parent, int index, const QM
     }
 
     return true;
+}
+
+void RecordTreeWidget::onCurrentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+{
+    Q_UNUSED(previous)
+
+    if (this->navigating)
+    {
+        this->navigating = false;
+        return;
+    }
+
+    if (current == nullptr)
+    {
+        return;
+    }
+
+    RecordTreeWidgetItem* item = static_cast<RecordTreeWidgetItem*>(current);
+    this->selectedRecordUndoStack.push(item->getId());
+    this->selectedRecordRedoStack.clear();
+}
+
+RecordTreeWidgetItem* RecordTreeWidget::getRecordItem(const QString& id)
+{
+    QTreeWidgetItemIterator it(this);
+
+    while (*it)
+    {
+        RecordTreeWidgetItem *item = static_cast<RecordTreeWidgetItem*>(*it);
+        if (item->getId() == id)
+        {
+            return item;
+        }
+        ++it;
+    }
+
+    return nullptr;
 }

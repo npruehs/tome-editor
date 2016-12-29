@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TomeProject Version="4">
+<TomeProject Version="5">
     <Name>Tome Example Data Project</Name>
     <Locale>en_US</Locale>
     <Components>
@@ -12,15 +12,22 @@
         <Path>Tome Example Data Project.tdata</Path>
     </Records>
     <RecordExportTemplates>
-        <Path>CSV.texport</Path>
-        <Path>HTML.texport</Path>
-        <Path>INI.texport</Path>
-        <Path>JSON.texport</Path>
-        <Path>Slash XML.texport</Path>
-        <Path>StarCraft II XML.texport</Path>
-        <Path>YAML.texport</Path>
+        <Path>Data Export CSV.texport</Path>
+        <Path>Data Export HTML.texport</Path>
+        <Path>Data Export INI.texport</Path>
+        <Path>Data Export JSON.texport</Path>
+        <Path>Data Export Slash Framework XML.texport</Path>
+        <Path>Data Export StarCraft II XML.texport</Path>
+        <Path>Data Export YAML.texport</Path>
+        <Path>Localization Export CSV.texport</Path>
+        <Path>Localization Export XLIFF.texport</Path>
     </RecordExportTemplates>
     <Types>
         <Path>Tome Example Data Project.ttypes</Path>
     </Types>
+    <RecordImportTemplates>
+        <Path>Data Import CSV.timport</Path>
+        <Path>Data Import GoogleSheets.timport</Path>
+        <Path>Data Import XLSX.timport</Path>
+    </RecordImportTemplates>
 </TomeProject>

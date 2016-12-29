@@ -1,0 +1,37 @@
+<html>
+  <head>
+	<title>Tome Example Project Records</title>
+  </head>
+
+  <body>
+	<h1>Units</h1>
+	<table>
+	  <tr>
+		<th>Unit</th>
+		<th>Acceleration</th>
+        <th>Allowed Targets</th>
+		<th>Armor Type</th>
+		<th>Attack Damage</th>
+		<th>Attack Range</th>
+		<th>Cooldown</th>
+		<th>Damage Type</th>
+		<th>Health</th>
+		<th>Health Regeneration</th>
+		<th>Invulnerable</th>
+		<th>Mana</th>
+		<th>Mana Regeneration</th>
+		<th>Mass</th>
+		<th>Movement Speed</th>
+		<th>Name</th>
+		<th>Projectile</th>
+		<th>Projectile base</th>
+		<th>Resource Costs</th>
+		<th>Rotation Speed</th>
+		<th>Sight Radius</th>
+		<th>Sprite</th>
+		<th>Sprite Color</th>
+	  </tr>
+$RECORDS$
+	</table>
+  </body>
+</html>

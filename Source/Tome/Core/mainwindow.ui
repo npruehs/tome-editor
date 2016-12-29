@@ -102,6 +102,9 @@
     </property>
     <addaction name="actionOutput"/>
     <addaction name="actionError_List"/>
+    <addaction name="separator"/>
+    <addaction name="actionNavigate_Backward"/>
+    <addaction name="actionNavigate_Forward"/>
    </widget>
    <widget class="QMenu" name="menuProject">
     <property name="title">
@@ -115,11 +118,17 @@
     </property>
     <addaction name="actionUser_Settings"/>
    </widget>
+   <widget class="QMenu" name="menuImport">
+    <property name="title">
+     <string>Import</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuProject"/>
    <addaction name="menuRecords"/>
    <addaction name="menuFields"/>
    <addaction name="menuExport"/>
+   <addaction name="menuImport"/>
    <addaction name="menuAnalyze"/>
    <addaction name="menuTools"/>
    <addaction name="menuWindow"/>
@@ -145,6 +154,9 @@
    <addaction name="actionFind_Usages"/>
    <addaction name="separator"/>
    <addaction name="actionRun_Integrity_Checks"/>
+   <addaction name="separator"/>
+   <addaction name="actionNavigate_Backward"/>
+   <addaction name="actionNavigate_Forward"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
@@ -366,6 +378,32 @@
    </property>
    <property name="text">
     <string>Output</string>
+   </property>
+  </action>
+  <action name="actionNavigate_Forward">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/NavigateForward_6271.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Navigate Forward</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
+  </action>
+  <action name="actionNavigate_Backward">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Media/Icons/NavigateBackwards_6270.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Navigate Backward</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
    </property>
   </action>
  </widget>

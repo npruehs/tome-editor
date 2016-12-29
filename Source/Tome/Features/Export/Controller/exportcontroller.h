@@ -9,6 +9,7 @@
 
 namespace Tome
 {
+    class FacetsController;
     class FieldDefinitionsController;
     class RecordsController;
     class TypesController;
@@ -18,7 +19,10 @@ namespace Tome
             Q_OBJECT
 
         public:
-            ExportController(const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController, const TypesController& typesController);
+            ExportController(const FacetsController& facetsController,
+                             const FieldDefinitionsController& fieldDefinitionsController,
+                             const RecordsController& recordsController,
+                             const TypesController& typesController);
 
             void addRecordExportTemplate(const RecordExportTemplate& exportTemplate);
 
@@ -27,14 +31,14 @@ namespace Tome
 
             bool hasRecordExportTemplate(const QString& name) const;
 
-            void exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath);
-            void exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device);
+            void exportRecords(const RecordExportTemplate& exportTemplate, const QString& filePath) const;
+            void exportRecords(const RecordExportTemplate& exportTemplate, QIODevice& device) const;
             void removeExportTemplate(const QString& name);
             void setRecordExportTemplates(RecordExportTemplateList& exportTemplates);
 
         signals:
             void exportTemplatesChanged();
-            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
 
         private:
             RecordExportTemplateList* model;
@@ -58,9 +62,11 @@ namespace Tome
             static const QString PlaceholderRecordFields;
             static const QString PlaceholderRecordId;
             static const QString PlaceholderRecordParentId;
+            static const QString PlaceholderRecordRootId;
             static const QString PlaceholderRecords;
             static const QString PlaceholderValueType;
 
+            const FacetsController& facetsController;
             const FieldDefinitionsController& fieldDefinitionsController;
             const RecordsController& recordsController;
             const TypesController& typesController;
