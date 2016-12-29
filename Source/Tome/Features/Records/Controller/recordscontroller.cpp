@@ -206,7 +206,7 @@ const RecordFieldValueMap RecordsController::getInheritedFieldValues(const QStri
     // Build field value map.
     RecordFieldValueMap fieldValues;
 
-    for (int i = 0; i < ancestors.count(); ++i)
+    for (int i = ancestors.count() - 1; i >= 0; --i)
     {
         const Record& ancestor = ancestors.at(i);
 
