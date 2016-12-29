@@ -61,13 +61,13 @@ The beta release of Tome adds the ability to import data from various sources, a
 
 ## New Features
 
-* **Undo.** All operations can now be un-done and re-done. The title bar shows a small asterisk while there are any unsaved changed, and shows a confirmation dialog when trying to quit with unsaved changes.
+* **Undo.** All operations can now be un-done and re-done. The title bar shows a small asterisk while there are any unsaved changes, and shows a confirmation dialog when trying to quit with unsaved changes.
 * **Data Import.** Tome can now import record data from Excel and CSV files and Google Sheets. You can specify the column containing your record IDs, which records to parent newly imported records to, how table columns relate to your Tome fields, and which table rows to ignore, if any.
 * **Localization Support.** Export templates may now add a separate field value template for localized fields (for exporting localization keys instead of current string values when exporting data). They can also use an option for exporting localized fields only (for exporting localization kits).
 
 ## Data
 
-* Added export placeholders for record roots.
+* Added export placeholder for record roots.
 * Record parent placeholders are now available in field value templates as well.
 
 ## Usability
@@ -79,7 +79,7 @@ The beta release of Tome adds the ability to import data from various sources, a
 
 ## Documentation
 
-* Added CSV and XLIFF example localiation export templates.
+* Added CSV and XLIFF example localization export templates.
 
 ## Bug Fixes
 
