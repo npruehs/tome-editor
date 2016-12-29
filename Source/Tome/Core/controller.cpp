@@ -18,6 +18,7 @@
 #include "../Features/Export/Controller/exportcontroller.h"
 #include "../Features/Export/Controller/exporttemplateserializer.h"
 #include "../Features/Facets/Controller/facetscontroller.h"
+#include "../Features/Facets/Controller/localizedstringfacet.h"
 #include "../Features/Facets/Controller/maximumintegervaluefacet.h"
 #include "../Features/Facets/Controller/maximumrealvaluefacet.h"
 #include "../Features/Facets/Controller/maximumstringlengthfacet.h"
@@ -26,6 +27,8 @@
 #include "../Features/Facets/Controller/requiredreferenceancestorfacet.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
+#include "../Features/Import/Controller/importcontroller.h"
+#include "../Features/Import/Controller/importtemplateserializer.h"
 #include "../Features/Integrity/Controller/fieldtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypenotsupportedtask.h"
@@ -44,6 +47,7 @@
 #include "../Features/Tasks/Controller/taskscontroller.h"
 #include "../Features/Types/Controller/typescontroller.h"
 #include "../Features/Types/Controller/customtypesetserializer.h"
+#include "../Features/Undo/Controller/undocontroller.h"
 #include "../Util/pathutils.h"
 
 using namespace Tome;
@@ -60,6 +64,7 @@ const QString Controller::RecordExportFieldValueDelimiterExtension = ".texportvd
 const QString Controller::RecordExportListTemplateExtension = ".texportl";
 const QString Controller::RecordExportListItemTemplateExtension = ".texportli";
 const QString Controller::RecordExportListItemDelimiterExtension = ".texportld";
+const QString Controller::RecordExportLocalizedFieldValueTemplateExtension = ".texportvloc";
 const QString Controller::RecordExportMapTemplateExtension = ".texportm";
 const QString Controller::RecordExportMapItemTemplateExtension = ".texportmi";
 const QString Controller::RecordExportMapItemDelimiterExtension = ".texportmd";
@@ -67,20 +72,23 @@ const QString Controller::RecordExportRecordFileTemplateExtension = ".texportf";
 const QString Controller::RecordExportRecordTemplateExtension = ".texportr";
 const QString Controller::RecordExportRecordDelimiterExtension = ".texportrd";
 const QString Controller::RecordExportTemplateFileExtension = ".texport";
+const QString Controller::RecordImportTemplateFileExtension = ".timport";
 const QString Controller::TypeFileExtension = ".ttypes";
 
 Controller::Controller(CommandLineOptions* options) :
     options(options),
+    undoController(new UndoController()),
     componentsController(new ComponentsController()),
-    fieldDefinitionsController(new FieldDefinitionsController()),
     typesController(new TypesController()),
+    fieldDefinitionsController(new FieldDefinitionsController(*this->componentsController, *this->typesController)),
     recordsController(new RecordsController(*this->fieldDefinitionsController, *this->typesController)),
-    exportController(new ExportController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
-    settingsController(new SettingsController()),
     facetsController(new FacetsController(*this->recordsController, *this->typesController)),
+    exportController(new ExportController(*this->facetsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
+    settingsController(new SettingsController()),
     tasksController(new TasksController(*this->componentsController, *this->facetsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findRecordController(new FindRecordController(*this->recordsController)),
+    importController(new ImportController(*this->fieldDefinitionsController, *this->recordsController)),
     recordSetSerializer(new RecordSetSerializer()),
     mainWindow(0)
 {
@@ -95,6 +103,7 @@ Controller::Controller(CommandLineOptions* options) :
     this->tasksController->addTask(new TypeFacetViolatedTask());
 
     // Register facets.
+    this->facetsController->registerFacet(new LocalizedStringFacet());
     this->facetsController->registerFacet(new MinimumIntegerValueFacet());
     this->facetsController->registerFacet(new MaximumIntegerValueFacet());
     this->facetsController->registerFacet(new MinimumRealValueFacet());
@@ -117,6 +126,7 @@ Controller::~Controller()
         delete this->mainWindow;
     }
 
+    delete this->undoController;
     delete this->componentsController;
     delete this->fieldDefinitionsController;
     delete this->recordsController;
@@ -127,59 +137,70 @@ Controller::~Controller()
     delete this->findUsagesController;
     delete this->findRecordController;
     delete this->facetsController;
+    delete this->importController;
     delete this->recordSetSerializer;
 
     delete this->options;
 }
 
-ComponentsController& Controller::getComponentsController()
+UndoController&Controller::getUndoController() const
+{
+    return *this->undoController;
+}
+
+ComponentsController& Controller::getComponentsController() const
 {
     return *this->componentsController;
 }
 
-FieldDefinitionsController& Controller::getFieldDefinitionsController()
+FieldDefinitionsController& Controller::getFieldDefinitionsController() const
 {
     return *this->fieldDefinitionsController;
 }
 
-RecordsController& Controller::getRecordsController()
+RecordsController& Controller::getRecordsController() const
 {
     return *this->recordsController;
 }
 
-ExportController& Controller::getExportController()
+ExportController& Controller::getExportController() const
 {
     return *this->exportController;
 }
 
-SettingsController& Controller::getSettingsController()
+SettingsController& Controller::getSettingsController() const
 {
     return *this->settingsController;
 }
 
-TasksController& Controller::getTasksController()
+TasksController& Controller::getTasksController() const
 {
     return *this->tasksController;
 }
 
-TypesController& Controller::getTypesController()
+TypesController& Controller::getTypesController() const
 {
     return *this->typesController;
 }
 
-FindUsagesController& Controller::getFindUsagesController()
+FindUsagesController& Controller::getFindUsagesController() const
 {
     return *this->findUsagesController;
 }
 
-FindRecordController&Controller::getFindRecordController()
+FindRecordController&Controller::getFindRecordController() const
 {
     return *this->findRecordController;
 }
 
-FacetsController&Controller::getFacetsController()
+FacetsController&Controller::getFacetsController() const
 {
     return *this->facetsController;
+}
+
+ImportController&Controller::getImportController() const
+{
+    return *this->importController;
 }
 
 int Controller::start()
@@ -311,7 +332,7 @@ bool Controller::isProjectLoaded() const
     return this->project != 0;
 }
 
-void Controller::loadComponentSet(const QString& projectPath, ComponentSet& componentSet)
+void Controller::loadComponentSet(const QString& projectPath, ComponentSet& componentSet) const
 {
     ComponentSetSerializer componentSerializer = ComponentSetSerializer();
 
@@ -351,7 +372,7 @@ void Controller::loadComponentSet(const QString& projectPath, ComponentSet& comp
     }
 }
 
-void Controller::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& typeSet)
+void Controller::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& typeSet) const
 {
     CustomTypeSetSerializer typesSerializer = CustomTypeSetSerializer();
 
@@ -391,7 +412,7 @@ void Controller::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& ty
     }
 }
 
-void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemplate& exportTemplate)
+void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemplate& exportTemplate) const
 {
     ExportTemplateSerializer exportTemplateSerializer = ExportTemplateSerializer();
 
@@ -467,16 +488,18 @@ void Controller::loadExportTemplate(const QString& projectPath, RecordExportTemp
                 this->readFile(templatePath + RecordExportMapItemTemplateExtension);
         exportTemplate.mapItemDelimiter =
                 this->readFile(templatePath + RecordExportMapItemDelimiterExtension);
+        exportTemplate.localizedFieldValueTemplate =
+                this->readFile(templatePath + RecordExportLocalizedFieldValueTemplateExtension);
     }
     catch (const std::runtime_error& e)
     {
-        QString errorMessage = QObject::tr("File could not be read:\r\n") + e.what();
+        QString errorMessage = QObject::tr("Export template %1 is missing a required file: %2")
+                .arg(exportTemplate.name, e.what());
         qCritical(errorMessage.toUtf8().constData());
-        throw std::runtime_error(errorMessage.toStdString());
     }
 }
 
-void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet)
+void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet) const
 {
     FieldDefinitionSetSerializer fieldDefinitionSerializer = FieldDefinitionSetSerializer();
 
@@ -510,7 +533,41 @@ void Controller::loadFieldDefinitionSet(const QString& projectPath, FieldDefinit
     }
 }
 
-void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet)
+void Controller::loadImportTemplate(const QString& projectPath, RecordTableImportTemplate& importTemplate) const
+{
+    ImportTemplateSerializer importTemplateSerializer = ImportTemplateSerializer();
+
+    // Open import template file.
+    QString fullImportTemplatePath =
+            buildFullFilePath(importTemplate.path, projectPath, RecordImportTemplateFileExtension);
+
+    QFile importTemplateFile(fullImportTemplatePath);
+
+    qInfo(QString("Opening import template file %1.").arg(fullImportTemplatePath).toUtf8().constData());
+
+    if (importTemplateFile.open(QIODevice::ReadOnly))
+    {
+        try
+        {
+            importTemplateSerializer.deserialize(importTemplateFile, importTemplate);
+            qInfo(QString("Opened import template file %1.")
+                  .arg(fullImportTemplatePath).toUtf8().constData());
+        }
+        catch (const std::runtime_error& e)
+        {
+            QString errorMessage = QObject::tr("File could not be read: ") + fullImportTemplatePath + "\r\n" + e.what();
+            qCritical(errorMessage.toUtf8().constData());
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
+    else
+    {
+        QString errorMessage = QObject::tr("File could not be read:\r\n") + fullImportTemplatePath;
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+}
+
+void Controller::loadRecordSet(const QString& projectPath, RecordSet& recordSet) const
 {
     // Open record file.
     QString fullRecordSetPath =
@@ -607,6 +664,14 @@ void Controller::openProject(const QString& projectFileName)
             this->loadCustomTypeSet(projectPath, project->typeSets[i]);
         }
 
+        // Load record import template files.
+        for (RecordTableImportTemplateList::iterator it = project->recordTableImportTemplates.begin();
+             it != project->recordTableImportTemplates.end();
+             ++it)
+        {
+            this->loadImportTemplate(projectPath, *it);
+        }
+
         // Set project reference.
         this->setProject(project);
     }
@@ -621,7 +686,7 @@ void Controller::openProject(const QString& projectFileName)
     }
 }
 
-void Controller::saveProject()
+void Controller::saveProject() const
 {
     this->saveProject(this->project);
 }
@@ -646,7 +711,7 @@ QString Controller::buildFullFilePath(QString filePath, QString projectPath, QSt
     return filePath;
 }
 
-void Controller::saveProject(QSharedPointer<Project> project)
+void Controller::saveProject(QSharedPointer<Project> project) const
 {
     QString& projectPath = project->path;
     ProjectSerializer projectSerializer = ProjectSerializer();
@@ -803,9 +868,38 @@ void Controller::saveProject(QSharedPointer<Project> project)
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
+
+    // Write import templates.
+    ImportTemplateSerializer importTemplateSerializer = ImportTemplateSerializer();
+
+    for (RecordTableImportTemplateList::const_iterator it = project->recordTableImportTemplates.begin();
+         it != project->recordTableImportTemplates.end();
+         ++it)
+    {
+        const RecordTableImportTemplate& importTemplate = *it;
+
+        // Build file name.
+        QString fullImportTemplatePath =
+                buildFullFilePath(importTemplate.path, projectPath, RecordImportTemplateFileExtension);
+
+        // Write file.
+        QFile importTemplateFile(fullImportTemplatePath);
+
+        qInfo(QString("Saving import template file %1.").arg(fullImportTemplatePath).toUtf8().constData());
+
+        if (importTemplateFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
+        {
+            importTemplateSerializer.serialize(importTemplateFile, importTemplate);
+        }
+        else
+        {
+            QString errorMessage = QObject::tr("Destination file could not be written:\r\n") + fullImportTemplatePath;
+            throw std::runtime_error(errorMessage.toStdString());
+        }
+    }
 }
 
-QString Controller::readFile(const QString& fullPath)
+QString Controller::readFile(const QString& fullPath) const
 {
     QFile file(fullPath);
 
@@ -829,6 +923,7 @@ void Controller::setProject(QSharedPointer<Project> project)
     this->fieldDefinitionsController->setFieldDefinitionSets(project->fieldDefinitionSets);
     this->recordsController->setRecordSets(project->recordSets);
     this->typesController->setCustomTypes(project->typeSets);
+    this->importController->setRecordTableImportTemplates(project->recordTableImportTemplates);
 
     // Add to recent projects.
     const QString& fullPath = this->getFullProjectPath();
@@ -836,6 +931,9 @@ void Controller::setProject(QSharedPointer<Project> project)
 
     // Set the default locale.
     QLocale::setDefault(project->locale);
+
+    // Reset undo stack.
+    this->undoController->clear();
 
     // Notify listeners.
     emit projectChanged(this->project);

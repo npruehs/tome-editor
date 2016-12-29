@@ -20,6 +20,7 @@ namespace Tome
             static const QString AttributeExportRoots;
             static const QString AttributeExportInnerNodes;
             static const QString AttributeExportLeafs;
+            static const QString AttributeExportLocalizedFieldsOnly;
             static const QString AttributeExportedType;
             static const QString AttributeTomeType;
             static const QString AttributeVersion;

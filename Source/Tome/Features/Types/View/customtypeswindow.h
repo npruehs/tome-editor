@@ -20,6 +20,7 @@ namespace Tome
     class FindUsagesController;
     class RecordsController;
     class TypesController;
+    class UndoController;
 }
 
 class CustomTypesWindow : public QMainWindow
@@ -32,6 +33,7 @@ class CustomTypesWindow : public QMainWindow
                                    Tome::FieldDefinitionsController& fieldDefinitionsController,
                                    Tome::FindUsagesController& findUsagesController,
                                    Tome::RecordsController& recordsController,
+                                   Tome::UndoController& undoController,
                                    QWidget *parent = 0);
         ~CustomTypesWindow();
 
@@ -51,6 +53,10 @@ class CustomTypesWindow : public QMainWindow
 
         void on_tableWidget_doubleClicked(const QModelIndex &index);
 
+        void onTypeAdded(const Tome::CustomType& type);
+        void onTypeRemoved(const Tome::CustomType& type);
+        void onTypeUpdated(const Tome::CustomType& type);
+
     private:
         Ui::CustomTypesWindow *ui;
 
@@ -59,6 +65,7 @@ class CustomTypesWindow : public QMainWindow
         Tome::FieldDefinitionsController& fieldDefinitionsController;
         Tome::FindUsagesController& findUsagesController;
         Tome::RecordsController& recordsController;
+        Tome::UndoController& undoController;
 
         DerivedTypeWindow* derivedTypeWindow;
         EnumerationWindow* enumerationWindow;

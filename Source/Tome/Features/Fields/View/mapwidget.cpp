@@ -151,11 +151,7 @@ void MapWidget::addItem()
         this->map[key.toString()] = value;
 
         // Update view.
-        this->tableWidget->setSortingEnabled(false);
-        this->tableWidget->insertRow(this->tableWidget->rowCount());
-        this->tableWidget->setItem(this->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(key.toString()));
-        this->tableWidget->setItem(this->tableWidget->rowCount() - 1, 1, new QTableWidgetItem(value.toString()));
-        this->tableWidget->setSortingEnabled(true);
+        this->setMap(this->map);
     }
 }
 
@@ -192,8 +188,7 @@ void MapWidget::editItem(QTableWidgetItem* item)
         this->map[key.toString()] = value;
 
         // Update view.
-        keyTableWidgetItem->setText(key.toString());
-        valueTableWidgetItem->setText(value.toString());
+        this->setMap(this->map);
     }
 }
 

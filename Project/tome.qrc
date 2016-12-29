@@ -20,5 +20,9 @@
         <file>../Media/Icons/lock_16xLG.png</file>
         <file>../Media/Icons/Find_5650.png</file>
         <file>../Media/Icons/Output_16xLG.png</file>
+        <file>../Media/Icons/Redo_16x.png</file>
+        <file>../Media/Icons/Undo_16x.png</file>
+        <file>../Media/Icons/NavigateBackwards_6270.png</file>
+        <file>../Media/Icons/NavigateForward_6271.png</file>
     </qresource>
 </RCC>

@@ -24,6 +24,8 @@ The tool is pretty self-explanatory. However, to give you a headstart, feel free
 * Run integrity checks to verify all your data
 * Advanced search features, such as finding all references to a specific record
 * Command line support for exporting data without showing a GUI
+* Importing data from various sources, including Excel and Google Sheets
+* Exporting localization kits based on your game data
 
 ## Development Cycle
 

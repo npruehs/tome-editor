@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Template Version="2" ExportLeafs="true">
+    <Name>Data (Slash Framework XML)</Name>
+    <FileExtension>.blueprints.xml</FileExtension>
+    <TypeMap>
+        <Mapping TomeType="Armor Type" ExportedType="FantasyGame.Data.ArmorType"/>
+        <Mapping TomeType="Boolean" ExportedType="System.Boolean"/>
+        <Mapping TomeType="Color" ExportedType="System.String"/>
+        <Mapping TomeType="Damage Type" ExportedType="FantasyGame.Data.DamageType"/>
+        <Mapping TomeType="Integer" ExportedType="System.Int32"/>
+        <Mapping TomeType="Movement Type" ExportedType="FantasyGame.Data.MovementType"/>
+        <Mapping TomeType="Movement Types" ExportedType="FantasyGame.Data.MovementType"/>
+        <Mapping TomeType="NonNegativeInteger" ExportedType="System.Int32"/>
+        <Mapping TomeType="NonNegativeReal" ExportedType="System.Single"/>
+        <Mapping TomeType="ProjectileReference" ExportedType="System.String"/>
+        <Mapping TomeType="Real" ExportedType="System.Single"/>
+        <Mapping TomeType="Reference" ExportedType="System.String"/>
+        <Mapping TomeType="Resource" ExportedType="FantasyGame.Data.ResourceType"/>
+        <Mapping TomeType="ShortString" ExportedType="System.String"/>
+        <Mapping TomeType="String" ExportedType="System.String"/>
+    </TypeMap>
+    <IgnoredRecords/>
+    <IgnoredFields/>
+</Template>

@@ -1,0 +1,4 @@
+      <trans-unit id='$RECORD_ROOT$.$RECORD_ID$.$FIELD_ID$'>
+        <source>$FIELD_VALUE$</source>
+        <target></target>
+      </trans-unit>

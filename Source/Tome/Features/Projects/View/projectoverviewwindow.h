@@ -38,6 +38,7 @@ class ProjectOverviewWindow : public QDialog
         void updateCustomTypeData();
         void updateExportTemplateData();
         void updateFieldDefinitionData();
+        void updateImportTemplateData();
         void updateRecordData();
 
     private slots:
@@ -45,6 +46,7 @@ class ProjectOverviewWindow : public QDialog
         void onAddExistingCustomTypesFileClicked(bool checked);
         void onAddExistingExportTemplateFileClicked(bool checked);
         void onAddExistingFieldDefinitionsFileClicked(bool checked);
+        void onAddExistingImportTemplateFileClicked(bool checked);
         void onAddExistingRecordsFileClicked(bool checked);
 
         void onAddNewComponentsFileClicked(bool checked);
@@ -56,12 +58,14 @@ class ProjectOverviewWindow : public QDialog
         void onNavigateToCustomTypesFileClicked(bool checked);
         void onNavigateToExportTemplateFileClicked(bool checked);
         void onNavigateToFieldDefinitionsFileClicked(bool checked);
+        void onNavigateToImportTemplateFileClicked(bool checked);
         void onNavigateToRecordsFileClicked(bool checked);
 
         void onRemoveComponentsFileClicked(bool checked);
         void onRemoveCustomTypesFileClicked(bool checked);
         void onRemoveExportTemplateFileClicked(bool checked);
         void onRemoveFieldDefinitionsFileClicked(bool checked);
+        void onRemoveImportTemplateFileClicked(bool checked);
         void onRemoveRecordsFileClicked(bool checked);
 };
 

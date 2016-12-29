@@ -2,14 +2,19 @@
 #define FIELDDEFINITIONSCONTROLLER_H
 
 #include "../Model/fielddefinitionsetlist.h"
-
+#include "../../Components/Model/component.h"
 
 namespace Tome
 {
-    class FieldDefinitionsController
+    class ComponentsController;
+    class TypesController;
+
+    class FieldDefinitionsController : public QObject
     {
+            Q_OBJECT
+
         public:
-            FieldDefinitionsController();
+            FieldDefinitionsController(const ComponentsController& componentsController, const TypesController& typesController);
 
             const FieldDefinition addFieldDefinition(
                     const QString& id,
@@ -22,15 +27,13 @@ namespace Tome
             void addFieldDefinitionSet(const FieldDefinitionSet& fieldDefinitionSet);
             const FieldDefinition& getFieldDefinition(const QString& id) const;
             const FieldDefinitionList getFieldDefinitions() const;
+            const FieldDefinitionList getFieldDefinitionsOfComponent(const QString& component) const;
             const FieldDefinitionSetList& getFieldDefinitionSets() const;
             const QStringList getFieldDefinitionSetNames() const;
             bool hasFieldDefinition(const QString& id) const;
             int indexOf(const FieldDefinition& fieldDefinition) const;
-            void moveFieldDefinitionToSet(const QString& fieldDefinitionId, const QString& fieldDefinitionSetName);
-            void removeFieldComponent(const QString componentName);
             void removeFieldDefinition(const QString& fieldId);
             void removeFieldDefinitionSet(const QString& name);
-            void renameFieldType(const QString oldTypeName, const QString newTypeName);
             void setFieldDefinitionSets(FieldDefinitionSetList& model);
             void updateFieldDefinition(const QString oldId,
                     const QString newId,
@@ -41,10 +44,23 @@ namespace Tome
                     const QString& description,
                     const QString& fieldDefinitionSetName);
 
+        signals:
+            void fieldDefinitionAdded(const Tome::FieldDefinition& fieldDefinition);
+            void fieldDefinitionRemoved(const Tome::FieldDefinition& fieldDefinition);
+            void fieldDefinitionUpdated(const Tome::FieldDefinition& oldFieldDefinition, const Tome::FieldDefinition& newFieldDefinition);
+
+        private slots:
+            void onComponentRemoved(const Tome::Component& component);
+            void onTypeRenamed(const QString& oldName, const QString& newName);
+
         private:
+            const ComponentsController& componentsController;
+            const TypesController& typesController;
+
             FieldDefinitionSetList* model;
 
             FieldDefinition* getFieldDefinitionById(const QString& id) const;
+            void moveFieldDefinitionToSet(const QString& fieldDefinitionId, const QString& fieldDefinitionSetName);
     };
 }
 

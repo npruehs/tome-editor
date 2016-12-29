@@ -18,13 +18,13 @@ namespace Tome
         public:
             FindUsagesController(const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController, const TypesController& typesController);
 
-            const SearchResultList findUsagesOfField(const QString& fieldId);
-            const SearchResultList findUsagesOfRecord(const QString& recordId);
-            const SearchResultList findUsagesOfType(const QString& typeName);
+            const SearchResultList findUsagesOfField(const QString& fieldId) const;
+            const SearchResultList findUsagesOfRecord(const QString& recordId) const;
+            const SearchResultList findUsagesOfType(const QString& typeName) const;
 
         signals:
-            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
-            void searchResultChanged(const QString& title, const Tome::SearchResultList results);
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
+            void searchResultChanged(const QString& title, const Tome::SearchResultList results) const;
 
         private:
             const FieldDefinitionsController& fieldDefinitionsController;

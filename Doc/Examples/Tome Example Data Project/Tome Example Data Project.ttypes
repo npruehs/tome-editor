@@ -68,6 +68,7 @@
             <FundamentalFacet Key="BaseType" Value="String"/>
         </FundamentalFacets>
         <ConstrainingFacets>
+            <ConstrainingFacet Key="Localized" Value="true"/>
             <ConstrainingFacet Key="MaxLength" Value="64"/>
         </ConstrainingFacets>
     </Type>

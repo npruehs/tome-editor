@@ -1,0 +1,7 @@
+<xliff version='1.2' xmlns='urn:oasis:names:tc:xliff:document:1.2'>
+  <file original='Tome Example Data Project' source-language='en' target-language='de' datatype='plaintext'>
+    <body>
+$RECORDS$
+    </body>
+  </file>
+</xliff>

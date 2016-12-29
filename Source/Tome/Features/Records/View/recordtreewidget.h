@@ -1,8 +1,10 @@
 #ifndef RECORDTREEWIDGET_H
 #define RECORDTREEWIDGET_H
 
-#include <QTreeWidget>
+#include <QContextMenuEvent>
 #include <QMimeData>
+#include <QStack>
+#include <QTreeWidget>
 
 #include "../Model/recordlist.h"
 
@@ -19,28 +21,45 @@ namespace Tome
         public:
             RecordTreeWidget(RecordsController& recordsController, SettingsController& settingsController);
 
-            void addRecord(const QString& id, const QString& displayName);
+            void addRecord(const QString& id, const QString& displayName, const QString& parentId);
 
             QString getSelectedRecordId() const;
             RecordTreeWidgetItem* getSelectedRecordItem() const;
 
-            void updateRecordItem();
-            void updateRecordItem(RecordTreeWidgetItem *recordTreeItem);
+            void navigateForward();
+            void navigateBackward();
+
+            void updateRecord(const QString& oldId, const QString& newId, const QString& newDisplayName);
 
             void selectRecord(const QString& id);
+            void setContextMenuActions(QList<QAction*> actions);
             void setRecords(const RecordList& records);
+
+            void removeRecord(const QString& id);
 
         signals:
             void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
             void recordReparented(const QString& recordId, const QString& newParentId);
 
         protected:
+            void contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
             bool dropMimeData(QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action);
 
-        private:
+        private slots:
+            void onCurrentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
+        private:
             RecordsController& recordsController;
             SettingsController& settingsController;
+
+            QStack<QString> selectedRecordUndoStack;
+            QStack<QString> selectedRecordRedoStack;
+            bool navigating;
+
+            QList<QAction*> contextMenuActions;
+
+            RecordTreeWidgetItem* getRecordItem(const QString& id);
+            void updateRecordItem(RecordTreeWidgetItem* recordTreeItem);
     };
 }
 

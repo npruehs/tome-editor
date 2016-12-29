@@ -8,8 +8,10 @@
 
 namespace Tome
 {
-    class TypesController
+    class TypesController : public QObject
     {
+            Q_OBJECT
+
         public:
             TypesController();
 
@@ -43,11 +45,8 @@ namespace Tome
             bool isBuiltInType(const QString& name) const;
             bool isCustomType(const QString& name) const;
             bool isReferenceType(const QString& name) const;
-            void moveCustomTypeToSet(const QString& customTypeName, const QString& customTypeSetName);
             void removeCustomType(const QString& typeName);
-            void removeCustomTypeAt(const int index);
             void removeCustomTypeSet(const QString& name);
-            void renameType(const QString oldName, const QString newName);
             void setCustomTypes(CustomTypeSetList& model);
 
             void updateDerivedType(const QString& oldName, const QString& newName, const QString& baseType, const QVariantMap facets, const QString& typeSetName);
@@ -55,14 +54,21 @@ namespace Tome
             void updateList(const QString& oldName, const QString& newName, const QString& itemType, const QString& typeSetName);
             void updateMap(const QString& oldName, const QString& newName, const QString& keyType, const QString& valueType, const QString& typeSetName);
 
-            QString valueToString(const QVariant& value, const QString& typeName);
+            QString valueToString(const QVariant& value, const QString& typeName) const;
 
+        signals:
+            void typeAdded(const Tome::CustomType& type);
+            void typeRenamed(const QString& oldName, const QString& newName);
+            void typeRemoved(const Tome::CustomType& type);
+            void typeUpdated(const Tome::CustomType& type);
 
         private:
             CustomTypeSetList* model;
 
             void addCustomType(CustomType customType, const QString& customTypeSetName);
             CustomType* getCustomTypeByName(const QString& name) const;
+            void moveCustomTypeToSet(const QString& customTypeName, const QString& customTypeSetName);
+            void renameType(const QString oldName, const QString newName);
     };
 }
 

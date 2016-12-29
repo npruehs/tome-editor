@@ -3,18 +3,22 @@
 
 #include "componentwindow.h"
 #include "../Controller/componentscontroller.h"
+#include "../Controller/Commands/addcomponentcommand.h"
+#include "../Controller/Commands/removecomponentcommand.h"
 #include "../Model/component.h"
 #include "../Model/componentlist.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
+#include "../../Undo/Controller/undocontroller.h"
 
 using namespace Tome;
 
 
-ComponentsWindow::ComponentsWindow(ComponentsController& componentsController, FieldDefinitionsController& fieldDefinitionsController, QWidget *parent) :
+ComponentsWindow::ComponentsWindow(ComponentsController& componentsController, FieldDefinitionsController& fieldDefinitionsController, UndoController& undoController, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ComponentsWindow),
     componentsController(componentsController),
     fieldDefinitionsController(fieldDefinitionsController),
+    undoController(undoController),
     componentWindow(0)
 {
     ui->setupUi(this);
@@ -27,6 +31,17 @@ ComponentsWindow::ComponentsWindow(ComponentsController& componentsController, F
         const Component& component = components.at(i);
         this->ui->listWidget->insertItem(i, component);
     }
+
+    // Connect signals.
+    connect(
+                &this->componentsController,
+                SIGNAL(componentAdded(const Tome::Component&)),
+                SLOT(onComponentAdded(const Tome::Component&)));
+
+    connect(
+                &this->componentsController,
+                SIGNAL(componentRemoved(const Tome::Component&)),
+                SLOT(onComponentRemoved(const Tome::Component&)));
 }
 
 ComponentsWindow::~ComponentsWindow()
@@ -59,11 +74,9 @@ void ComponentsWindow::on_actionNew_Component_triggered()
         const QString& componentSetName = this->componentWindow->getComponentSetName();
 
         // Update model.
-        const Component& component = this->componentsController.addComponent(componentName, componentSetName);
-
-        // Update view.
-        int index = this->componentsController.indexOf(component);
-        this->ui->listWidget->insertItem(index, componentName);
+        AddComponentCommand* command =
+                new AddComponentCommand(this->componentsController, componentName, componentSetName);
+        this->undoController.doCommand(command);
     }
 }
 
@@ -77,12 +90,23 @@ void ComponentsWindow::on_actionDelete_Component_triggered()
     }
 
     Component component = selectedItems.first()->text();
-    int index = this->componentsController.indexOf(component);
 
     // Update model.
-    this->componentsController.removeComponent(component);
-    this->fieldDefinitionsController.removeFieldComponent(component);
+    RemoveComponentCommand* command =
+            new RemoveComponentCommand(this->componentsController, this->fieldDefinitionsController, component);
+    this->undoController.doCommand(command);
+}
 
+void ComponentsWindow::onComponentAdded(const Component& component)
+{
     // Update view.
+    int index = this->componentsController.indexOf(component);
+    this->ui->listWidget->insertItem(index, component);
+}
+
+void ComponentsWindow::onComponentRemoved(const Component& component)
+{
+    // Update view.
+    int index = this->componentsController.indexOf(component);
     this->ui->listWidget->takeItem(index);
 }

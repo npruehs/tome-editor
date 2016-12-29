@@ -16,11 +16,11 @@ namespace Tome
         public:
             FindRecordController(const RecordsController& recordsController);
 
-            const SearchResultList findRecord(const QString& searchPattern);
+            const SearchResultList findRecord(const QString& searchPattern) const;
 
         signals:
-            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
-            void searchResultChanged(const QString& title, const Tome::SearchResultList results);
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
+            void searchResultChanged(const QString& title, const Tome::SearchResultList results) const;
 
         private:
             const RecordsController& recordsController;

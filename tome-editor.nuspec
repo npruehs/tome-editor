@@ -26,7 +26,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <!-- version should MATCH as closely as possible with the underlying software -->
     <!-- Is the version a prerelease of a version? https://docs.nuget.org/create/versioning#creating-prerelease-packages -->
     <!-- Note that unstable versions like 0.0.1 can be considered a released version, but it's possible that one can release a 0.0.1-beta before you release a 0.0.1 version. If the version number is final, that is considered a released version and not a prerelease. -->
-    <version>0.6-alpha</version>
+    <version>0.8-beta</version>
     <packageSourceUrl>https://github.com/npruehs/tome-editor</packageSourceUrl>
     <!-- owners is a poor name for maintainers of the package. It sticks around by this name for compatibility reasons. It basically means you. -->
     <owners>Nick Prühs</owners>
@@ -55,53 +55,41 @@ Developing games is all about data. With game systems for modifying data and use
 Tome solves two problems that arise with every new game you build: First, you can import the definition of your game's data so game designers can create new data records and modify existing ones very conveniently. Second, you can export the results to any format your game engine understands.
     </description>
     <releaseNotes>
-Advanced export release.
+Data import release.
 
-This release adds a lot of customizability for exporting data, along with automatically enforced field value constraints and project and user settings. 
+The beta release of Tome adds the ability to import data from various sources, as well as the possibility to generate a localization kit.
 
 ## New Features
 
-* **Field Facets.** Specify [custom constraints](https://github.com/npruehs/tome-editor/wiki/Field-Definitions#field-facets) such as the minimum value of an integer, the maximum length of a string, or the required parent of a record reference.
-* **Project Overview.** [Add new or existing files](https://github.com/npruehs/tome-editor/wiki/Project-Structure#addingremoving-project-data-files) to and/or remove files from the project. Specify which file to add new data to and move data between files.
-* **Search.** [Find records](https://github.com/npruehs/tome-editor/wiki/Search#finding-records) by id or display name.
-* **User Settings.** Specify whether to show a Description column in the records table or to run integrity checks on save. 
+* **Undo.** All operations can now be un-done and re-done. The title bar shows a small asterisk while there are any unsaved changed, and shows a confirmation dialog when trying to quit with unsaved changes.
+* **Data Import.** Tome can now import record data from Excel and CSV files and Google Sheets. You can specify the column containing your record IDs, which records to parent newly imported records to, how table columns relate to your Tome fields, and which table rows to ignore, if any.
+* **Localization Support.** Export templates may now add a separate field value template for localized fields (for exporting localization keys instead of current string values when exporting data). They can also use an option for exporting localized fields only (for exporting localization kits).
 
 ## Data
 
-* Added placeholders for list item types and map key and value types in export templates. 
-* Added placeholders for specific field values in export templates.
-* Added possibility for ignoring specific records and/or fields in exports.
-* Using $ characters in record names is now prohibited.
-
-See https://github.com/npruehs/tome-editor/wiki/Exporting-Data for details.
-
-* Added read-only records that can't be edited, reverted, removed or reparented.
-
-See https://github.com/npruehs/tome-editor/wiki/Data-Records#read-only-records for details.
+* Added export placeholders for record roots.
+* Record parent placeholders are now available in field value templates as well.
 
 ## Usability
 
-* Initially selecting all content of Integer, Real and String controls for immediate editing.
-* Added hyperlinks to search results and references to other records.
+* Added navigation buttons and hotkeys for returning to previously selected records.
+* Added a context menu to the record tree.
+* Increased width of all progress bar dialogs to always fit its contents.
+* Missing export template files no longer cause loading a project to stop, but log an error instead.
 
-## Other
+## Documentation
 
-* Moved components, custom types and export templates from project file to dedicated files.
-* Added link to Roadmap to Help menu.
-* Added application icon.
+* Added CSV and XLIFF example localiation export templates.
 
 ## Bug Fixes
 
-* Fixed a crash that could occur when removing a field while a record inheriting that field is selected.
-* Fixed a bug that caused the field definitions window not to correctly reflect all changes if any components had been removed since the last time the window was shown.
-* Fixed a bug that caused UTF-8 text not to be correctly exported.
-* Fixed a bug that allowed users to create enumerations without specifying a name.
-* Fixed a bug that caused enumerations without any members to appear as if they had a single empty member.
-* Fixed a bug that caused field values in the record table to overlap with column boundaries.
-* Fixed a bug that caused field values in the record table to overlap with color previews.
-* Fixed a bug that occasionally caused the last column of the record not to fill all available space.
-* Fixed a bug that caused huge empty areas in field value windows with small content (e.g. checkbox) after having shown a window with large content (e.g. color picker) before.
-* Fixed a bug that caused sorting field definitions by any column other than id to occasionally make the table show duplicate rows.
+* Fixed a bug that caused record reference dropdowns to show record display names instead of ids.
+* Fixed a bug that caused the Windows Explorer or Finder window not to open when selecting Navigate To from the Project Overview window.
+* Fixed a bug that caused another field value delimiter to be added when exporting, even if no more fields were succeeding after the current one (e.g. all following are skipped).
+* Fixed a bug that caused another field value delimiter to be added when exporting, even if the field value string was completely empty.
+* Fixed a bug that caused another record delimiter to be added when exporting, even if the record string was completely empty (e.g. every single field has been skipped).
+* Fixed a bug that caused changes to fields with map types not to be properly reflected by the UI when adding or editing key-value pairs whose keys already existed.
+* Fixed a bug that caused inherited field values not to be properly displayed within a hierarchy of three or more levels.
     </releaseNotes>
     <!-- =============================== -->      
 
