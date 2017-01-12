@@ -465,17 +465,38 @@ void RecordsController::setRecordSets(RecordSetList& model)
 
 void RecordsController::updateRecord(const QString oldId, const QString newId, const QString newDisplayName, const QStringList& fieldIds, const QString& recordSetName)
 {
-    // Update references to record.
-    this->updateRecordReferences(oldId, newId);
+    Record& oldRecord = *this->getRecordById(oldId);
+    const QString oldDisplayName = oldRecord.displayName;
+
+    if (oldId != newId)
+    {
+        // Changing the id requires cloning the record, because we
+        // to ensure that all references and parent relations are
+        // cleanly updated as well.
+        this->addRecord(newId, newDisplayName, fieldIds, recordSetName);
+
+        Record& newRecord = *this->getRecordById(newId);
+        newRecord.fieldValues = oldRecord.fieldValues;
+        newRecord.readOnly = oldRecord.readOnly;
+
+        this->reparentRecord(newId, oldRecord.parentId);
+
+        // Update references to record.
+        this->updateRecordReferences(oldId, newId);
+
+        // Remove old record.
+        this->removeRecord(oldId);
+    }
 
     // Update record itself.
-    Record& record = *this->getRecordById(oldId);
-    const QString oldDisplayName = record.displayName;
-
-    bool needsSorting = oldDisplayName != newDisplayName;
-
-    record.id = newId;
+    Record& record = *this->getRecordById(newId);
     record.displayName = newDisplayName;
+
+    // Move record, if necessary.
+    if (record.recordSetName != recordSetName)
+    {
+        this->moveRecordToSet(record.id, recordSetName);
+    }
 
     // Update record fields.
     const FieldDefinitionList fields = this->fieldDefinitionsController.getFieldDefinitions();
@@ -507,11 +528,8 @@ void RecordsController::updateRecord(const QString oldId, const QString newId, c
         }
     }
 
-    // Move record, if necessary.
-    if (record.recordSetName != recordSetName)
-    {
-        this->moveRecordToSet(record.id, recordSetName);
-    }
+    // Sort record model to ensure deterministic serialization.
+    bool needsSorting = oldDisplayName != newDisplayName;
 
     if (needsSorting)
     {

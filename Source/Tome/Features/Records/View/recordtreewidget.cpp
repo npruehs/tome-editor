@@ -102,13 +102,14 @@ void RecordTreeWidget::navigateBackward()
 
 void RecordTreeWidget::updateRecord(const QString& oldId, const QString& newId, const QString& newDisplayName)
 {
+    Q_UNUSED(oldId)
+
     // Update view.
-    RecordTreeWidgetItem* recordItem = this->getRecordItem(oldId);
+    RecordTreeWidgetItem* recordItem = this->getRecordItem(newId);
 
     const QString oldDisplayName = recordItem->getDisplayName();
     bool needsSorting = oldDisplayName != newDisplayName;
 
-    recordItem->setId(newId);
     recordItem->setDisplayName(newDisplayName);
 
     // Sort by display name.
