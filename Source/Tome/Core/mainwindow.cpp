@@ -504,6 +504,26 @@ void MainWindow::on_actionNew_Project_triggered()
         const QString& projectName = this->newProjectWindow->getProjectName();
         const QString& projectPath = this->newProjectWindow->getProjectPath();
 
+        // Check if we have unsaved changes.
+        if (!this->controller->getUndoController().isClean())
+        {
+            // Ask user whether they want to save their changes.
+            QMessageBox::StandardButton result = QMessageBox::question(this,
+                                                                       tr("Tome"),
+                                                                       tr("Want to save your changes before exiting?"),
+                                                                       QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                                       QMessageBox::Cancel);
+
+            if (result == QMessageBox::Yes)
+            {
+                this->controller->saveProject();
+            }
+            else if (result == QMessageBox::Cancel)
+            {
+                return;
+            }
+        }
+
         try
         {
             this->controller->createProject(projectName, projectPath);
@@ -1223,6 +1243,26 @@ void MainWindow::openProject(QString path)
     if (path.isEmpty())
     {
         return;
+    }
+
+    // Check if we have unsaved changes.
+    if (!this->controller->getUndoController().isClean())
+    {
+        // Ask user whether they want to save their changes.
+        QMessageBox::StandardButton result = QMessageBox::question(this,
+                                                                   tr("Tome"),
+                                                                   tr("Want to save your changes before exiting?"),
+                                                                   QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                                   QMessageBox::Cancel);
+
+        if (result == QMessageBox::Yes)
+        {
+            this->controller->saveProject();
+        }
+        else if (result == QMessageBox::Cancel)
+        {
+            return;
+        }
     }
 
     try
