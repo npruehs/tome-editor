@@ -44,6 +44,7 @@ namespace Tome
         protected:
             void contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
             bool dropMimeData(QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action);
+            void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
         private slots:
             void onCurrentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);

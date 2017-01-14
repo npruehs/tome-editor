@@ -304,6 +304,22 @@ bool RecordTreeWidget::dropMimeData(QTreeWidgetItem* parent, int index, const QM
     return true;
 }
 
+void RecordTreeWidget::mousePressEvent(QMouseEvent* event)
+{
+    QModelIndex item = indexAt(event->pos());
+
+    if (item.isValid())
+    {
+        QTreeView::mousePressEvent(event);
+    }
+    else
+    {
+        clearSelection();
+        const QModelIndex index;
+        selectionModel()->setCurrentIndex(index, QItemSelectionModel::Select);
+    }
+}
+
 void RecordTreeWidget::onCurrentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
     Q_UNUSED(previous)
