@@ -8,11 +8,13 @@ AddRecordCommand::AddRecordCommand(RecordsController& recordsController,
                                    const QString& id,
                                    const QString& displayName,
                                    const QStringList& fieldIds,
-                                   const QString& recordSetName)
+                                   const QString& recordSetName,
+                                   const QString parentId)
     : recordsController(recordsController),
       id(id),
       displayName(displayName),
       fieldIds(fieldIds),
+      parentId(parentId),
       recordSetName(recordSetName)
 {
     this->setText(tr("Add Record - %1").arg(id));
@@ -32,4 +34,9 @@ void AddRecordCommand::redo()
                 this->displayName,
                 this->fieldIds,
                 this->recordSetName);
+
+    if (!this->parentId.isEmpty())
+    {
+        this->recordsController.reparentRecord(this->id, this->parentId);
+    }
 }

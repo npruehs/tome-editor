@@ -97,6 +97,8 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     // Setup record tree context menu.
     QList<QAction*> recordTreeContextMenuActions;
+    recordTreeContextMenuActions << this->ui->actionNew_Record;
+    recordTreeContextMenuActions << this->ui->actionAdd_Child;
     recordTreeContextMenuActions << this->ui->actionFind_Usages;
     recordTreeContextMenuActions << this->ui->actionEdit_Record;
     recordTreeContextMenuActions << this->ui->actionDuplicate_Record;
@@ -638,6 +640,82 @@ void MainWindow::on_actionNew_Record_triggered()
                                                          recordDisplayName,
                                                          recordFieldIds,
                                                          recordSetName);
+        this->controller->getUndoController().doCommand(command);
+    }
+}
+
+void MainWindow::on_actionAdd_Child_triggered()
+{
+    const QString& parentId = this->recordTreeWidget->getSelectedRecordId();
+
+    if (parentId.isEmpty())
+    {
+        return;
+    }
+
+    RecordsController& recordsController = this->controller->getRecordsController();
+
+    // Get selected record.
+    const Record& parentRecord = recordsController.getRecord(parentId);
+
+    // Show window.
+    if (!this->recordWindow)
+    {
+        this->recordWindow = new RecordWindow(this);
+    }
+
+    // Disallow all existing record ids.
+    const QStringList recordIds = recordsController.getRecordIds();
+
+    this->recordWindow->setDisallowedRecordIds(recordIds);
+
+    // Set fields.
+    const FieldDefinitionList& fieldDefinitions =
+            this->controller->getFieldDefinitionsController().getFieldDefinitions();
+    const ComponentList& componentDefinitions =
+            this->controller->getComponentsController().getComponents();
+    const RecordFieldValueMap fieldValues = recordsController.getRecordFieldValues(parentId);
+
+    this->recordWindow->setRecordFields(fieldDefinitions, componentDefinitions, RecordFieldValueMap(), fieldValues);
+
+    // Set record set.
+    const QStringList recordSetNames = recordsController.getRecordSetNames();
+    this->recordWindow->setRecordSetNames(recordSetNames);
+    this->recordWindow->setRecordSetName(parentRecord.recordSetName);
+
+    // Show window.
+    int result = this->recordWindow->exec();
+
+    if (result == QDialog::Accepted)
+    {
+        const QString recordId = this->recordWindow->getRecordId();
+        const QString recordDisplayName = this->recordWindow->getRecordDisplayName();
+        const QString recordSetName = this->recordWindow->getRecordSetName();
+
+        QStringList recordFieldIds;
+
+        const QMap<QString, RecordFieldState::RecordFieldState> recordFields = this->recordWindow->getRecordFields();
+
+        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.begin();
+             it != recordFields.end();
+             ++it)
+        {
+            const QString& fieldId = it.key();
+            const RecordFieldState::RecordFieldState fieldState = it.value();
+
+            if (fieldState == RecordFieldState::Enabled)
+            {
+                recordFieldIds << fieldId;
+            }
+        }
+
+        // Update model.
+        AddRecordCommand* command = new AddRecordCommand(recordsController,
+                                                         recordId,
+                                                         recordDisplayName,
+                                                         recordFieldIds,
+                                                         recordSetName,
+                                                         parentId);
         this->controller->getUndoController().doCommand(command);
     }
 }
@@ -1234,6 +1312,7 @@ void MainWindow::treeWidgetSelectionChanged(const QItemSelection& selected, cons
 
     // Update actions.
     bool anyRecordSelected = !selected.isEmpty();
+    this->ui->actionAdd_Child->setEnabled(anyRecordSelected);
     this->ui->actionDuplicate_Record->setEnabled(anyRecordSelected);
     this->ui->actionEdit_Record->setEnabled(anyRecordSelected);
     this->ui->actionFind_Usages->setEnabled(anyRecordSelected);
@@ -1570,6 +1649,7 @@ void MainWindow::updateMenus()
     this->ui->actionNew_Record->setEnabled(projectLoaded);
     this->ui->actionFindRecord->setEnabled(projectLoaded);
 
+    this->ui->actionAdd_Child->setEnabled(projectLoaded && anyRecordSelected);
     this->ui->actionEdit_Record->setEnabled(projectLoaded && anyRecordSelected);
     this->ui->actionDuplicate_Record->setEnabled(projectLoaded && anyRecordSelected);
     this->ui->actionRevert_Record->setEnabled(projectLoaded && anyRecordSelected);
@@ -1621,3 +1701,4 @@ void MainWindow::updateWindowTitle()
 
     this->setWindowTitle(windowTitle);
 }
+

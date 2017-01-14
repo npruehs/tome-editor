@@ -16,7 +16,8 @@ namespace Tome
                              const QString& id,
                              const QString& displayName,
                              const QStringList& fieldIds,
-                             const QString& recordSetName);
+                             const QString& recordSetName,
+                             const QString parentId = QString());
             virtual void undo();
             virtual void redo();
 
@@ -26,6 +27,7 @@ namespace Tome
             const QString id;
             const QString displayName;
             const QStringList fieldIds;
+            const QString parentId;
             const QString recordSetName;
     };
 }

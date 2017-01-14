@@ -77,6 +77,7 @@
      <string>Records</string>
     </property>
     <addaction name="actionNew_Record"/>
+    <addaction name="actionAdd_Child"/>
     <addaction name="actionEdit_Record"/>
     <addaction name="actionDuplicate_Record"/>
     <addaction name="actionRevert_Record"/>
@@ -404,6 +405,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="actionAdd_Child">
+   <property name="text">
+    <string>Add Child...</string>
    </property>
   </action>
  </widget>
