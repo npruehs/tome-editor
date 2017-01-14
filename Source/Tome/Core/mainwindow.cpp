@@ -1231,6 +1231,14 @@ void MainWindow::treeWidgetSelectionChanged(const QItemSelection& selected, cons
 
     // Update field table.
     this->refreshRecordTable();
+
+    // Update actions.
+    bool anyRecordSelected = !selected.isEmpty();
+    this->ui->actionDuplicate_Record->setEnabled(anyRecordSelected);
+    this->ui->actionEdit_Record->setEnabled(anyRecordSelected);
+    this->ui->actionFind_Usages->setEnabled(anyRecordSelected);
+    this->ui->actionRemove_Record->setEnabled(anyRecordSelected);
+    this->ui->actionRevert_Record->setEnabled(anyRecordSelected);
 }
 
 QString MainWindow::getReadOnlyMessage(const QString& recordId)
@@ -1548,7 +1556,9 @@ void MainWindow::showWindow(QWidget* widget)
 void MainWindow::updateMenus()
 {
     bool projectLoaded = this->controller->isProjectLoaded();
+    bool anyRecordSelected = this->recordTreeWidget->getSelectedRecordItem() != nullptr;
 
+    // Update actions.
     this->ui->actionSave_Project->setEnabled(projectLoaded);
 
     this->ui->actionProject_Overview->setEnabled(projectLoaded);
@@ -1558,12 +1568,13 @@ void MainWindow::updateMenus()
     this->ui->actionManage_Custom_Types->setEnabled(projectLoaded);
 
     this->ui->actionNew_Record->setEnabled(projectLoaded);
-    this->ui->actionEdit_Record->setEnabled(projectLoaded);
-    this->ui->actionDuplicate_Record->setEnabled(projectLoaded);
-    this->ui->actionRevert_Record->setEnabled(projectLoaded);
-    this->ui->actionRemove_Record->setEnabled(projectLoaded);
     this->ui->actionFindRecord->setEnabled(projectLoaded);
-    this->ui->actionFind_Usages->setEnabled(projectLoaded);
+
+    this->ui->actionEdit_Record->setEnabled(projectLoaded && anyRecordSelected);
+    this->ui->actionDuplicate_Record->setEnabled(projectLoaded && anyRecordSelected);
+    this->ui->actionRevert_Record->setEnabled(projectLoaded && anyRecordSelected);
+    this->ui->actionRemove_Record->setEnabled(projectLoaded && anyRecordSelected);
+    this->ui->actionFind_Usages->setEnabled(projectLoaded && anyRecordSelected);
 
     this->ui->actionRun_Integrity_Checks->setEnabled(projectLoaded);
 }
