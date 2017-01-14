@@ -163,12 +163,6 @@ void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
 void RecordTreeWidget::selectRecord(const QString& id)
 {
     RecordTreeWidgetItem* item = this->getRecordItem(id);
-
-    if (item == nullptr)
-    {
-        return;
-    }
-
     this->setCurrentItem(item);
 }
 
@@ -314,9 +308,7 @@ void RecordTreeWidget::mousePressEvent(QMouseEvent* event)
     }
     else
     {
-        clearSelection();
-        const QModelIndex index;
-        selectionModel()->setCurrentIndex(index, QItemSelectionModel::Select);
+        this->setCurrentItem(nullptr);
     }
 }
 
@@ -330,13 +322,16 @@ void RecordTreeWidget::onCurrentItemChanged(QTreeWidgetItem* current, QTreeWidge
         return;
     }
 
-    if (current == nullptr)
+    // Push id of selected record, or an empty string for "deselected".
+    QString selectedRecordId;
+
+    if (current != nullptr)
     {
-        return;
+        RecordTreeWidgetItem* item = static_cast<RecordTreeWidgetItem*>(current);
+        selectedRecordId = item->getId();
     }
 
-    RecordTreeWidgetItem* item = static_cast<RecordTreeWidgetItem*>(current);
-    this->selectedRecordUndoStack.push(item->getId());
+    this->selectedRecordUndoStack.push(selectedRecordId);
     this->selectedRecordRedoStack.clear();
 }
 
