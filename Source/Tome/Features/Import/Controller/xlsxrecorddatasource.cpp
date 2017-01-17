@@ -58,6 +58,18 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
     QSqlRecord sqlRecord = sqlQuery.record();
     int columns = sqlRecord.count();
 
+    // Check column count.
+    if (columns <= 0)
+    {
+        QString errorMessage =
+                QObject::tr("No data found. Sheet %1 empty or missing.").arg(sheet);
+
+        qCritical(errorMessage.toUtf8().constData());
+        emit this->progressChanged(progressBarTitle, tr("Opening File"), 1, 1);
+        emit this->dataUnavailable(importTemplate.name, context, errorMessage);
+        return;
+    }
+
     QStringList headers;
 
     for (int i = 0; i < columns; ++i)
