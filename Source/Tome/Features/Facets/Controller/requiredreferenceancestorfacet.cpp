@@ -9,6 +9,9 @@
 using namespace Tome;
 
 
+const QString RequiredReferenceAncestorFacet::FacetKey = "RequiredAncestor";
+
+
 RequiredReferenceAncestorFacet::RequiredReferenceAncestorFacet()
 {
 }
@@ -45,7 +48,7 @@ const QString RequiredReferenceAncestorFacet::getDisplayName() const
 
 const QString RequiredReferenceAncestorFacet::getKey() const
 {
-    return "RequiredAncestor";
+    return FacetKey;
 }
 
 const QString RequiredReferenceAncestorFacet::getTargetType() const
