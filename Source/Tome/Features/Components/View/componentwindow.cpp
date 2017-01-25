@@ -51,6 +51,14 @@ void ComponentWindow::accept()
     }
 }
 
+void ComponentWindow::showEvent(QShowEvent* event)
+{
+    QDialog::showEvent(event);
+
+    // Enable user to input data immediately.
+    this->ui->lineEdit->setFocus();
+}
+
 bool ComponentWindow::validate()
 {
     // Name must not be empty.
