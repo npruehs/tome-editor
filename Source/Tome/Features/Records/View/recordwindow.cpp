@@ -4,6 +4,9 @@
 #include <QCheckBox>
 #include <QMessageBox>
 
+#include "../../../Util/stringutils.h"
+
+
 using namespace Tome;
 
 const QString RecordWindow::PropertyFieldComponent = "FieldComponent";
@@ -215,7 +218,7 @@ void RecordWindow::on_lineEditDisplayName_textEdited(const QString& displayName)
     // If the user manually changed the record id we must not change it when the display name changes.
     if ( !recordIdLocked )
     {
-        this->setRecordId(displayName);
+        this->setRecordId(stripWhitespaces(displayName));
     }
 }
 
