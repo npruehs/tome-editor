@@ -36,6 +36,9 @@ class MapWindow : public QDialog
     public slots:
         void accept();
 
+    protected:
+        virtual void showEvent(QShowEvent* event);
+
     private:
         Ui::MapWindow *ui;
         Tome::TypesController& typesController;

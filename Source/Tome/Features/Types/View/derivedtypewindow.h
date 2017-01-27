@@ -42,6 +42,9 @@ class DerivedTypeWindow : public QDialog
     public slots:
         void accept();
 
+    protected:
+        virtual void showEvent(QShowEvent* event);
+
     private slots:
         void on_comboBoxBaseType_currentIndexChanged(const QString &arg1);
 

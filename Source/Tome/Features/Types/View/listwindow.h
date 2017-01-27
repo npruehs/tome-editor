@@ -35,6 +35,9 @@ class ListWindow : public QDialog
     public slots:
         void accept();
 
+    protected:
+        virtual void showEvent(QShowEvent* event);
+
     private:
         Ui::ListWindow *ui;
         Tome::TypesController& typesController;
