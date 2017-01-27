@@ -140,6 +140,7 @@ const QStringList TypesController::getTypeNames() const
         typeNames.push_back(type.name);
     }
 
+    typeNames.sort();
     return typeNames;
 }
 
