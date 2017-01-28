@@ -109,6 +109,10 @@ void ErrorListDockWidget::refreshMessages()
     // Show results.
     int messagesShown = 0;
 
+    int errors = 0;
+    int warnings = 0;
+    int messages = 0;
+
     for (int i = 0; i < this->messages.count(); ++i)
     {
         const Message message = this->messages.at(i);
@@ -123,6 +127,8 @@ void ErrorListDockWidget::refreshMessages()
         switch (message.severity)
         {
             case Severity::Error:
+                ++errors;
+
                 if (!this->toolButtonErrors->isChecked())
                 {
                     continue;
@@ -130,6 +136,8 @@ void ErrorListDockWidget::refreshMessages()
                 break;
 
             case Severity::Warning:
+                ++warnings;
+
                 if (!this->toolButtonWarnings->isChecked())
                 {
                     continue;
@@ -137,6 +145,8 @@ void ErrorListDockWidget::refreshMessages()
                 break;
 
             case Severity::Information:
+                ++messages;
+
                 if (!this->toolButtonMessages->isChecked())
                 {
                     continue;
@@ -219,6 +229,12 @@ void ErrorListDockWidget::refreshMessages()
     this->tableWidgetErrorList->setHorizontalHeaderLabels(headers);
     this->tableWidgetErrorList->resizeColumnsToContents();
 
+    // Show item count.
+    this->toolButtonErrors->setText(tr("%1 Errors").arg(errors));
+    this->toolButtonMessages->setText(tr("%1 Messages").arg(messages));
+    this->toolButtonWarnings->setText(tr("%1 Warnings").arg(warnings));
+
+    // Hide progress bar.
     emit this->progressChanged(tr("Refreshing Error List"), QString(), 1, 1);
 }
 
