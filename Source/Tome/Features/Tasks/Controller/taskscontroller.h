@@ -2,6 +2,7 @@
 #define TASKSCONTROLLER_H
 
 #include <QList>
+#include <QObject>
 
 #include "../Model/messagelist.h"
 
@@ -16,14 +17,19 @@ namespace Tome
     class RecordsController;
     class TypesController;
 
-    class TasksController
+    class TasksController : public QObject
     {
+            Q_OBJECT
+
         public:
             TasksController(const ComponentsController& componentsController, const FacetsController& facetsController, const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController, const TypesController& typesController);
             ~TasksController();
 
             void addTask(Task* task);
             const MessageList runAllTasks() const;
+
+        signals:
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
 
         private:
             QList<Task*> tasks;
