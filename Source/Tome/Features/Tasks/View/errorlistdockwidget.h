@@ -39,14 +39,13 @@ namespace Tome
 
             MessageList messages;
 
-            void on_toolButtonErrors_toggled(bool checked);
-            void on_toolButtonWarnings_toggled(bool checked);
-            void on_toolButtonMessages_toggled(bool checked);
-
             void refreshMessages();
 
         private slots:
             void onRecordLinkActivated(const QString& recordId);
+            void onToolButtonErrorsToggled(bool checked);
+            void onToolButtonWarningsToggled(bool checked);
+            void onToolButtonMessagesToggled(bool checked);
     };
 }
 

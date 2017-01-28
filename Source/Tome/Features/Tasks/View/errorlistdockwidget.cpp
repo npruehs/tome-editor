@@ -58,6 +58,25 @@ ErrorListDockWidget::ErrorListDockWidget(QWidget* parent) :
     // Finish layout.
     this->widget->setLayout(this->verticalLayout);
     this->setWidget(this->widget);
+
+    // Connect signals.
+    connect(
+                this->toolButtonErrors,
+                SIGNAL(toggled(bool)),
+                SLOT(onToolButtonErrorsToggled(bool))
+                );
+
+    connect(
+                this->toolButtonMessages,
+                SIGNAL(toggled(bool)),
+                SLOT(onToolButtonMessagesToggled(bool))
+                );
+
+    connect(
+                this->toolButtonWarnings,
+                SIGNAL(toggled(bool)),
+                SLOT(onToolButtonWarningsToggled(bool))
+                );
 }
 
 ErrorListDockWidget::~ErrorListDockWidget()
@@ -78,25 +97,6 @@ ErrorListDockWidget::~ErrorListDockWidget()
 void ErrorListDockWidget::showMessages(const MessageList& messages)
 {
     this->messages = messages;
-    this->refreshMessages();
-}
-
-
-void ErrorListDockWidget::on_toolButtonErrors_toggled(bool checked)
-{
-    Q_UNUSED(checked)
-    this->refreshMessages();
-}
-
-void ErrorListDockWidget::on_toolButtonWarnings_toggled(bool checked)
-{
-    Q_UNUSED(checked)
-    this->refreshMessages();
-}
-
-void ErrorListDockWidget::on_toolButtonMessages_toggled(bool checked)
-{
-    Q_UNUSED(checked)
     this->refreshMessages();
 }
 
@@ -142,20 +142,20 @@ void ErrorListDockWidget::refreshMessages()
         }
 
         // Show severity.
-        this->tableWidgetErrorList->setItem(i, 0, new QTableWidgetItem(Severity::toString(message.severity)));
+        this->tableWidgetErrorList->setItem(messagesShown, 0, new QTableWidgetItem(Severity::toString(message.severity)));
 
         switch (message.severity)
         {
             case Severity::Error:
-                this->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Error"));
+                this->tableWidgetErrorList->item(messagesShown, 0)->setData(Qt::DecorationRole, QIcon(":/Error"));
                 break;
 
             case Severity::Warning:
-                this->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Warning"));
+                this->tableWidgetErrorList->item(messagesShown, 0)->setData(Qt::DecorationRole, QIcon(":/Warning"));
                 break;
 
             case Severity::Information:
-                this->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Information"));
+                this->tableWidgetErrorList->item(messagesShown, 0)->setData(Qt::DecorationRole, QIcon(":/Information"));
                 break;
 
             default:
@@ -168,11 +168,11 @@ void ErrorListDockWidget::refreshMessages()
         helpLinkLabel->setToolTip(helpLink);
         helpLinkLabel->setOpenExternalLinks(true);
 
-        QModelIndex index = this->tableWidgetErrorList->model()->index(i, 1);
+        QModelIndex index = this->tableWidgetErrorList->model()->index(messagesShown, 1);
         this->tableWidgetErrorList->setIndexWidget(index, helpLinkLabel);
 
         // Show message.
-        this->tableWidgetErrorList->setItem(i, 2, new QTableWidgetItem(message.content));
+        this->tableWidgetErrorList->setItem(messagesShown, 2, new QTableWidgetItem(message.content));
 
         // Show location.
         QLabel* locationLabel;
@@ -194,7 +194,7 @@ void ErrorListDockWidget::refreshMessages()
             locationLabel = new QLabel(locationString);
         }
 
-        index = this->tableWidgetErrorList->model()->index(i, 3);
+        index = this->tableWidgetErrorList->model()->index(messagesShown, 3);
         this->tableWidgetErrorList->setIndexWidget(index, locationLabel);
 
         // Increase row counter.
@@ -217,4 +217,22 @@ void ErrorListDockWidget::refreshMessages()
 void ErrorListDockWidget::onRecordLinkActivated(const QString& recordId)
 {
     emit this->recordLinkActivated(recordId);
+}
+
+void ErrorListDockWidget::onToolButtonErrorsToggled(bool checked)
+{
+    Q_UNUSED(checked)
+    this->refreshMessages();
+}
+
+void ErrorListDockWidget::onToolButtonWarningsToggled(bool checked)
+{
+    Q_UNUSED(checked)
+    this->refreshMessages();
+}
+
+void ErrorListDockWidget::onToolButtonMessagesToggled(bool checked)
+{
+    Q_UNUSED(checked)
+    this->refreshMessages();
 }
