@@ -32,6 +32,7 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
                 + "\r\n\r\n" + db.lastError().text();
 
         qCritical(errorMessage.toUtf8().constData());
+        db.close();
         emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
     }
@@ -48,6 +49,7 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
                 .arg(ParameterSheet, filePath);
 
         qCritical(errorMessage.toUtf8().constData());
+        db.close();
         emit this->progressChanged(progressBarTitle, tr("Opening File"), 1, 1);
         emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
@@ -65,6 +67,7 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
                 QObject::tr("No data found. Sheet %1 empty or missing.").arg(sheet);
 
         qCritical(errorMessage.toUtf8().constData());
+        db.close();
         emit this->progressChanged(progressBarTitle, tr("Opening File"), 1, 1);
         emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
@@ -94,6 +97,7 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
         QString errorMessage = QObject::tr("Could not find id column %1 in source file:\r\n%2")
                 .arg(importTemplate.idColumn, filePath);
         qCritical(errorMessage.toUtf8().constData());
+        db.close();
         emit this->progressChanged(progressBarTitle, tr("Opening File"), 1, 1);
         emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
@@ -134,6 +138,8 @@ void XlsxRecordDataSource::importData(const RecordTableImportTemplate& importTem
 
         data[recordId] = map;
     }
+
+    db.close();
 
     emit this->progressChanged(progressBarTitle, QString(), 1, 1);
     emit this->dataAvailable(importTemplate.name, context, data);
