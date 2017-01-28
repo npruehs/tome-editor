@@ -106,6 +106,14 @@ void ErrorListDockWidget::refreshMessages()
     this->tableWidgetErrorList->setRowCount(this->messages.count());
     this->tableWidgetErrorList->setColumnCount(4);
 
+    QStringList headers;
+    headers << tr("Severity");
+    headers << tr("Code");
+    headers << tr("Message");
+    headers << tr("Location");
+
+    this->tableWidgetErrorList->setHorizontalHeaderLabels(headers);
+
     // Show results.
     int messagesShown = 0;
 
@@ -217,16 +225,8 @@ void ErrorListDockWidget::refreshMessages()
         ++messagesShown;
     }
 
+    // Finish layout.
     this->tableWidgetErrorList->setRowCount(messagesShown);
-
-    // Add headers.
-    QStringList headers;
-    headers << tr("Severity");
-    headers << tr("Code");
-    headers << tr("Message");
-    headers << tr("Location");
-
-    this->tableWidgetErrorList->setHorizontalHeaderLabels(headers);
     this->tableWidgetErrorList->resizeColumnsToContents();
 
     // Show item count.
