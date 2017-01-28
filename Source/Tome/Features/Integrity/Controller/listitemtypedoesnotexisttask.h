@@ -14,6 +14,7 @@ namespace Tome
         public:
             ListItemTypeDoesNotExistTask();
 
+            const QString getDisplayName() const;
             const MessageList execute(const TaskContext& context) const;
 
             static const QString MessageCode;

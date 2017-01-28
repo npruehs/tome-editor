@@ -13,6 +13,11 @@ MapValueTypeDoesNotExistTask::MapValueTypeDoesNotExistTask()
 {
 }
 
+const QString MapValueTypeDoesNotExistTask::getDisplayName() const
+{
+    return MessageCode + tr(" - Map Value Type Does Not Exist");
+}
+
 const MessageList MapValueTypeDoesNotExistTask::execute(const TaskContext& context) const
 {
     MessageList messages;

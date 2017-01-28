@@ -14,6 +14,11 @@ MapValueTypeNotSupportedTask::MapValueTypeNotSupportedTask()
 {
 }
 
+const QString MapValueTypeNotSupportedTask::getDisplayName() const
+{
+    return MessageCode + tr(" - Map Value Type Not Supported");
+}
+
 const MessageList MapValueTypeNotSupportedTask::execute(const TaskContext& context) const
 {
     MessageList messages;

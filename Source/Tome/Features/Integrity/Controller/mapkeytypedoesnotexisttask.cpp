@@ -13,6 +13,11 @@ MapKeyTypeDoesNotExistTask::MapKeyTypeDoesNotExistTask()
 {
 }
 
+const QString MapKeyTypeDoesNotExistTask::getDisplayName() const
+{
+    return MessageCode + tr(" - Map Key Type Does Not Exist");
+}
+
 const MessageList MapKeyTypeDoesNotExistTask::execute(const TaskContext& context) const
 {
     MessageList messages;

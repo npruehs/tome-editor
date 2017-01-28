@@ -14,6 +14,11 @@ FieldTypeDoesNotExistTask::FieldTypeDoesNotExistTask()
 {
 }
 
+const QString FieldTypeDoesNotExistTask::getDisplayName() const
+{
+    return MessageCode + tr(" - Field Type Does Not Exist");
+}
+
 const MessageList FieldTypeDoesNotExistTask::execute(const TaskContext& context) const
 {
     MessageList messages;

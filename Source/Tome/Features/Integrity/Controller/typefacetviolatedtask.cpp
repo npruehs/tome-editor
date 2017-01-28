@@ -15,6 +15,11 @@ TypeFacetViolatedTask::TypeFacetViolatedTask()
 {
 }
 
+const QString TypeFacetViolatedTask::getDisplayName() const
+{
+    return MessageCode + tr(" - Type Facet Violated");
+}
+
 const MessageList TypeFacetViolatedTask::execute(const TaskContext& context) const
 {
     MessageList messages;

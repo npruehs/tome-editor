@@ -334,6 +334,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 SLOT(onProgressChanged(QString,QString,int,int))
                 );
 
+    connect(
+                &this->controller->getTasksController(),
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
     // Maximize window.
     this->showMaximized();
 

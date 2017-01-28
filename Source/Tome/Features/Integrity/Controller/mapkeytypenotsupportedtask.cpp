@@ -14,6 +14,11 @@ MapKeyTypeNotSupportedTask::MapKeyTypeNotSupportedTask()
 {
 }
 
+const QString MapKeyTypeNotSupportedTask::getDisplayName() const
+{
+    return MessageCode + tr(" - Map Key Type Not Supported");
+}
+
 const MessageList MapKeyTypeNotSupportedTask::execute(const TaskContext& context) const
 {
     MessageList messages;

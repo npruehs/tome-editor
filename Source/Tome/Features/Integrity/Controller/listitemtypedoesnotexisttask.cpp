@@ -13,6 +13,11 @@ ListItemTypeDoesNotExistTask::ListItemTypeDoesNotExistTask()
 {
 }
 
+const QString ListItemTypeDoesNotExistTask::getDisplayName() const
+{
+    return MessageCode + tr(" - List Item Type Does Not Exist");
+}
+
 const MessageList ListItemTypeDoesNotExistTask::execute(const TaskContext& context) const
 {
     MessageList messages;
