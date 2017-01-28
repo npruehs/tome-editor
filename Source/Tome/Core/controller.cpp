@@ -88,7 +88,7 @@ Controller::Controller(CommandLineOptions* options) :
     tasksController(new TasksController(*this->componentsController, *this->facetsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findRecordController(new FindRecordController(*this->recordsController)),
-    importController(new ImportController(*this->fieldDefinitionsController, *this->recordsController)),
+    importController(new ImportController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     recordSetSerializer(new RecordSetSerializer()),
     mainWindow(0)
 {

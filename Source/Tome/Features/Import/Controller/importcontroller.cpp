@@ -10,11 +10,13 @@ using namespace Tome;
 #include "xlsxrecorddatasource.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
 
 
-ImportController::ImportController(FieldDefinitionsController& fieldDefinitionsController, RecordsController& recordsController)
+ImportController::ImportController(FieldDefinitionsController& fieldDefinitionsController, RecordsController& recordsController, TypesController& typesController)
     : fieldDefinitionsController(fieldDefinitionsController),
-      recordsController(recordsController)
+      recordsController(recordsController),
+      typesController(typesController)
 {
 }
 
@@ -208,6 +210,15 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
                 qWarning(QString("Skipping unknown field: %1").arg(fieldId).toUtf8().constData());
                 ++fieldsSkipped;
                 continue;
+            }
+
+            // Convert to list if necessary.
+            const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
+            bool isList = this->typesController.isCustomType(field.fieldType) && this->typesController.getCustomType(field.fieldType).isList();
+
+            if (isList)
+            {
+                fieldValue = fieldValue.toString().split(",");
             }
 
             // Check if needs update.
