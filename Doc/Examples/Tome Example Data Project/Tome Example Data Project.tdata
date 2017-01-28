@@ -146,7 +146,7 @@
         <Cooldown Value="1.200"/>
         <DamageType Value="Normal"/>
         <Health Value="200"/>
-        <HealthRegeneration Value="0"/>
+        <HealthRegeneration Value="1"/>
         <Invulnerable Value="False"/>
         <MP5 Value="3"/>
         <Mana Value="100"/>
