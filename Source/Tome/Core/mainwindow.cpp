@@ -294,6 +294,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     connect(
                 this->errorListDockWidget,
+                SIGNAL(progressChanged(QString,QString,int,int)),
+                SLOT(onProgressChanged(QString,QString,int,int))
+                );
+
+    connect(
+                this->errorListDockWidget,
                 SIGNAL(recordLinkActivated(const QString&)),
                 SLOT(onRecordLinkActivated(const QString&))
                 );

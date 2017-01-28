@@ -22,6 +22,7 @@ namespace Tome
             void showMessages(const MessageList& messages);
 
         signals:
+            void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
             void recordLinkActivated(const QString& recordId);
 
         private:

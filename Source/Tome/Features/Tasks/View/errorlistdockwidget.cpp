@@ -113,6 +113,12 @@ void ErrorListDockWidget::refreshMessages()
     {
         const Message message = this->messages.at(i);
 
+        // Update progress bar.
+        if (i % 10 == 0)
+        {
+            emit this->progressChanged(tr("Refreshing Error List"), QString(), i, this->messages.count());
+        }
+
         // Check filter.
         switch (message.severity)
         {
@@ -212,6 +218,8 @@ void ErrorListDockWidget::refreshMessages()
 
     this->tableWidgetErrorList->setHorizontalHeaderLabels(headers);
     this->tableWidgetErrorList->resizeColumnsToContents();
+
+    emit this->progressChanged(tr("Refreshing Error List"), QString(), 1, 1);
 }
 
 void ErrorListDockWidget::onRecordLinkActivated(const QString& recordId)
