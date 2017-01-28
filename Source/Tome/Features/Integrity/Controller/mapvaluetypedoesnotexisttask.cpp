@@ -37,7 +37,7 @@ const MessageList MapValueTypeDoesNotExistTask::execute(const TaskContext& conte
             if (!context.typesController.isBuiltInType(valueType) && !context.typesController.isCustomType(valueType))
             {
                 Message message;
-                message.content = tr("Map value type %1 does not exist.").arg(valueType);
+                message.content = tr("The value type %1 of the map type %2 does not exist.").arg(valueType, type.name);
                 message.messageCode = MessageCode;
                 message.severity = Severity::Error;
                 message.targetSiteId = type.name;

@@ -39,7 +39,7 @@ const MessageList MapValueTypeNotSupportedTask::execute(const TaskContext& conte
                 valueType == BuiltInType::Vector3I || valueType == BuiltInType::Vector3R)
             {
                 Message message;
-                message.content = tr("Map value type %1 is not supported.").arg(valueType);
+                message.content = tr("The value type %1 of the map type %2 is not supported.").arg(valueType, type.name);
                 message.messageCode = MessageCode;
                 message.severity = Severity::Error;
                 message.targetSiteId = type.name;

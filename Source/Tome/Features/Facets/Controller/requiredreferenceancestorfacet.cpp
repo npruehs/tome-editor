@@ -73,12 +73,11 @@ QString RequiredReferenceAncestorFacet::validateValue(const FacetContext& contex
     QString requiredAncestor = facetValue.toString();
     QString recordId = value.toString();
 
-    if (!recordId.isEmpty() && !context.recordsController.hasRecord(recordId))
-    {
-        return tr("Record %1 not found.").arg(recordId);
-    }
-
-    if ( !recordId.isEmpty() && !requiredAncestor.isEmpty() && !context.recordsController.isAncestorOf(requiredAncestor, recordId))
+    if ( !recordId.isEmpty() &&
+         !requiredAncestor.isEmpty() &&
+         context.recordsController.hasRecord(recordId) &&
+         context.recordsController.hasRecord(requiredAncestor) &&
+         !context.recordsController.isAncestorOf(requiredAncestor, recordId))
     {
         return tr("Value must be any %1.").arg(requiredAncestor);
     }

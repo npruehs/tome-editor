@@ -29,6 +29,9 @@
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
 #include "../Features/Import/Controller/importcontroller.h"
 #include "../Features/Import/Controller/importtemplateserializer.h"
+#include "../Features/Integrity/Controller/componenthasnofieldstask.h"
+#include "../Features/Integrity/Controller/fieldalwayshasitsdefaultvaluetask.h"
+#include "../Features/Integrity/Controller/fieldisneverusedtask.h"
 #include "../Features/Integrity/Controller/fieldtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypenotsupportedtask.h"
@@ -36,7 +39,9 @@
 #include "../Features/Integrity/Controller/mapkeytypenotsupportedtask.h"
 #include "../Features/Integrity/Controller/mapvaluetypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/mapvaluetypenotsupportedtask.h"
+#include "../Features/Integrity/Controller/referencedrecorddoesnotexisttask.h"
 #include "../Features/Integrity/Controller/typefacetviolatedtask.h"
+#include "../Features/Integrity/Controller/typeisneverusedtask.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Records/Controller/recordscontroller.h"
@@ -93,6 +98,9 @@ Controller::Controller(CommandLineOptions* options) :
     mainWindow(0)
 {
     // Setup tasks.
+    this->tasksController->addTask(new ComponentHasNoFieldsTask());
+    this->tasksController->addTask(new FieldAlwaysHasItsDefaultValueTask());
+    this->tasksController->addTask(new FieldIsNeverUsedTask());
     this->tasksController->addTask(new FieldTypeDoesNotExistTask());
     this->tasksController->addTask(new ListItemTypeDoesNotExistTask());
     this->tasksController->addTask(new ListItemTypeNotSupportedTask());
@@ -100,7 +108,9 @@ Controller::Controller(CommandLineOptions* options) :
     this->tasksController->addTask(new MapKeyTypeNotSupportedTask());
     this->tasksController->addTask(new MapValueTypeDoesNotExistTask());
     this->tasksController->addTask(new MapValueTypeNotSupportedTask());
+    this->tasksController->addTask(new ReferencedRecordDoesNotExistTask());
     this->tasksController->addTask(new TypeFacetViolatedTask());
+    this->tasksController->addTask(new TypeIsNeverUsedTask());
 
     // Register facets.
     this->facetsController->registerFacet(new LocalizedStringFacet());

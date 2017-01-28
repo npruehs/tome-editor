@@ -12,7 +12,8 @@ namespace Tome
             None,
             Record,
             Field,
-            Type
+            Type,
+            Component
         };
 
         inline const QString toString(TargetSiteType targetSiteType)
@@ -27,6 +28,9 @@ namespace Tome
 
                 case TargetSiteType::Type:
                     return "Type";
+
+                case TargetSiteType::Component:
+                    return "Component";
 
                 default:
                     return "None";
