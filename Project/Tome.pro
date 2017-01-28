@@ -151,7 +151,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Import/Controller/xlsxrecorddatasource.cpp \
     ../Source/Tome/Features/Import/Controller/googlesheetsrecorddatasource.cpp \
     ../Source/Tome/Features/Import/Controller/importtemplateserializer.cpp \
-    ../Source/Tome/Features/Facets/Controller/localizedstringfacet.cpp
+    ../Source/Tome/Features/Facets/Controller/localizedstringfacet.cpp \
+    ../Source/Tome/Features/Integrity/Controller/componenthasnofieldstask.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -295,7 +296,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Import/Controller/xlsxrecorddatasource.h \
     ../Source/Tome/Features/Import/Controller/googlesheetsrecorddatasource.h \
     ../Source/Tome/Features/Import/Controller/importtemplateserializer.h \
-    ../Source/Tome/Features/Facets/Controller/localizedstringfacet.h
+    ../Source/Tome/Features/Facets/Controller/localizedstringfacet.h \
+    ../Source/Tome/Features/Integrity/Controller/componenthasnofieldstask.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

@@ -29,6 +29,7 @@
 #include "../Features/Fields/Controller/fielddefinitionsetserializer.h"
 #include "../Features/Import/Controller/importcontroller.h"
 #include "../Features/Import/Controller/importtemplateserializer.h"
+#include "../Features/Integrity/Controller/componenthasnofieldstask.h"
 #include "../Features/Integrity/Controller/fieldtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/listitemtypenotsupportedtask.h"
@@ -93,6 +94,7 @@ Controller::Controller(CommandLineOptions* options) :
     mainWindow(0)
 {
     // Setup tasks.
+    this->tasksController->addTask(new ComponentHasNoFieldsTask());
     this->tasksController->addTask(new FieldTypeDoesNotExistTask());
     this->tasksController->addTask(new ListItemTypeDoesNotExistTask());
     this->tasksController->addTask(new ListItemTypeNotSupportedTask());
