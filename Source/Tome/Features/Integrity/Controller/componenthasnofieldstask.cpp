@@ -46,7 +46,7 @@ const MessageList ComponentHasNoFieldsTask::execute(const TaskContext& context) 
         if (!usedComponents.contains(component))
         {
             Message message;
-            message.content = tr("Component %1 has no fields.").arg(component);
+            message.content = tr("The component %1 is defined but has no fields.").arg(component);
             message.messageCode = MessageCode;
             message.severity = Severity::Warning;
             message.targetSiteId = component;

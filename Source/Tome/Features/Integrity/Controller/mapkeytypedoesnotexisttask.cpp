@@ -37,7 +37,7 @@ const MessageList MapKeyTypeDoesNotExistTask::execute(const TaskContext& context
             if (!context.typesController.isBuiltInType(keyType) && !context.typesController.isCustomType(keyType))
             {
                 Message message;
-                message.content = tr("Map key type %1 does not exist.").arg(keyType);
+                message.content = tr("The key type %1 of the map type %2 does not exist.").arg(keyType, type.name);
                 message.messageCode = MessageCode;
                 message.severity = Severity::Error;
                 message.targetSiteId = type.name;

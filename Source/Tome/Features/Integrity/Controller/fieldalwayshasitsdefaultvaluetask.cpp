@@ -60,7 +60,7 @@ const MessageList FieldAlwaysHasItsDefaultValueTask::execute(const TaskContext& 
         if (!nonDefaultFieldValues.contains(field.id))
         {
             Message message;
-            message.content = tr("Field %1 is never assigned and always has its default value.").arg(field.id);
+            message.content = tr("The field %1 is never assigned and always has its default value.").arg(field.id);
             message.messageCode = MessageCode;
             message.severity = Severity::Warning;
             message.targetSiteId = field.id;

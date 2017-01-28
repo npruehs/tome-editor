@@ -67,7 +67,7 @@ const MessageList TypeIsNeverUsedTask::execute(const TaskContext& context) const
         if (!usedTypes.contains(type.name))
         {
             Message message;
-            message.content = tr("Type %1 is never used.").arg(type.name);
+            message.content = tr("The type %1 is defined but never used.").arg(type.name);
             message.messageCode = MessageCode;
             message.severity = Severity::Warning;
             message.targetSiteId = type.name;
