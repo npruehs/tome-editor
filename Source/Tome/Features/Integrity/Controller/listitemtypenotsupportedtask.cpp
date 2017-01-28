@@ -14,6 +14,11 @@ ListItemTypeNotSupportedTask::ListItemTypeNotSupportedTask()
 {
 }
 
+const QString ListItemTypeNotSupportedTask::getDisplayName() const
+{
+    return MessageCode + tr(" - List Item Type Not Supported");
+}
+
 const MessageList ListItemTypeNotSupportedTask::execute(const TaskContext& context) const
 {
     MessageList messages;
