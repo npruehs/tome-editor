@@ -39,6 +39,7 @@
 #include "../Features/Integrity/Controller/mapvaluetypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/mapvaluetypenotsupportedtask.h"
 #include "../Features/Integrity/Controller/typefacetviolatedtask.h"
+#include "../Features/Integrity/Controller/typeisneverusedtask.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/Model/project.h"
 #include "../Features/Records/Controller/recordscontroller.h"
@@ -105,6 +106,7 @@ Controller::Controller(CommandLineOptions* options) :
     this->tasksController->addTask(new MapValueTypeDoesNotExistTask());
     this->tasksController->addTask(new MapValueTypeNotSupportedTask());
     this->tasksController->addTask(new TypeFacetViolatedTask());
+    this->tasksController->addTask(new TypeIsNeverUsedTask());
 
     // Register facets.
     this->facetsController->registerFacet(new LocalizedStringFacet());
