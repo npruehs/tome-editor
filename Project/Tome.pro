@@ -155,7 +155,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Integrity/Controller/componenthasnofieldstask.cpp \
     ../Source/Tome/Features/Integrity/Controller/fieldisneverusedtask.cpp \
     ../Source/Tome/Features/Integrity/Controller/typeisneverusedtask.cpp \
-    ../Source/Tome/Features/Integrity/Controller/referencedrecorddoesnotexisttask.cpp
+    ../Source/Tome/Features/Integrity/Controller/referencedrecorddoesnotexisttask.cpp \
+    ../Source/Tome/Features/Integrity/Controller/fieldalwayshasitsdefaultvaluetask.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -303,7 +304,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Integrity/Controller/componenthasnofieldstask.h \
     ../Source/Tome/Features/Integrity/Controller/fieldisneverusedtask.h \
     ../Source/Tome/Features/Integrity/Controller/typeisneverusedtask.h \
-    ../Source/Tome/Features/Integrity/Controller/referencedrecorddoesnotexisttask.h
+    ../Source/Tome/Features/Integrity/Controller/referencedrecorddoesnotexisttask.h \
+    ../Source/Tome/Features/Integrity/Controller/fieldalwayshasitsdefaultvaluetask.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
