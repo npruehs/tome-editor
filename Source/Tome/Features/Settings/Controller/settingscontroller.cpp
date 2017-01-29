@@ -9,6 +9,7 @@ const QString SettingsController::SettingPath = "path";
 const QString SettingsController::SettingRecentProjects = "recentProjects";
 const QString SettingsController::SettingRunIntegrityChecksOnLoad = "runIntegrityChecksOnLoad";
 const QString SettingsController::SettingRunIntegrityChecksOnSave = "runIntegrityChecksOnSave";
+const QString SettingsController::SettingShowComponentNamesInRecordTable = "showComponentNamesInRecordTable";
 const QString SettingsController::SettingShowDescriptionColumnInsteadOfFieldTooltips = "showDetailsColumnInsteadOfFieldTooltips";
 const QString SettingsController::SettingExpandRecordTreeOnRefresh = "expandRecordTreeOnRefresh";
 
@@ -65,6 +66,11 @@ bool SettingsController::getRunIntegrityChecksOnSave() const
     return this->settings->value(SettingRunIntegrityChecksOnSave).toBool();
 }
 
+bool SettingsController::getShowComponentNamesInRecordTable() const
+{
+    return this->settings->value(SettingShowComponentNamesInRecordTable).toBool();
+}
+
 bool SettingsController::getShowDescriptionColumnInsteadOfFieldTooltips() const
 {
     return this->settings->value(SettingShowDescriptionColumnInsteadOfFieldTooltips).toBool();
@@ -109,6 +115,14 @@ void SettingsController::setRunIntegrityChecksOnSave(bool runIntegrityChecksOnSa
           .arg(runIntegrityChecksOnSave ? "true" : "false")
           .toUtf8().constData());
     this->settings->setValue(SettingRunIntegrityChecksOnSave, runIntegrityChecksOnSave);
+}
+
+void SettingsController::setShowComponentNamesInRecordTable(bool showComponentNamesInRecordTable)
+{
+    qInfo(QString("Setting show component names in record table to %1.")
+          .arg(showComponentNamesInRecordTable ? "true" : "false")
+          .toUtf8().constData());
+    this->settings->setValue(SettingShowComponentNamesInRecordTable, showComponentNamesInRecordTable);
 }
 
 void SettingsController::setShowDescriptionColumnInsteadOfFieldTooltips(bool showDescriptionColumnInsteadOfFieldTooltips)

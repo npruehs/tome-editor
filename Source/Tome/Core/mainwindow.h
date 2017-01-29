@@ -155,7 +155,6 @@ class MainWindow : public QMainWindow
         void showWindow(QWidget* widget);
         void updateMenus();
         void updateRecentProjects();
-        void updateRecordRow(const int i);
         void updateWindowTitle();
 };
 

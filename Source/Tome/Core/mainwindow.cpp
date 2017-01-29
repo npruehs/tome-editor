@@ -1208,7 +1208,7 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
             this->controller->getRecordsController().getRecordFieldValues(id);
 
     // Get current field data.
-    const QString fieldId = fieldValues.keys()[index.row()];
+    const QString fieldId = index.data(Qt::UserRole).toString();
     const QVariant fieldValue = fieldValues[fieldId];
 
     const FieldDefinition& field =
@@ -1278,7 +1278,7 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
         this->controller->getUndoController().doCommand(command);
 
         // Update view.
-        this->updateRecordRow(index.row());
+        this->recordFieldTableWidget->updateFieldValue(index.row());
     }
 }
 
@@ -1582,19 +1582,13 @@ void MainWindow::refreshRecordTable()
         return;
     }
 
-    // Get selected record.
-    const RecordFieldValueMap fieldValues =
-            this->controller->getRecordsController().getRecordFieldValues(id);
-
     // Update table.
     this->recordFieldTableWidget->setDescriptionColumnEnabled(
                 this->controller->getSettingsController().getShowDescriptionColumnInsteadOfFieldTooltips());
-    this->recordFieldTableWidget->setRowCount(fieldValues.size());
+    this->recordFieldTableWidget->setShowComponentNames(
+                this->controller->getSettingsController().getShowComponentNamesInRecordTable());
 
-    for (int i = 0; i < this->recordFieldTableWidget->rowCount(); ++i)
-    {
-        this->updateRecordRow(i);
-    }
+    this->recordFieldTableWidget->setRecord(id);
 
     // Check if read-only.
     const Record& record = this->controller->getRecordsController().getRecord(id);
@@ -1684,15 +1678,6 @@ void MainWindow::updateRecentProjects()
         QAction* action = new QAction(path, this);
         this->ui->menuRecent_Projects->addAction(action);
     }
-}
-
-void MainWindow::updateRecordRow(const int i)
-{
-    // Get selected record.
-    QString id = this->recordTreeWidget->getSelectedRecordId();
-
-    // Update view.
-    this->recordFieldTableWidget->setRecord(i, id);
 }
 
 void MainWindow::updateWindowTitle()

@@ -5,6 +5,7 @@
 
 namespace Tome
 {
+    class FieldDefinition;
     class FieldDefinitionsController;
     class RecordsController;
     class TypesController;
@@ -17,7 +18,9 @@ namespace Tome
             RecordFieldsTableWidget(FieldDefinitionsController& fieldDefinitionsController, RecordsController& recordsController, TypesController& typesController);
 
             void setDescriptionColumnEnabled(bool enabled);
-            void setRecord(int i, const QString recordId);
+            void setRecord(const QString recordId);
+            void setShowComponentNames(bool showComponentNames);
+            void updateFieldValue(int i);
 
         signals:
             void recordLinkActivated(const QString& recordId);
@@ -26,6 +29,11 @@ namespace Tome
             FieldDefinitionsController& fieldDefinitionsController;
             RecordsController& recordsController;
             TypesController& typesController;
+
+            QString recordId;
+            bool showComponentNames;
+
+            const QString getFieldKeyString(const FieldDefinition& field);
 
         private slots:
             void onRecordLinkActivated(const QString& recordId);

@@ -30,6 +30,11 @@ bool UserSettingsWindow::getRunIntegrityChecksOnSave()
     return this->ui->checkBoxRunIntegrityChecksOnSave->isChecked();
 }
 
+bool UserSettingsWindow::getShowComponentNamesInRecordTable()
+{
+    return this->ui->checkBoxShowComponentNamesInRecordTable->isChecked();
+}
+
 bool UserSettingsWindow::getShowDescriptionColumnInsteadOfFieldTooltips()
 {
     return this->ui->checkBoxShowDescriptionColumnInsteadOfFieldTooltips->isChecked();
