@@ -103,7 +103,20 @@ const QString ComponentsController::getSetNameOfComponent(const Component compon
 
 int ComponentsController::indexOf(const Component& component) const
 {
-    return this->model->at(0).components.indexOf(component);
+    for (ComponentSetList::iterator it = this->model->begin();
+         it != this->model->end();
+         ++it)
+    {
+        const ComponentSet& componentSet = *it;
+        int componentIndex = componentSet.components.indexOf(component);
+
+        if (componentIndex >= 0)
+        {
+            return componentIndex;
+        }
+    }
+
+    return -1;
 }
 
 void ComponentsController::removeComponent(const Component component)
