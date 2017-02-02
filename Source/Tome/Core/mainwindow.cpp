@@ -557,11 +557,24 @@ void MainWindow::on_actionNew_Project_triggered()
 void MainWindow::on_actionOpen_Project_triggered()
 {
     // Open file browser dialog.
+    QString path = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+
+    if( !this->controller->getSettingsController().getLastProjectPath().isEmpty())
+    {
+        path = this->controller->getSettingsController().getLastProjectPath();
+    }
+
     const QString& projectFileName = QFileDialog::getOpenFileName(this,
                                                                   tr("Open Project"),
-                                                                  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+                                                                  path,
                                                                   "Tome Project Files (*.tproj)");
 
+    if( !projectFileName.isEmpty() && QFile::exists( projectFileName ) )
+    {
+        QFileInfo info( projectFileName );
+
+        this->controller->getSettingsController().setLastProjectPath( info.absolutePath() );
+    }
     this->openProject(projectFileName);
 }
 
