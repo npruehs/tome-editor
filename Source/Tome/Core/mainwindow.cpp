@@ -988,6 +988,7 @@ void MainWindow::on_actionUser_Settings_triggered()
     settingsController.setRunIntegrityChecksOnSave(this->userSettingsWindow->getRunIntegrityChecksOnSave());
     settingsController.setShowDescriptionColumnInsteadOfFieldTooltips(this->userSettingsWindow->getShowDescriptionColumnInsteadOfFieldTooltips());
     settingsController.setExpandRecordTreeOnRefresh(this->userSettingsWindow->getExpandRecordTreeOnRefresh());
+    settingsController.setShowComponentNamesInRecordTable(this->userSettingsWindow->getShowComponentNamesInRecordTable());
 
     // Refresh view with updated settings.
     this->refreshRecordTable();

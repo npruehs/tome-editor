@@ -179,6 +179,12 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
         // Check if need to add new record.
         if (!this->recordsController.hasRecord(recordId))
         {
+            // make sure the parent record exists.
+            if (!this->recordsController.hasRecord(importTemplate.rootRecordId))
+            {
+                this->recordsController.addRecord(importTemplate.rootRecordId, importTemplate.rootRecordId, QStringList(), recordSetName);
+                ++recordsAdded;
+            }
             this->recordsController.addRecord(recordId, recordId, QStringList(), recordSetName);
             this->recordsController.reparentRecord(recordId, importTemplate.rootRecordId);
             ++recordsAdded;
