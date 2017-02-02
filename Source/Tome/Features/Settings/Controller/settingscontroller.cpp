@@ -12,6 +12,7 @@ const QString SettingsController::SettingRunIntegrityChecksOnSave = "runIntegrit
 const QString SettingsController::SettingShowComponentNamesInRecordTable = "showComponentNamesInRecordTable";
 const QString SettingsController::SettingShowDescriptionColumnInsteadOfFieldTooltips = "showDetailsColumnInsteadOfFieldTooltips";
 const QString SettingsController::SettingExpandRecordTreeOnRefresh = "expandRecordTreeOnRefresh";
+const QString SettingsController::SettingLastProjectPath = "lastProjectPath";
 
 
 SettingsController::SettingsController()
@@ -81,6 +82,11 @@ bool SettingsController::getExpandRecordTreeOnRefresh() const
     return this->settings->value(SettingExpandRecordTreeOnRefresh).toBool();
 }
 
+const QString SettingsController::getLastProjectPath() const
+{
+    return this->settings->value(SettingLastProjectPath).toString();
+}
+
 void SettingsController::removeRecentProject(const QString& path)
 {
     qInfo(QString("Removing %1 from recent projects list.").arg(path).toUtf8().constData());
@@ -141,3 +147,11 @@ void SettingsController::setExpandRecordTreeOnRefresh(bool expandRecordTreeOnRef
     this->settings->setValue(SettingExpandRecordTreeOnRefresh, expandRecordTreeOnRefresh);
 }
 
+void SettingsController::setLastProjectPath( const QString &path )
+
+{
+    qInfo(QString("Setting last project path to %1.")
+          .arg(path)
+          .toUtf8().constData());
+    this->settings->setValue(SettingLastProjectPath, path);
+}
