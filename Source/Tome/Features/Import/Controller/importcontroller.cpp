@@ -173,6 +173,11 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
         const QString& recordId = itRecords.key();
         const RecordFieldValueMap& newRecordFieldValues = itRecords.value();
 
+        if (recordId.isEmpty())
+        {
+            continue;
+        }
+
         // Update progress bar.
         emit this->progressChanged(progressBarTitle, recordId, index, data.count());
 
