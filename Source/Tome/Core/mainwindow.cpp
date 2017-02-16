@@ -602,6 +602,12 @@ void MainWindow::on_actionSave_Project_triggered()
     }
 }
 
+void MainWindow::on_actionReload_Project_triggered()
+{
+    const QString fullProjectPath = this->controller->getFullProjectPath();
+    this->openProject(fullProjectPath);
+}
+
 void MainWindow::on_actionNew_Record_triggered()
 {
     if (!this->recordWindow)

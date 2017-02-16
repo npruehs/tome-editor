@@ -61,6 +61,7 @@ class MainWindow : public QMainWindow
         void on_actionNew_Project_triggered();
         void on_actionOpen_Project_triggered();
         void on_actionSave_Project_triggered();
+        void on_actionReload_Project_triggered();
 
         void on_actionNew_Record_triggered();
         void on_actionAdd_Child_triggered();

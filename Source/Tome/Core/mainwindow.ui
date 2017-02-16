@@ -47,6 +47,8 @@
     <addaction name="actionOpen_Project"/>
     <addaction name="actionSave_Project"/>
     <addaction name="separator"/>
+    <addaction name="actionReload_Project"/>
+    <addaction name="separator"/>
     <addaction name="menuRecent_Projects"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -410,6 +412,11 @@
   <action name="actionAdd_Child">
    <property name="text">
     <string>Add Child...</string>
+   </property>
+  </action>
+  <action name="actionReload_Project">
+   <property name="text">
+    <string>Reload Project</string>
    </property>
   </action>
  </widget>
