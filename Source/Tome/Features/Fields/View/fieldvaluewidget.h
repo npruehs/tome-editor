@@ -16,6 +16,7 @@
 namespace Tome
 {
     class CustomType;
+    class FilePickerWidget;
     class ListWidget;
     class MapWidget;
     class FacetsController;
@@ -63,6 +64,7 @@ namespace Tome
             QCheckBox* checkBox;
             QColorDialog* colorDialog;
             QDoubleSpinBox* doubleSpinBox;
+            FilePickerWidget* filePicker;
             QVBoxLayout* layout;
             QLineEdit* lineEdit;
             ListWidget* listWidget;

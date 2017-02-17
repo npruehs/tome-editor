@@ -78,6 +78,7 @@ const QStringList TypesController::getBuiltInTypes() const
     QStringList typeNames;
     typeNames.push_back(BuiltInType::Boolean);
     typeNames.push_back(BuiltInType::Color);
+    typeNames.push_back(BuiltInType::File);
     typeNames.push_back(BuiltInType::Integer);
     typeNames.push_back(BuiltInType::Real);
     typeNames.push_back(BuiltInType::Reference);

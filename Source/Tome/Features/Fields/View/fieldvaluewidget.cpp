@@ -5,6 +5,7 @@
 
 #include <QMessageBox>
 
+#include "filepickerwidget.h"
 #include "listwidget.h"
 #include "mapwidget.h"
 #include "vector2iwidget.h"
@@ -76,6 +77,9 @@ FieldValueWidget::FieldValueWidget(FacetsController& facetsController, RecordsCo
 
     this->mapWidget = new MapWidget(this->facetsController, this->recordsController, this->typesController);
     this->addWidget(this->mapWidget);
+
+    this->filePicker = new FilePickerWidget();
+    this->addWidget(this->filePicker);
 
     // Add error label.
     this->errorLabel = new QLabel();
@@ -245,6 +249,11 @@ QVariant FieldValueWidget::getFieldValueForType(const QString& typeName) const
         return this->colorDialog->currentColor();
     }
 
+    if (typeName == BuiltInType::File)
+    {
+        return this->filePicker->getFileName();
+    }
+
     if (typeName == BuiltInType::Integer)
     {
         return this->spinBox->text();
@@ -331,6 +340,12 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
     if (typeName == BuiltInType::Color)
     {
         this->setCurrentWidget(this->colorDialog);
+        return;
+    }
+
+    if (typeName == BuiltInType::File)
+    {
+        this->setCurrentWidget(this->filePicker);
         return;
     }
 
@@ -481,6 +496,13 @@ void FieldValueWidget::setFieldValueForType(const QVariant& fieldValue, const QS
     {
         QColor color = fieldValue.value<QColor>();
         this->colorDialog->setCurrentColor(color);
+        return;
+    }
+
+    if (typeName == BuiltInType::File)
+    {
+        QString fileName = fieldValue.toString();
+        this->filePicker->setFileName(fileName);
         return;
     }
 
