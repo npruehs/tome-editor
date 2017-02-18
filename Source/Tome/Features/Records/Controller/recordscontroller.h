@@ -19,7 +19,11 @@ namespace Tome
         public:
             RecordsController(const FieldDefinitionsController& fieldDefinitionsController, const TypesController& typesController);
 
-            const Record addRecord(const QString& id, const QString& displayName, const QStringList& fieldIds, const QString& recordSetName);
+            const Record addRecord(const QString& id,
+                                   const QString& displayName,
+                                   const QString& editorIconFieldId,
+                                   const QStringList& fieldIds,
+                                   const QString& recordSetName);
             void addRecordSet(const RecordSet& recordSet);
 
             const Record duplicateRecord(const QString& existingRecordId, const QString& newRecordId);
@@ -49,6 +53,8 @@ namespace Tome
             const RecordList getRecords() const;
 
             const QStringList getRecordIds() const;
+
+            const QString getRecordEditorIconFieldId(const QString& id) const;
 
             /**
              * @brief getRecordNames Returns the list of the names of all records of this project.
@@ -87,7 +93,12 @@ namespace Tome
             void reparentRecord(const QString& recordId, const QString& newParentId);
             void setReadOnly(const QString& recordId, const bool readOnly);
             void setRecordSets(RecordSetList& model);
-            void updateRecord(const QString oldId, const QString newId, const QString newDisplayName, const QStringList& fieldIds, const QString& recordSetName);
+            void updateRecord(const QString oldId,
+                              const QString newId,
+                              const QString newDisplayName,
+                              const QString newEditorIconFieldId,
+                              const QStringList& fieldIds,
+                              const QString& recordSetName);
             void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue);
 
         signals:
@@ -96,7 +107,12 @@ namespace Tome
             void recordFieldsChanged(const QString& recordId);
             void recordRemoved(const QString& recordId);
             void recordReparented(const QString& recordId, const QString& oldParentId, const QString& newParentId);
-            void recordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName);
+            void recordUpdated(const QString& oldId,
+                               const QString& oldDisplayName,
+                               const QString& oldEditorIconFieldId,
+                               const QString& newId,
+                               const QString& newDisplayName,
+                               const QString& newEditorIconFieldId);
             void recordSetsChanged();
 
         private slots:

@@ -29,13 +29,18 @@ RecordsController::RecordsController(const FieldDefinitionsController& fieldDefi
             SLOT(onFieldUpdated(const Tome::FieldDefinition&, const Tome::FieldDefinition&)));
 }
 
-const Record RecordsController::addRecord(const QString& id, const QString& displayName, const QStringList& fieldIds, const QString& recordSetName)
+const Record RecordsController::addRecord(const QString& id,
+                                          const QString& displayName,
+                                          const QString& editorIconFieldId,
+                                          const QStringList& fieldIds,
+                                          const QString& recordSetName)
 {
     qInfo(QString("Adding record %1.").arg(id).toUtf8().constData());
 
     Record record = Record();
     record.id = id;
     record.displayName = displayName;
+    record.editorIconFieldId = editorIconFieldId;
     record.recordSetName = recordSetName;
 
     for (QStringList::const_iterator it = fieldIds.begin();
@@ -89,6 +94,7 @@ const Record RecordsController::duplicateRecord(const QString& existingRecordId,
     Record newRecord = Record();
     newRecord.id = newRecordId;
     newRecord.displayName = newRecordId;
+    newRecord.editorIconFieldId = existingRecord.editorIconFieldId;
     newRecord.parentId = existingRecord.parentId;
     newRecord.fieldValues = existingRecord.fieldValues;
     newRecord.recordSetName = existingRecord.recordSetName;
@@ -266,6 +272,30 @@ const QStringList RecordsController::getRecordIds() const
     }
 
     return ids;
+}
+
+const QString RecordsController::getRecordEditorIconFieldId(const QString& id) const
+{
+    Record* record = this->getRecordById(id);
+
+    if (!record->editorIconFieldId.isEmpty())
+    {
+        return record->editorIconFieldId;
+    }
+
+    // Resolve parents.
+    RecordList ancestors = this->getAncestors(id);
+
+    for (int i = ancestors.count() - 1; i >= 0; --i)
+    {
+        const Record& ancestor = ancestors.at(i);
+        if (!ancestor.editorIconFieldId.isEmpty())
+        {
+            return ancestor.editorIconFieldId;
+        }
+    }
+
+    return QString();
 }
 
 const QStringList RecordsController::getRecordNames() const
@@ -493,17 +523,23 @@ void RecordsController::setRecordSets(RecordSetList& model)
     this->model = &model;
 }
 
-void RecordsController::updateRecord(const QString oldId, const QString newId, const QString newDisplayName, const QStringList& fieldIds, const QString& recordSetName)
+void RecordsController::updateRecord(const QString oldId,
+                                     const QString newId,
+                                     const QString newDisplayName,
+                                     const QString newEditorIconFieldId,
+                                     const QStringList& fieldIds,
+                                     const QString& recordSetName)
 {
     Record& oldRecord = *this->getRecordById(oldId);
     const QString oldDisplayName = oldRecord.displayName;
+    const QString oldEditorIconFieldId = oldRecord.editorIconFieldId;
 
     if (oldId != newId)
     {
         // Changing the id requires cloning the record, because we
         // to ensure that all references and parent relations are
         // cleanly updated as well.
-        this->addRecord(newId, newDisplayName, fieldIds, recordSetName);
+        this->addRecord(newId, newDisplayName, newEditorIconFieldId, fieldIds, recordSetName);
 
         Record& newRecord = *this->getRecordById(newId);
         newRecord.fieldValues = oldRecord.fieldValues;
@@ -521,6 +557,7 @@ void RecordsController::updateRecord(const QString oldId, const QString newId, c
     // Update record itself.
     Record& record = *this->getRecordById(newId);
     record.displayName = newDisplayName;
+    record.editorIconFieldId = newEditorIconFieldId;
 
     // Move record, if necessary.
     if (record.recordSetName != recordSetName)
@@ -572,7 +609,7 @@ void RecordsController::updateRecord(const QString oldId, const QString newId, c
     }
 
     // Notify listeners.
-    emit this->recordUpdated(oldId, oldDisplayName, newId, newDisplayName);
+    emit this->recordUpdated(oldId, oldDisplayName, oldEditorIconFieldId, newId, newDisplayName, newEditorIconFieldId);
 }
 
 void RecordsController::updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue)

@@ -9,6 +9,7 @@ using namespace Tome;
 
 
 const QString RecordSetSerializer::ElementDisplayName = "DisplayName";
+const QString RecordSetSerializer::ElementEditorIconFieldId = "EditorIconFieldId";
 const QString RecordSetSerializer::ElementId = "Id";
 const QString RecordSetSerializer::ElementItem = "Item";
 const QString RecordSetSerializer::ElementKey = "Key";
@@ -54,6 +55,11 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
                     if (!record.parentId.isEmpty())
                     {
                         stream.writeAttribute(ElementParentId, record.parentId);
+                    }
+
+                    if (!record.editorIconFieldId.isEmpty())
+                    {
+                        stream.writeAttribute(ElementEditorIconFieldId, record.editorIconFieldId);
                     }
 
                     for (QMap<QString, QVariant>::const_iterator it = record.fieldValues.begin();
@@ -135,6 +141,7 @@ void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) c
                 // Read record.
                 record.id = reader.readAttribute(ElementId);
                 record.displayName = reader.readAttribute(ElementDisplayName);
+                record.editorIconFieldId = reader.readAttribute(ElementEditorIconFieldId);
                 record.parentId = reader.readAttribute(ElementParentId);
                 record.readOnly = reader.readAttribute(ElementReadOnly) == "true";
                 record.recordSetName = recordSet.name;

@@ -16,6 +16,7 @@ namespace Tome
                                 const QString& oldId,
                                 const QString& newId,
                                 const QString& newDisplayName,
+                                const QString& newEditorIconFieldId,
                                 const QStringList& newFieldIds,
                                 const QString& newRecordSetName);
             virtual void undo();
@@ -27,10 +28,12 @@ namespace Tome
             const QString oldId;
             const QString newId;
             const QString newDisplayName;
+            const QString newEditorIconFieldId;
             const QStringList newFieldIds;
             const QString newRecordSetName;
 
             QString oldDisplayName;
+            QString oldEditorIconFieldId;
             QStringList oldFieldIds;
             QString oldRecordSetName;
     };

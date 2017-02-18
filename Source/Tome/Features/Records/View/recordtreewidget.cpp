@@ -1,17 +1,32 @@
 #include "recordtreewidget.h"
 
+#include <QImageReader>
 #include <QMenu>
 #include <QMimeData>
 
 #include "recordtreewidgetitem.h"
 #include "../Controller/recordscontroller.h"
+#include "../../Facets/Controller/facetscontroller.h"
+#include "../../Facets/Controller/removedfileprefixfacet.h"
+#include "../../Facets/Controller/removedfilesuffixfacet.h"
+#include "../../Fields/Controller/fielddefinitionscontroller.h"
+#include "../../Projects/Controller/projectcontroller.h"
 #include "../../Settings/Controller/settingscontroller.h"
+#include "../../../Util/pathutils.h"
+
 
 using namespace Tome;
 
 
-RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController, SettingsController& settingsController)
-    : recordsController(recordsController),
+RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController,
+                                   FacetsController& facetsController,
+                                   FieldDefinitionsController& fieldDefinitionsController,
+                                   ProjectController& projectController,
+                                   SettingsController& settingsController)
+    : facetsController(facetsController),
+      fieldDefinitionsController(fieldDefinitionsController),
+      projectController(projectController),
+      recordsController(recordsController),
       settingsController(settingsController),
       navigating(false)
 {
@@ -131,63 +146,123 @@ void RecordTreeWidget::navigateBackward()
     this->selectRecord(this->selectedRecordUndoStack.top());
 }
 
-void RecordTreeWidget::updateRecord(const QString& oldId, const QString& newId, const QString& newDisplayName)
+void RecordTreeWidget::updateRecord(const QString& oldId,
+                                    const QString& oldDisplayName,
+                                    const QString& oldEditorIconFieldId,
+                                    const QString& newId,
+                                    const QString& newDisplayName,
+                                    const QString& newEditorIconFieldId)
 {
     Q_UNUSED(oldId)
+    Q_UNUSED(oldDisplayName)
 
     // Update view.
     RecordTreeWidgetItem* recordItem = this->getRecordItem(newId);
-
-    const QString oldDisplayName = recordItem->getDisplayName();
-    bool needsSorting = oldDisplayName != newDisplayName;
-
     recordItem->setDisplayName(newDisplayName);
 
     // Sort by display name.
-    if (needsSorting)
+    if (oldDisplayName != newDisplayName)
     {
         this->sortItems(0, Qt::AscendingOrder);
     }
 
-    this->updateRecordItem(recordItem);
+    if (oldEditorIconFieldId != newEditorIconFieldId)
+    {
+        this->updateRecordItemRecursively(recordItem);
+    }
+    else
+    {
+        this->updateRecordItem(recordItem);
+    }
 }
 
 void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
 {
-    if ( nullptr != recordTreeItem )
+    if (recordTreeItem == nullptr)
     {
-        const Record &recordData = this->recordsController.getRecord( recordTreeItem->getId() );
-        // If the record and all ancestors have no fields, use a folder style icon
-        // else use a file style icon
-        bool recordIsEmtpy = recordData.fieldValues.empty();
-        if ( recordIsEmtpy )
+        return;
+    }
+
+    const QString recordId = recordTreeItem->getId();
+    const Record& record = this->recordsController.getRecord(recordId);
+
+    // Set color.
+    if (recordTreeItem->isReadOnly())
+    {
+        recordTreeItem->setForeground(0, QBrush(Qt::blue));
+    }
+    else
+    {
+        recordTreeItem->setForeground(0, QBrush(Qt::black));
+    }
+
+    // Check if has preview icon.
+    const QString editorIconFieldId = this->recordsController.getRecordEditorIconFieldId(recordId);
+
+    if (!editorIconFieldId.isEmpty())
+    {
+        const FieldDefinition& iconField = this->fieldDefinitionsController.getFieldDefinition(editorIconFieldId);
+        const RecordFieldValueMap recordFieldValues = this->recordsController.getRecordFieldValues(record.id);
+
+        QString iconFileName = recordFieldValues[iconField.id].toString();
+
+        QString removedPrefix = this->facetsController.getFacetValue(iconField.fieldType, RemovedFilePrefixFacet::FacetKey).toString();
+        QString removedSuffix = this->facetsController.getFacetValue(iconField.fieldType, RemovedFileSuffixFacet::FacetKey).toString();
+
+        iconFileName = removedPrefix + iconFileName + removedSuffix;
+        QString projectPath = this->projectController.getProjectPath();
+
+        iconFileName = combinePaths(projectPath, iconFileName);
+
+        // Get preview.
+        QPixmap iconPixmap;
+
+        QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
+        for (QByteArray& format : supportedImageFormats)
         {
-            const RecordList ancestors = this->recordsController.getAncestors( recordTreeItem->getId() );
-            for ( int i = 0; ancestors.size() > i && recordIsEmtpy; ++i )
+            if (iconFileName.endsWith(format))
             {
-                recordIsEmtpy &= ancestors[ i ].fieldValues.empty();
+                iconPixmap.load(iconFileName);
+
+                if (!iconPixmap.isNull())
+                {
+                    recordTreeItem->setIcon(0, QIcon(iconPixmap));
+                    return;
+                }
             }
         }
+    }
 
-        // Set color.
-        if (recordTreeItem->isReadOnly())
+    // If the record and all ancestors have no fields, use a folder style icon;
+    // else use a file style icon.
+    bool recordIsEmtpy = record.fieldValues.empty();
+    if (recordIsEmtpy)
+    {
+        const RecordList ancestors = this->recordsController.getAncestors(recordId);
+        for (int i = 0; ancestors.size() > i && recordIsEmtpy; ++i)
         {
-            recordTreeItem->setForeground(0, QBrush(Qt::blue));
+            recordIsEmtpy &= ancestors[i].fieldValues.empty();
         }
-        else
-        {
-            recordTreeItem->setForeground(0, QBrush(Qt::black));
-        }
+    }
 
-        // Set icon.
-        if (recordIsEmtpy)
-        {
-            recordTreeItem->setIcon(0, QIcon(":/Media/Icons/Folder_6221.png"));
-        }
-        else
-        {
-            recordTreeItem->setIcon(0, QIcon(":/Media/Icons/Textfile_818_16x.png"));
-        }
+    if (recordIsEmtpy)
+    {
+        recordTreeItem->setIcon(0, QIcon(":/Media/Icons/Folder_6221.png"));
+    }
+    else
+    {
+        recordTreeItem->setIcon(0, QIcon(":/Media/Icons/Textfile_818_16x.png"));
+    }
+}
+
+void RecordTreeWidget::updateRecordItemRecursively(RecordTreeWidgetItem* recordTreeItem)
+{
+    this->updateRecordItem(recordTreeItem);
+
+    for (int i = 0; i < recordTreeItem->childCount(); ++i)
+    {
+        RecordTreeWidgetItem* child = static_cast<RecordTreeWidgetItem*>(recordTreeItem->child(i));
+        this->updateRecordItemRecursively(child);
     }
 }
 

@@ -187,10 +187,10 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
             // make sure the parent record exists.
             if (!this->recordsController.hasRecord(importTemplate.rootRecordId))
             {
-                this->recordsController.addRecord(importTemplate.rootRecordId, importTemplate.rootRecordId, QStringList(), recordSetName);
+                this->recordsController.addRecord(importTemplate.rootRecordId, importTemplate.rootRecordId, QString(), QStringList(), recordSetName);
                 ++recordsAdded;
             }
-            this->recordsController.addRecord(recordId, recordId, QStringList(), recordSetName);
+            this->recordsController.addRecord(recordId, recordId, QString(), QStringList(), recordSetName);
             this->recordsController.reparentRecord(recordId, importTemplate.rootRecordId);
             ++recordsAdded;
         }

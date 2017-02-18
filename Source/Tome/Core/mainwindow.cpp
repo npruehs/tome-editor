@@ -93,7 +93,11 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     ui->setupUi(this);
 
     // Add record tree.
-    this->recordTreeWidget = new RecordTreeWidget(this->controller->getRecordsController(), this->controller->getSettingsController());
+    this->recordTreeWidget = new RecordTreeWidget(this->controller->getRecordsController(),
+                                                  this->controller->getFacetsController(),
+                                                  this->controller->getFieldDefinitionsController(),
+                                                  this->controller->getProjectController(),
+                                                  this->controller->getSettingsController());
     this->ui->splitter->addWidget(this->recordTreeWidget);
 
     // Setup record tree context menu.
@@ -177,8 +181,8 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     connect(
                 &this->controller->getRecordsController(),
-                SIGNAL(recordUpdated(const QString&, const QString&, const QString&, const QString&)),
-                SLOT(onRecordUpdated(const QString&, const QString&, const QString&, const QString&))
+                SIGNAL(recordUpdated(const QString&, const QString&, const QString&, const QString&, const QString&, const QString&)),
+                SLOT(onRecordUpdated(const QString&, const QString&, const QString&, const QString&, const QString&, const QString&))
                 );
 
     connect(
@@ -662,6 +666,7 @@ void MainWindow::on_actionNew_Record_triggered()
         const QString& recordId = this->recordWindow->getRecordId();
         const QString& recordDisplayName = this->recordWindow->getRecordDisplayName();
         const QString& recordSetName = this->recordWindow->getRecordSetName();
+        const QString& recordEditorIconFieldId = this->recordWindow->getRecordEditorIconFieldId();
 
         // Collect record fields.
         QStringList recordFieldIds;
@@ -685,6 +690,7 @@ void MainWindow::on_actionNew_Record_triggered()
         AddRecordCommand* command = new AddRecordCommand(recordsController,
                                                          recordId,
                                                          recordDisplayName,
+                                                         recordEditorIconFieldId,
                                                          recordFieldIds,
                                                          recordSetName);
         this->controller->getUndoController().doCommand(command);
@@ -738,6 +744,7 @@ void MainWindow::on_actionAdd_Child_triggered()
         const QString recordId = this->recordWindow->getRecordId();
         const QString recordDisplayName = this->recordWindow->getRecordDisplayName();
         const QString recordSetName = this->recordWindow->getRecordSetName();
+        const QString recordEditorIconFieldId = this->recordWindow->getRecordEditorIconFieldId();
 
         QStringList recordFieldIds;
 
@@ -760,6 +767,7 @@ void MainWindow::on_actionAdd_Child_triggered()
         AddRecordCommand* command = new AddRecordCommand(recordsController,
                                                          recordId,
                                                          recordDisplayName,
+                                                         recordEditorIconFieldId,
                                                          recordFieldIds,
                                                          recordSetName,
                                                          parentId);
@@ -813,6 +821,7 @@ void MainWindow::on_actionEdit_Record_triggered()
             this->controller->getComponentsController().getComponents();
 
     this->recordWindow->setRecordFields(fieldDefinitions, componentDefinitions, record.fieldValues, inheritedFieldValues);
+    this->recordWindow->setRecordEditorIconFieldId(record.editorIconFieldId);
 
     // Set record set.
     this->recordWindow->setRecordSetNames(recordsController.getRecordSetNames());
@@ -825,6 +834,7 @@ void MainWindow::on_actionEdit_Record_triggered()
         const QString recordId = this->recordWindow->getRecordId();
         const QString recordDisplayName = this->recordWindow->getRecordDisplayName();
         const QString recordSetName = this->recordWindow->getRecordSetName();
+        const QString recordEditorIconFieldId = this->recordWindow->getRecordEditorIconFieldId();
 
         QStringList recordFieldIds;
 
@@ -848,6 +858,7 @@ void MainWindow::on_actionEdit_Record_triggered()
                                                                record.id,
                                                                recordId,
                                                                recordDisplayName,
+                                                               recordEditorIconFieldId,
                                                                recordFieldIds,
                                                                recordSetName);
         this->controller->getUndoController().doCommand(command);
@@ -1625,12 +1636,17 @@ void MainWindow::onRecordSetsChanged()
     this->refreshRecordTree();
 }
 
-void MainWindow::onRecordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName)
+void MainWindow::onRecordUpdated(const QString& oldId,
+                                 const QString& oldDisplayName,
+                                 const QString& oldEditorIconFieldId,
+                                 const QString& newId,
+                                 const QString& newDisplayName,
+                                 const QString& newEditorIconFieldId)
 {
     Q_UNUSED(oldDisplayName)
 
     // Update view.
-    this->recordTreeWidget->updateRecord(oldId, newId, newDisplayName);
+    this->recordTreeWidget->updateRecord(oldId, oldDisplayName, oldEditorIconFieldId, newId, newDisplayName, newEditorIconFieldId);
     this->refreshRecordTable();
 }
 

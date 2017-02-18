@@ -10,6 +10,9 @@
 
 namespace Tome
 {
+    class FacetsController;
+    class FieldDefinitionsController;
+    class ProjectController;
     class RecordsController;
     class RecordTreeWidgetItem;
     class SettingsController;
@@ -19,7 +22,11 @@ namespace Tome
             Q_OBJECT
 
         public:
-            RecordTreeWidget(RecordsController& recordsController, SettingsController& settingsController);
+            RecordTreeWidget(RecordsController& recordsController,
+                             FacetsController& facetsController,
+                             FieldDefinitionsController& fieldDefinitionsController,
+                             ProjectController& projectController,
+                             SettingsController& settingsController);
 
             void addRecord(const QString& id, const QString& displayName, const QString& parentId);
 
@@ -32,7 +39,12 @@ namespace Tome
             void navigateForward();
             void navigateBackward();
 
-            void updateRecord(const QString& oldId, const QString& newId, const QString& newDisplayName);
+            void updateRecord(const QString& oldId,
+                              const QString& oldDisplayName,
+                              const QString& oldEditorIconFieldId,
+                              const QString& newId,
+                              const QString& newDisplayName,
+                              const QString& newEditorIconFieldId);
 
             void selectRecord(const QString& id);
             void setContextMenuActions(QList<QAction*> actions);
@@ -53,6 +65,9 @@ namespace Tome
             void onCurrentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
         private:
+            FacetsController& facetsController;
+            FieldDefinitionsController& fieldDefinitionsController;
+            ProjectController& projectController;
             RecordsController& recordsController;
             SettingsController& settingsController;
 
@@ -64,6 +79,7 @@ namespace Tome
 
             RecordTreeWidgetItem* getRecordItem(const QString& id);
             void updateRecordItem(RecordTreeWidgetItem* recordTreeItem);
+            void updateRecordItemRecursively(RecordTreeWidgetItem* recordTreeItem);
     };
 }
 

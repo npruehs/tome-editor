@@ -33,6 +33,7 @@ void RemoveRecordCommand::undo()
 
         this->recordsController.addRecord(record.id,
                                           record.displayName,
+                                          record.editorIconFieldId,
                                           QStringList(),
                                           record.recordSetName);
 

@@ -15,6 +15,7 @@ namespace Tome
             AddRecordCommand(RecordsController& recordsController,
                              const QString& id,
                              const QString& displayName,
+                             const QString& editorIconFieldId,
                              const QStringList& fieldIds,
                              const QString& recordSetName,
                              const QString parentId = QString());
@@ -26,6 +27,7 @@ namespace Tome
 
             const QString id;
             const QString displayName;
+            const QString editorIconFieldId;
             const QStringList fieldIds;
             const QString parentId;
             const QString recordSetName;

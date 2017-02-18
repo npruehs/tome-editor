@@ -104,7 +104,12 @@ class MainWindow : public QMainWindow
         void onRecordRemoved(const QString& recordId);
         void onRecordReparented(const QString& recordId, const QString& oldParentId, const QString& newParentId);
         void onRecordSetsChanged();
-        void onRecordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName);
+        void onRecordUpdated(const QString& oldId,
+                             const QString& oldDisplayName,
+                             const QString& oldEditorIconFieldId,
+                             const QString& newId,
+                             const QString& newDisplayName,
+                             const QString& newEditorIconFieldId);
         void onRecordLinkActivated(const QString& recordId);
         void onUndoStackChanged(bool clean);
         void openRecentProject(QAction* recentProjectAction);

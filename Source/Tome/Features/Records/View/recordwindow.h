@@ -22,6 +22,7 @@ class RecordWindow : public QDialog
         ~RecordWindow();
 
         QString getRecordDisplayName() const;
+        QString getRecordEditorIconFieldId() const;
         QString getRecordId() const;
         QMap<QString, Tome::RecordFieldState::RecordFieldState> getRecordFields() const;
         QString getRecordSetName() const;
@@ -31,6 +32,7 @@ class RecordWindow : public QDialog
         void setDisallowedRecordIds(const QStringList disallowedRecordIds);
         void setRecordDisplayName(const QString& displayName);
         void setRecordId(const QString& id);
+        void setRecordEditorIconFieldId(const QString& editorIconFieldId);
         void setRecordField(const QString& fieldId, const QString& fieldComponent, const Tome::RecordFieldState::RecordFieldState state);
         void setRecordFields(const Tome::FieldDefinitionList& fieldDefinitions);
         void setRecordFields(const Tome::FieldDefinitionList& fieldDefinitions, const Tome::ComponentList &componentDefinitions, const Tome::RecordFieldValueMap& ownFieldValues, const Tome::RecordFieldValueMap& inheritedFieldValues);

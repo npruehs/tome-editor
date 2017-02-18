@@ -49,6 +49,11 @@ QString RecordWindow::getRecordDisplayName() const
     return this->ui->lineEditDisplayName->text();
 }
 
+QString RecordWindow::getRecordEditorIconFieldId() const
+{
+    return this->ui->comboBoxEditorIconField->currentData().toString();
+}
+
 QString RecordWindow::getRecordId() const
 {
     return this->ui->lineEditId->text();
@@ -99,6 +104,8 @@ void RecordWindow::clearRecordFields()
         delete item->widget();
         delete item;
     }
+
+    this->ui->comboBoxEditorIconField->clear();
 }
 
 void RecordWindow::setDisallowedRecordIds(const QStringList disallowedRecordIds)
@@ -114,6 +121,18 @@ void RecordWindow::setRecordDisplayName(const QString& displayName)
 void RecordWindow::setRecordId(const QString& id)
 {
     this->ui->lineEditId->setText(id);
+}
+
+void RecordWindow::setRecordEditorIconFieldId(const QString& editorIconFieldId)
+{
+    for (int i = 0; i < this->ui->comboBoxEditorIconField->count(); ++i)
+    {
+        if (this->ui->comboBoxEditorIconField->itemData(i).toString() == editorIconFieldId)
+        {
+            this->ui->comboBoxEditorIconField->setCurrentIndex(i);
+            return;
+        }
+    }
 }
 
 void RecordWindow::setRecordField(const QString& fieldId, const QString& fieldComponent, const RecordFieldState::RecordFieldState state)
@@ -155,10 +174,13 @@ void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions)
     this->clearRecordFields();
 
     // Add all passed fields.
+    this->ui->comboBoxEditorIconField->addItem(QString(), QString());
+
     for (int i = 0; i < fieldDefinitions.size(); ++i)
     {
         const FieldDefinition& fieldDefinition = fieldDefinitions.at(i);
         this->setRecordField(fieldDefinition.id, fieldDefinition.component, RecordFieldState::Disabled);
+        this->ui->comboBoxEditorIconField->addItem(fieldDefinition.displayName, fieldDefinition.id);
     }
 }
 
@@ -170,8 +192,9 @@ void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, 
     // Add all components.
     setRecordComponents( componentDefinitions );
 
-
     // Add all passed fields.
+    this->ui->comboBoxEditorIconField->addItem(QString(), QString());
+
     for (int i = 0; i < fieldDefinitions.size(); ++i)
     {
         const FieldDefinition& fieldDefinition = fieldDefinitions.at(i);
@@ -190,6 +213,7 @@ void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, 
 
         // Add to view.
         this->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldState);
+        this->ui->comboBoxEditorIconField->addItem(fieldDefinition.displayName, fieldDefinition.id);
 
         // Modify state of component checkboxes based on fieldState
         for (int i = 0; i < this->ui->scrollAreaComponentsContents->layout()->count(); ++i)

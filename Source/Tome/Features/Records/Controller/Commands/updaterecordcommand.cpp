@@ -9,12 +9,14 @@ UpdateRecordCommand::UpdateRecordCommand(RecordsController& recordsController,
                                          const QString& oldId,
                                          const QString& newId,
                                          const QString& newDisplayName,
+                                         const QString& newEditorIconFieldId,
                                          const QStringList& newFieldIds,
                                          const QString& newRecordSetName)
     : recordsController(recordsController),
       oldId(oldId),
       newId(newId),
       newDisplayName(newDisplayName),
+      newEditorIconFieldId(newEditorIconFieldId),
       newFieldIds(newFieldIds),
       newRecordSetName(newRecordSetName)
 {
@@ -29,6 +31,7 @@ void UpdateRecordCommand::undo()
     this->recordsController.updateRecord(this->newId,
                                          this->oldId,
                                          this->oldDisplayName,
+                                         this->oldEditorIconFieldId,
                                          this->oldFieldIds,
                                          this->oldRecordSetName);
 }
@@ -39,6 +42,7 @@ void UpdateRecordCommand::redo()
     const Record& record = this->recordsController.getRecord(this->oldId);
 
     this->oldDisplayName = record.displayName;
+    this->oldEditorIconFieldId = record.editorIconFieldId;
     this->oldRecordSetName = record.recordSetName;
     this->oldFieldIds = QStringList();
 
@@ -53,6 +57,7 @@ void UpdateRecordCommand::redo()
     this->recordsController.updateRecord(this->oldId,
                                          this->newId,
                                          this->newDisplayName,
+                                         this->newEditorIconFieldId,
                                          this->newFieldIds,
                                          this->newRecordSetName);
 }

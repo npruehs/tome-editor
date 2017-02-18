@@ -15,8 +15,10 @@ namespace Tome
         public:
             Record();
 
-            QString displayName;
             QString id;
+
+            QString displayName;
+            QString editorIconFieldId;
             RecordFieldValueMap fieldValues;
             QString parentId;
             bool readOnly = false;
