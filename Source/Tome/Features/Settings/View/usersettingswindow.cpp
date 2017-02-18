@@ -56,6 +56,9 @@ void UserSettingsWindow::showEvent(QShowEvent* event)
     bool runIntegrityChecksOnSave = this->settingsController.getRunIntegrityChecksOnSave();
     this->ui->checkBoxRunIntegrityChecksOnSave->setChecked(runIntegrityChecksOnSave);
 
+    bool showComponentNamesInRecordTable = this->settingsController.getShowComponentNamesInRecordTable();
+    this->ui->checkBoxShowComponentNamesInRecordTable->setChecked(showComponentNamesInRecordTable);
+
     bool showDescriptionColumnInsteadOfFieldTooltips = this->settingsController.getShowDescriptionColumnInsteadOfFieldTooltips();
     this->ui->checkBoxShowDescriptionColumnInsteadOfFieldTooltips->setChecked(showDescriptionColumnInsteadOfFieldTooltips);
 
