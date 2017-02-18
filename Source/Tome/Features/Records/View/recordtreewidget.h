@@ -24,7 +24,10 @@ namespace Tome
             void addRecord(const QString& id, const QString& displayName, const QString& parentId);
 
             QString getSelectedRecordId() const;
+            QStringList getSelectedRecordIds() const;
+
             RecordTreeWidgetItem* getSelectedRecordItem() const;
+            QList<RecordTreeWidgetItem*> getSelectedRecordItems() const;
 
             void navigateForward();
             void navigateBackward();

@@ -19,6 +19,7 @@ RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController, Setting
     this->viewport()->setAcceptDrops(true);
     this->setDropIndicatorShown(true);
     this->setHeaderHidden(true);
+    this->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     connect(this,
             SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
@@ -58,6 +59,23 @@ QString RecordTreeWidget::getSelectedRecordId() const
     return recordTreeItem->getId();
 }
 
+QStringList RecordTreeWidget::getSelectedRecordIds() const
+{
+    QStringList recordIds;
+
+    QList<RecordTreeWidgetItem*> recordTreeItems = this->getSelectedRecordItems();
+
+    for (int i = 0; i < recordTreeItems.count(); ++i)
+    {
+        if (recordTreeItems[i] != nullptr)
+        {
+            recordIds << recordTreeItems[i]->getId();
+        }
+    }
+
+    return recordIds;
+}
+
 RecordTreeWidgetItem* RecordTreeWidget::getSelectedRecordItem() const
 {
     QList<QTreeWidgetItem*> selectedItems = this->selectedItems();
@@ -68,6 +86,19 @@ RecordTreeWidgetItem* RecordTreeWidget::getSelectedRecordItem() const
     }
 
     return static_cast<RecordTreeWidgetItem*>(selectedItems.first());
+}
+
+QList<RecordTreeWidgetItem*> RecordTreeWidget::getSelectedRecordItems() const
+{
+    QList<RecordTreeWidgetItem*> selectedRecordItems;
+    QList<QTreeWidgetItem*> selectedItems = this->selectedItems();
+
+    for (int i = 0; i < selectedItems.count(); ++i)
+    {
+        selectedRecordItems << static_cast<RecordTreeWidgetItem*>(selectedItems[i]);
+    }
+
+    return selectedRecordItems;
 }
 
 void RecordTreeWidget::navigateForward()

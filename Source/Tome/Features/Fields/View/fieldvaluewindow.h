@@ -33,6 +33,7 @@ class FieldValueWindow : public QDialog
 
         QVariant getFieldValue() const;
 
+        void setFieldCount(const int fieldCount);
         void setFieldDescription(const QString& description);
         void setFieldDisplayName(const QString& displayName);
         void setFieldValue(const QVariant& fieldValue);
