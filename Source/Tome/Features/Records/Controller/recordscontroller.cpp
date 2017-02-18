@@ -339,6 +339,31 @@ bool RecordsController::hasRecord(const QString& id) const
     return false;
 }
 
+bool RecordsController::haveTheSameParent(const QStringList ids) const
+{
+    if (ids.count() <= 1)
+    {
+        return true;
+    }
+
+    QString recordId = ids[0];
+    QString parentId = this->getParentId(recordId);
+
+    for (int i = 1; i < ids.count(); ++i)
+    {
+        const QString recordId = ids[i];
+        const QString nextParentId = this->getParentId(recordId);
+
+        // Check parent.
+        if (parentId != nextParentId)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 int RecordsController::indexOf(const Record& record) const
 {
     return this->model->at(0).records.indexOf(record);

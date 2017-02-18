@@ -68,6 +68,7 @@ namespace Tome
             const QString getRootRecordId(const QString& id) const;
 
             bool hasRecord(const QString& id) const;
+            bool haveTheSameParent(const QStringList ids) const;
             int indexOf(const Record& record) const;
 
             /**

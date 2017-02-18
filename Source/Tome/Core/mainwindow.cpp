@@ -892,76 +892,109 @@ void MainWindow::on_actionDuplicate_Record_triggered()
 
 void MainWindow::on_actionRevert_Record_triggered()
 {
-    // Get record to revert.
-    const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
+    // Get records to revert.
+    const QStringList recordIds = this->recordTreeWidget->getSelectedRecordIds();
 
-    if (recordId.isEmpty())
+    if (recordIds.empty())
     {
         return;
     }
 
-    // Check if read-only.
-    const Record& record = this->controller->getRecordsController().getRecord(recordId);
-
-    if (record.readOnly && !this->controller->getProjectController().getProjectIgnoreReadOnly())
+    if (recordIds.count() > 1)
     {
-        this->showReadOnlyMessage(recordId);
-        return;
+        if (!this->controller->getRecordsController().haveTheSameParent(recordIds))
+        {
+            QMessageBox::information(
+                        this,
+                        tr("Revert Records"),
+                        tr("Cannot revert multiple records with different parents."),
+                        QMessageBox::Close,
+                        QMessageBox::Close);
+            return;
+        }
+
+        // Show question.
+        const QString& question = tr("Are you sure you want to revert %1 records to their original state?").arg(recordIds.count());
+
+        int answer = QMessageBox::question(
+                    this,
+                    tr("Revert Records"),
+                    question,
+                    QMessageBox::Yes,
+                    QMessageBox::No);
+
+        if (answer != QMessageBox::Yes)
+        {
+            return;
+        }
+
+        for (int i = 0; i < recordIds.count(); ++i)
+        {
+            // Check if read-only.
+            const QString recordId = recordIds[i];
+            const Record& record = this->controller->getRecordsController().getRecord(recordId);
+
+            if (record.readOnly && !this->controller->getProjectController().getProjectIgnoreReadOnly())
+            {
+                this->showReadOnlyMessage(recordId);
+                continue;
+            }
+
+            // Revert record.
+            RevertRecordCommand* command = new RevertRecordCommand(
+                        this->controller->getRecordsController(),
+                        recordId);
+            this->controller->getUndoController().doCommand(command);
+        }
     }
-
-    // Show question.
-    const QString& question = tr("Are you sure you want to revert %1 to its original state?").arg(recordId);
-
-    int answer = QMessageBox::question(
-                this,
-                tr("Revert Record"),
-                question,
-                QMessageBox::Yes,
-                QMessageBox::No);
-
-    if (answer != QMessageBox::Yes)
+    else
     {
-        return;
-    }
+        // Check if read-only.
+        const QString recordId = recordIds[0];
+        const Record& record = this->controller->getRecordsController().getRecord(recordId);
 
-    // Revert record.
-    RevertRecordCommand* command = new RevertRecordCommand(
-                this->controller->getRecordsController(),
-                recordId);
-    this->controller->getUndoController().doCommand(command);
+        if (record.readOnly && !this->controller->getProjectController().getProjectIgnoreReadOnly())
+        {
+            this->showReadOnlyMessage(recordId);
+            return;
+        }
+
+        // Show question.
+        const QString& question = tr("Are you sure you want to revert %1 to its original state?").arg(recordId);
+
+        int answer = QMessageBox::question(
+                    this,
+                    tr("Revert Record"),
+                    question,
+                    QMessageBox::Yes,
+                    QMessageBox::No);
+
+        if (answer != QMessageBox::Yes)
+        {
+            return;
+        }
+
+        // Revert record.
+        RevertRecordCommand* command = new RevertRecordCommand(
+                    this->controller->getRecordsController(),
+                    recordId);
+        this->controller->getUndoController().doCommand(command);
+    }
 }
 
 void MainWindow::on_actionRemove_Record_triggered()
 {
     QStringList recordIds = this->recordTreeWidget->getSelectedRecordIds();
 
-    if (recordIds.count() > 1)
+    if (!this->controller->getRecordsController().haveTheSameParent(recordIds))
     {
-        // Verify parents.
-        QString recordId = recordIds[0];
-        QString parentId = this->controller->getRecordsController().getParentId(recordId);
-
-        for (int i = 1; i < recordIds.count(); ++i)
-        {
-            const QString recordId = recordIds[i];
-            const QString nextParentId = this->controller->getRecordsController().getParentId(recordId);
-
-            // Update progress bar.
-            this->onProgressChanged(tr("Verifying Parents"), recordId, i, recordIds.count());
-
-            // Check parent.
-            if (parentId != nextParentId)
-            {
-                QMessageBox::information(
-                            this,
-                            tr("Remove Records"),
-                            tr("Cannot remove multiple records with different parents."),
-                            QMessageBox::Close,
-                            QMessageBox::Close);
-                this->onProgressChanged(tr("Removing Records"), QString(), 1, 1);
-                return;
-            }
-        }
+        QMessageBox::information(
+                    this,
+                    tr("Remove Records"),
+                    tr("Cannot remove multiple records with different parents."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return;
     }
 
     for (int i = 0; i < recordIds.count(); ++i)
