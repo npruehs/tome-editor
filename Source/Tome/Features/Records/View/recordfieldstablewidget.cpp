@@ -1,7 +1,9 @@
 #include "recordfieldstablewidget.h"
 
 #include <QHeaderView>
+#include <QImageReader>
 #include <QLabel>
+#include <QPixmap>
 
 #include "../Controller/recordscontroller.h"
 #include "../Model/recordfieldvaluemap.h"
@@ -201,6 +203,23 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
             // Add margin for increased readability.
             valueLabel->setMargin(5);
             this->setIndexWidget(index, valueLabel);
+        }
+
+        // Show preview.
+        QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
+        for (QByteArray& format : supportedImageFormats)
+        {
+            if (fileName.endsWith(format))
+            {
+                QPixmap pixmap(fileName);
+
+                if (!pixmap.isNull())
+                {
+                    QPixmap scaledPixmap = pixmap.scaled(QSize(24, 24));
+                    this->item(i, 1)->setData(Qt::DecorationRole, scaledPixmap);
+                    break;
+                }
+            }
         }
     }
     else
