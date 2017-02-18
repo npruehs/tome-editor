@@ -15,7 +15,7 @@
 #include "../../Projects/Controller/projectcontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
-#include "../../../Core/controller.h"
+#include "../../../Util/pathutils.h"
 
 using namespace Tome;
 
@@ -224,11 +224,7 @@ void ProjectOverviewWindow::navigateToSelectedFile(QListWidgetItem* item)
 
     // Get file path.
     const QString& filePath = item->data(Qt::DisplayRole).toString();
-    const QFileInfo file(filePath);
-    const QUrl url = QUrl::fromLocalFile(file.absolutePath());
-
-    // Open in explorer or finder.
-    QDesktopServices::openUrl(url);
+    showFileInExplorerOrFinder(filePath);
 }
 
 void ProjectOverviewWindow::updateComponentData()

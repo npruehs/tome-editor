@@ -111,6 +111,8 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     // Add record table.
     this->recordFieldTableWidget = new RecordFieldsTableWidget(
                 this->controller->getFieldDefinitionsController(),
+                this->controller->getFacetsController(),
+                this->controller->getProjectController(),
                 this->controller->getRecordsController(),
                 this->controller->getTypesController());
 
@@ -237,6 +239,12 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 this->recordTreeWidget,
                 SIGNAL(recordReparented(const QString&, const QString&)),
                 SLOT(treeWidgetRecordReparented(const QString&, const QString&))
+                );
+
+    connect(
+                this->recordFieldTableWidget,
+                SIGNAL(fileLinkActivated(const QString&)),
+                SLOT(onFileLinkActivated(const QString&))
                 );
 
     connect(
@@ -1441,6 +1449,11 @@ void MainWindow::onImportStarted()
 void MainWindow::onImportTemplatesChanged()
 {
     this->refreshImportMenu();
+}
+
+void MainWindow::onFileLinkActivated(const QString& filePath)
+{
+    showFileInExplorerOrFinder(filePath);
 }
 
 void MainWindow::onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue)
