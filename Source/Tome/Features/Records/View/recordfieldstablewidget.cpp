@@ -1,23 +1,38 @@
 #include "recordfieldstablewidget.h"
 
 #include <QHeaderView>
+#include <QImageReader>
 #include <QLabel>
+#include <QPixmap>
 
+#include "labeledpixmapwidget.h"
 #include "../Controller/recordscontroller.h"
 #include "../Model/recordfieldvaluemap.h"
+#include "../../Facets/Controller/facetscontroller.h"
+#include "../../Facets/Controller/removedfileprefixfacet.h"
+#include "../../Facets/Controller/removedfilesuffixfacet.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../Fields/Model/fielddefinition.h"
+#include "../../Projects/Controller/projectcontroller.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/builtintype.h"
 #include "../../Types/Model/customtype.h"
 #include "../../../Util/listutils.h"
+#include "../../../Util/pathutils.h"
 #include "../../../Util/stringutils.h"
+
 
 using namespace Tome;
 
 
-RecordFieldsTableWidget::RecordFieldsTableWidget(FieldDefinitionsController& fieldDefinitionsController, RecordsController& recordsController, TypesController& typesController)
-    : fieldDefinitionsController(fieldDefinitionsController),
+RecordFieldsTableWidget::RecordFieldsTableWidget(FieldDefinitionsController& fieldDefinitionsController,
+                                                 FacetsController& facetsController,
+                                                 ProjectController& projectController,
+                                                 RecordsController& recordsController,
+                                                 TypesController& typesController)
+    : facetsController(facetsController),
+      fieldDefinitionsController(fieldDefinitionsController),
+      projectController(projectController),
       recordsController(recordsController),
       typesController(typesController),
       recordId(QString()),
@@ -121,19 +136,87 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
     // Show field name.
     this->item(i, 0)->setData(Qt::DisplayRole, keyString);
 
+    // Remove any existing index widget.
+    QModelIndex index = this->model()->index(i, 1);
+    QWidget *indexWidget = this->indexWidget(index);
+    if (nullptr != indexWidget)
+    {
+        this->setIndexWidget(index, nullptr);
+        delete indexWidget;
+    }
+
     // Show hyperlink for reference fields, and normal text for other fields.
-    if (this->typesController.isReferenceType(field.fieldType))
+    if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference))
     {
         QString href = "<a href='" + valueString + "'>" + valueString + "</a>";
         QModelIndex index = this->model()->index(i, 1);
-        // Check for an existing index widget
-        QWidget *indexWidget = this->indexWidget(index);
-        if (nullptr != indexWidget)
+
+        // Create new index widget.
+        QLabel* valueLabel = new QLabel(href);
+
+        connect(
+                    valueLabel,
+                    SIGNAL(linkActivated(const QString&)),
+                    SLOT(onRecordLinkActivated(const QString&))
+                    );
+
+        // Add margin for increased readability.
+        valueLabel->setMargin(5);
+        this->setIndexWidget(index, valueLabel);
+    }
+    else if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::File))
+    {
+        // Build full file path.
+        QString removedPrefix;
+        QString removedSuffix;
+
+        removedPrefix = this->facetsController.getFacetValue(field.fieldType, RemovedFilePrefixFacet::FacetKey).toString();
+        removedSuffix = this->facetsController.getFacetValue(field.fieldType, RemovedFileSuffixFacet::FacetKey).toString();
+
+        QString fileName = removedPrefix + valueString + removedSuffix;
+        QString projectPath = this->projectController.getProjectPath();
+
+        fileName = combinePaths(projectPath, fileName);
+
+        // Get preview.
+        QPixmap preview;
+
+        QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
+        for (QByteArray& format : supportedImageFormats)
         {
-            QLabel* valueLabel = static_cast<QLabel*>(indexWidget);
-            valueLabel->setText(href);
+            if (fileName.endsWith(format))
+            {
+                preview.load(fileName);
+
+                if (!preview.isNull())
+                {
+                    break;
+                }
+            }
         }
-        // Create a new index widget
+
+        // Show file path.
+        QString href = "<a href='" + fileName + "'>" + valueString + "</a>";
+        QWidget* widget;
+
+        if (!preview.isNull())
+        {
+            // Create new labeled pixmap.
+            LabeledPixmapWidget* labeledPixmap = new LabeledPixmapWidget(this);
+            labeledPixmap->setText(href);
+            labeledPixmap->setPixmap(preview);
+
+            connect(
+                        &labeledPixmap->getTextLabel(),
+                        SIGNAL(linkActivated(const QString&)),
+                        SLOT(onFileLinkActivated(const QString&))
+                        );
+
+            // Add margin for increased readability.
+            labeledPixmap->getTextLabel().setMargin(5);
+
+            widget = labeledPixmap;
+        }
         else
         {
             QLabel* valueLabel = new QLabel(href);
@@ -146,20 +229,15 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
 
             // Add margin for increased readability.
             valueLabel->setMargin(5);
-            this->setIndexWidget(index, valueLabel);
+
+            widget = valueLabel;
         }
+
+        QModelIndex index = this->model()->index(i, 1);
+        this->setIndexWidget(index, widget);
     }
     else
     {
-        // Remove any index widget
-        QModelIndex index = this->model()->index(i, 1);
-        QWidget *indexWidget = this->indexWidget(index);
-        if (nullptr != indexWidget)
-        {
-            this->setIndexWidget(index, nullptr);
-            delete indexWidget;
-        }
-
         // Show normal text.
         this->item(i, 1)->setData(Qt::DisplayRole, valueString);
 
@@ -200,6 +278,11 @@ const QString RecordFieldsTableWidget::getFieldKeyString(const FieldDefinition& 
     shortComponentName.replace("Component", "");
     shortComponentName = splitAtCapitalLetters(shortComponentName);
     return QString("%1 - %2").arg(shortComponentName, field.displayName);
+}
+
+void RecordFieldsTableWidget::onFileLinkActivated(const QString& filePath)
+{
+    emit this->fileLinkActivated(filePath);
 }
 
 void RecordFieldsTableWidget::onRecordLinkActivated(const QString& recordId)

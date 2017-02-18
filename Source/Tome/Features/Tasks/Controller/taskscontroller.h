@@ -14,6 +14,7 @@ namespace Tome
     class ComponentsController;
     class FacetsController;
     class FieldDefinitionsController;
+    class ProjectController;
     class RecordsController;
     class TypesController;
 
@@ -22,7 +23,12 @@ namespace Tome
             Q_OBJECT
 
         public:
-            TasksController(const ComponentsController& componentsController, const FacetsController& facetsController, const FieldDefinitionsController& fieldDefinitionsController, const RecordsController& recordsController, const TypesController& typesController);
+            TasksController(const ComponentsController& componentsController,
+                            const FacetsController& facetsController,
+                            const FieldDefinitionsController& fieldDefinitionsController,
+                            const ProjectController& projectController,
+                            const RecordsController& recordsController,
+                            const TypesController& typesController);
             ~TasksController();
 
             void addTask(Task* task);
@@ -37,6 +43,7 @@ namespace Tome
             const ComponentsController& componentsController;
             const FacetsController& facetsController;
             const FieldDefinitionsController& fieldDefinitionsController;
+            const ProjectController& projectController;
             const RecordsController& recordsController;
             const TypesController& typesController;
     };

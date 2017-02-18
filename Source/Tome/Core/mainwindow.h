@@ -96,6 +96,7 @@ class MainWindow : public QMainWindow
         void onImportFinished();
         void onImportStarted();
         void onImportTemplatesChanged();
+        void onFileLinkActivated(const QString& filePath);
         void onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
         void onProjectChanged(QSharedPointer<Tome::Project> project);
         void onRecordAdded(const QString& recordId, const QString& recordDisplayName, const QString& parentId);

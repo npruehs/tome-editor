@@ -6,7 +6,13 @@
 
 namespace Tome
 {
-    class Controller;
+    class ComponentsController;
+    class ExportController;
+    class FieldDefinitionsController;
+    class ImportController;
+    class ProjectController;
+    class RecordsController;
+    class TypesController;
 }
 
 namespace Ui
@@ -19,7 +25,14 @@ class ProjectOverviewWindow : public QDialog
         Q_OBJECT
 
     public:
-        explicit ProjectOverviewWindow(Tome::Controller* controller, QWidget *parent = 0);
+        explicit ProjectOverviewWindow(Tome::ProjectController& projectController,
+                                       Tome::ComponentsController& componentsController,
+                                       Tome::ExportController& exportController,
+                                       Tome::FieldDefinitionsController& fieldDefinitionsController,
+                                       Tome::ImportController& importController,
+                                       Tome::RecordsController& recordsController,
+                                       Tome::TypesController& typesController,
+                                       QWidget *parent = 0);
         ~ProjectOverviewWindow();
 
     protected:
@@ -28,7 +41,13 @@ class ProjectOverviewWindow : public QDialog
     private:
         Ui::ProjectOverviewWindow *ui;
 
-        Tome::Controller* controller;
+        Tome::ComponentsController& componentsController;
+        Tome::ExportController& exportController;
+        Tome::FieldDefinitionsController& fieldDefinitionsController;
+        Tome::ImportController& importController;
+        Tome::ProjectController& projectController;
+        Tome::RecordsController& recordsController;
+        Tome::TypesController& typesController;
 
         QListWidgetItem* getSelectedListWidgetItem(QListWidget* listWidget);
 

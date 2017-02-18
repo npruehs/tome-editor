@@ -3,12 +3,13 @@
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Tasks/Model/taskcontext.h"
+#include "../../Types/Model/builtintype.h"
 #include "../../Types/Controller/typescontroller.h"
 
 using namespace Tome;
 
 
-const QString ReferencedRecordDoesNotExistTask::MessageCode = "TO0107";
+const QString ReferencedRecordDoesNotExistTask::MessageCode = "TO0201";
 
 
 ReferencedRecordDoesNotExistTask::ReferencedRecordDoesNotExistTask()
@@ -41,7 +42,7 @@ const MessageList ReferencedRecordDoesNotExistTask::execute(const TaskContext& c
 
             const FieldDefinition& field = context.fieldDefinitionsController.getFieldDefinition(fieldId);
 
-            if (!context.typesController.isReferenceType(field.fieldType))
+            if (!context.typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference))
             {
                 continue;
             }

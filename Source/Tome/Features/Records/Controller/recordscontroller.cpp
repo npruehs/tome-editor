@@ -859,7 +859,7 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
             const QString fieldId = it.key();
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
 
-            if (this->typesController.isReferenceType(field.fieldType))
+            if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference))
             {
                 const QString reference = it.value().toString();
 

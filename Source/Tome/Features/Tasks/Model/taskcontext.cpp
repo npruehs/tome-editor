@@ -9,15 +9,16 @@
 using namespace Tome;
 
 
-TaskContext::TaskContext(
-        const ComponentsController& componentsController,
+TaskContext::TaskContext(const ComponentsController& componentsController,
         const FacetsController& facetsController,
         const FieldDefinitionsController& fieldDefinitionsController,
+        const ProjectController& projectController,
         const RecordsController& recordsController,
         const TypesController& typesController)
     : componentsController(componentsController),
       facetsController(facetsController),
       fieldDefinitionsController(fieldDefinitionsController),
+      projectController(projectController),
       recordsController(recordsController),
       typesController(typesController)
 {

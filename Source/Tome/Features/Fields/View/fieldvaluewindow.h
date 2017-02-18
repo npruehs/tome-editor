@@ -14,6 +14,7 @@ namespace Tome
     class Facet;
     class FieldValueWidget;
     class FacetsController;
+    class ProjectController;
     class RecordsController;
     class TypesController;
 }
@@ -23,7 +24,11 @@ class FieldValueWindow : public QDialog
         Q_OBJECT
 
     public:
-        explicit FieldValueWindow(Tome::FacetsController& facetsController, Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent = 0);
+        explicit FieldValueWindow(Tome::FacetsController& facetsController,
+                                  Tome::ProjectController& projectController,
+                                  Tome::RecordsController& recordsController,
+                                  Tome::TypesController& typesController,
+                                  QWidget *parent = 0);
         ~FieldValueWindow();
 
         QVariant getFieldValue() const;
@@ -50,6 +55,7 @@ class FieldValueWindow : public QDialog
         Tome::FieldValueWidget* fieldValueWidget;
 
         Tome::FacetsController& facetsController;
+        Tome::ProjectController& projectController;
         Tome::RecordsController& recordsController;
         Tome::TypesController& typesController;
 };

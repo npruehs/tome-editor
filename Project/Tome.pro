@@ -156,7 +156,13 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Integrity/Controller/fieldisneverusedtask.cpp \
     ../Source/Tome/Features/Integrity/Controller/typeisneverusedtask.cpp \
     ../Source/Tome/Features/Integrity/Controller/referencedrecorddoesnotexisttask.cpp \
-    ../Source/Tome/Features/Integrity/Controller/fieldalwayshasitsdefaultvaluetask.cpp
+    ../Source/Tome/Features/Integrity/Controller/fieldalwayshasitsdefaultvaluetask.cpp \
+    ../Source/Tome/Features/Fields/View/filepickerwidget.cpp \
+    ../Source/Tome/Features/Projects/Controller/projectcontroller.cpp \
+    ../Source/Tome/Features/Facets/Controller/removedfileprefixfacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/removedfilesuffixfacet.cpp \
+    ../Source/Tome/Features/Integrity/Controller/referencedfiledoesnotexisttask.cpp \
+    ../Source/Tome/Features/Records/View/labeledpixmapwidget.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -305,7 +311,13 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Integrity/Controller/fieldisneverusedtask.h \
     ../Source/Tome/Features/Integrity/Controller/typeisneverusedtask.h \
     ../Source/Tome/Features/Integrity/Controller/referencedrecorddoesnotexisttask.h \
-    ../Source/Tome/Features/Integrity/Controller/fieldalwayshasitsdefaultvaluetask.h
+    ../Source/Tome/Features/Integrity/Controller/fieldalwayshasitsdefaultvaluetask.h \
+    ../Source/Tome/Features/Fields/View/filepickerwidget.h \
+    ../Source/Tome/Features/Projects/Controller/projectcontroller.h \
+    ../Source/Tome/Features/Facets/Controller/removedfileprefixfacet.h \
+    ../Source/Tome/Features/Facets/Controller/removedfilesuffixfacet.h \
+    ../Source/Tome/Features/Integrity/Controller/referencedfiledoesnotexisttask.h \
+    ../Source/Tome/Features/Records/View/labeledpixmapwidget.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
