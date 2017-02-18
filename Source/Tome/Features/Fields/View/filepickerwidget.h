@@ -10,6 +10,7 @@
 
 namespace Tome
 {
+    class FacetsController;
     class ProjectController;
 
     class FilePickerWidget : public QWidget
@@ -17,22 +18,27 @@ namespace Tome
             Q_OBJECT
 
         public:
-            explicit FilePickerWidget(ProjectController& projectController, QWidget* parent = 0);
+            explicit FilePickerWidget(FacetsController& facetsController, ProjectController& projectController, QWidget* parent = 0);
             ~FilePickerWidget();
 
             QVariant getFileName() const;
             void setFileName(const QVariant& v);
 
+            void setFieldType(const QString& fieldType);
+
         private slots:
             void onBrowseButtonClicked(bool checked);
 
         private:
+            FacetsController& facetsController;
             ProjectController& projectController;
 
             QHBoxLayout* layout;
 
             QLineEdit* lineEdit;
             QPushButton* button;
+
+            QString fieldType;
     };
 }
 

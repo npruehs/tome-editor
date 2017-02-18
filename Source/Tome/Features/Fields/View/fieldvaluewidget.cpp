@@ -83,7 +83,7 @@ FieldValueWidget::FieldValueWidget(FacetsController& facetsController,
     this->mapWidget = new MapWidget(this->facetsController, this->projectController, this->recordsController, this->typesController);
     this->addWidget(this->mapWidget);
 
-    this->filePicker = new FilePickerWidget(this->projectController);
+    this->filePicker = new FilePickerWidget(this->facetsController, this->projectController);
     this->addWidget(this->filePicker);
 
     // Add error label.
@@ -350,6 +350,7 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
     if (typeName == BuiltInType::File)
     {
+        this->filePicker->setFieldType(this->fieldType);
         this->setCurrentWidget(this->filePicker);
         return;
     }

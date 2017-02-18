@@ -18,6 +18,8 @@
 #include "../Features/Facets/Controller/maximumstringlengthfacet.h"
 #include "../Features/Facets/Controller/minimumintegervaluefacet.h"
 #include "../Features/Facets/Controller/minimumrealvaluefacet.h"
+#include "../Features/Facets/Controller/removedfileprefixfacet.h"
+#include "../Features/Facets/Controller/removedfilesuffixfacet.h"
 #include "../Features/Facets/Controller/requiredreferenceancestorfacet.h"
 #include "../Features/Fields/Controller/fielddefinitionscontroller.h"
 #include "../Features/Import/Controller/importcontroller.h"
@@ -87,6 +89,8 @@ Controller::Controller(CommandLineOptions* options) :
     this->facetsController->registerFacet(new MinimumRealValueFacet());
     this->facetsController->registerFacet(new MaximumRealValueFacet());
     this->facetsController->registerFacet(new MaximumStringLengthFacet());
+    this->facetsController->registerFacet(new RemovedFilePrefixFacet());
+    this->facetsController->registerFacet(new RemovedFileSuffixFacet());
     this->facetsController->registerFacet(new RequiredReferenceAncestorFacet());
 
     // Connect signals.
