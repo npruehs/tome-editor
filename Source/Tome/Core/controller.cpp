@@ -61,7 +61,7 @@ Controller::Controller(CommandLineOptions* options) :
     facetsController(new FacetsController(*this->recordsController, *this->typesController)),
     exportController(new ExportController(*this->facetsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     settingsController(new SettingsController()),
-    tasksController(new TasksController(*this->componentsController, *this->facetsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
+    tasksController(new TasksController(*this->componentsController, *this->facetsController, *this->fieldDefinitionsController, *this->projectController, *this->recordsController, *this->typesController)),
     findUsagesController(new FindUsagesController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     findRecordController(new FindRecordController(*this->recordsController)),
     importController(new ImportController(*this->fieldDefinitionsController, *this->recordsController, *this->typesController)),

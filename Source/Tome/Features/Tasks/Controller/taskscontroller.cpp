@@ -11,15 +11,16 @@
 using namespace Tome;
 
 
-TasksController::TasksController(
-        const ComponentsController& componentsController,
+TasksController::TasksController(const ComponentsController& componentsController,
         const FacetsController& facetsController,
         const FieldDefinitionsController& fieldDefinitionsController,
+        const ProjectController& projectController,
         const RecordsController& recordsController,
         const TypesController& typesController)
     : componentsController(componentsController),
       facetsController(facetsController),
       fieldDefinitionsController(fieldDefinitionsController),
+      projectController(projectController),
       recordsController(recordsController),
       typesController(typesController)
 {
@@ -45,6 +46,7 @@ const MessageList TasksController::runAllTasks() const
                 this->componentsController,
                 this->facetsController,
                 this->fieldDefinitionsController,
+                this->projectController,
                 this->recordsController,
                 this->typesController);
 

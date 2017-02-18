@@ -6,6 +6,7 @@ namespace Tome
     class ComponentsController;
     class FacetsController;
     class FieldDefinitionsController;
+    class ProjectController;
     class RecordsController;
     class TypesController;
 
@@ -16,12 +17,14 @@ namespace Tome
                     const ComponentsController& componentsController,
                     const FacetsController& facetsController,
                     const FieldDefinitionsController& fieldDefinitionsController,
+                    const ProjectController& projectController,
                     const RecordsController& recordsController,
                     const TypesController& typesController);
 
             const ComponentsController& componentsController;
             const FacetsController& facetsController;
             const FieldDefinitionsController& fieldDefinitionsController;
+            const ProjectController& projectController;
             const RecordsController& recordsController;
             const TypesController& typesController;
     };
