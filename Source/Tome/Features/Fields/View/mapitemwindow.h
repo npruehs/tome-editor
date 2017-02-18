@@ -11,6 +11,7 @@ namespace Tome
 {
     class FieldValueWidget;
     class FacetsController;
+    class ProjectController;
     class RecordsController;
     class TypesController;
 }
@@ -20,7 +21,11 @@ class MapItemWindow : public QDialog
         Q_OBJECT
 
     public:
-        explicit MapItemWindow(Tome::FacetsController& facetsController, Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent = 0);
+        explicit MapItemWindow(Tome::FacetsController& facetsController,
+                               Tome::ProjectController& projectController,
+                               Tome::RecordsController& recordsController,
+                               Tome::TypesController& typesController,
+                               QWidget *parent = 0);
         ~MapItemWindow();
 
         QVariant getKey() const;
@@ -42,6 +47,7 @@ class MapItemWindow : public QDialog
         Tome::FieldValueWidget* valueWidget;
 
         Tome::FacetsController& facetsController;
+        Tome::ProjectController& projectController;
         Tome::RecordsController& recordsController;
         Tome::TypesController& typesController;
 

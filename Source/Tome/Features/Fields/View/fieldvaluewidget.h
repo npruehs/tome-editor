@@ -20,6 +20,7 @@ namespace Tome
     class ListWidget;
     class MapWidget;
     class FacetsController;
+    class ProjectController;
     class RecordsController;
     class TypesController;
     class Vector2IWidget;
@@ -36,7 +37,11 @@ namespace Tome
             Q_OBJECT
 
         public:
-            explicit FieldValueWidget(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController,  QWidget *parent = 0);
+            explicit FieldValueWidget(FacetsController& facetsController,
+                                      ProjectController& projectController,
+                                      RecordsController& recordsController,
+                                      TypesController& typesController,
+                                      QWidget *parent = 0);
             ~FieldValueWidget();
 
             QString getFieldType() const;
@@ -79,6 +84,7 @@ namespace Tome
             QLabel* errorLabel;
 
             FacetsController& facetsController;
+            ProjectController& projectController;
             RecordsController& recordsController;
             TypesController& typesController;
 

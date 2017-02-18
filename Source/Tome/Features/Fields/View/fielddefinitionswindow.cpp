@@ -25,20 +25,22 @@ using namespace Tome;
 
 FieldDefinitionsWindow::FieldDefinitionsWindow(FieldDefinitionsController& fieldDefinitionsController,
         ComponentsController& componentsController,
+        FacetsController& facetsController,
+        FindUsagesController& findUsagesController,
+        ProjectController& projectController,
         RecordsController& recordsController,
         TypesController& typesController,
-        FindUsagesController& findUsagesController,
-        FacetsController& facetsController,
         UndoController& undoController,
         QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::FieldDefinitionsWindow),
     fieldDefinitionsController(fieldDefinitionsController),
     componentsController(componentsController),
+    facetsController(facetsController),
+    findUsagesController(findUsagesController),
+    projectController(projectController),
     recordsController(recordsController),
     typesController(typesController),
-    findUsagesController(findUsagesController),
-    facetsController(facetsController),
     undoController(undoController),
     fieldDefinitionWindow(0)
 {
@@ -118,6 +120,7 @@ void FieldDefinitionsWindow::on_actionNew_Field_triggered()
                     this->fieldDefinitionsController,
                     this->componentsController,
                     this->facetsController,
+                    this->projectController,
                     this->recordsController,
                     this->typesController,
                     this);
@@ -186,6 +189,7 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
                     this->fieldDefinitionsController,
                     this->componentsController,
                     this->facetsController,
+                    this->projectController,
                     this->recordsController,
                     this->typesController,
                     this);

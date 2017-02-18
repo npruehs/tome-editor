@@ -10,12 +10,14 @@
 
 namespace Tome
 {
+    class ProjectController;
+
     class FilePickerWidget : public QWidget
     {
             Q_OBJECT
 
         public:
-            explicit FilePickerWidget(QWidget* parent = 0);
+            explicit FilePickerWidget(ProjectController& projectController, QWidget* parent = 0);
             ~FilePickerWidget();
 
             QVariant getFileName() const;
@@ -25,6 +27,8 @@ namespace Tome
             void onBrowseButtonClicked(bool checked);
 
         private:
+            ProjectController& projectController;
+
             QHBoxLayout* layout;
 
             QLineEdit* lineEdit;

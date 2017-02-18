@@ -15,17 +15,22 @@
 using namespace Tome;
 
 
-FieldValueWindow::FieldValueWindow(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
+FieldValueWindow::FieldValueWindow(FacetsController& facetsController,
+                                   ProjectController& projectController,
+                                   RecordsController& recordsController,
+                                   TypesController& typesController,
+                                   QWidget *parent) :
     QDialog(parent),
     ui(new Ui::FieldValueWindow),
     facetsController(facetsController),
+    projectController(projectController),
     recordsController(recordsController),
     typesController(typesController)
 {
     ui->setupUi(this);
 
     // Add widget for specifying the field value.
-    this->fieldValueWidget = new FieldValueWidget(this->facetsController, this->recordsController, this->typesController, this);
+    this->fieldValueWidget = new FieldValueWidget(this->facetsController, this->projectController, this->recordsController, this->typesController, this);
     QGridLayout* layout = static_cast<QGridLayout*>(this->layout());
     layout->addWidget(this->fieldValueWidget, 3, 1);
 }

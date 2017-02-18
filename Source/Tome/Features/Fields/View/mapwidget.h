@@ -13,6 +13,7 @@ class MapItemWindow;
 namespace Tome
 {
     class FacetsController;
+    class ProjectController;
     class RecordsController;
     class TypesController;
 
@@ -21,7 +22,11 @@ namespace Tome
             Q_OBJECT
 
         public:
-            explicit MapWidget(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController, QWidget *parent = 0);
+            explicit MapWidget(FacetsController& facetsController,
+                               ProjectController& projectController,
+                               RecordsController& recordsController,
+                               TypesController& typesController,
+                               QWidget *parent = 0);
             ~MapWidget();
 
             QString getKeyType() const;
@@ -53,6 +58,7 @@ namespace Tome
             QTableWidget* tableWidget;
 
             FacetsController& facetsController;
+            ProjectController& projectController;
             RecordsController& recordsController;
             TypesController& typesController;
     };

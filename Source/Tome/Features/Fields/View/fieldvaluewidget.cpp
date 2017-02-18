@@ -24,10 +24,15 @@
 using namespace Tome;
 
 
-FieldValueWidget::FieldValueWidget(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
+FieldValueWidget::FieldValueWidget(FacetsController& facetsController,
+                                   ProjectController& projectController,
+                                   RecordsController& recordsController,
+                                   TypesController& typesController,
+                                   QWidget *parent) :
     QWidget(parent),
     currentWidget(0),
     facetsController(facetsController),
+    projectController(projectController),
     recordsController(recordsController),
     typesController(typesController)
 {
@@ -60,7 +65,7 @@ FieldValueWidget::FieldValueWidget(FacetsController& facetsController, RecordsCo
     this->comboBox = new QComboBox();
     this->addWidget(this->comboBox);
 
-    this->listWidget = new ListWidget(this->facetsController, this->recordsController, this->typesController);
+    this->listWidget = new ListWidget(this->facetsController, this->projectController, this->recordsController, this->typesController);
     this->addWidget(this->listWidget);
 
     this->vector2IWidget = new Vector2IWidget();
@@ -75,10 +80,10 @@ FieldValueWidget::FieldValueWidget(FacetsController& facetsController, RecordsCo
     this->vector3RWidget = new Vector3RWidget();
     this->addWidget(this->vector3RWidget);
 
-    this->mapWidget = new MapWidget(this->facetsController, this->recordsController, this->typesController);
+    this->mapWidget = new MapWidget(this->facetsController, this->projectController, this->recordsController, this->typesController);
     this->addWidget(this->mapWidget);
 
-    this->filePicker = new FilePickerWidget();
+    this->filePicker = new FilePickerWidget(this->projectController);
     this->addWidget(this->filePicker);
 
     // Add error label.

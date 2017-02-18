@@ -1,14 +1,17 @@
 #include "filepickerwidget.h"
 
+#include <QDir>
 #include <QFileDialog>
 
+#include "../../Projects/Controller/projectcontroller.h"
 #include "../../../Util/memoryutils.h"
 
 using namespace Tome;
 
 
-FilePickerWidget::FilePickerWidget(QWidget* parent)
-    : QWidget(parent)
+FilePickerWidget::FilePickerWidget(ProjectController& projectController, QWidget* parent)
+    : QWidget(parent),
+      projectController(projectController)
 {
     // Create layout.
     this->layout = new QHBoxLayout();
@@ -57,6 +60,15 @@ void FilePickerWidget::onBrowseButtonClicked(bool checked)
     fileName = QFileDialog::getOpenFileName(this,
                                             tr("Select File"),
                                             fileName);
+
+    if (fileName.isEmpty())
+    {
+        return;
+    }
+
+    // Get relative path.
+    QDir projectDir(this->projectController.getProjectPath());
+    fileName = projectDir.relativeFilePath(fileName);
 
     // Set selected file.
     this->setFileName(fileName);

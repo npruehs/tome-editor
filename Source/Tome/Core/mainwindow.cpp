@@ -463,10 +463,11 @@ void MainWindow::on_actionField_Definions_triggered()
         this->fieldDefinitionsWindow = new FieldDefinitionsWindow(
                     this->controller->getFieldDefinitionsController(),
                     this->controller->getComponentsController(),
+                    this->controller->getFacetsController(),
+                    this->controller->getFindUsagesController(),
+                    this->controller->getProjectController(),
                     this->controller->getRecordsController(),
                     this->controller->getTypesController(),
-                    this->controller->getFindUsagesController(),
-                    this->controller->getFacetsController(),
                     this->controller->getUndoController(),
                     this);
 
@@ -1246,6 +1247,7 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
     {
         this->fieldValueWindow = new FieldValueWindow
                 (this->controller->getFacetsController(),
+                 this->controller->getProjectController(),
                  this->controller->getRecordsController(),
                  this->controller->getTypesController(),
                  this);
