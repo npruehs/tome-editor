@@ -30,6 +30,7 @@ const QString ExportController::PlaceholderFieldId = "$FIELD_ID$";
 const QString ExportController::PlaceholderFieldKey = "$FIELD_KEY$";
 const QString ExportController::PlaceholderFieldType = "$FIELD_TYPE$";
 const QString ExportController::PlaceholderFieldValue = "$FIELD_VALUE$";
+const QString ExportController::PlaceholderHash = "$HASH$";
 const QString ExportController::PlaceholderItemType = "$ITEM_TYPE$";
 const QString ExportController::PlaceholderKeyType = "$KEY_TYPE$";
 const QString ExportController::PlaceholderListItem = "$LIST_ITEM$";
@@ -553,6 +554,12 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
     recordFileString = recordFileString.replace(PlaceholderAppVersion, APP_VERSION);
     recordFileString = recordFileString.replace(PlaceholderAppVersionName, APP_VERSION_NAME);
     recordFileString = recordFileString.replace(PlaceholderExportTime, QDateTime::currentDateTimeUtc().toString(Qt::ISODate));
+
+    if (recordFileString.contains(PlaceholderHash))
+    {
+        QString hash = this->recordsController.computeRecordsHash();
+        recordFileString = recordFileString.replace(PlaceholderHash, hash);
+    }
 
     // Write record file.
     QTextStream textStream(&device);

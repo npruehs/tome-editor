@@ -26,6 +26,8 @@ namespace Tome
                                    const QString& recordSetName);
             void addRecordSet(const RecordSet& recordSet);
 
+            const QString computeRecordsHash() const;
+
             const Record duplicateRecord(const QString& existingRecordId, const QString& newRecordId);
 
             /**

@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+#include <QCryptographicHash>
+
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../Fields/Model/fielddefinition.h"
 #include "../../Types/Controller/typescontroller.h"
@@ -81,6 +83,70 @@ void RecordsController::addRecordSet(const RecordSet& recordSet)
 
     // Notify listeners.
     emit this->recordSetsChanged();
+}
+
+const QString RecordsController::computeRecordsHash() const
+{
+    // Prepare MD5 hashing.
+    QCryptographicHash hash(QCryptographicHash::Md5);
+
+    // Hash all record files.
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        const RecordSet& recordSet = this->model->at(i);
+
+        // Hash all records.
+        for (int j = 0; j < recordSet.records.size(); ++j)
+        {
+            const Record& record = recordSet.records[j];
+            const RecordFieldValueMap fieldValues = this->getRecordFieldValues(record.id);
+
+            // Hash all fields.
+            for (RecordFieldValueMap::const_iterator itFields = fieldValues.begin();
+                 itFields != fieldValues.end();
+                 ++itFields)
+            {
+                QString fieldId = itFields.key();
+                QVariant fieldValue = itFields.value();
+
+                // Hash field key.
+                hash.addData(fieldId.toUtf8());
+
+                // Hash list field items.
+                QVariantList list = fieldValue.toList();
+                if (!list.isEmpty())
+                {
+                    for (int k = 0; k < list.count(); ++k)
+                    {
+                        hash.addData(list[k].toString().toUtf8());
+                    }
+                    continue;
+                }
+
+                // Hash map field items.
+                QVariantMap map = fieldValue.toMap();
+                if (!map.isEmpty())
+                {
+                    for (QVariantMap::iterator it = map.begin();
+                         it != map.end();
+                         ++it)
+                    {
+                        const QString k = it.key();
+                        const QVariant v = it.value();
+
+                        hash.addData(k.toUtf8());
+                        hash.addData(v.toString().toUtf8());
+                    }
+                    continue;
+                }
+
+                // Hash field value.
+                hash.addData(fieldValue.toString().toUtf8());
+            }
+        }
+    }
+
+    return hash.result().toHex();
 }
 
 const Record RecordsController::duplicateRecord(const QString& existingRecordId, const QString& newRecordId)
