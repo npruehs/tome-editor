@@ -171,20 +171,20 @@ bool TypesController::isCustomType(const QString& name) const
     return false;
 }
 
-bool TypesController::isReferenceType(const QString& name) const
+bool TypesController::isTypeOrDerivedFromType(const QString& lhs, const QString& rhs) const
 {
-    if (name == BuiltInType::Reference)
+    if (lhs == rhs)
     {
         return true;
     }
 
-    if (!this->isCustomType(name))
+    if (!this->isCustomType(lhs))
     {
         return false;
     }
 
-    const CustomType& type = this->getCustomType(name);
-    return type.isDerivedType() && type.getBaseType() == BuiltInType::Reference;
+    const CustomType& type = this->getCustomType(lhs);
+    return type.isDerivedType() && type.getBaseType() == rhs;
 }
 
 void TypesController::removeCustomType(const QString& typeName)

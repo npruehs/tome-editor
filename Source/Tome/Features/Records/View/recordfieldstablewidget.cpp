@@ -122,7 +122,7 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
     this->item(i, 0)->setData(Qt::DisplayRole, keyString);
 
     // Show hyperlink for reference fields, and normal text for other fields.
-    if (this->typesController.isReferenceType(field.fieldType))
+    if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference))
     {
         QString href = "<a href='" + valueString + "'>" + valueString + "</a>";
         QModelIndex index = this->model()->index(i, 1);

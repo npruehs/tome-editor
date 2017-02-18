@@ -3,6 +3,7 @@
 #include "../recordscontroller.h"
 #include "../../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../../Types/Controller/typescontroller.h"
+#include "../../../Types/Model/builtintype.h"
 
 using namespace Tome;
 
@@ -103,7 +104,7 @@ void RemoveRecordCommand::redo()
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
 
             // Check if it's a reference field.
-            if (this->typesController.isReferenceType(field.fieldType))
+            if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference))
             {
                 const QString reference = itFields.value().toString();
 
