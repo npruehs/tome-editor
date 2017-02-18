@@ -222,6 +222,11 @@ const RecordFieldValueMap RecordsController::getInheritedFieldValues(const QStri
     return fieldValues;
 }
 
+const QString RecordsController::getParentId(const QString& id) const
+{
+    return this->getRecord(id).parentId;
+}
+
 const RecordSetList& RecordsController::getRecordSets() const
 {
     return *this->model;

@@ -933,30 +933,64 @@ void MainWindow::on_actionRevert_Record_triggered()
 
 void MainWindow::on_actionRemove_Record_triggered()
 {
-    RecordTreeWidgetItem* recordItem = this->recordTreeWidget->getSelectedRecordItem();
+    QStringList recordIds = this->recordTreeWidget->getSelectedRecordIds();
 
-    if (recordItem == 0)
+    if (recordIds.count() > 1)
     {
-        return;
+        // Verify parents.
+        QString recordId = recordIds[0];
+        QString parentId = this->controller->getRecordsController().getParentId(recordId);
+
+        for (int i = 1; i < recordIds.count(); ++i)
+        {
+            const QString recordId = recordIds[i];
+            const QString nextParentId = this->controller->getRecordsController().getParentId(recordId);
+
+            // Update progress bar.
+            this->onProgressChanged(tr("Verifying Parents"), recordId, i, recordIds.count());
+
+            // Check parent.
+            if (parentId != nextParentId)
+            {
+                QMessageBox::information(
+                            this,
+                            tr("Remove Records"),
+                            tr("Cannot remove multiple records with different parents."),
+                            QMessageBox::Close,
+                            QMessageBox::Close);
+                this->onProgressChanged(tr("Removing Records"), QString(), 1, 1);
+                return;
+            }
+        }
     }
 
-    // Check if read-only.
-    const QString recordId = recordItem->getId();
-    const Record& record = this->controller->getRecordsController().getRecord(recordId);
-
-    if (record.readOnly && !this->controller->getProjectController().getProjectIgnoreReadOnly())
+    for (int i = 0; i < recordIds.count(); ++i)
     {
-        this->showReadOnlyMessage(recordId);
-        return;
+        const QString recordId = recordIds[i];
+
+        // Update progress bar.
+        this->onProgressChanged(tr("Removing Records"), recordId, i, recordIds.count());
+
+        // Check if read-only.
+        const Record& record = this->controller->getRecordsController().getRecord(recordId);
+
+        if (record.readOnly && !this->controller->getProjectController().getProjectIgnoreReadOnly())
+        {
+            this->showReadOnlyMessage(recordId);
+            continue;
+        }
+
+        // Update model.
+        RemoveRecordCommand* command = new RemoveRecordCommand(
+                    this->controller->getRecordsController(),
+                    this->controller->getFieldDefinitionsController(),
+                    this->controller->getTypesController(),
+                    recordId);
+        this->controller->getUndoController().doCommand(command);
     }
 
-    // Update model.
-    RemoveRecordCommand* command = new RemoveRecordCommand(
-                this->controller->getRecordsController(),
-                this->controller->getFieldDefinitionsController(),
-                this->controller->getTypesController(),
-                recordId);
-    this->controller->getUndoController().doCommand(command);
+    // Clear progress bar.
+    this->onProgressChanged(tr("Removing Records"), QString(), 1, 1);
 }
 
 void MainWindow::on_actionFindRecord_triggered()
