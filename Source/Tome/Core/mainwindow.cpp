@@ -1239,7 +1239,9 @@ void MainWindow::searchResultChanged(const QString& title, const SearchResultLis
 
 void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
 {
-    QString id = this->recordTreeWidget->getSelectedRecordId();
+    QStringList ids = this->recordTreeWidget->getSelectedRecordIds();
+    QString id = ids.first();
+
     const RecordFieldValueMap fieldValues =
             this->controller->getRecordsController().getRecordFieldValues(id);
 
@@ -1268,6 +1270,7 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
     }
 
     // Update view.
+    this->fieldValueWindow->setFieldCount(ids.count());
     this->fieldValueWindow->setFieldDisplayName(field.displayName);
     this->fieldValueWindow->setFieldDescription(field.description);
     this->fieldValueWindow->setFieldType(field.fieldType);
@@ -1309,10 +1312,13 @@ void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
     {
         QVariant fieldValue = this->fieldValueWindow->getFieldValue();
 
-        // Update model.
-        UpdateRecordFieldValueCommand* command =
-                new UpdateRecordFieldValueCommand(this->controller->getRecordsController(), id, fieldId, fieldValue);
-        this->controller->getUndoController().doCommand(command);
+        // Update model of all selected records.
+        for (int i = 0; i < ids.count(); ++i)
+        {
+            UpdateRecordFieldValueCommand* command =
+                    new UpdateRecordFieldValueCommand(this->controller->getRecordsController(), ids[i], fieldId, fieldValue);
+            this->controller->getUndoController().doCommand(command);
+        }
 
         // Update view.
         this->recordFieldTableWidget->updateFieldValue(index.row());

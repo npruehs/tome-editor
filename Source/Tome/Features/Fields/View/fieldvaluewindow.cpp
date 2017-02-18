@@ -47,6 +47,24 @@ QVariant FieldValueWindow::getFieldValue() const
     return this->fieldValueWidget->getFieldValue();
 }
 
+void FieldValueWindow::setFieldCount(const int fieldCount)
+{
+    if (fieldCount > 1)
+    {
+        QString format = tr("You are editing the field values of %1 records.");
+        QString message = format.arg(fieldCount);
+        QString coloredMessage = QString("<font color=\"#FF0000\">%1</font>").arg(message);
+
+        this->ui->labelMultiEditing->setText(coloredMessage);
+        this->ui->labelMultiEditing->show();
+    }
+    else
+    {
+        this->ui->labelMultiEditing->clear();
+        this->ui->labelMultiEditing->hide();
+    }
+}
+
 void FieldValueWindow::setFieldDescription(const QString& description)
 {
     this->ui->labelDescriptionValue->setText(description);
