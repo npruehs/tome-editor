@@ -31,6 +31,7 @@
 #include "../Features/Import/Controller/importcontroller.h"
 #include "../Features/Import/Model/recordtableimporttemplatelist.h"
 #include "../Features/Projects/Model/project.h"
+#include "../Features/Projects/Controller/projectcontroller.h"
 #include "../Features/Projects/Controller/projectserializer.h"
 #include "../Features/Projects/View/newprojectwindow.h"
 #include "../Features/Projects/View/projectoverviewwindow.h"
@@ -137,7 +138,7 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     // Connect signals.
     connect(
-                this->controller,
+                &this->controller->getProjectController(),
                 SIGNAL(projectChanged(QSharedPointer<Tome::Project>)),
                 SLOT(onProjectChanged(QSharedPointer<Tome::Project>))
                 );
@@ -281,7 +282,7 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
                 );
 
     connect(
-                this->controller,
+                &this->controller->getProjectController(),
                 SIGNAL(progressChanged(QString, QString, int, int)),
                 SLOT(onProgressChanged(QString, QString, int, int))
                 );
@@ -419,7 +420,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
                                                                QMessageBox::Cancel);
     if (result == QMessageBox::Yes)
     {
-        this->controller->saveProject();
+        this->controller->getProjectController().saveProject();
         event->accept();
     }
     else if (result == QMessageBox::No)
@@ -442,7 +443,13 @@ void MainWindow::on_actionProject_Overview_triggered()
     if (!this->projectOverviewWindow)
     {
         this->projectOverviewWindow = new ProjectOverviewWindow(
-                    this->controller,
+                    this->controller->getProjectController(),
+                    this->controller->getComponentsController(),
+                    this->controller->getExportController(),
+                    this->controller->getFieldDefinitionsController(),
+                    this->controller->getImportController(),
+                    this->controller->getRecordsController(),
+                    this->controller->getTypesController(),
                     this);
     }
 
@@ -530,7 +537,7 @@ void MainWindow::on_actionNew_Project_triggered()
 
             if (result == QMessageBox::Yes)
             {
-                this->controller->saveProject();
+                this->controller->getProjectController().saveProject();
             }
             else if (result == QMessageBox::Cancel)
             {
@@ -540,7 +547,7 @@ void MainWindow::on_actionNew_Project_triggered()
 
         try
         {
-            this->controller->createProject(projectName, projectPath);
+            this->controller->getProjectController().createProject(projectName, projectPath);
         }
         catch (std::runtime_error& e)
         {
@@ -582,7 +589,7 @@ void MainWindow::on_actionSave_Project_triggered()
 {
     try
     {
-        this->controller->saveProject();
+        this->controller->getProjectController().saveProject();
 
         if (this->controller->getSettingsController().getRunIntegrityChecksOnSave())
         {
@@ -604,7 +611,7 @@ void MainWindow::on_actionSave_Project_triggered()
 
 void MainWindow::on_actionReload_Project_triggered()
 {
-    const QString fullProjectPath = this->controller->getFullProjectPath();
+    const QString fullProjectPath = this->controller->getProjectController().getFullProjectPath();
     this->openProject(fullProjectPath);
 }
 
@@ -766,7 +773,7 @@ void MainWindow::on_actionEdit_Record_triggered()
     const Record& record = recordsController.getRecord(id);
 
     // Check if read-only.
-    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
+    if (record.readOnly && !this->controller->getProjectController().getProjectIgnoreReadOnly())
     {
         this->showReadOnlyMessage(record.id);
         return;
@@ -887,7 +894,7 @@ void MainWindow::on_actionRevert_Record_triggered()
     // Check if read-only.
     const Record& record = this->controller->getRecordsController().getRecord(recordId);
 
-    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
+    if (record.readOnly && !this->controller->getProjectController().getProjectIgnoreReadOnly())
     {
         this->showReadOnlyMessage(recordId);
         return;
@@ -928,7 +935,7 @@ void MainWindow::on_actionRemove_Record_triggered()
     const QString recordId = recordItem->getId();
     const Record& record = this->controller->getRecordsController().getRecord(recordId);
 
-    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
+    if (record.readOnly && !this->controller->getProjectController().getProjectIgnoreReadOnly())
     {
         this->showReadOnlyMessage(recordId);
         return;
@@ -1072,8 +1079,8 @@ void MainWindow::exportRecords(QAction* exportAction)
             this->controller->getExportController().getRecordExportTemplate(exportTemplateName);
 
     // Build export file name suggestion.
-    const QString suggestedFileName = this->controller->getProjectName() + exportTemplate.fileExtension;
-    const QString suggestedFilePath = combinePaths(this->controller->getProjectPath(), suggestedFileName);
+    const QString suggestedFileName = this->controller->getProjectController().getProjectName() + exportTemplate.fileExtension;
+    const QString suggestedFilePath = combinePaths(this->controller->getProjectController().getProjectPath(), suggestedFileName);
     const QString filter = exportTemplateName + " (*" + exportTemplate.fileExtension + ")";
 
     // Show file dialog.
@@ -1118,7 +1125,7 @@ void MainWindow::importRecords(QAction* importAction)
         case TableType::Csv:
             sourceUrl = QFileDialog::getOpenFileName(this,
                                                      tr("Import Records"),
-                                                     this->controller->getProjectPath(),
+                                                     this->controller->getProjectController().getProjectPath(),
                                                      "Comma-Separated Values (*.csv)");
             break;
 
@@ -1133,7 +1140,7 @@ void MainWindow::importRecords(QAction* importAction)
         case TableType::Xlsx:
             sourceUrl = QFileDialog::getOpenFileName(this,
                                                      tr("Import Records"),
-                                                     this->controller->getProjectPath(),
+                                                     this->controller->getProjectController().getProjectPath(),
                                                      "Excel Workbook (*.xlsx)");
             break;
 
@@ -1320,7 +1327,7 @@ void MainWindow::treeWidgetRecordReparented(const QString& recordId, const QStri
     // Check if read-only.
     const Record& record = this->controller->getRecordsController().getRecord(recordId);
 
-    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
+    if (record.readOnly && !this->controller->getProjectController().getProjectIgnoreReadOnly())
     {
         this->showReadOnlyMessage(recordId);
         return;
@@ -1376,7 +1383,7 @@ void MainWindow::openProject(QString path)
 
         if (result == QMessageBox::Yes)
         {
-            this->controller->saveProject();
+            this->controller->getProjectController().saveProject();
         }
         else if (result == QMessageBox::Cancel)
         {
@@ -1386,10 +1393,12 @@ void MainWindow::openProject(QString path)
 
     try
     {
-        this->controller->openProject(path);
+        this->controller->getProjectController().openProject(path);
     }
     catch (std::runtime_error& e)
     {
+        // Remove from recent projects.
+        this->controller->getSettingsController().removeRecentProject(path);
         this->updateRecentProjects();
 
         QMessageBox::critical(
@@ -1613,7 +1622,7 @@ void MainWindow::refreshRecordTable()
     // Check if read-only.
     const Record& record = this->controller->getRecordsController().getRecord(id);
 
-    if (record.readOnly && !this->controller->getProjectIgnoreReadOnly())
+    if (record.readOnly && !this->controller->getProjectController().getProjectIgnoreReadOnly())
     {
         this->recordFieldTableWidget->setEnabled(false);
         this->recordFieldTableWidget->setToolTip(this->getReadOnlyMessage(id));
@@ -1660,7 +1669,7 @@ void MainWindow::showWindow(QWidget* widget)
 
 void MainWindow::updateMenus()
 {
-    bool projectLoaded = this->controller->isProjectLoaded();
+    bool projectLoaded = this->controller->getProjectController().isProjectLoaded();
     bool anyRecordSelected = this->recordTreeWidget->getSelectedRecordItem() != nullptr;
 
     // Update actions.
@@ -1705,10 +1714,10 @@ void MainWindow::updateWindowTitle()
     // Get application version.
     QString windowTitle = "Tome " + QApplication::instance()->applicationVersion();
 
-    if (this->controller->isProjectLoaded())
+    if (this->controller->getProjectController().isProjectLoaded())
     {
         // Add project name.
-        windowTitle += " - " + this->controller->getFullProjectPath();
+        windowTitle += " - " + this->controller->getProjectController().getFullProjectPath();
     }
 
     if (!this->controller->getUndoController().isClean())
@@ -1718,4 +1727,3 @@ void MainWindow::updateWindowTitle()
 
     this->setWindowTitle(windowTitle);
 }
-

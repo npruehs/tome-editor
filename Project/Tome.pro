@@ -157,7 +157,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Integrity/Controller/typeisneverusedtask.cpp \
     ../Source/Tome/Features/Integrity/Controller/referencedrecorddoesnotexisttask.cpp \
     ../Source/Tome/Features/Integrity/Controller/fieldalwayshasitsdefaultvaluetask.cpp \
-    ../Source/Tome/Features/Fields/View/filepickerwidget.cpp
+    ../Source/Tome/Features/Fields/View/filepickerwidget.cpp \
+    ../Source/Tome/Features/Projects/Controller/projectcontroller.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -307,7 +308,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Integrity/Controller/typeisneverusedtask.h \
     ../Source/Tome/Features/Integrity/Controller/referencedrecorddoesnotexisttask.h \
     ../Source/Tome/Features/Integrity/Controller/fieldalwayshasitsdefaultvaluetask.h \
-    ../Source/Tome/Features/Fields/View/filepickerwidget.h
+    ../Source/Tome/Features/Fields/View/filepickerwidget.h \
+    ../Source/Tome/Features/Projects/Controller/projectcontroller.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
