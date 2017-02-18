@@ -9,7 +9,7 @@
 using namespace Tome;
 
 
-const QString ReferencedRecordDoesNotExistTask::MessageCode = "TO0107";
+const QString ReferencedRecordDoesNotExistTask::MessageCode = "TO0201";
 
 
 ReferencedRecordDoesNotExistTask::ReferencedRecordDoesNotExistTask()

@@ -33,6 +33,7 @@
 #include "../Features/Integrity/Controller/mapkeytypenotsupportedtask.h"
 #include "../Features/Integrity/Controller/mapvaluetypedoesnotexisttask.h"
 #include "../Features/Integrity/Controller/mapvaluetypenotsupportedtask.h"
+#include "../Features/Integrity/Controller/referencedfiledoesnotexisttask.h"
 #include "../Features/Integrity/Controller/referencedrecorddoesnotexisttask.h"
 #include "../Features/Integrity/Controller/typefacetviolatedtask.h"
 #include "../Features/Integrity/Controller/typeisneverusedtask.h"
@@ -78,6 +79,7 @@ Controller::Controller(CommandLineOptions* options) :
     this->tasksController->addTask(new MapKeyTypeNotSupportedTask());
     this->tasksController->addTask(new MapValueTypeDoesNotExistTask());
     this->tasksController->addTask(new MapValueTypeNotSupportedTask());
+    this->tasksController->addTask(new ReferencedFileDoesNotExistTask());
     this->tasksController->addTask(new ReferencedRecordDoesNotExistTask());
     this->tasksController->addTask(new TypeFacetViolatedTask());
     this->tasksController->addTask(new TypeIsNeverUsedTask());
