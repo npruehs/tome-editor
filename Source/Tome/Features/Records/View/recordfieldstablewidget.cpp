@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QPixmap>
 
+#include "labeledpixmapwidget.h"
 #include "../Controller/recordscontroller.h"
 #include "../Model/recordfieldvaluemap.h"
 #include "../../Facets/Controller/facetscontroller.h"
@@ -135,34 +136,33 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
     // Show field name.
     this->item(i, 0)->setData(Qt::DisplayRole, keyString);
 
+    // Remove any existing index widget.
+    QModelIndex index = this->model()->index(i, 1);
+    QWidget *indexWidget = this->indexWidget(index);
+    if (nullptr != indexWidget)
+    {
+        this->setIndexWidget(index, nullptr);
+        delete indexWidget;
+    }
+
     // Show hyperlink for reference fields, and normal text for other fields.
     if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference))
     {
         QString href = "<a href='" + valueString + "'>" + valueString + "</a>";
         QModelIndex index = this->model()->index(i, 1);
 
-        // Check for an existing index widget
-        QWidget *indexWidget = this->indexWidget(index);
-        if (nullptr != indexWidget)
-        {
-            QLabel* valueLabel = static_cast<QLabel*>(indexWidget);
-            valueLabel->setText(href);
-        }
-        // Create a new index widget
-        else
-        {
-            QLabel* valueLabel = new QLabel(href);
+        // Create new index widget.
+        QLabel* valueLabel = new QLabel(href);
 
-            connect(
-                        valueLabel,
-                        SIGNAL(linkActivated(const QString&)),
-                        SLOT(onRecordLinkActivated(const QString&))
-                        );
+        connect(
+                    valueLabel,
+                    SIGNAL(linkActivated(const QString&)),
+                    SLOT(onRecordLinkActivated(const QString&))
+                    );
 
-            // Add margin for increased readability.
-            valueLabel->setMargin(5);
-            this->setIndexWidget(index, valueLabel);
-        }
+        // Add margin for increased readability.
+        valueLabel->setMargin(5);
+        this->setIndexWidget(index, valueLabel);
     }
     else if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::File))
     {
@@ -178,18 +178,45 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
 
         fileName = combinePaths(projectPath, fileName);
 
+        // Get preview.
+        QPixmap preview;
+
+        QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
+        for (QByteArray& format : supportedImageFormats)
+        {
+            if (fileName.endsWith(format))
+            {
+                preview.load(fileName);
+
+                if (!preview.isNull())
+                {
+                    break;
+                }
+            }
+        }
+
         // Show file path.
         QString href = "<a href='" + fileName + "'>" + valueString + "</a>";
-        QModelIndex index = this->model()->index(i, 1);
+        QWidget* widget;
 
-        // Check for an existing index widget
-        QWidget *indexWidget = this->indexWidget(index);
-        if (nullptr != indexWidget)
+        if (!preview.isNull())
         {
-            QLabel* valueLabel = static_cast<QLabel*>(indexWidget);
-            valueLabel->setText(href);
+            // Create new labeled pixmap.
+            LabeledPixmapWidget* labeledPixmap = new LabeledPixmapWidget(this);
+            labeledPixmap->setText(href);
+            labeledPixmap->setPixmap(preview);
+
+            connect(
+                        &labeledPixmap->getTextLabel(),
+                        SIGNAL(linkActivated(const QString&)),
+                        SLOT(onFileLinkActivated(const QString&))
+                        );
+
+            // Add margin for increased readability.
+            labeledPixmap->getTextLabel().setMargin(5);
+
+            widget = labeledPixmap;
         }
-        // Create a new index widget
         else
         {
             QLabel* valueLabel = new QLabel(href);
@@ -197,42 +224,20 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
             connect(
                         valueLabel,
                         SIGNAL(linkActivated(const QString&)),
-                        SLOT(onFileLinkActivated(const QString&))
+                        SLOT(onRecordLinkActivated(const QString&))
                         );
 
             // Add margin for increased readability.
             valueLabel->setMargin(5);
-            this->setIndexWidget(index, valueLabel);
+
+            widget = valueLabel;
         }
 
-        // Show preview.
-        QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
-        for (QByteArray& format : supportedImageFormats)
-        {
-            if (fileName.endsWith(format))
-            {
-                QPixmap pixmap(fileName);
-
-                if (!pixmap.isNull())
-                {
-                    QPixmap scaledPixmap = pixmap.scaled(QSize(24, 24));
-                    this->item(i, 1)->setData(Qt::DecorationRole, scaledPixmap);
-                    break;
-                }
-            }
-        }
+        QModelIndex index = this->model()->index(i, 1);
+        this->setIndexWidget(index, widget);
     }
     else
     {
-        // Remove any index widget
-        QModelIndex index = this->model()->index(i, 1);
-        QWidget *indexWidget = this->indexWidget(index);
-        if (nullptr != indexWidget)
-        {
-            this->setIndexWidget(index, nullptr);
-            delete indexWidget;
-        }
-
         // Show normal text.
         this->item(i, 1)->setData(Qt::DisplayRole, valueString);
 

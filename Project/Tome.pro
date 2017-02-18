@@ -161,7 +161,8 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Projects/Controller/projectcontroller.cpp \
     ../Source/Tome/Features/Facets/Controller/removedfileprefixfacet.cpp \
     ../Source/Tome/Features/Facets/Controller/removedfilesuffixfacet.cpp \
-    ../Source/Tome/Features/Integrity/Controller/referencedfiledoesnotexisttask.cpp
+    ../Source/Tome/Features/Integrity/Controller/referencedfiledoesnotexisttask.cpp \
+    ../Source/Tome/Features/Records/View/labeledpixmapwidget.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -315,7 +316,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Projects/Controller/projectcontroller.h \
     ../Source/Tome/Features/Facets/Controller/removedfileprefixfacet.h \
     ../Source/Tome/Features/Facets/Controller/removedfilesuffixfacet.h \
-    ../Source/Tome/Features/Integrity/Controller/referencedfiledoesnotexisttask.h
+    ../Source/Tome/Features/Integrity/Controller/referencedfiledoesnotexisttask.h \
+    ../Source/Tome/Features/Records/View/labeledpixmapwidget.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
