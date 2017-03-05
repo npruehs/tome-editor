@@ -41,7 +41,6 @@ void RecordWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
     this->ui->lineEditDisplayName->setFocus();
-    this->recordIdLocked = false;
 }
 
 QString RecordWindow::getRecordDisplayName() const
@@ -121,6 +120,11 @@ void RecordWindow::setRecordDisplayName(const QString& displayName)
 void RecordWindow::setRecordId(const QString& id)
 {
     this->ui->lineEditId->setText(id);
+}
+
+void RecordWindow::setRecordIdLocked(const bool recordIdLocked)
+{
+    this->recordIdLocked = recordIdLocked;
 }
 
 void RecordWindow::setRecordEditorIconFieldId(const QString& editorIconFieldId)

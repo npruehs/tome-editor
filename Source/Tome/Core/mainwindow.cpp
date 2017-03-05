@@ -644,6 +644,9 @@ void MainWindow::on_actionNew_Record_triggered()
     const ComponentList& componentDefinitions =
             this->controller->getComponentsController().getComponents();
 
+    // When creating new records, automatically update record id to reflect display name.
+    this->recordWindow->setRecordIdLocked(false);
+
     // Disallow all existing record ids.
     this->recordWindow->setDisallowedRecordIds(recordIds);
 
@@ -716,6 +719,9 @@ void MainWindow::on_actionAdd_Child_triggered()
     {
         this->recordWindow = new RecordWindow(this);
     }
+
+    // When creating new records, automatically update record id to reflect display name.
+    this->recordWindow->setRecordIdLocked(false);
 
     // Disallow all existing record ids.
     const QStringList recordIds = recordsController.getRecordIds();
@@ -804,6 +810,7 @@ void MainWindow::on_actionEdit_Record_triggered()
 
     // Set record id and name.
     this->recordWindow->setRecordId(record.id);
+    this->recordWindow->setRecordIdLocked(true);
     this->recordWindow->setRecordDisplayName(record.displayName);
 
     // Disallow all other record ids.
