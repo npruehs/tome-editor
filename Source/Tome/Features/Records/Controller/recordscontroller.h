@@ -124,11 +124,13 @@ namespace Tome
 
         private:
             RecordSetList* model;
+            long nextRecordIntegerId;
 
             const FieldDefinitionsController& fieldDefinitionsController;
             const TypesController& typesController;
 
             void addRecordField(const QString& recordId, const QString& fieldId);
+            const QString generateUuid() const;
             Record* getRecordById(const QString& id) const;
             void moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent);
             void moveRecordToSet(const QString& recordId, const QString& recordSetName);

@@ -37,8 +37,10 @@ const QString ExportController::PlaceholderListItem = "$LIST_ITEM$";
 const QString ExportController::PlaceholderRecordDisplayName = "$RECORD_DISPLAY_NAME$";
 const QString ExportController::PlaceholderRecordFields = "$RECORD_FIELDS$";
 const QString ExportController::PlaceholderRecordId = "$RECORD_ID$";
+const QString ExportController::PlaceholderRecordIntegerId = "$RECORD_INTEGER_ID$";
 const QString ExportController::PlaceholderRecordParentId = "$RECORD_PARENT$";
 const QString ExportController::PlaceholderRecordRootId = "$RECORD_ROOT$";
+const QString ExportController::PlaceholderRecordUuid = "$RECORD_UUID$";
 const QString ExportController::PlaceholderRecords = "$RECORDS$";
 const QString ExportController::PlaceholderValueType = "$VALUE_TYPE$";
 
@@ -481,6 +483,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 fieldValueString = fieldValueString.replace(PlaceholderRecordParentId, recordParent);
                 fieldValueString = fieldValueString.replace(PlaceholderRecordRootId, recordRoot);
                 fieldValueString = fieldValueString.replace(PlaceholderRecordDisplayName, record.displayName);
+                fieldValueString = fieldValueString.replace(PlaceholderRecordIntegerId, QString::number(record.integerId));
+                fieldValueString = fieldValueString.replace(PlaceholderRecordUuid, record.uuid);
 
                 // Add delimiter, if necessary.
                 if (!fieldValuesString.isEmpty() && !fieldValueString.isEmpty())
@@ -537,6 +541,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             recordString = recordString.replace(PlaceholderRecordFields, fieldValuesString);
             recordString = recordString.replace(PlaceholderComponents, componentsString);
             recordString = recordString.replace(PlaceholderRecordDisplayName, record.displayName);
+            recordString = recordString.replace(PlaceholderRecordIntegerId, QString::number(record.integerId));
+            recordString = recordString.replace(PlaceholderRecordUuid, record.uuid);
 
             if (!recordsString.isEmpty() && !recordString.isEmpty())
             {

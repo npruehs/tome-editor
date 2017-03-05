@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include <QCryptographicHash>
+#include <QUuid>
 
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../Fields/Model/fielddefinition.h"
@@ -41,6 +42,8 @@ const Record RecordsController::addRecord(const QString& id,
 
     Record record = Record();
     record.id = id;
+    record.integerId = this->nextRecordIntegerId++;
+    record.uuid = this->generateUuid();
     record.displayName = displayName;
     record.editorIconFieldId = editorIconFieldId;
     record.recordSetName = recordSetName;
@@ -159,6 +162,8 @@ const Record RecordsController::duplicateRecord(const QString& existingRecordId,
     // Create duplicate.
     Record newRecord = Record();
     newRecord.id = newRecordId;
+    newRecord.integerId = this->nextRecordIntegerId++;
+    newRecord.uuid = this->generateUuid();
     newRecord.displayName = newRecordId;
     newRecord.editorIconFieldId = existingRecord.editorIconFieldId;
     newRecord.parentId = existingRecord.parentId;
@@ -587,6 +592,19 @@ void RecordsController::setReadOnly(const QString& recordId, const bool readOnly
 void RecordsController::setRecordSets(RecordSetList& model)
 {
     this->model = &model;
+
+    // Find next assignable record integer id.
+    this->nextRecordIntegerId = 1;
+
+    const RecordList records = this->getRecords();
+
+    for (int i = 0; i < records.count(); ++i)
+    {
+        if (records[i].integerId >= this->nextRecordIntegerId)
+        {
+            this->nextRecordIntegerId = records[i].integerId + 1;
+        }
+    }
 }
 
 void RecordsController::updateRecord(const QString oldId,
@@ -749,6 +767,11 @@ void RecordsController::addRecordField(const QString& recordId, const QString& f
 
     // Notify listeners.
     emit recordFieldsChanged(recordId);
+}
+
+const QString RecordsController::generateUuid() const
+{
+    return QUuid::createUuid().toString().mid(1, 36);
 }
 
 Record* RecordsController::getRecordById(const QString& id) const

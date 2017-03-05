@@ -33,6 +33,7 @@ class RecordWindow : public QDialog
         void setRecordDisplayName(const QString& displayName);
         void setRecordId(const QString& id);
         void setRecordIdLocked(const bool recordIdLocked);
+        void setRecordIntegerId(const long id);
         void setRecordEditorIconFieldId(const QString& editorIconFieldId);
         void setRecordField(const QString& fieldId, const QString& fieldComponent, const Tome::RecordFieldState::RecordFieldState state);
         void setRecordFields(const Tome::FieldDefinitionList& fieldDefinitions);
@@ -41,6 +42,7 @@ class RecordWindow : public QDialog
         void setRecordComponents(const Tome::ComponentList& components);
         void setRecordSetName(const QString& recordSetName);
         void setRecordSetNames(const QStringList& recordSetNames);
+        void setRecordUuid(const QString& uuid);
         void clearRecordComponents();
 
     public slots:
