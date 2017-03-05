@@ -16,6 +16,8 @@ namespace Tome
             Record();
 
             QString id;
+            long integerId;
+            QString uuid;
 
             QString displayName;
             QString editorIconFieldId;

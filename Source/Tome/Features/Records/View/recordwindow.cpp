@@ -127,6 +127,12 @@ void RecordWindow::setRecordIdLocked(const bool recordIdLocked)
     this->recordIdLocked = recordIdLocked;
 }
 
+void RecordWindow::setRecordIntegerId(const long id)
+{
+    QString idString = id > 0 ? QString::number(id) : tr("Unassigned");
+    this->ui->labelIntegerIdValue->setText(idString);
+}
+
 void RecordWindow::setRecordEditorIconFieldId(const QString& editorIconFieldId)
 {
     for (int i = 0; i < this->ui->comboBoxEditorIconField->count(); ++i)
@@ -365,6 +371,12 @@ void RecordWindow::setRecordSetNames(const QStringList& recordSetNames)
 {
     this->ui->comboBoxRecordSet->clear();
     this->ui->comboBoxRecordSet->addItems(recordSetNames);
+}
+
+void RecordWindow::setRecordUuid(const QString& uuid)
+{
+    QString idString = !uuid.isEmpty() ? uuid : tr("Unassigned");
+    this->ui->labelUuidValue->setText(idString);
 }
 
 void RecordWindow::setRecordComponent(const QString& componentId, const Tome::RecordFieldState::RecordFieldState state)

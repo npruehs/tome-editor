@@ -810,6 +810,8 @@ void MainWindow::on_actionEdit_Record_triggered()
 
     // Set record id and name.
     this->recordWindow->setRecordId(record.id);
+    this->recordWindow->setRecordIntegerId(record.integerId);
+    this->recordWindow->setRecordUuid(record.uuid);
     this->recordWindow->setRecordIdLocked(true);
     this->recordWindow->setRecordDisplayName(record.displayName);
 

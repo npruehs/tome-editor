@@ -33,12 +33,14 @@ namespace Tome
             static const QString ElementDisplayName;
             static const QString ElementEditorIconFieldId;
             static const QString ElementId;
+            static const QString ElementIntegerId;
             static const QString ElementItem;
             static const QString ElementKey;
             static const QString ElementParentId;
             static const QString ElementReadOnly;
             static const QString ElementRecord;
             static const QString ElementRecords;
+            static const QString ElementUuid;
             static const QString ElementValue;
     };
 }
