@@ -27,7 +27,9 @@ const SearchResultList FindRecordController::findRecord(const QString& searchPat
         emit this->progressChanged(tr("Searching"), record.id, i, records.length());
 
         if (record.id.toLower().contains(searchPattern.toLower()) ||
-                record.displayName.toLower().contains(searchPattern.toLower()))
+                record.displayName.toLower().contains(searchPattern.toLower()) ||
+                (record.integerId != 0 && record.integerId == searchPattern.toLong()) ||
+                record.uuid.toLower() == searchPattern.toLower())
         {
             SearchResult result;
             result.content = record.id;
