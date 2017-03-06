@@ -593,18 +593,7 @@ void RecordsController::setRecordSets(RecordSetList& model)
 {
     this->model = &model;
 
-    // Find next assignable record integer id.
-    this->nextRecordIntegerId = 1;
-
-    const RecordList records = this->getRecords();
-
-    for (int i = 0; i < records.count(); ++i)
-    {
-        if (records[i].integerId >= this->nextRecordIntegerId)
-        {
-            this->nextRecordIntegerId = records[i].integerId + 1;
-        }
-    }
+    this->verifyRecordIds();
 }
 
 void RecordsController::updateRecord(const QString oldId,
@@ -1043,4 +1032,74 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
 
     // Report finish.
     emit this->progressChanged(tr("Reparenting records"), QString(), 1, 1);
+}
+
+void RecordsController::verifyRecordIds()
+{
+    // Ensure unique ids for all records.
+    QSet<QString> recordStringIds;
+    QSet<long> recordIntegerIds;
+
+    QList<Record*> recordsWithDuplicateIntegerIds;
+
+    this->nextRecordIntegerId = 1;
+
+    for (RecordSet& recordSet : *this->model)
+    {
+        for (int i = 0; i < recordSet.records.count(); ++i)
+        {
+            Record& record = recordSet.records[i];
+
+            emit this->progressChanged(tr("Verifying Record Ids - %1").arg(recordSet.name), record.id, i, recordSet.records.count());
+
+            // Verify string id.
+            if (recordStringIds.contains(record.id))
+            {
+                qCritical(QString("Duplicate record %1. This will lead to undefined behaviour.").arg(record.id).toUtf8().constData());
+            }
+            else
+            {
+                recordStringIds.insert(record.id);
+            }
+
+            // Verify integer id.
+            if (recordIntegerIds.contains(record.integerId))
+            {
+                // Assign new id later, in order to avoid stealing ids from other records.
+                recordsWithDuplicateIntegerIds << &record;
+            }
+            else
+            {
+                recordIntegerIds.insert(record.integerId);
+            }
+
+            if (record.integerId >= this->nextRecordIntegerId)
+            {
+                this->nextRecordIntegerId = record.integerId + 1;
+            }
+
+            // Verify UUID.
+            if (record.uuid.isEmpty())
+            {
+                record.uuid = this->generateUuid();
+                qWarning(QString("Record %1 had no UUID, assigned %2.").arg(record.id, record.uuid).toUtf8().constData());
+            }
+        }
+    }
+
+    // Assign new integer ids where necessary.
+    for (Record* record : recordsWithDuplicateIntegerIds)
+    {
+        long oldRecordIntegerId = record->integerId;
+        long newRecordIntegerId = this->nextRecordIntegerId++;
+
+        record->integerId = newRecordIntegerId;
+
+        qWarning(QString("Record %1 had duplicate integer id %2, assigned new integer id %3.")
+                 .arg(record->id, QString::number(oldRecordIntegerId), QString::number(newRecordIntegerId))
+                 .toUtf8()
+                 .constData());
+    }
+
+    emit this->progressChanged(QString(), QString(), 1, 1);
 }

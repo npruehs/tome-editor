@@ -138,6 +138,7 @@ namespace Tome
             void renameRecordField(const QString oldFieldId, const QString newFieldId);
             QVariant revertFieldValue(const QString& recordId, const QString& fieldId);
             void updateRecordReferences(const QString oldReference, const QString newReference);
+            void verifyRecordIds();
     };
 }
 
