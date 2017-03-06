@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include <QCryptographicHash>
+#include <QSet>
 #include <QUuid>
 
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
