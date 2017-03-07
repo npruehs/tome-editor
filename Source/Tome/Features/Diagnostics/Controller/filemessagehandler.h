@@ -12,6 +12,8 @@ namespace Tome
             static bool init();
             static void handleMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg);
 
+            static const QString logfileName;
+
         private:
             static bool initialized;
             static QFile logFile;
