@@ -6,6 +6,8 @@
     <RootRecordId>Unit</RootRecordId>
     <ColumnMap>
         <Mapping ColumnName="Attack Damage" FieldId="AttackDamage"/>
+        <Mapping ColumnName="Attack Range" FieldId="AttackRange"/>
+        <Mapping ColumnName="Damage Type" FieldId="DamageType"/>
     </ColumnMap>
     <IgnoredIds>
         <Id>COMMENT</Id>
