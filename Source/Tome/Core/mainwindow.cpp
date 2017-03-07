@@ -1637,7 +1637,7 @@ void MainWindow::onRecordReparented(const QString& recordId, const QString& oldP
 
     // Update view.
     this->refreshRecordTree();
-    this->recordTreeWidget->selectRecord(recordId);
+    this->recordTreeWidget->selectRecord(recordId, true);
 }
 
 void MainWindow::onRecordSetsChanged()
@@ -1661,7 +1661,7 @@ void MainWindow::onRecordUpdated(const QString& oldId,
 
 void MainWindow::onRecordLinkActivated(const QString& recordId)
 {
-    this->recordTreeWidget->selectRecord(recordId);
+    this->recordTreeWidget->selectRecord(recordId, true);
 }
 
 void MainWindow::onUndoStackChanged(bool clean)

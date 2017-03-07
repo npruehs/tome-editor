@@ -46,7 +46,7 @@ namespace Tome
                               const QString& newDisplayName,
                               const QString& newEditorIconFieldId);
 
-            void selectRecord(const QString& id);
+            void selectRecord(const QString& id, const bool addToHistory);
             void setContextMenuActions(QList<QAction*> actions);
             void setRecords(const RecordList& records);
 

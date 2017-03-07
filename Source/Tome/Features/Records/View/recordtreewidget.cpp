@@ -127,8 +127,7 @@ void RecordTreeWidget::navigateForward()
     this->selectedRecordUndoStack.push(id);
 
     // Prevent redo from affecting navigation stacks.
-    this->navigating = true;
-    this->selectRecord(id);
+    this->selectRecord(id, false);
 }
 
 void RecordTreeWidget::navigateBackward()
@@ -142,8 +141,7 @@ void RecordTreeWidget::navigateBackward()
     this->selectedRecordRedoStack.push(id);
 
     // Prevent undo from affecting navigation stacks.
-    this->navigating = true;
-    this->selectRecord(this->selectedRecordUndoStack.top());
+    this->selectRecord(this->selectedRecordUndoStack.top(), false);
 }
 
 void RecordTreeWidget::updateRecord(const QString& oldId,
@@ -266,9 +264,14 @@ void RecordTreeWidget::updateRecordItemRecursively(RecordTreeWidgetItem* recordT
     }
 }
 
-void RecordTreeWidget::selectRecord(const QString& id)
+void RecordTreeWidget::selectRecord(const QString& id, const bool addToHistory)
 {
     RecordTreeWidgetItem* item = this->getRecordItem(id);
+
+    this->navigating = true;
+    this->clearSelection();
+
+    this->navigating = !addToHistory;
     this->setCurrentItem(item);
 }
 
