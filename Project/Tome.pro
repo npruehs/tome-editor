@@ -21,17 +21,17 @@ DEFINES += APP_VERSION_NAME=\\\"$$VERSION_NAME\\\"
 RC_ICONS = ../Media/Icons/Tome.ico
 ICON = ../Media/Icons/Tome.icns
 
-Debug:DESTDIR = ../../Bin/debug/Tome
-Debug:OBJECTS_DIR = ../../Obj/debug/Tome
-Debug:MOC_DIR = ../../Obj/debug/Tome/.moc
-Debug:RCC_DIR = ../../Obj/debug/Tome/.rcc
-Debug:UI_DIR = ../../Obj/debug/Tome/.ui
+Debug:DESTDIR = ../Bin/debug/Tome
+Debug:OBJECTS_DIR = ../Obj/debug/Tome
+Debug:MOC_DIR = ../Obj/debug/Tome/.moc
+Debug:RCC_DIR = ../Obj/debug/Tome/.rcc
+Debug:UI_DIR = ../Obj/debug/Tome/.ui
 
-Release:DESTDIR = ../../Bin/release/Tome
-Release:OBJECTS_DIR = ../../Obj/release/Tome
-Release:MOC_DIR = ../../Obj/release/Tome/.moc
-Release:RCC_DIR = ../../Obj/release/Tome/.rcc
-Release:UI_DIR = ../../Obj/release/Tome/.ui
+Release:DESTDIR = ../Bin/release/Tome
+Release:OBJECTS_DIR = ../Obj/release/Tome
+Release:MOC_DIR = ../Obj/release/Tome/.moc
+Release:RCC_DIR = ../Obj/release/Tome/.rcc
+Release:UI_DIR = ../Obj/release/Tome/.ui
 
 SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Core/mainwindow.cpp \
