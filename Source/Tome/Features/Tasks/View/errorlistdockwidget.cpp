@@ -203,7 +203,7 @@ void ErrorListDockWidget::refreshMessages()
 
         if (message.targetSiteType == TargetSiteType::Record)
         {
-            QString locationLink = QString("Record - <a href='%1'>%1</a>").arg(message.targetSiteId);
+            QString locationLink = QString("Record - <a href='%1'>%1</a>").arg(message.targetSiteId.toString());
             locationLabel = new QLabel(locationLink);
 
             connect(
@@ -214,7 +214,7 @@ void ErrorListDockWidget::refreshMessages()
         }
         else
         {
-            QString locationString = TargetSiteType::toString(message.targetSiteType) + " - " + message.targetSiteId;
+            QString locationString = TargetSiteType::toString(message.targetSiteType) + " - " + message.targetSiteId.toString();
             locationLabel = new QLabel(locationString);
         }
 

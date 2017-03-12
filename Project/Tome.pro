@@ -317,7 +317,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Facets/Controller/removedfileprefixfacet.h \
     ../Source/Tome/Features/Facets/Controller/removedfilesuffixfacet.h \
     ../Source/Tome/Features/Integrity/Controller/referencedfiledoesnotexisttask.h \
-    ../Source/Tome/Features/Records/View/labeledpixmapwidget.h
+    ../Source/Tome/Features/Records/View/labeledpixmapwidget.h \
+    ../Source/Tome/Features/Projects/Model/recordidtype.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

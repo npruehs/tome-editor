@@ -6,8 +6,8 @@ using namespace Tome;
 
 
 UpdateRecordCommand::UpdateRecordCommand(RecordsController& recordsController,
-                                         const QString& oldId,
-                                         const QString& newId,
+                                         const QVariant& oldId,
+                                         const QVariant& newId,
                                          const QString& newDisplayName,
                                          const QString& newEditorIconFieldId,
                                          const QStringList& newFieldIds,
@@ -20,12 +20,12 @@ UpdateRecordCommand::UpdateRecordCommand(RecordsController& recordsController,
       newFieldIds(newFieldIds),
       newRecordSetName(newRecordSetName)
 {
-    this->setText(tr("Update Record - %1").arg(oldId));
+    this->setText(tr("Update Record - %1").arg(oldDisplayName));
 }
 
 void UpdateRecordCommand::undo()
 {
-    qInfo(QString("Undo update record %1.").arg(this->oldId).toUtf8().constData());
+    qInfo(QString("Undo update record %1.").arg(this->oldDisplayName).toUtf8().constData());
 
     // Restore record.
     this->recordsController.updateRecord(this->newId,

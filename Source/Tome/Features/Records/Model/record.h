@@ -15,14 +15,12 @@ namespace Tome
         public:
             Record();
 
-            QString id;
-            long integerId;
-            QString uuid;
+            QVariant id;
 
             QString displayName;
             QString editorIconFieldId;
             RecordFieldValueMap fieldValues;
-            QString parentId;
+            QVariant parentId;
             bool readOnly = false;
             QString recordSetName;
     };

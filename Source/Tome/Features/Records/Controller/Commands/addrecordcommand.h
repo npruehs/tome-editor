@@ -4,6 +4,7 @@
 #include <QString>
 #include <QStringList>
 #include <QUndoCommand>
+#include <QVariant>
 
 namespace Tome
 {
@@ -13,23 +14,23 @@ namespace Tome
     {
         public:
             AddRecordCommand(RecordsController& recordsController,
-                             const QString& id,
+                             const QVariant& id,
                              const QString& displayName,
                              const QString& editorIconFieldId,
                              const QStringList& fieldIds,
                              const QString& recordSetName,
-                             const QString parentId = QString());
+                             const QVariant parentId = QVariant());
             virtual void undo();
             virtual void redo();
 
         private:
             RecordsController& recordsController;
 
-            const QString id;
+            const QVariant id;
             const QString displayName;
             const QString editorIconFieldId;
             const QStringList fieldIds;
-            const QString parentId;
+            const QVariant parentId;
             const QString recordSetName;
     };
 }

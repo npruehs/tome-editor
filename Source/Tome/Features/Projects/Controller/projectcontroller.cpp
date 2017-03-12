@@ -70,7 +70,7 @@ QString ProjectController::buildFullFilePath(QString filePath, QString projectPa
     return filePath;
 }
 
-void ProjectController::createProject(const QString& projectName, const QString& projectPath)
+void ProjectController::createProject(const QString& projectName, const QString& projectPath, const RecordIdType::RecordIdType recordIdType)
 {
     qInfo(QString("Creating new project %1 at %2.").arg(projectName, projectPath).toUtf8().constData());
 
@@ -78,6 +78,7 @@ void ProjectController::createProject(const QString& projectName, const QString&
     QSharedPointer<Project> newProject = QSharedPointer<Project>::create();
     newProject->name = projectName;
     newProject->path = projectPath;
+    newProject->recordIdType = recordIdType;
 
     // Create field definition set.
     FieldDefinitionSet fieldDefinitionSet = FieldDefinitionSet();
@@ -120,6 +121,11 @@ const QString ProjectController::getProjectName() const
 const QString ProjectController::getProjectPath() const
 {
     return this->project->path;
+}
+
+RecordIdType::RecordIdType ProjectController::getProjectRecordIdType() const
+{
+    return this->project->recordIdType;
 }
 
 bool ProjectController::getProjectIgnoreReadOnly() const

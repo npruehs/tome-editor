@@ -4,6 +4,7 @@
 #include <QString>
 #include <QStringList>
 #include <QUndoCommand>
+#include <QVariant>
 
 namespace Tome
 {
@@ -13,8 +14,8 @@ namespace Tome
     {
         public:
             UpdateRecordCommand(RecordsController& recordsController,
-                                const QString& oldId,
-                                const QString& newId,
+                                const QVariant& oldId,
+                                const QVariant& newId,
                                 const QString& newDisplayName,
                                 const QString& newEditorIconFieldId,
                                 const QStringList& newFieldIds,
@@ -25,8 +26,8 @@ namespace Tome
         private:
             RecordsController& recordsController;
 
-            const QString oldId;
-            const QString newId;
+            const QVariant oldId;
+            const QVariant newId;
             const QString newDisplayName;
             const QString newEditorIconFieldId;
             const QStringList newFieldIds;

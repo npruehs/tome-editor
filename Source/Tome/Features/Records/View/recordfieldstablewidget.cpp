@@ -61,7 +61,7 @@ void RecordFieldsTableWidget::setDescriptionColumnEnabled(bool enabled)
     this->setHorizontalHeaderLabels(headers);
 }
 
-void RecordFieldsTableWidget::setRecord(const QString recordId)
+void RecordFieldsTableWidget::setRecord(const QVariant recordId)
 {
     this->recordId = recordId;
 

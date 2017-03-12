@@ -6,7 +6,7 @@ using namespace Tome;
 
 
 UpdateRecordFieldValueCommand::UpdateRecordFieldValueCommand(RecordsController& recordsController,
-                                                             const QString& recordId,
+                                                             const QVariant& recordId,
                                                              const QString& fieldId,
                                                              const QVariant& newFieldValue)
     : recordsController(recordsController),

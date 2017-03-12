@@ -3,7 +3,7 @@
 using namespace Tome;
 
 
-RecordTreeWidgetItem::RecordTreeWidgetItem(const QString& id, const QString& displayName, const QString& parentId, const bool readOnly)
+RecordTreeWidgetItem::RecordTreeWidgetItem(const QVariant& id, const QString& displayName, const QVariant& parentId, const bool readOnly)
     : QTreeWidgetItem((QTreeWidget*)0, QStringList(displayName))
 {
     this->setId(id);
@@ -12,7 +12,7 @@ RecordTreeWidgetItem::RecordTreeWidgetItem(const QString& id, const QString& dis
     this->setReadOnly(readOnly);
 }
 
-QString RecordTreeWidgetItem::getId() const
+QVariant RecordTreeWidgetItem::getId() const
 {
     return this->id;
 }
@@ -22,7 +22,7 @@ QString RecordTreeWidgetItem::getDisplayName() const
     return this->displayName;
 }
 
-QString RecordTreeWidgetItem::getParentId() const
+QVariant RecordTreeWidgetItem::getParentId() const
 {
     return this->parentId;
 }
@@ -32,7 +32,7 @@ bool RecordTreeWidgetItem::isReadOnly() const
     return this->readOnly;
 }
 
-void RecordTreeWidgetItem::setId(const QString& id)
+void RecordTreeWidgetItem::setId(const QVariant& id)
 {
     this->id = id;
     this->setData(0, Qt::UserRole, id);
@@ -44,7 +44,7 @@ void RecordTreeWidgetItem::setDisplayName(const QString& displayName)
     this->setText(0, displayName);
 }
 
-void RecordTreeWidgetItem::setParentId(const QString& parentId)
+void RecordTreeWidgetItem::setParentId(const QVariant& parentId)
 {
     this->parentId = parentId;
 }

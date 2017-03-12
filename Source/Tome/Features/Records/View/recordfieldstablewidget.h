@@ -24,7 +24,7 @@ namespace Tome
                                     TypesController& typesController);
 
             void setDescriptionColumnEnabled(bool enabled);
-            void setRecord(const QString recordId);
+            void setRecord(const QVariant recordId);
             void setShowComponentNames(bool showComponentNames);
             void updateFieldValue(int i);
 
@@ -39,7 +39,7 @@ namespace Tome
             RecordsController& recordsController;
             TypesController& typesController;
 
-            QString recordId;
+            QVariant recordId;
             bool showComponentNames;
 
             const QString getFieldKeyString(const FieldDefinition& field);

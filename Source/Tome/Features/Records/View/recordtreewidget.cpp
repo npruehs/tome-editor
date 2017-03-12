@@ -41,9 +41,9 @@ RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController,
             SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 }
 
-void RecordTreeWidget::addRecord(const QString& id, const QString& displayName, const QString& parentId)
+void RecordTreeWidget::addRecord(const QVariant& id, const QString& displayName, const QVariant& parentId)
 {
-    RecordTreeWidgetItem* recordItem = new RecordTreeWidgetItem(id, displayName, QString(), false);
+    RecordTreeWidgetItem* recordItem = new RecordTreeWidgetItem(id, displayName, QVariant(), false);
     RecordTreeWidgetItem* parentItem = this->getRecordItem(parentId);
 
     if (parentItem != nullptr)
@@ -62,21 +62,21 @@ void RecordTreeWidget::addRecord(const QString& id, const QString& displayName, 
     this->updateRecordItem(recordItem);
 }
 
-QString RecordTreeWidget::getSelectedRecordId() const
+QVariant RecordTreeWidget::getSelectedRecordId() const
 {
     RecordTreeWidgetItem* recordTreeItem = this->getSelectedRecordItem();
 
     if (recordTreeItem == 0)
     {
-        return QString();
+        return QVariant();
     }
 
     return recordTreeItem->getId();
 }
 
-QStringList RecordTreeWidget::getSelectedRecordIds() const
+QVariantList RecordTreeWidget::getSelectedRecordIds() const
 {
-    QStringList recordIds;
+    QVariantList recordIds;
 
     QList<RecordTreeWidgetItem*> recordTreeItems = this->getSelectedRecordItems();
 
@@ -123,7 +123,7 @@ void RecordTreeWidget::navigateForward()
         return;
     }
 
-    const QString id = this->selectedRecordRedoStack.pop();
+    const QVariant id = this->selectedRecordRedoStack.pop();
     this->selectedRecordUndoStack.push(id);
 
     // Prevent redo from affecting navigation stacks.
@@ -137,17 +137,17 @@ void RecordTreeWidget::navigateBackward()
         return;
     }
 
-    const QString id = this->selectedRecordUndoStack.pop();
+    const QVariant id = this->selectedRecordUndoStack.pop();
     this->selectedRecordRedoStack.push(id);
 
     // Prevent undo from affecting navigation stacks.
     this->selectRecord(this->selectedRecordUndoStack.top(), false);
 }
 
-void RecordTreeWidget::updateRecord(const QString& oldId,
+void RecordTreeWidget::updateRecord(const QVariant& oldId,
                                     const QString& oldDisplayName,
                                     const QString& oldEditorIconFieldId,
-                                    const QString& newId,
+                                    const QVariant& newId,
                                     const QString& newDisplayName,
                                     const QString& newEditorIconFieldId)
 {
@@ -181,7 +181,7 @@ void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
         return;
     }
 
-    const QString recordId = recordTreeItem->getId();
+    const QVariant recordId = recordTreeItem->getId();
     const Record& record = this->recordsController.getRecord(recordId);
 
     // Set color.
@@ -264,7 +264,7 @@ void RecordTreeWidget::updateRecordItemRecursively(RecordTreeWidgetItem* recordT
     }
 }
 
-void RecordTreeWidget::selectRecord(const QString& id, const bool addToHistory)
+void RecordTreeWidget::selectRecord(const QVariant& id, const bool addToHistory)
 {
     RecordTreeWidgetItem* item = this->getRecordItem(id);
 
@@ -288,7 +288,7 @@ void RecordTreeWidget::setRecords(const RecordList& records)
     this->selectedRecordRedoStack.clear();
 
     // Create record tree items.
-    QMap<QString, RecordTreeWidgetItem*> recordItems;
+    QMap<QVariant, RecordTreeWidgetItem*> recordItems;
 
     for (int i = 0; i < records.size(); ++i)
     {
@@ -299,7 +299,7 @@ void RecordTreeWidget::setRecords(const RecordList& records)
         updateRecordItem( recordItem );
 
         // Report progress.
-        emit this->progressChanged(tr("Refreshing Records"), record.id, i, records.size());
+        emit this->progressChanged(tr("Refreshing Records"), record.displayName, i, records.size());
     }
 
     // Report finish.
@@ -308,13 +308,13 @@ void RecordTreeWidget::setRecords(const RecordList& records)
     // Build hierarchy and prepare item list for tree widget.
     QList<QTreeWidgetItem* > items;
 
-    for (QMap<QString, RecordTreeWidgetItem*>::iterator it = recordItems.begin();
+    for (QMap<QVariant, RecordTreeWidgetItem*>::iterator it = recordItems.begin();
          it != recordItems.end();
          ++it)
     {
         RecordTreeWidgetItem* recordItem = it.value();
-        QString recordItemParentId = recordItem->getParentId();
-        if (!recordItemParentId.isEmpty())
+        QVariant recordItemParentId = recordItem->getParentId();
+        if (!recordItemParentId.isNull())
         {
             if (recordItems.contains(recordItemParentId))
             {
@@ -340,7 +340,7 @@ void RecordTreeWidget::setRecords(const RecordList& records)
     }
 }
 
-void RecordTreeWidget::removeRecord(const QString& id)
+void RecordTreeWidget::removeRecord(const QVariant& id)
 {
     // Update view.
     RecordTreeWidgetItem* recordItem = this->getRecordItem(id);
@@ -389,10 +389,10 @@ bool RecordTreeWidget::dropMimeData(QTreeWidgetItem* parent, int index, const QM
         stream >> row >> col >> roleDataMap;
 
         // Get dragged record.
-        QString draggedRecordId = roleDataMap[Qt::UserRole].toString();
+        QVariant draggedRecordId = roleDataMap[Qt::UserRole];
 
         // Get drop target record.
-        QString dropTargetRecordId;
+        QVariant dropTargetRecordId;
 
         if (parent != 0)
         {
@@ -432,7 +432,7 @@ void RecordTreeWidget::onCurrentItemChanged(QTreeWidgetItem* current, QTreeWidge
     }
 
     // Push id of selected record, or an empty string for "deselected".
-    QString selectedRecordId;
+    QVariant selectedRecordId;
 
     if (current != nullptr)
     {
@@ -444,7 +444,7 @@ void RecordTreeWidget::onCurrentItemChanged(QTreeWidgetItem* current, QTreeWidge
     this->selectedRecordRedoStack.clear();
 }
 
-RecordTreeWidgetItem* RecordTreeWidget::getRecordItem(const QString& id)
+RecordTreeWidgetItem* RecordTreeWidget::getRecordItem(const QVariant& id)
 {
     QTreeWidgetItemIterator it(this);
 

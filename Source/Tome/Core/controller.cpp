@@ -59,7 +59,7 @@ Controller::Controller(CommandLineOptions* options) :
     componentsController(new ComponentsController()),
     typesController(new TypesController()),
     fieldDefinitionsController(new FieldDefinitionsController(*this->componentsController, *this->typesController)),
-    recordsController(new RecordsController(*this->fieldDefinitionsController, *this->typesController)),
+    recordsController(new RecordsController(*this->fieldDefinitionsController, *this->projectController, *this->typesController)),
     facetsController(new FacetsController(*this->recordsController, *this->typesController)),
     exportController(new ExportController(*this->facetsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     settingsController(new SettingsController()),
