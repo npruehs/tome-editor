@@ -13,25 +13,25 @@ TEMPLATE = app
 
 # Expose application version in Windows property window and in application code.
 # http://www.openguru.com/2009/11/qt-best-way-to-set-application-version.html
-VERSION = 0.8
-VERSION_NAME = Pegasus
+VERSION = 0.9
+VERSION_NAME = Unicorn
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 DEFINES += APP_VERSION_NAME=\\\"$$VERSION_NAME\\\"
 
 RC_ICONS = ../Media/Icons/Tome.ico
 ICON = ../Media/Icons/Tome.icns
 
-Debug:DESTDIR = ../../Bin/debug/Tome
-Debug:OBJECTS_DIR = ../../Obj/debug/Tome
-Debug:MOC_DIR = ../../Obj/debug/Tome/.moc
-Debug:RCC_DIR = ../../Obj/debug/Tome/.rcc
-Debug:UI_DIR = ../../Obj/debug/Tome/.ui
+Debug:DESTDIR = ../Bin/debug/Tome
+Debug:OBJECTS_DIR = ../Obj/debug/Tome
+Debug:MOC_DIR = ../Obj/debug/Tome/.moc
+Debug:RCC_DIR = ../Obj/debug/Tome/.rcc
+Debug:UI_DIR = ../Obj/debug/Tome/.ui
 
-Release:DESTDIR = ../../Bin/release/Tome
-Release:OBJECTS_DIR = ../../Obj/release/Tome
-Release:MOC_DIR = ../../Obj/release/Tome/.moc
-Release:RCC_DIR = ../../Obj/release/Tome/.rcc
-Release:UI_DIR = ../../Obj/release/Tome/.ui
+Release:DESTDIR = ../Bin/release/Tome
+Release:OBJECTS_DIR = ../Obj/release/Tome
+Release:MOC_DIR = ../Obj/release/Tome/.moc
+Release:RCC_DIR = ../Obj/release/Tome/.rcc
+Release:UI_DIR = ../Obj/release/Tome/.ui
 
 SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Core/mainwindow.cpp \
@@ -151,7 +151,18 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Import/Controller/xlsxrecorddatasource.cpp \
     ../Source/Tome/Features/Import/Controller/googlesheetsrecorddatasource.cpp \
     ../Source/Tome/Features/Import/Controller/importtemplateserializer.cpp \
-    ../Source/Tome/Features/Facets/Controller/localizedstringfacet.cpp
+    ../Source/Tome/Features/Facets/Controller/localizedstringfacet.cpp \
+    ../Source/Tome/Features/Integrity/Controller/componenthasnofieldstask.cpp \
+    ../Source/Tome/Features/Integrity/Controller/fieldisneverusedtask.cpp \
+    ../Source/Tome/Features/Integrity/Controller/typeisneverusedtask.cpp \
+    ../Source/Tome/Features/Integrity/Controller/referencedrecorddoesnotexisttask.cpp \
+    ../Source/Tome/Features/Integrity/Controller/fieldalwayshasitsdefaultvaluetask.cpp \
+    ../Source/Tome/Features/Fields/View/filepickerwidget.cpp \
+    ../Source/Tome/Features/Projects/Controller/projectcontroller.cpp \
+    ../Source/Tome/Features/Facets/Controller/removedfileprefixfacet.cpp \
+    ../Source/Tome/Features/Facets/Controller/removedfilesuffixfacet.cpp \
+    ../Source/Tome/Features/Integrity/Controller/referencedfiledoesnotexisttask.cpp \
+    ../Source/Tome/Features/Records/View/labeledpixmapwidget.cpp
 
 HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Types/Model/builtintype.h \
@@ -295,7 +306,19 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Import/Controller/xlsxrecorddatasource.h \
     ../Source/Tome/Features/Import/Controller/googlesheetsrecorddatasource.h \
     ../Source/Tome/Features/Import/Controller/importtemplateserializer.h \
-    ../Source/Tome/Features/Facets/Controller/localizedstringfacet.h
+    ../Source/Tome/Features/Facets/Controller/localizedstringfacet.h \
+    ../Source/Tome/Features/Integrity/Controller/componenthasnofieldstask.h \
+    ../Source/Tome/Features/Integrity/Controller/fieldisneverusedtask.h \
+    ../Source/Tome/Features/Integrity/Controller/typeisneverusedtask.h \
+    ../Source/Tome/Features/Integrity/Controller/referencedrecorddoesnotexisttask.h \
+    ../Source/Tome/Features/Integrity/Controller/fieldalwayshasitsdefaultvaluetask.h \
+    ../Source/Tome/Features/Fields/View/filepickerwidget.h \
+    ../Source/Tome/Features/Projects/Controller/projectcontroller.h \
+    ../Source/Tome/Features/Facets/Controller/removedfileprefixfacet.h \
+    ../Source/Tome/Features/Facets/Controller/removedfilesuffixfacet.h \
+    ../Source/Tome/Features/Integrity/Controller/referencedfiledoesnotexisttask.h \
+    ../Source/Tome/Features/Records/View/labeledpixmapwidget.h \
+    ../Source/Tome/Features/Projects/Model/recordidtype.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

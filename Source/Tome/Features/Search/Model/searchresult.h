@@ -1,7 +1,7 @@
 #ifndef SEARCHRESULT_H
 #define SEARCHRESULT_H
 
-#include <QString>
+#include <QVariant>
 
 #include "../../Tasks/Model/targetsitetype.h"
 
@@ -13,7 +13,7 @@ namespace Tome
             SearchResult();
 
             QString content;
-            QString targetSiteId;
+            QVariant targetSiteId;
             TargetSiteType::TargetSiteType targetSiteType;
     };
 }

@@ -13,6 +13,11 @@ ListItemTypeDoesNotExistTask::ListItemTypeDoesNotExistTask()
 {
 }
 
+const QString ListItemTypeDoesNotExistTask::getDisplayName() const
+{
+    return MessageCode + tr(" - List Item Type Does Not Exist");
+}
+
 const MessageList ListItemTypeDoesNotExistTask::execute(const TaskContext& context) const
 {
     MessageList messages;
@@ -32,7 +37,7 @@ const MessageList ListItemTypeDoesNotExistTask::execute(const TaskContext& conte
             if (!context.typesController.isBuiltInType(itemType) && !context.typesController.isCustomType(itemType))
             {
                 Message message;
-                message.content = tr("List item type %1 does not exist.").arg(itemType);
+                message.content = tr("The item type %1 of the list type %2 does not exist.").arg(itemType, type.name);
                 message.messageCode = MessageCode;
                 message.severity = Severity::Error;
                 message.targetSiteId = type.name;

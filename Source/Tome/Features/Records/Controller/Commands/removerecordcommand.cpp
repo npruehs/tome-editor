@@ -3,6 +3,7 @@
 #include "../recordscontroller.h"
 #include "../../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../../Types/Controller/typescontroller.h"
+#include "../../../Types/Model/builtintype.h"
 
 using namespace Tome;
 
@@ -10,18 +11,18 @@ using namespace Tome;
 RemoveRecordCommand::RemoveRecordCommand(RecordsController& recordsController,
                                          FieldDefinitionsController& fieldDefinitionsController,
                                          TypesController& typesController,
-                                         const QString& id)
+                                         const QVariant& id)
     : recordsController(recordsController),
       fieldDefinitionsController(fieldDefinitionsController),
       typesController(typesController),
       id(id)
 {
-    this->setText(tr("Remove Record - %1").arg(id));
+    this->setText(tr("Remove Record - %1").arg(id.toString()));
 }
 
 void RemoveRecordCommand::undo()
 {
-    qInfo(QString("Undo remove record %1.").arg(this->id).toUtf8().constData());
+    qInfo(QString("Undo remove record %1.").arg(this->id.toString()).toUtf8().constData());
 
     // Add records again.
     for (RecordList::iterator itRecords = this->removedRecords.begin();
@@ -32,6 +33,7 @@ void RemoveRecordCommand::undo()
 
         this->recordsController.addRecord(record.id,
                                           record.displayName,
+                                          record.editorIconFieldId,
                                           QStringList(),
                                           record.recordSetName);
 
@@ -48,11 +50,11 @@ void RemoveRecordCommand::undo()
     }
 
     // Restore references.
-    for (QMap<QString, RecordFieldValueMap>::iterator itRecords = this->removedRecordFieldValues.begin();
+    for (QMap<QVariant, RecordFieldValueMap>::iterator itRecords = this->removedRecordFieldValues.begin();
          itRecords != this->removedRecordFieldValues.end();
          ++itRecords)
     {
-        const QString& recordId = itRecords.key();
+        const QVariant& recordId = itRecords.key();
         const RecordFieldValueMap removedValues = itRecords.value();
 
         for (RecordFieldValueMap::const_iterator itFields = removedValues.begin();
@@ -80,6 +82,8 @@ void RemoveRecordCommand::redo()
     }
 
     // Store references of other records pointing to records that are about to be removed.
+    this->removedRecordFieldValues.clear();
+
     RecordList allRecords = this->recordsController.getRecords();
 
     for (RecordList::const_iterator itAllRecords = allRecords.begin();
@@ -103,7 +107,7 @@ void RemoveRecordCommand::redo()
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
 
             // Check if it's a reference field.
-            if (this->typesController.isReferenceType(field.fieldType))
+            if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference))
             {
                 const QString reference = itFields.value().toString();
 
@@ -112,9 +116,9 @@ void RemoveRecordCommand::redo()
                      itRemovedRecords != this->removedRecords.end();
                      ++itRemovedRecords)
                 {
-                    const QString removedRecordId = (*itRemovedRecords).id;
+                    const QVariant removedRecordId = (*itRemovedRecords).id;
 
-                    if (reference == removedRecordId)
+                    if (reference == removedRecordId.toString())
                     {
                         // Remember field so we can restore the reference later.
                         removedFieldValues.insert(fieldId, removedRecordId);

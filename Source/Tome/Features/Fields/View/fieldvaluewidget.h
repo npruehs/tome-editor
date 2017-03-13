@@ -16,9 +16,11 @@
 namespace Tome
 {
     class CustomType;
+    class FilePickerWidget;
     class ListWidget;
     class MapWidget;
     class FacetsController;
+    class ProjectController;
     class RecordsController;
     class TypesController;
     class Vector2IWidget;
@@ -35,7 +37,11 @@ namespace Tome
             Q_OBJECT
 
         public:
-            explicit FieldValueWidget(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController,  QWidget *parent = 0);
+            explicit FieldValueWidget(FacetsController& facetsController,
+                                      ProjectController& projectController,
+                                      RecordsController& recordsController,
+                                      TypesController& typesController,
+                                      QWidget *parent = 0);
             ~FieldValueWidget();
 
             QString getFieldType() const;
@@ -63,6 +69,7 @@ namespace Tome
             QCheckBox* checkBox;
             QColorDialog* colorDialog;
             QDoubleSpinBox* doubleSpinBox;
+            FilePickerWidget* filePicker;
             QVBoxLayout* layout;
             QLineEdit* lineEdit;
             ListWidget* listWidget;
@@ -77,6 +84,7 @@ namespace Tome
             QLabel* errorLabel;
 
             FacetsController& facetsController;
+            ProjectController& projectController;
             RecordsController& recordsController;
             TypesController& typesController;
 

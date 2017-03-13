@@ -30,6 +30,13 @@ namespace Tome
     {
         return e1.displayName.toLower() < e2.displayName.toLower();
     }
+
+    inline bool fieldDefinitionLessThanComponentAndDisplayName(const FieldDefinition& e1, const FieldDefinition& e2)
+    {
+        QString lhs = QString("%1%2").arg(e1.component, e1.displayName);
+        QString rhs = QString("%1%2").arg(e2.component, e2.displayName);
+        return lhs.toLower() < rhs.toLower();
+    }
 }
 
 #endif // FIELDDEFINITION_H

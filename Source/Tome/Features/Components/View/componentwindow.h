@@ -25,6 +25,9 @@ class ComponentWindow : public QDialog
     public slots:
         void accept();
 
+    protected:
+        virtual void showEvent(QShowEvent* event);
+
     private:
         Ui::ComponentWindow *ui;
 

@@ -13,7 +13,7 @@ namespace Tome
     {
         public:
             RevertRecordCommand(RecordsController& recordsController,
-                                const QString& recordId);
+                                const QVariant& recordId);
 
             virtual void undo();
             virtual void redo();
@@ -21,7 +21,7 @@ namespace Tome
         private:
             RecordsController& recordsController;
 
-            const QString recordId;
+            const QVariant recordId;
 
             RecordFieldValueMap oldRecordFieldValues;
     };

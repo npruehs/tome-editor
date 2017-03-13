@@ -153,6 +153,12 @@ void DerivedTypeWindow::accept()
     }
 }
 
+void DerivedTypeWindow::showEvent(QShowEvent* event)
+{
+    QDialog::showEvent(event);
+    this->ui->lineEditName->setFocus();
+}
+
 void DerivedTypeWindow::on_comboBoxBaseType_currentIndexChanged(const QString &baseType)
 {
     Q_UNUSED(baseType)

@@ -1,8 +1,11 @@
 #ifndef PATHUTILS_H
 #define PATHUTILS_H
 
+#include <QDesktopServices>
 #include <QDir>
+#include <QFileInfo>
 #include <QString>
+#include <QUrl>
 
 namespace Tome
 {
@@ -15,6 +18,28 @@ namespace Tome
     inline QString combinePaths(const QString& first, const QString& second)
     {
         return QDir::cleanPath(first + QDir::separator() + second);
+    }
+
+    /**
+     * @brief openFileWithDefaultProgram Opens the specified file with the default program registered in the underlying OS.
+     * @param filePath File to open.
+     */
+    inline void openFileWithDefaultProgram(const QString& filePath)
+    {
+        const QFileInfo file(filePath);
+        const QUrl url = QUrl::fromLocalFile(file.absoluteFilePath());
+        QDesktopServices::openUrl(url);
+    }
+
+    /**
+     * @brief showFileInExplorerOrFinder Opens the Explorer (on Windows) or the Finder (on Mac OS) and navigates to the specified file.
+     * @param filePath File to navigate to.
+     */
+    inline void showFileInExplorerOrFinder(const QString& filePath)
+    {
+        const QFileInfo file(filePath);
+        const QUrl url = QUrl::fromLocalFile(file.absolutePath());
+        QDesktopServices::openUrl(url);
     }
 }
 

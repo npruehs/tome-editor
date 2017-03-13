@@ -10,11 +10,13 @@ using namespace Tome;
 #include "xlsxrecorddatasource.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
+#include "../../Types/Controller/typescontroller.h"
 
 
-ImportController::ImportController(FieldDefinitionsController& fieldDefinitionsController, RecordsController& recordsController)
+ImportController::ImportController(FieldDefinitionsController& fieldDefinitionsController, RecordsController& recordsController, TypesController& typesController)
     : fieldDefinitionsController(fieldDefinitionsController),
-      recordsController(recordsController)
+      recordsController(recordsController),
+      typesController(typesController)
 {
 }
 
@@ -171,13 +173,24 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
         const QString& recordId = itRecords.key();
         const RecordFieldValueMap& newRecordFieldValues = itRecords.value();
 
+        if (recordId.isEmpty())
+        {
+            continue;
+        }
+
         // Update progress bar.
         emit this->progressChanged(progressBarTitle, recordId, index, data.count());
 
         // Check if need to add new record.
         if (!this->recordsController.hasRecord(recordId))
         {
-            this->recordsController.addRecord(recordId, recordId, QStringList(), recordSetName);
+            // make sure the parent record exists.
+            if (!this->recordsController.hasRecord(importTemplate.rootRecordId))
+            {
+                this->recordsController.addRecord(importTemplate.rootRecordId, importTemplate.rootRecordId, QString(), QStringList(), recordSetName);
+                ++recordsAdded;
+            }
+            this->recordsController.addRecord(recordId, recordId, QString(), QStringList(), recordSetName);
             this->recordsController.reparentRecord(recordId, importTemplate.rootRecordId);
             ++recordsAdded;
         }
@@ -208,6 +221,15 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
                 qWarning(QString("Skipping unknown field: %1").arg(fieldId).toUtf8().constData());
                 ++fieldsSkipped;
                 continue;
+            }
+
+            // Convert to list if necessary.
+            const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
+            bool isList = this->typesController.isCustomType(field.fieldType) && this->typesController.getCustomType(field.fieldType).isList();
+
+            if (isList)
+            {
+                fieldValue = fieldValue.toString().split(",");
             }
 
             // Check if needs update.

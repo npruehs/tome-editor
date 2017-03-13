@@ -24,13 +24,13 @@ const SearchResultList FindRecordController::findRecord(const QString& searchPat
         const Record& record = records[i];
 
         // Report progress.
-        emit this->progressChanged(tr("Searching"), record.id, i, records.length());
+        emit this->progressChanged(tr("Searching"), record.displayName, i, records.length());
 
-        if (record.id.toLower().contains(searchPattern.toLower()) ||
+        if (record.id.toString().toLower().contains(searchPattern.toLower()) ||
                 record.displayName.toLower().contains(searchPattern.toLower()))
         {
             SearchResult result;
-            result.content = record.id;
+            result.content = QString("%1 (%2)").arg(record.displayName, record.id.toString());
             result.targetSiteId = record.id;
             result.targetSiteType = TargetSiteType::Record;
 

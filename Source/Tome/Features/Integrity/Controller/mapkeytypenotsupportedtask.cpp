@@ -14,6 +14,11 @@ MapKeyTypeNotSupportedTask::MapKeyTypeNotSupportedTask()
 {
 }
 
+const QString MapKeyTypeNotSupportedTask::getDisplayName() const
+{
+    return MessageCode + tr(" - Map Key Type Not Supported");
+}
+
 const MessageList MapKeyTypeNotSupportedTask::execute(const TaskContext& context) const
 {
     MessageList messages;
@@ -34,7 +39,7 @@ const MessageList MapKeyTypeNotSupportedTask::execute(const TaskContext& context
                 keyType == BuiltInType::Vector3I || keyType == BuiltInType::Vector3R)
             {
                 Message message;
-                message.content = tr("Map key type %1 is not supported.").arg(keyType);
+                message.content = tr("The key type %1 of the map type %2 is not supported.").arg(keyType, type.name);
                 message.messageCode = MessageCode;
                 message.severity = Severity::Error;
                 message.targetSiteId = type.name;

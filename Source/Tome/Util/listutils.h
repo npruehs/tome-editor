@@ -27,6 +27,11 @@ namespace Tome
             return lessThan(list.first(), item) ? 1 : 0;
         }
 
+        if (lessThan(item, list.at(0)))
+        {
+            return 0;
+        }
+
         for (int i = 0; i < list.size() - 1; ++i)
         {
             if (lessThan(list.at(i), item) && !lessThan(list.at(i + 1), item))

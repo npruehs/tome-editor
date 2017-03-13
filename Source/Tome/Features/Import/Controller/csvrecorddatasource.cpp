@@ -39,6 +39,7 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
     {
         QString errorMessage = QObject::tr("Source file is empty:\r\n") + filePath;
         qCritical(errorMessage.toUtf8().constData());
+        file.close();
         emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
     }
@@ -62,6 +63,7 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
         QString errorMessage = QObject::tr("Could not find id column %1 in source file:\r\n%2")
                 .arg(importTemplate.idColumn, filePath);
         qCritical(errorMessage.toUtf8().constData());
+        file.close();
         emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
     }
@@ -80,6 +82,7 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
             QString errorMessage = QObject::tr("Row %1 has %2 columns, but the header has %3 columns.")
                     .arg(QString::number(rowIndex), QString::number(row.count()), QString::number(headers.count()));
             qCritical(errorMessage.toUtf8().constData());
+            file.close();
             emit this->dataUnavailable(importTemplate.name, context, errorMessage);
             return;
         }
@@ -111,6 +114,8 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
 
         data[recordId] = map;
     }
+
+    file.close();
 
     emit this->progressChanged(progressBarTitle, QString(), 1, 1);
     emit this->dataAvailable(importTemplate.name, context, data);

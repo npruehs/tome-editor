@@ -5,8 +5,10 @@
 using namespace Tome;
 
 
+const QString FileMessageHandler::logfileName = "output.log";
+
 bool FileMessageHandler::initialized = false;
-QFile FileMessageHandler::logFile("output.log");
+QFile FileMessageHandler::logFile(logfileName);
 
 
 bool FileMessageHandler::init()

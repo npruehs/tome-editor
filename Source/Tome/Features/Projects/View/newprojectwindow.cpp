@@ -4,6 +4,8 @@
 #include <QFileDialog>
 #include <QStandardPaths>
 
+using namespace Tome;
+
 
 NewProjectWindow::NewProjectWindow(QWidget *parent) :
     QDialog(parent),
@@ -18,6 +20,11 @@ NewProjectWindow::NewProjectWindow(QWidget *parent) :
     const QString documentsFolder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
     ui->lineEditLocation->setText(documentsFolder);
 
+    // Add record id types.
+    this->ui->comboBoxRecordIdType->addItem(RecordIdType::toString(RecordIdType::Integer));
+    this->ui->comboBoxRecordIdType->addItem(RecordIdType::toString(RecordIdType::Uuid));
+    this->ui->comboBoxRecordIdType->addItem(RecordIdType::toString(RecordIdType::String));
+
     // Focus project name box.
     ui->lineEditName->setFocus();
 }
@@ -25,6 +32,44 @@ NewProjectWindow::NewProjectWindow(QWidget *parent) :
 NewProjectWindow::~NewProjectWindow()
 {
     delete this->ui;
+}
+
+QString NewProjectWindow::getProjectName() const
+{
+    return ui->lineEditName->text();
+}
+
+QString NewProjectWindow::getProjectPath() const
+{
+    return ui->lineEditLocation->text();
+}
+
+RecordIdType::RecordIdType NewProjectWindow::getProjectRecordIdType() const
+{
+    return RecordIdType::fromString(this->ui->comboBoxRecordIdType->currentText());
+}
+
+void NewProjectWindow::on_comboBoxRecordIdType_currentTextChanged(const QString &text)
+{
+    Q_UNUSED(text)
+
+    switch (this->getProjectRecordIdType())
+    {
+        case RecordIdType::Integer:
+            this->ui->labelRecordIdTypeDescription->setText(tr("Automatically assign increasing positive integer ids to all records."));
+            break;
+
+        case RecordIdType::String:
+            this->ui->labelRecordIdTypeDescription->setText(tr("Manually assign string ids to all records."));
+            break;
+
+        case RecordIdType::Uuid:
+            this->ui->labelRecordIdTypeDescription->setText(tr("Automatically assign Universally Unique Identifiers (UUIDs) to all records."));
+            break;
+
+        default:
+            this->ui->labelRecordIdTypeDescription->clear();
+    }
 }
 
 void NewProjectWindow::on_pushButtonBrowse_clicked()
@@ -42,14 +87,4 @@ void NewProjectWindow::on_pushButtonBrowse_clicked()
 
     // Update UI.
     ui->lineEditLocation->setText(newFolder);
-}
-
-QString NewProjectWindow::getProjectName() const
-{
-    return ui->lineEditName->text();
-}
-
-QString NewProjectWindow::getProjectPath() const
-{
-    return ui->lineEditLocation->text();
 }

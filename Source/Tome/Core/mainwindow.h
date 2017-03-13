@@ -61,8 +61,10 @@ class MainWindow : public QMainWindow
         void on_actionNew_Project_triggered();
         void on_actionOpen_Project_triggered();
         void on_actionSave_Project_triggered();
+        void on_actionReload_Project_triggered();
 
         void on_actionNew_Record_triggered();
+        void on_actionAdd_Child_triggered();
         void on_actionEdit_Record_triggered();
         void on_actionDuplicate_Record_triggered();
         void on_actionRevert_Record_triggered();
@@ -94,14 +96,20 @@ class MainWindow : public QMainWindow
         void onImportFinished();
         void onImportStarted();
         void onImportTemplatesChanged();
+        void onFileLinkActivated(const QString& filePath);
         void onProgressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
         void onProjectChanged(QSharedPointer<Tome::Project> project);
-        void onRecordAdded(const QString& recordId, const QString& recordDisplayName, const QString& parentId);
-        void onRecordFieldsChanged(const QString& recordId);
-        void onRecordRemoved(const QString& recordId);
-        void onRecordReparented(const QString& recordId, const QString& oldParentId, const QString& newParentId);
+        void onRecordAdded(const QVariant& recordId, const QString& recordDisplayName, const QVariant& parentId);
+        void onRecordFieldsChanged(const QVariant& recordId);
+        void onRecordRemoved(const QVariant& recordId);
+        void onRecordReparented(const QVariant& recordId, const QVariant& oldParentId, const QVariant& newParentId);
         void onRecordSetsChanged();
-        void onRecordUpdated(const QString& oldId, const QString& oldDisplayName, const QString& newId, const QString& newDisplayName);
+        void onRecordUpdated(const QVariant& oldId,
+                             const QString& oldDisplayName,
+                             const QString& oldEditorIconFieldId,
+                             const QVariant& newId,
+                             const QString& newDisplayName,
+                             const QString& newEditorIconFieldId);
         void onRecordLinkActivated(const QString& recordId);
         void onUndoStackChanged(bool clean);
         void openRecentProject(QAction* recentProjectAction);
@@ -109,7 +117,7 @@ class MainWindow : public QMainWindow
         void searchResultChanged(const QString& title, const Tome::SearchResultList results);
         void tableWidgetDoubleClicked(const QModelIndex &index);
         void treeWidgetDoubleClicked(const QModelIndex &index);
-        void treeWidgetRecordReparented(const QString& recordId, const QString& newParentId);
+        void treeWidgetRecordReparented(const QVariant& recordId, const QVariant& newParentId);
         void treeWidgetSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
     private:
@@ -143,18 +151,17 @@ class MainWindow : public QMainWindow
 
         bool refreshRecordTreeAfterReparent;
 
-        QString getReadOnlyMessage(const QString& recordId);
+        QString getReadOnlyMessage(const QVariant& recordId);
         void openProject(QString path);
         void refreshErrorList();
         void refreshExportMenu();
         void refreshImportMenu();
         void refreshRecordTree();
         void refreshRecordTable();
-        void showReadOnlyMessage(const QString& recordId);
+        void showReadOnlyMessage(const QVariant& recordId);
         void showWindow(QWidget* widget);
         void updateMenus();
         void updateRecentProjects();
-        void updateRecordRow(const int i);
         void updateWindowTitle();
 };
 

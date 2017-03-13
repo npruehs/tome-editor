@@ -5,6 +5,7 @@
 
 #include <QMessageBox>
 
+#include "filepickerwidget.h"
 #include "listwidget.h"
 #include "mapwidget.h"
 #include "vector2iwidget.h"
@@ -23,10 +24,15 @@
 using namespace Tome;
 
 
-FieldValueWidget::FieldValueWidget(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
+FieldValueWidget::FieldValueWidget(FacetsController& facetsController,
+                                   ProjectController& projectController,
+                                   RecordsController& recordsController,
+                                   TypesController& typesController,
+                                   QWidget *parent) :
     QWidget(parent),
     currentWidget(0),
     facetsController(facetsController),
+    projectController(projectController),
     recordsController(recordsController),
     typesController(typesController)
 {
@@ -59,7 +65,7 @@ FieldValueWidget::FieldValueWidget(FacetsController& facetsController, RecordsCo
     this->comboBox = new QComboBox();
     this->addWidget(this->comboBox);
 
-    this->listWidget = new ListWidget(this->facetsController, this->recordsController, this->typesController);
+    this->listWidget = new ListWidget(this->facetsController, this->projectController, this->recordsController, this->typesController);
     this->addWidget(this->listWidget);
 
     this->vector2IWidget = new Vector2IWidget();
@@ -74,8 +80,11 @@ FieldValueWidget::FieldValueWidget(FacetsController& facetsController, RecordsCo
     this->vector3RWidget = new Vector3RWidget();
     this->addWidget(this->vector3RWidget);
 
-    this->mapWidget = new MapWidget(this->facetsController, this->recordsController, this->typesController);
+    this->mapWidget = new MapWidget(this->facetsController, this->projectController, this->recordsController, this->typesController);
     this->addWidget(this->mapWidget);
+
+    this->filePicker = new FilePickerWidget(this->facetsController, this->projectController);
+    this->addWidget(this->filePicker);
 
     // Add error label.
     this->errorLabel = new QLabel();
@@ -245,6 +254,11 @@ QVariant FieldValueWidget::getFieldValueForType(const QString& typeName) const
         return this->colorDialog->currentColor();
     }
 
+    if (typeName == BuiltInType::File)
+    {
+        return this->filePicker->getFileName();
+    }
+
     if (typeName == BuiltInType::Integer)
     {
         return this->spinBox->text();
@@ -334,6 +348,13 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
         return;
     }
 
+    if (typeName == BuiltInType::File)
+    {
+        this->filePicker->setFieldType(this->fieldType);
+        this->setCurrentWidget(this->filePicker);
+        return;
+    }
+
     if (typeName == BuiltInType::Integer)
     {
         this->setCurrentWidget(this->spinBox);
@@ -354,19 +375,19 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
     if (typeName == BuiltInType::Reference)
     {
-        QStringList recordIds = this->recordsController.getRecordIds();
+        QVariantList recordIds = this->recordsController.getRecordIds();
 
         // Only show allowed record references.
         QStringList references;
 
-        for (const QString recordId : recordIds)
+        for (const QVariant recordId : recordIds)
         {
             const QString& validationError =
                     this->facetsController.validateFieldValue(this->getFieldType(), recordId);
 
             if (validationError.isEmpty())
             {
-                references.push_back(recordId);
+                references.push_back(recordId.toString());
             }
         }
 
@@ -481,6 +502,13 @@ void FieldValueWidget::setFieldValueForType(const QVariant& fieldValue, const QS
     {
         QColor color = fieldValue.value<QColor>();
         this->colorDialog->setCurrentColor(color);
+        return;
+    }
+
+    if (typeName == BuiltInType::File)
+    {
+        QString fileName = fieldValue.toString();
+        this->filePicker->setFileName(fileName);
         return;
     }
 

@@ -17,6 +17,7 @@ namespace Tome
     class FacetsController;
     class FieldDefinitionsController;
     class FieldValueWidget;
+    class ProjectController;
     class RecordsController;
     class TypesController;
 }
@@ -29,6 +30,7 @@ class FieldDefinitionWindow : public QDialog
         explicit FieldDefinitionWindow(Tome::FieldDefinitionsController& fieldDefinitionsController,
                 Tome::ComponentsController& componentsController,
                 Tome::FacetsController& facetsController,
+                Tome::ProjectController& projectController,
                 Tome::RecordsController& recordsController,
                 Tome::TypesController& typesController,
                 QWidget *parent = 0);
@@ -71,6 +73,7 @@ class FieldDefinitionWindow : public QDialog
         Tome::FieldDefinitionsController& fieldDefinitionsController;
         Tome::ComponentsController& componentsController;
         Tome::FacetsController& facetsController;
+        Tome::ProjectController& projectController;
         Tome::RecordsController& recordsController;
         Tome::TypesController& typesController;
 

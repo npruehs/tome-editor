@@ -9,6 +9,9 @@
 using namespace Tome;
 
 
+const QString RequiredReferenceAncestorFacet::FacetKey = "RequiredAncestor";
+
+
 RequiredReferenceAncestorFacet::RequiredReferenceAncestorFacet()
 {
 }
@@ -16,12 +19,16 @@ RequiredReferenceAncestorFacet::RequiredReferenceAncestorFacet()
 QWidget* RequiredReferenceAncestorFacet::createWidget(const FacetContext& context) const
 {
     QComboBox* comboBox = new QComboBox();
-    QStringList recordIds = context.recordsController.getRecordIds();
+    QVariantList recordIds = context.recordsController.getRecordIds();
 
     // Allow clearing the field.
     recordIds.push_front(QString());
 
-    comboBox->addItems(recordIds);
+    for (QVariant recordId : recordIds)
+    {
+        comboBox->addItem(recordId.toString());
+    }
+
     return comboBox;
 }
 
@@ -45,7 +52,7 @@ const QString RequiredReferenceAncestorFacet::getDisplayName() const
 
 const QString RequiredReferenceAncestorFacet::getKey() const
 {
-    return "RequiredAncestor";
+    return FacetKey;
 }
 
 const QString RequiredReferenceAncestorFacet::getTargetType() const
@@ -67,12 +74,16 @@ void RequiredReferenceAncestorFacet::setWidgetValue(QWidget* widget, const QVari
 
 QString RequiredReferenceAncestorFacet::validateValue(const FacetContext& context, const QVariant value, const QVariant facetValue) const
 {
-    QString requiredAncestor = facetValue.toString();
-    QString valueAsString = value.toString();
+    QVariant requiredAncestor = facetValue;
+    QVariant recordId = value;
 
-    if ( !valueAsString.isEmpty() && !requiredAncestor.isEmpty() && !context.recordsController.isAncestorOf(requiredAncestor, valueAsString))
+    if ( !recordId.isNull() &&
+         !requiredAncestor.isNull() &&
+         context.recordsController.hasRecord(recordId) &&
+         context.recordsController.hasRecord(requiredAncestor) &&
+         !context.recordsController.isAncestorOf(requiredAncestor, recordId))
     {
-        return tr("Value must be any %1.").arg(requiredAncestor);
+        return tr("Value must be any %1.").arg(requiredAncestor.toString());
     }
 
     return QString();

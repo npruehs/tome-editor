@@ -19,6 +19,7 @@ namespace Tome
     class FieldDefinition;
     class FieldDefinitionsController;
     class FindUsagesController;
+    class ProjectController;
     class RecordsController;
     class TypesController;
     class UndoController;
@@ -32,10 +33,11 @@ class FieldDefinitionsWindow : public QMainWindow
         explicit FieldDefinitionsWindow(
                 Tome::FieldDefinitionsController& fieldDefinitionsController,
                 Tome::ComponentsController& componentsController,
+                Tome::FacetsController& facetsController,
+                Tome::FindUsagesController& findUsagesController,
+                Tome::ProjectController& projectController,
                 Tome::RecordsController& recordsController,
                 Tome::TypesController& typesController,
-                Tome::FindUsagesController& findUsagesController,
-                Tome::FacetsController& facetsController,
                 Tome::UndoController& undoController,
                 QWidget *parent = 0);
         ~FieldDefinitionsWindow();
@@ -66,10 +68,11 @@ class FieldDefinitionsWindow : public QMainWindow
 
         Tome::FieldDefinitionsController& fieldDefinitionsController;
         Tome::ComponentsController& componentsController;
+        Tome::FacetsController& facetsController;
+        Tome::FindUsagesController& findUsagesController;
+        Tome::ProjectController& projectController;
         Tome::RecordsController& recordsController;
         Tome::TypesController& typesController;
-        Tome::FindUsagesController& findUsagesController;
-        Tome::FacetsController& facetsController;
         Tome::UndoController& undoController;
 
         FieldDefinitionWindow* fieldDefinitionWindow;

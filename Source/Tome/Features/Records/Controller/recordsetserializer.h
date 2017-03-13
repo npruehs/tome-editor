@@ -31,6 +31,7 @@ namespace Tome
 
         private:
             static const QString ElementDisplayName;
+            static const QString ElementEditorIconFieldId;
             static const QString ElementId;
             static const QString ElementItem;
             static const QString ElementKey;

@@ -58,6 +58,25 @@ ErrorListDockWidget::ErrorListDockWidget(QWidget* parent) :
     // Finish layout.
     this->widget->setLayout(this->verticalLayout);
     this->setWidget(this->widget);
+
+    // Connect signals.
+    connect(
+                this->toolButtonErrors,
+                SIGNAL(toggled(bool)),
+                SLOT(onToolButtonErrorsToggled(bool))
+                );
+
+    connect(
+                this->toolButtonMessages,
+                SIGNAL(toggled(bool)),
+                SLOT(onToolButtonMessagesToggled(bool))
+                );
+
+    connect(
+                this->toolButtonWarnings,
+                SIGNAL(toggled(bool)),
+                SLOT(onToolButtonWarningsToggled(bool))
+                );
 }
 
 ErrorListDockWidget::~ErrorListDockWidget()
@@ -81,42 +100,43 @@ void ErrorListDockWidget::showMessages(const MessageList& messages)
     this->refreshMessages();
 }
 
-
-void ErrorListDockWidget::on_toolButtonErrors_toggled(bool checked)
-{
-    Q_UNUSED(checked)
-    this->refreshMessages();
-}
-
-void ErrorListDockWidget::on_toolButtonWarnings_toggled(bool checked)
-{
-    Q_UNUSED(checked)
-    this->refreshMessages();
-}
-
-void ErrorListDockWidget::on_toolButtonMessages_toggled(bool checked)
-{
-    Q_UNUSED(checked)
-    this->refreshMessages();
-}
-
 void ErrorListDockWidget::refreshMessages()
 {
     // Reset output window.
     this->tableWidgetErrorList->setRowCount(this->messages.count());
     this->tableWidgetErrorList->setColumnCount(4);
 
+    QStringList headers;
+    headers << tr("Severity");
+    headers << tr("Code");
+    headers << tr("Message");
+    headers << tr("Location");
+
+    this->tableWidgetErrorList->setHorizontalHeaderLabels(headers);
+
     // Show results.
     int messagesShown = 0;
+
+    int errors = 0;
+    int warnings = 0;
+    int messages = 0;
 
     for (int i = 0; i < this->messages.count(); ++i)
     {
         const Message message = this->messages.at(i);
 
+        // Update progress bar.
+        if (i % 10 == 0)
+        {
+            emit this->progressChanged(tr("Refreshing Error List"), QString(), i, this->messages.count());
+        }
+
         // Check filter.
         switch (message.severity)
         {
             case Severity::Error:
+                ++errors;
+
                 if (!this->toolButtonErrors->isChecked())
                 {
                     continue;
@@ -124,6 +144,8 @@ void ErrorListDockWidget::refreshMessages()
                 break;
 
             case Severity::Warning:
+                ++warnings;
+
                 if (!this->toolButtonWarnings->isChecked())
                 {
                     continue;
@@ -131,6 +153,8 @@ void ErrorListDockWidget::refreshMessages()
                 break;
 
             case Severity::Information:
+                ++messages;
+
                 if (!this->toolButtonMessages->isChecked())
                 {
                     continue;
@@ -142,20 +166,20 @@ void ErrorListDockWidget::refreshMessages()
         }
 
         // Show severity.
-        this->tableWidgetErrorList->setItem(i, 0, new QTableWidgetItem(Severity::toString(message.severity)));
+        this->tableWidgetErrorList->setItem(messagesShown, 0, new QTableWidgetItem(Severity::toString(message.severity)));
 
         switch (message.severity)
         {
             case Severity::Error:
-                this->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Error"));
+                this->tableWidgetErrorList->item(messagesShown, 0)->setData(Qt::DecorationRole, QIcon(":/Error"));
                 break;
 
             case Severity::Warning:
-                this->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Warning"));
+                this->tableWidgetErrorList->item(messagesShown, 0)->setData(Qt::DecorationRole, QIcon(":/Warning"));
                 break;
 
             case Severity::Information:
-                this->tableWidgetErrorList->item(i, 0)->setData(Qt::DecorationRole, QIcon(":/Information"));
+                this->tableWidgetErrorList->item(messagesShown, 0)->setData(Qt::DecorationRole, QIcon(":/Information"));
                 break;
 
             default:
@@ -168,18 +192,18 @@ void ErrorListDockWidget::refreshMessages()
         helpLinkLabel->setToolTip(helpLink);
         helpLinkLabel->setOpenExternalLinks(true);
 
-        QModelIndex index = this->tableWidgetErrorList->model()->index(i, 1);
+        QModelIndex index = this->tableWidgetErrorList->model()->index(messagesShown, 1);
         this->tableWidgetErrorList->setIndexWidget(index, helpLinkLabel);
 
         // Show message.
-        this->tableWidgetErrorList->setItem(i, 2, new QTableWidgetItem(message.content));
+        this->tableWidgetErrorList->setItem(messagesShown, 2, new QTableWidgetItem(message.content));
 
         // Show location.
         QLabel* locationLabel;
 
         if (message.targetSiteType == TargetSiteType::Record)
         {
-            QString locationLink = QString("Record - <a href='%1'>%1</a>").arg(message.targetSiteId);
+            QString locationLink = QString("Record - <a href='%1'>%1</a>").arg(message.targetSiteId.toString());
             locationLabel = new QLabel(locationLink);
 
             connect(
@@ -190,31 +214,49 @@ void ErrorListDockWidget::refreshMessages()
         }
         else
         {
-            QString locationString = TargetSiteType::toString(message.targetSiteType) + " - " + message.targetSiteId;
+            QString locationString = TargetSiteType::toString(message.targetSiteType) + " - " + message.targetSiteId.toString();
             locationLabel = new QLabel(locationString);
         }
 
-        index = this->tableWidgetErrorList->model()->index(i, 3);
+        index = this->tableWidgetErrorList->model()->index(messagesShown, 3);
         this->tableWidgetErrorList->setIndexWidget(index, locationLabel);
 
         // Increase row counter.
         ++messagesShown;
     }
 
+    // Finish layout.
     this->tableWidgetErrorList->setRowCount(messagesShown);
-
-    // Add headers.
-    QStringList headers;
-    headers << tr("Severity");
-    headers << tr("Code");
-    headers << tr("Message");
-    headers << tr("Location");
-
-    this->tableWidgetErrorList->setHorizontalHeaderLabels(headers);
     this->tableWidgetErrorList->resizeColumnsToContents();
+
+    // Show item count.
+    this->toolButtonErrors->setText(tr("%1 Errors").arg(errors));
+    this->toolButtonMessages->setText(tr("%1 Messages").arg(messages));
+    this->toolButtonWarnings->setText(tr("%1 Warnings").arg(warnings));
+
+    // Hide progress bar.
+    emit this->progressChanged(tr("Refreshing Error List"), QString(), 1, 1);
 }
 
 void ErrorListDockWidget::onRecordLinkActivated(const QString& recordId)
 {
     emit this->recordLinkActivated(recordId);
+}
+
+void ErrorListDockWidget::onToolButtonErrorsToggled(bool checked)
+{
+    Q_UNUSED(checked)
+    this->refreshMessages();
+}
+
+void ErrorListDockWidget::onToolButtonWarningsToggled(bool checked)
+{
+    Q_UNUSED(checked)
+    this->refreshMessages();
+}
+
+void ErrorListDockWidget::onToolButtonMessagesToggled(bool checked)
+{
+    Q_UNUSED(checked)
+    this->refreshMessages();
 }

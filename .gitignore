@@ -36,3 +36,7 @@ Bin/
 Obj/
 /build*
 Doc/Api
+Project/.qmake.stash
+Project/Tome_resource.rc
+Project/object_script.Tome.Debug
+Project/object_script.Tome.Release

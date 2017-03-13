@@ -12,7 +12,7 @@ namespace Tome
     {
         public:
             UpdateRecordFieldValueCommand(RecordsController& recordsController,
-                                          const QString& recordId,
+                                          const QVariant& recordId,
                                           const QString& fieldId,
                                           const QVariant& newFieldValue);
 
@@ -22,7 +22,7 @@ namespace Tome
         private:
             RecordsController& recordsController;
 
-            const QString recordId;
+            const QVariant recordId;
             const QString fieldId;
             const QVariant newFieldValue;
 

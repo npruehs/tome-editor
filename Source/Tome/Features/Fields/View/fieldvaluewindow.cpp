@@ -15,17 +15,22 @@
 using namespace Tome;
 
 
-FieldValueWindow::FieldValueWindow(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController, QWidget *parent) :
+FieldValueWindow::FieldValueWindow(FacetsController& facetsController,
+                                   ProjectController& projectController,
+                                   RecordsController& recordsController,
+                                   TypesController& typesController,
+                                   QWidget *parent) :
     QDialog(parent),
     ui(new Ui::FieldValueWindow),
     facetsController(facetsController),
+    projectController(projectController),
     recordsController(recordsController),
     typesController(typesController)
 {
     ui->setupUi(this);
 
     // Add widget for specifying the field value.
-    this->fieldValueWidget = new FieldValueWidget(this->facetsController, this->recordsController, this->typesController, this);
+    this->fieldValueWidget = new FieldValueWidget(this->facetsController, this->projectController, this->recordsController, this->typesController, this);
     QGridLayout* layout = static_cast<QGridLayout*>(this->layout());
     layout->addWidget(this->fieldValueWidget, 3, 1);
 }
@@ -40,6 +45,24 @@ FieldValueWindow::~FieldValueWindow()
 QVariant FieldValueWindow::getFieldValue() const
 {
     return this->fieldValueWidget->getFieldValue();
+}
+
+void FieldValueWindow::setFieldCount(const int fieldCount)
+{
+    if (fieldCount > 1)
+    {
+        QString format = tr("You are editing the field values of %1 records.");
+        QString message = format.arg(fieldCount);
+        QString coloredMessage = QString("<font color=\"#FF0000\">%1</font>").arg(message);
+
+        this->ui->labelMultiEditing->setText(coloredMessage);
+        this->ui->labelMultiEditing->show();
+    }
+    else
+    {
+        this->ui->labelMultiEditing->clear();
+        this->ui->labelMultiEditing->hide();
+    }
 }
 
 void FieldValueWindow::setFieldDescription(const QString& description)

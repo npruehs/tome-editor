@@ -13,17 +13,22 @@
 using namespace Tome;
 
 
-ListItemWindow::ListItemWindow(Tome::FacetsController& facetsController, Tome::RecordsController& recordsController, Tome::TypesController& typesController, QWidget *parent) :
+ListItemWindow::ListItemWindow(Tome::FacetsController& facetsController,
+                               ProjectController& projectController,
+                               Tome::RecordsController& recordsController,
+                               Tome::TypesController& typesController,
+                               QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ListItemWindow),
     facetsController(facetsController),
+    projectController(projectController),
     recordsController(recordsController),
     typesController(typesController)
 {
     ui->setupUi(this);
 
     // Add widget for specifying the list item value.
-    this->fieldValueWidget = new FieldValueWidget(this->facetsController, this->recordsController, this->typesController, this);
+    this->fieldValueWidget = new FieldValueWidget(this->facetsController, this->projectController, this->recordsController, this->typesController, this);
     QFormLayout* layout = static_cast<QFormLayout*>(this->layout());
     layout->insertRow(0, tr("Value:"), this->fieldValueWidget);
 }

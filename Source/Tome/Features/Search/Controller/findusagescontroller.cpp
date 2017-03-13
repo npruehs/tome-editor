@@ -30,7 +30,7 @@ const SearchResultList FindUsagesController::findUsagesOfField(const QString& fi
         const Record& record = records[i];
 
         // Report progress.
-        emit this->progressChanged(tr("Searching"), record.id, i, records.length());
+        emit this->progressChanged(tr("Searching"), record.displayName, i, records.length());
 
         const RecordFieldValueMap& fieldValues = this->recordsController.getRecordFieldValues(record.id);
 
@@ -59,9 +59,9 @@ const SearchResultList FindUsagesController::findUsagesOfField(const QString& fi
     return results;
 }
 
-const SearchResultList FindUsagesController::findUsagesOfRecord(const QString& recordId) const
+const SearchResultList FindUsagesController::findUsagesOfRecord(const QVariant& recordId) const
 {
-    qInfo(QString("Finding usages of record %1.").arg(recordId).toUtf8().constData());
+    qInfo(QString("Finding usages of record %1.").arg(recordId.toString()).toUtf8().constData());
 
     // Build search result list.
     SearchResultList results;
@@ -74,7 +74,7 @@ const SearchResultList FindUsagesController::findUsagesOfRecord(const QString& r
         const Record& record = records[i];
 
         // Report progress.
-        emit this->progressChanged(tr("Searching"), record.id, i, records.length());
+        emit this->progressChanged(tr("Searching"), record.displayName, i, records.length());
 
         const RecordFieldValueMap& fieldValues = this->recordsController.getRecordFieldValues(record.id);
 
@@ -85,7 +85,8 @@ const SearchResultList FindUsagesController::findUsagesOfRecord(const QString& r
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(it.key());
             const QVariant& fieldValue = it.value();
 
-            if (this->typesController.isReferenceType(field.fieldType) && fieldValue == recordId)
+            if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference)
+                    && fieldValue == recordId)
             {
                 SearchResult result;
                 result.content = field.id;
@@ -100,7 +101,7 @@ const SearchResultList FindUsagesController::findUsagesOfRecord(const QString& r
     // Report finish.
     emit this->progressChanged(tr("Searching"), QString(), 1, 1);
 
-    emit searchResultChanged("Usages of " + recordId, results);
+    emit searchResultChanged("Usages of " + recordId.toString(), results);
     return results;
 }
 
@@ -119,7 +120,7 @@ const SearchResultList FindUsagesController::findUsagesOfType(const QString& typ
         const Record& record = records[i];
 
         // Report progress.
-        emit this->progressChanged(tr("Searching"), record.id, i, records.length());
+        emit this->progressChanged(tr("Searching"), record.displayName, i, records.length());
 
         const RecordFieldValueMap& fieldValues = this->recordsController.getRecordFieldValues(record.id);
 

@@ -11,6 +11,7 @@ namespace Tome
         const QString None = "None";
         const QString Boolean = "Boolean";
         const QString Color = "Color";
+        const QString File = "File";
         const QString Integer = "Integer";
         const QString Real = "Real";
         const QString Reference = "Reference";

@@ -5,7 +5,10 @@
 
 namespace Tome
 {
+    class FacetsController;
+    class FieldDefinition;
     class FieldDefinitionsController;
+    class ProjectController;
     class RecordsController;
     class TypesController;
 
@@ -14,20 +17,35 @@ namespace Tome
         Q_OBJECT
 
         public:
-            RecordFieldsTableWidget(FieldDefinitionsController& fieldDefinitionsController, RecordsController& recordsController, TypesController& typesController);
+            RecordFieldsTableWidget(FieldDefinitionsController& fieldDefinitionsController,
+                                    FacetsController& facetsController,
+                                    ProjectController& projectController,
+                                    RecordsController& recordsController,
+                                    TypesController& typesController);
 
             void setDescriptionColumnEnabled(bool enabled);
-            void setRecord(int i, const QString recordId);
+            void setRecord(const QVariant recordId);
+            void setShowComponentNames(bool showComponentNames);
+            void updateFieldValue(int i);
 
         signals:
+            void fileLinkActivated(const QString& filePath);
             void recordLinkActivated(const QString& recordId);
 
         private:
+            FacetsController& facetsController;
             FieldDefinitionsController& fieldDefinitionsController;
+            ProjectController& projectController;
             RecordsController& recordsController;
             TypesController& typesController;
 
+            QVariant recordId;
+            bool showComponentNames;
+
+            const QString getFieldKeyString(const FieldDefinition& field);
+
         private slots:
+            void onFileLinkActivated(const QString& filePath);
             void onRecordLinkActivated(const QString& recordId);
     };
 }

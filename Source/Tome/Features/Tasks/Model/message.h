@@ -1,7 +1,7 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include <QString>
+#include <QVariant>
 
 #include "severity.h"
 #include "targetsitetype.h"
@@ -17,7 +17,7 @@ namespace Tome
             QString helpLink;
             QString messageCode;
             Severity::Severity severity;
-            QString targetSiteId;
+            QVariant targetSiteId;
             TargetSiteType::TargetSiteType targetSiteType;
     };
 }

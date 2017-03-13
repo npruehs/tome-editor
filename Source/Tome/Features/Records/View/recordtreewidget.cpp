@@ -1,17 +1,32 @@
 #include "recordtreewidget.h"
 
+#include <QImageReader>
 #include <QMenu>
 #include <QMimeData>
 
 #include "recordtreewidgetitem.h"
 #include "../Controller/recordscontroller.h"
+#include "../../Facets/Controller/facetscontroller.h"
+#include "../../Facets/Controller/removedfileprefixfacet.h"
+#include "../../Facets/Controller/removedfilesuffixfacet.h"
+#include "../../Fields/Controller/fielddefinitionscontroller.h"
+#include "../../Projects/Controller/projectcontroller.h"
 #include "../../Settings/Controller/settingscontroller.h"
+#include "../../../Util/pathutils.h"
+
 
 using namespace Tome;
 
 
-RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController, SettingsController& settingsController)
-    : recordsController(recordsController),
+RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController,
+                                   FacetsController& facetsController,
+                                   FieldDefinitionsController& fieldDefinitionsController,
+                                   ProjectController& projectController,
+                                   SettingsController& settingsController)
+    : facetsController(facetsController),
+      fieldDefinitionsController(fieldDefinitionsController),
+      projectController(projectController),
+      recordsController(recordsController),
       settingsController(settingsController),
       navigating(false)
 {
@@ -19,15 +34,16 @@ RecordTreeWidget::RecordTreeWidget(RecordsController& recordsController, Setting
     this->viewport()->setAcceptDrops(true);
     this->setDropIndicatorShown(true);
     this->setHeaderHidden(true);
+    this->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     connect(this,
             SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
             SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 }
 
-void RecordTreeWidget::addRecord(const QString& id, const QString& displayName, const QString& parentId)
+void RecordTreeWidget::addRecord(const QVariant& id, const QString& displayName, const QVariant& parentId)
 {
-    RecordTreeWidgetItem* recordItem = new RecordTreeWidgetItem(id, displayName, QString(), false);
+    RecordTreeWidgetItem* recordItem = new RecordTreeWidgetItem(id, displayName, QVariant(), false);
     RecordTreeWidgetItem* parentItem = this->getRecordItem(parentId);
 
     if (parentItem != nullptr)
@@ -46,16 +62,33 @@ void RecordTreeWidget::addRecord(const QString& id, const QString& displayName, 
     this->updateRecordItem(recordItem);
 }
 
-QString RecordTreeWidget::getSelectedRecordId() const
+QVariant RecordTreeWidget::getSelectedRecordId() const
 {
     RecordTreeWidgetItem* recordTreeItem = this->getSelectedRecordItem();
 
     if (recordTreeItem == 0)
     {
-        return QString();
+        return QVariant();
     }
 
     return recordTreeItem->getId();
+}
+
+QVariantList RecordTreeWidget::getSelectedRecordIds() const
+{
+    QVariantList recordIds;
+
+    QList<RecordTreeWidgetItem*> recordTreeItems = this->getSelectedRecordItems();
+
+    for (int i = 0; i < recordTreeItems.count(); ++i)
+    {
+        if (recordTreeItems[i] != nullptr)
+        {
+            recordIds << recordTreeItems[i]->getId();
+        }
+    }
+
+    return recordIds;
 }
 
 RecordTreeWidgetItem* RecordTreeWidget::getSelectedRecordItem() const
@@ -70,6 +103,19 @@ RecordTreeWidgetItem* RecordTreeWidget::getSelectedRecordItem() const
     return static_cast<RecordTreeWidgetItem*>(selectedItems.first());
 }
 
+QList<RecordTreeWidgetItem*> RecordTreeWidget::getSelectedRecordItems() const
+{
+    QList<RecordTreeWidgetItem*> selectedRecordItems;
+    QList<QTreeWidgetItem*> selectedItems = this->selectedItems();
+
+    for (int i = 0; i < selectedItems.count(); ++i)
+    {
+        selectedRecordItems << static_cast<RecordTreeWidgetItem*>(selectedItems[i]);
+    }
+
+    return selectedRecordItems;
+}
+
 void RecordTreeWidget::navigateForward()
 {
     if (this->selectedRecordRedoStack.empty())
@@ -77,12 +123,11 @@ void RecordTreeWidget::navigateForward()
         return;
     }
 
-    const QString id = this->selectedRecordRedoStack.pop();
+    const QVariant id = this->selectedRecordRedoStack.pop();
     this->selectedRecordUndoStack.push(id);
 
     // Prevent redo from affecting navigation stacks.
-    this->navigating = true;
-    this->selectRecord(id);
+    this->selectRecord(id, false);
 }
 
 void RecordTreeWidget::navigateBackward()
@@ -92,82 +137,141 @@ void RecordTreeWidget::navigateBackward()
         return;
     }
 
-    const QString id = this->selectedRecordUndoStack.pop();
+    const QVariant id = this->selectedRecordUndoStack.pop();
     this->selectedRecordRedoStack.push(id);
 
     // Prevent undo from affecting navigation stacks.
-    this->navigating = true;
-    this->selectRecord(this->selectedRecordUndoStack.top());
+    this->selectRecord(this->selectedRecordUndoStack.top(), false);
 }
 
-void RecordTreeWidget::updateRecord(const QString& oldId, const QString& newId, const QString& newDisplayName)
+void RecordTreeWidget::updateRecord(const QVariant& oldId,
+                                    const QString& oldDisplayName,
+                                    const QString& oldEditorIconFieldId,
+                                    const QVariant& newId,
+                                    const QString& newDisplayName,
+                                    const QString& newEditorIconFieldId)
 {
+    Q_UNUSED(oldId)
+    Q_UNUSED(oldDisplayName)
+
     // Update view.
-    RecordTreeWidgetItem* recordItem = this->getRecordItem(oldId);
-
-    const QString oldDisplayName = recordItem->getDisplayName();
-    bool needsSorting = oldDisplayName != newDisplayName;
-
-    recordItem->setId(newId);
+    RecordTreeWidgetItem* recordItem = this->getRecordItem(newId);
     recordItem->setDisplayName(newDisplayName);
 
     // Sort by display name.
-    if (needsSorting)
+    if (oldDisplayName != newDisplayName)
     {
         this->sortItems(0, Qt::AscendingOrder);
     }
 
-    this->updateRecordItem(recordItem);
+    if (oldEditorIconFieldId != newEditorIconFieldId)
+    {
+        this->updateRecordItemRecursively(recordItem);
+    }
+    else
+    {
+        this->updateRecordItem(recordItem);
+    }
 }
 
 void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
 {
-    if ( nullptr != recordTreeItem )
-    {
-        const Record &recordData = this->recordsController.getRecord( recordTreeItem->getId() );
-        // If the record and all ancestors have no fields, use a folder style icon
-        // else use a file style icon
-        bool recordIsEmtpy = recordData.fieldValues.empty();
-        if ( recordIsEmtpy )
-        {
-            const RecordList ancestors = this->recordsController.getAncestors( recordTreeItem->getId() );
-            for ( int i = 0; ancestors.size() > i && recordIsEmtpy; ++i )
-            {
-                recordIsEmtpy &= ancestors[ i ].fieldValues.empty();
-            }
-        }
-
-        // Set color.
-        if (recordTreeItem->isReadOnly())
-        {
-            recordTreeItem->setForeground(0, QBrush(Qt::blue));
-        }
-        else
-        {
-            recordTreeItem->setForeground(0, QBrush(Qt::black));
-        }
-
-        // Set icon.
-        if (recordIsEmtpy)
-        {
-            recordTreeItem->setIcon(0, QIcon(":/Media/Icons/Folder_6221.png"));
-        }
-        else
-        {
-            recordTreeItem->setIcon(0, QIcon(":/Media/Icons/Textfile_818_16x.png"));
-        }
-    }
-}
-
-void RecordTreeWidget::selectRecord(const QString& id)
-{
-    RecordTreeWidgetItem* item = this->getRecordItem(id);
-
-    if (item == nullptr)
+    if (recordTreeItem == nullptr)
     {
         return;
     }
 
+    const QVariant recordId = recordTreeItem->getId();
+    const Record& record = this->recordsController.getRecord(recordId);
+
+    // Set color.
+    if (recordTreeItem->isReadOnly())
+    {
+        recordTreeItem->setForeground(0, QBrush(Qt::blue));
+    }
+    else
+    {
+        recordTreeItem->setForeground(0, QBrush(Qt::black));
+    }
+
+    // Check if has preview icon.
+    const QString editorIconFieldId = this->recordsController.getRecordEditorIconFieldId(recordId);
+
+    if (!editorIconFieldId.isEmpty())
+    {
+        const FieldDefinition& iconField = this->fieldDefinitionsController.getFieldDefinition(editorIconFieldId);
+        const RecordFieldValueMap recordFieldValues = this->recordsController.getRecordFieldValues(record.id);
+
+        QString iconFileName = recordFieldValues[iconField.id].toString();
+
+        QString removedPrefix = this->facetsController.getFacetValue(iconField.fieldType, RemovedFilePrefixFacet::FacetKey).toString();
+        QString removedSuffix = this->facetsController.getFacetValue(iconField.fieldType, RemovedFileSuffixFacet::FacetKey).toString();
+
+        iconFileName = removedPrefix + iconFileName + removedSuffix;
+        QString projectPath = this->projectController.getProjectPath();
+
+        iconFileName = combinePaths(projectPath, iconFileName);
+
+        // Get preview.
+        QPixmap iconPixmap;
+
+        QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
+        for (QByteArray& format : supportedImageFormats)
+        {
+            if (iconFileName.endsWith(format))
+            {
+                iconPixmap.load(iconFileName);
+
+                if (!iconPixmap.isNull())
+                {
+                    recordTreeItem->setIcon(0, QIcon(iconPixmap));
+                    return;
+                }
+            }
+        }
+    }
+
+    // If the record and all ancestors have no fields, use a folder style icon;
+    // else use a file style icon.
+    bool recordIsEmtpy = record.fieldValues.empty();
+    if (recordIsEmtpy)
+    {
+        const RecordList ancestors = this->recordsController.getAncestors(recordId);
+        for (int i = 0; ancestors.size() > i && recordIsEmtpy; ++i)
+        {
+            recordIsEmtpy &= ancestors[i].fieldValues.empty();
+        }
+    }
+
+    if (recordIsEmtpy)
+    {
+        recordTreeItem->setIcon(0, QIcon(":/Media/Icons/Folder_6221.png"));
+    }
+    else
+    {
+        recordTreeItem->setIcon(0, QIcon(":/Media/Icons/Textfile_818_16x.png"));
+    }
+}
+
+void RecordTreeWidget::updateRecordItemRecursively(RecordTreeWidgetItem* recordTreeItem)
+{
+    this->updateRecordItem(recordTreeItem);
+
+    for (int i = 0; i < recordTreeItem->childCount(); ++i)
+    {
+        RecordTreeWidgetItem* child = static_cast<RecordTreeWidgetItem*>(recordTreeItem->child(i));
+        this->updateRecordItemRecursively(child);
+    }
+}
+
+void RecordTreeWidget::selectRecord(const QVariant& id, const bool addToHistory)
+{
+    RecordTreeWidgetItem* item = this->getRecordItem(id);
+
+    this->navigating = true;
+    this->clearSelection();
+
+    this->navigating = !addToHistory;
     this->setCurrentItem(item);
 }
 
@@ -184,7 +288,7 @@ void RecordTreeWidget::setRecords(const RecordList& records)
     this->selectedRecordRedoStack.clear();
 
     // Create record tree items.
-    QMap<QString, RecordTreeWidgetItem*> recordItems;
+    QMap<QVariant, RecordTreeWidgetItem*> recordItems;
 
     for (int i = 0; i < records.size(); ++i)
     {
@@ -195,7 +299,7 @@ void RecordTreeWidget::setRecords(const RecordList& records)
         updateRecordItem( recordItem );
 
         // Report progress.
-        emit this->progressChanged(tr("Refreshing Records"), record.id, i, records.size());
+        emit this->progressChanged(tr("Refreshing Records"), record.displayName, i, records.size());
     }
 
     // Report finish.
@@ -204,13 +308,13 @@ void RecordTreeWidget::setRecords(const RecordList& records)
     // Build hierarchy and prepare item list for tree widget.
     QList<QTreeWidgetItem* > items;
 
-    for (QMap<QString, RecordTreeWidgetItem*>::iterator it = recordItems.begin();
+    for (QMap<QVariant, RecordTreeWidgetItem*>::iterator it = recordItems.begin();
          it != recordItems.end();
          ++it)
     {
         RecordTreeWidgetItem* recordItem = it.value();
-        QString recordItemParentId = recordItem->getParentId();
-        if (!recordItemParentId.isEmpty())
+        QVariant recordItemParentId = recordItem->getParentId();
+        if (!recordItemParentId.isNull())
         {
             if (recordItems.contains(recordItemParentId))
             {
@@ -236,7 +340,7 @@ void RecordTreeWidget::setRecords(const RecordList& records)
     }
 }
 
-void RecordTreeWidget::removeRecord(const QString& id)
+void RecordTreeWidget::removeRecord(const QVariant& id)
 {
     // Update view.
     RecordTreeWidgetItem* recordItem = this->getRecordItem(id);
@@ -285,10 +389,10 @@ bool RecordTreeWidget::dropMimeData(QTreeWidgetItem* parent, int index, const QM
         stream >> row >> col >> roleDataMap;
 
         // Get dragged record.
-        QString draggedRecordId = roleDataMap[Qt::UserRole].toString();
+        QVariant draggedRecordId = roleDataMap[Qt::UserRole];
 
         // Get drop target record.
-        QString dropTargetRecordId;
+        QVariant dropTargetRecordId;
 
         if (parent != 0)
         {
@@ -303,6 +407,20 @@ bool RecordTreeWidget::dropMimeData(QTreeWidgetItem* parent, int index, const QM
     return true;
 }
 
+void RecordTreeWidget::mousePressEvent(QMouseEvent* event)
+{
+    QModelIndex item = indexAt(event->pos());
+
+    if (item.isValid())
+    {
+        QTreeView::mousePressEvent(event);
+    }
+    else
+    {
+        this->setCurrentItem(nullptr);
+    }
+}
+
 void RecordTreeWidget::onCurrentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
     Q_UNUSED(previous)
@@ -313,17 +431,20 @@ void RecordTreeWidget::onCurrentItemChanged(QTreeWidgetItem* current, QTreeWidge
         return;
     }
 
-    if (current == nullptr)
+    // Push id of selected record, or an empty string for "deselected".
+    QVariant selectedRecordId;
+
+    if (current != nullptr)
     {
-        return;
+        RecordTreeWidgetItem* item = static_cast<RecordTreeWidgetItem*>(current);
+        selectedRecordId = item->getId();
     }
 
-    RecordTreeWidgetItem* item = static_cast<RecordTreeWidgetItem*>(current);
-    this->selectedRecordUndoStack.push(item->getId());
+    this->selectedRecordUndoStack.push(selectedRecordId);
     this->selectedRecordRedoStack.clear();
 }
 
-RecordTreeWidgetItem* RecordTreeWidget::getRecordItem(const QString& id)
+RecordTreeWidgetItem* RecordTreeWidget::getRecordItem(const QVariant& id)
 {
     QTreeWidgetItemIterator it(this);
 

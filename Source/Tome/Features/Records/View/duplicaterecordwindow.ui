@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Record Name:</string>
+      <string>Record Id:</string>
      </property>
     </widget>
    </item>
