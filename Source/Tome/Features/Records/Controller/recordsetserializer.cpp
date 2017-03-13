@@ -11,14 +11,12 @@ using namespace Tome;
 const QString RecordSetSerializer::ElementDisplayName = "DisplayName";
 const QString RecordSetSerializer::ElementEditorIconFieldId = "EditorIconFieldId";
 const QString RecordSetSerializer::ElementId = "Id";
-const QString RecordSetSerializer::ElementIntegerId = "IntegerId";
 const QString RecordSetSerializer::ElementItem = "Item";
 const QString RecordSetSerializer::ElementKey = "Key";
 const QString RecordSetSerializer::ElementParentId = "Parent";
 const QString RecordSetSerializer::ElementReadOnly = "ReadOnly";
 const QString RecordSetSerializer::ElementRecord = "Record";
 const QString RecordSetSerializer::ElementRecords = "Records";
-const QString RecordSetSerializer::ElementUuid = "UUID";
 const QString RecordSetSerializer::ElementValue = "Value";
 
 
@@ -40,15 +38,13 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
                 const Record& record = recordSet.records[i];
 
                 // Report progress.
-                emit progressChanged(tr("Saving Data"), record.id, i, recordSet.records.size());
+                emit progressChanged(tr("Saving Data"), record.displayName, i, recordSet.records.size());
 
                 // Begin record.
                 stream.writeStartElement(ElementRecord);
                 {
                     // Write record.
-                    stream.writeAttribute(ElementId, record.id);
-                    stream.writeAttribute(ElementIntegerId, QString::number(record.integerId));
-                    stream.writeAttribute(ElementUuid, record.uuid);
+                    stream.writeAttribute(ElementId, record.id.toString());
                     stream.writeAttribute(ElementDisplayName, record.displayName);
 
                     if (record.readOnly)
@@ -56,9 +52,9 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
                         stream.writeAttribute(ElementReadOnly, "true");
                     }
 
-                    if (!record.parentId.isEmpty())
+                    if (!record.parentId.isNull())
                     {
-                        stream.writeAttribute(ElementParentId, record.parentId);
+                        stream.writeAttribute(ElementParentId, record.parentId.toString());
                     }
 
                     if (!record.editorIconFieldId.isEmpty())
@@ -144,8 +140,6 @@ void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) c
 
                 // Read record.
                 record.id = reader.readAttribute(ElementId);
-                record.integerId = reader.readAttribute(ElementIntegerId).toLong();
-                record.uuid = reader.readAttribute(ElementUuid);
                 record.displayName = reader.readAttribute(ElementDisplayName);
                 record.editorIconFieldId = reader.readAttribute(ElementEditorIconFieldId);
                 record.parentId = reader.readAttribute(ElementParentId);
@@ -153,7 +147,7 @@ void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) c
                 record.recordSetName = recordSet.name;
 
                 // Report progress.
-                emit progressChanged(tr("Loading Data"), record.id, device.pos(), device.size());
+                emit progressChanged(tr("Loading Data"), record.displayName, device.pos(), device.size());
 
                 reader.readStartElement(ElementRecord);
 

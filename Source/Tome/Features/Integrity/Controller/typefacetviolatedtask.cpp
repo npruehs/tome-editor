@@ -52,7 +52,7 @@ const MessageList TypeFacetViolatedTask::execute(const TaskContext& context) con
             }
 
             Message message;
-            message.content = tr("The record %1 field %2 violates a type facet: %3").arg(record.id, fieldId, validationError);
+            message.content = tr("The record %1 field %2 violates a type facet: %3").arg(record.displayName, fieldId, validationError);
             message.messageCode = MessageCode;
             message.severity = Severity::Error;
             message.targetSiteId = record.id;

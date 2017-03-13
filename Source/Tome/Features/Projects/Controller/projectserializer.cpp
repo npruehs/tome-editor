@@ -16,6 +16,7 @@ const QString ProjectSerializer::AttributeExportInnerNodes = "ExportInnerNodes";
 const QString ProjectSerializer::AttributeExportLeafs = "ExportLeafs";
 const QString ProjectSerializer::AttributeIgnoreReadOnly = "IgnoreReadOnly";
 const QString ProjectSerializer::AttributeKey = "Key";
+const QString ProjectSerializer::AttributeRecordIdType = "RecordIdType";
 const QString ProjectSerializer::AttributeTomeType = "TomeType";
 const QString ProjectSerializer::AttributeValue = "Value";
 const QString ProjectSerializer::AttributeVersion = "Version";
@@ -37,7 +38,7 @@ const QString ProjectSerializer::ElementType = "Type";
 const QString ProjectSerializer::ElementTypes = "Types";
 const QString ProjectSerializer::ElementTypeMap = "TypeMap";
 
-const int ProjectSerializer::Version = 5;
+const int ProjectSerializer::Version = 6;
 
 
 ProjectSerializer::ProjectSerializer()
@@ -58,6 +59,9 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
         {
             // Write version.
             writer.writeAttribute(AttributeVersion, QString::number(Version));
+
+            // Write record id type.
+            writer.writeAttribute(AttributeRecordIdType, RecordIdType::toString(project->recordIdType));
 
             // Write lock behaviour.
             if (project->ignoreReadOnly)
@@ -159,6 +163,14 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
     {
         // Read version.
         int version = reader.readAttribute(AttributeVersion).toInt();
+
+        // Read record id type.
+        project->recordIdType = RecordIdType::fromString(reader.readAttribute(AttributeRecordIdType));
+
+        if (project->recordIdType == RecordIdType::Invalid)
+        {
+            project->recordIdType = RecordIdType::String;
+        }
 
         // Read lock behaviour.
         project->ignoreReadOnly = reader.readAttribute(AttributeIgnoreReadOnly) == "true";

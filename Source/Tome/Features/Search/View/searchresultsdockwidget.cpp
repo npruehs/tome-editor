@@ -62,7 +62,7 @@ void SearchResultsDockWidget::showResults(const QString& title, const SearchResu
         // Show hyperlink for records, and normal text for other results.
         if (result.targetSiteType == TargetSiteType::Record)
         {
-            QString resultString = QString("<a href='%1'>%1</a>: %2").arg(result.targetSiteId, result.content);
+            QString resultString = QString("<a href='%1'>%1</a>: %2").arg(result.targetSiteId.toString(), result.content);
             resultLabel = new QLabel(resultString);
 
             connect(
@@ -73,7 +73,7 @@ void SearchResultsDockWidget::showResults(const QString& title, const SearchResu
         }
         else
         {
-            QString resultString = QString(result.targetSiteId + ": " + result.content);
+            QString resultString = QString(result.targetSiteId.toString() + ": " + result.content);
             resultLabel = new QLabel(resultString);
         }
 

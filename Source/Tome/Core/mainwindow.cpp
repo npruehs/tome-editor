@@ -151,26 +151,26 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     connect(
                 &this->controller->getRecordsController(),
-                SIGNAL(recordAdded(const QString&, const QString&, const QString&)),
-                SLOT(onRecordAdded(const QString&, const QString&, const QString&))
+                SIGNAL(recordAdded(const QVariant&, const QString&, const QVariant&)),
+                SLOT(onRecordAdded(const QVariant&, const QString&, const QVariant&))
                 );
 
     connect(
                 &this->controller->getRecordsController(),
-                SIGNAL(recordFieldsChanged(const QString&)),
-                SLOT(onRecordFieldsChanged(const QString&))
+                SIGNAL(recordFieldsChanged(const QVariant&)),
+                SLOT(onRecordFieldsChanged(const QVariant&))
                 );
 
     connect(
                 &this->controller->getRecordsController(),
-                SIGNAL(recordRemoved(const QString&)),
-                SLOT(onRecordRemoved(const QString&))
+                SIGNAL(recordRemoved(const QVariant&)),
+                SLOT(onRecordRemoved(const QVariant&))
                 );
 
     connect(
                 &this->controller->getRecordsController(),
-                SIGNAL(recordReparented(const QString&, const QString&, const QString&)),
-                SLOT(onRecordReparented(const QString&, const QString&, const QString&))
+                SIGNAL(recordReparented(const QVariant&, const QVariant&, const QVariant&)),
+                SLOT(onRecordReparented(const QVariant&, const QVariant&, const QVariant&))
                 );
 
     connect(
@@ -181,8 +181,8 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     connect(
                 &this->controller->getRecordsController(),
-                SIGNAL(recordUpdated(const QString&, const QString&, const QString&, const QString&, const QString&, const QString&)),
-                SLOT(onRecordUpdated(const QString&, const QString&, const QString&, const QString&, const QString&, const QString&))
+                SIGNAL(recordUpdated(const QVariant&, const QString&, const QString&, const QVariant&, const QString&, const QString&)),
+                SLOT(onRecordUpdated(const QVariant&, const QString&, const QString&, const QVariant&, const QString&, const QString&))
                 );
 
     connect(
@@ -241,8 +241,8 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
 
     connect(
                 this->recordTreeWidget,
-                SIGNAL(recordReparented(const QString&, const QString&)),
-                SLOT(treeWidgetRecordReparented(const QString&, const QString&))
+                SIGNAL(recordReparented(const QVariant&, const QVariant&)),
+                SLOT(treeWidgetRecordReparented(const QVariant&, const QVariant&))
                 );
 
     connect(
@@ -537,6 +537,7 @@ void MainWindow::on_actionNew_Project_triggered()
     {
         const QString& projectName = this->newProjectWindow->getProjectName();
         const QString& projectPath = this->newProjectWindow->getProjectPath();
+        const RecordIdType::RecordIdType recordIdType = this->newProjectWindow->getProjectRecordIdType();
 
         // Check if we have unsaved changes.
         if (!this->controller->getUndoController().isClean())
@@ -560,7 +561,7 @@ void MainWindow::on_actionNew_Project_triggered()
 
         try
         {
-            this->controller->getProjectController().createProject(projectName, projectPath);
+            this->controller->getProjectController().createProject(projectName, projectPath, recordIdType);
         }
         catch (std::runtime_error& e)
         {
@@ -637,10 +638,15 @@ void MainWindow::on_actionNew_Record_triggered()
 
     RecordsController& recordsController = this->controller->getRecordsController();
 
+    // Set record id type.
+    RecordIdType::RecordIdType recordIdType = this->controller->getProjectController().getProjectRecordIdType();
+    this->recordWindow->setRecordIdType(recordIdType);
+    this->recordWindow->setRecordId(QVariant());
+
     // Add fields.
     const FieldDefinitionList& fieldDefinitions =
             this->controller->getFieldDefinitionsController().getFieldDefinitions();
-    const QStringList recordIds = recordsController.getRecordIds();
+    const QVariantList recordIds = recordsController.getRecordIds();
     const ComponentList& componentDefinitions =
             this->controller->getComponentsController().getComponents();
 
@@ -666,7 +672,7 @@ void MainWindow::on_actionNew_Record_triggered()
 
     if (result == QDialog::Accepted)
     {
-        const QString& recordId = this->recordWindow->getRecordId();
+        const QVariant& recordId = this->recordWindow->getRecordId();
         const QString& recordDisplayName = this->recordWindow->getRecordDisplayName();
         const QString& recordSetName = this->recordWindow->getRecordSetName();
         const QString& recordEditorIconFieldId = this->recordWindow->getRecordEditorIconFieldId();
@@ -702,9 +708,9 @@ void MainWindow::on_actionNew_Record_triggered()
 
 void MainWindow::on_actionAdd_Child_triggered()
 {
-    const QString& parentId = this->recordTreeWidget->getSelectedRecordId();
+    const QVariant& parentId = this->recordTreeWidget->getSelectedRecordId();
 
-    if (parentId.isEmpty())
+    if (parentId.isNull())
     {
         return;
     }
@@ -720,11 +726,16 @@ void MainWindow::on_actionAdd_Child_triggered()
         this->recordWindow = new RecordWindow(this);
     }
 
+    // Set record id type.
+    RecordIdType::RecordIdType recordIdType = this->controller->getProjectController().getProjectRecordIdType();
+    this->recordWindow->setRecordIdType(recordIdType);
+    this->recordWindow->setRecordId(QVariant());
+
     // When creating new records, automatically update record id to reflect display name.
     this->recordWindow->setRecordIdLocked(false);
 
     // Disallow all existing record ids.
-    const QStringList recordIds = recordsController.getRecordIds();
+    const QVariantList recordIds = recordsController.getRecordIds();
 
     this->recordWindow->setDisallowedRecordIds(recordIds);
 
@@ -747,7 +758,7 @@ void MainWindow::on_actionAdd_Child_triggered()
 
     if (result == QDialog::Accepted)
     {
-        const QString recordId = this->recordWindow->getRecordId();
+        const QVariant recordId = this->recordWindow->getRecordId();
         const QString recordDisplayName = this->recordWindow->getRecordDisplayName();
         const QString recordSetName = this->recordWindow->getRecordSetName();
         const QString recordEditorIconFieldId = this->recordWindow->getRecordEditorIconFieldId();
@@ -783,9 +794,9 @@ void MainWindow::on_actionAdd_Child_triggered()
 
 void MainWindow::on_actionEdit_Record_triggered()
 {
-    const QString& id = this->recordTreeWidget->getSelectedRecordId();
+    const QVariant& id = this->recordTreeWidget->getSelectedRecordId();
 
-    if (id.isEmpty())
+    if (id.isNull())
     {
         return;
     }
@@ -809,14 +820,13 @@ void MainWindow::on_actionEdit_Record_triggered()
     }
 
     // Set record id and name.
+    this->recordWindow->setRecordIdType(this->controller->getProjectController().getProjectRecordIdType());
     this->recordWindow->setRecordId(record.id);
-    this->recordWindow->setRecordIntegerId(record.integerId);
-    this->recordWindow->setRecordUuid(record.uuid);
     this->recordWindow->setRecordIdLocked(true);
     this->recordWindow->setRecordDisplayName(record.displayName);
 
     // Disallow all other record ids.
-    QStringList recordIds = recordsController.getRecordIds();
+    QVariantList recordIds = recordsController.getRecordIds();
     recordIds.removeOne(record.id);
 
     this->recordWindow->setDisallowedRecordIds(recordIds);
@@ -840,7 +850,7 @@ void MainWindow::on_actionEdit_Record_triggered()
 
     if (result == QDialog::Accepted)
     {
-        const QString recordId = this->recordWindow->getRecordId();
+        const QVariant recordId = this->recordWindow->getRecordId();
         const QString recordDisplayName = this->recordWindow->getRecordDisplayName();
         const QString recordSetName = this->recordWindow->getRecordSetName();
         const QString recordEditorIconFieldId = this->recordWindow->getRecordEditorIconFieldId();
@@ -881,39 +891,61 @@ void MainWindow::on_actionDuplicate_Record_triggered()
         this->duplicateRecordWindow = new DuplicateRecordWindow(this);
     }
 
-    const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
-    const QStringList recordIds = this->controller->getRecordsController().getRecordIds();
+    const QVariant& recordId = this->recordTreeWidget->getSelectedRecordId();
+    const QVariantList recordIds = this->controller->getRecordsController().getRecordIds();
 
-    if (recordId.isEmpty())
+    if (recordId.isNull())
     {
         return;
     }
 
-    // Disallow all existing record ids.
-    this->duplicateRecordWindow->setRecordId(recordId);
-    this->duplicateRecordWindow->setDisallowedRecordIds(recordIds);
+    // Check record id type.
+    RecordIdType::RecordIdType recordIdType = this->controller->getProjectController().getProjectRecordIdType();
+    DuplicateRecordCommand* command;
 
-    // Show window.
-    int result = this->duplicateRecordWindow->exec();
-
-    if (result != QDialog::Accepted)
+    if (recordIdType == RecordIdType::String)
     {
-        return;
-    }
+        // Disallow all existing record ids.
+        this->duplicateRecordWindow->setRecordId(recordId.toString());
 
-    const QString& newRecordId = this->duplicateRecordWindow->getRecordId();
+        QStringList recordStringIds;
+        for (QVariant v : recordIds)
+        {
+            recordStringIds << v.toString();
+        }
+
+        this->duplicateRecordWindow->setDisallowedRecordIds(recordStringIds);
+
+        // Show window.
+        int result = this->duplicateRecordWindow->exec();
+
+        if (result != QDialog::Accepted)
+        {
+            return;
+        }
+
+        const QString& newRecordId = this->duplicateRecordWindow->getRecordId();
+
+
+        command = new DuplicateRecordCommand(this->controller->getRecordsController(),
+                                                                     recordId,
+                                                                     newRecordId);
+    }
+    else
+    {
+        command = new DuplicateRecordCommand(this->controller->getRecordsController(),
+                                                                     recordId,
+                                                                     QVariant());
+    }
 
     // Update model.
-    DuplicateRecordCommand* command = new DuplicateRecordCommand(this->controller->getRecordsController(),
-                                                                 recordId,
-                                                                 newRecordId);
     this->controller->getUndoController().doCommand(command);
 }
 
 void MainWindow::on_actionRevert_Record_triggered()
 {
     // Get records to revert.
-    const QStringList recordIds = this->recordTreeWidget->getSelectedRecordIds();
+    const QVariantList recordIds = this->recordTreeWidget->getSelectedRecordIds();
 
     if (recordIds.empty())
     {
@@ -951,7 +983,7 @@ void MainWindow::on_actionRevert_Record_triggered()
         for (int i = 0; i < recordIds.count(); ++i)
         {
             // Check if read-only.
-            const QString recordId = recordIds[i];
+            const QVariant recordId = recordIds[i];
             const Record& record = this->controller->getRecordsController().getRecord(recordId);
 
             if (record.readOnly && !this->controller->getProjectController().getProjectIgnoreReadOnly())
@@ -970,7 +1002,7 @@ void MainWindow::on_actionRevert_Record_triggered()
     else
     {
         // Check if read-only.
-        const QString recordId = recordIds[0];
+        const QVariant recordId = recordIds[0];
         const Record& record = this->controller->getRecordsController().getRecord(recordId);
 
         if (record.readOnly && !this->controller->getProjectController().getProjectIgnoreReadOnly())
@@ -980,7 +1012,8 @@ void MainWindow::on_actionRevert_Record_triggered()
         }
 
         // Show question.
-        const QString& question = tr("Are you sure you want to revert %1 to its original state?").arg(recordId);
+        const QString& question = tr("Are you sure you want to revert %1 to its original state?")
+                .arg(record.displayName);
 
         int answer = QMessageBox::question(
                     this,
@@ -1004,7 +1037,7 @@ void MainWindow::on_actionRevert_Record_triggered()
 
 void MainWindow::on_actionRemove_Record_triggered()
 {
-    QStringList recordIds = this->recordTreeWidget->getSelectedRecordIds();
+    QVariantList recordIds = this->recordTreeWidget->getSelectedRecordIds();
 
     if (!this->controller->getRecordsController().haveTheSameParent(recordIds))
     {
@@ -1019,10 +1052,10 @@ void MainWindow::on_actionRemove_Record_triggered()
 
     for (int i = 0; i < recordIds.count(); ++i)
     {
-        const QString recordId = recordIds[i];
+        const QVariant recordId = recordIds[i];
 
         // Update progress bar.
-        this->onProgressChanged(tr("Removing Records"), recordId, i, recordIds.count());
+        this->onProgressChanged(tr("Removing Records"), recordId.toString(), i, recordIds.count());
 
         // Check if read-only.
         const Record& record = this->controller->getRecordsController().getRecord(recordId);
@@ -1069,9 +1102,9 @@ void MainWindow::on_actionFindRecord_triggered()
 void MainWindow::on_actionFind_Usages_triggered()
 {
     // Find usages.
-    const QString& recordId = this->recordTreeWidget->getSelectedRecordId();
+    const QVariant& recordId = this->recordTreeWidget->getSelectedRecordId();
 
-    if (recordId.isEmpty())
+    if (recordId.isNull())
     {
         return;
     }
@@ -1284,7 +1317,7 @@ void MainWindow::openRecentProject(QAction* recentProjectAction)
 void MainWindow::revertFieldValue()
 {
     // Get record to revert field of.
-    QString recordId = this->recordTreeWidget->getSelectedRecordId();
+    QVariant recordId = this->recordTreeWidget->getSelectedRecordId();
 
     // Get field to revert.
     QModelIndexList selectedIndexes = this->recordFieldTableWidget->selectionModel()->selectedRows(0);
@@ -1326,8 +1359,8 @@ void MainWindow::searchResultChanged(const QString& title, const SearchResultLis
 
 void MainWindow::tableWidgetDoubleClicked(const QModelIndex &index)
 {
-    QStringList ids = this->recordTreeWidget->getSelectedRecordIds();
-    QString id = ids.first();
+    QVariantList ids = this->recordTreeWidget->getSelectedRecordIds();
+    QVariant id = ids.first();
 
     const RecordFieldValueMap fieldValues =
             this->controller->getRecordsController().getRecordFieldValues(id);
@@ -1418,7 +1451,7 @@ void MainWindow::treeWidgetDoubleClicked(const QModelIndex &index)
     this->on_actionEdit_Record_triggered();
 }
 
-void MainWindow::treeWidgetRecordReparented(const QString& recordId, const QString& newParentId)
+void MainWindow::treeWidgetRecordReparented(const QVariant& recordId, const QVariant& newParentId)
 {
     // Check if allowed.
     if (recordId == newParentId ||
@@ -1462,9 +1495,10 @@ void MainWindow::treeWidgetSelectionChanged(const QItemSelection& selected, cons
     this->ui->actionRevert_Record->setEnabled(anyRecordSelected);
 }
 
-QString MainWindow::getReadOnlyMessage(const QString& recordId)
+QString MainWindow::getReadOnlyMessage(const QVariant& recordId)
 {
-    return tr("The record %1 has been marked as read-only. You cannot edit, reparent or remove read-only records.").arg(recordId);
+    return tr("The record %1 has been marked as read-only. You cannot edit, reparent or remove read-only records.")
+            .arg(recordId.toString());
 }
 
 void MainWindow::openProject(QString path)
@@ -1604,14 +1638,14 @@ void MainWindow::onProjectChanged(QSharedPointer<Project> project)
     }
 }
 
-void MainWindow::onRecordAdded(const QString& recordId, const QString& recordDisplayName, const QString& parentId)
+void MainWindow::onRecordAdded(const QVariant& recordId, const QString& recordDisplayName, const QVariant& parentId)
 {
     // Update view.
     this->recordTreeWidget->addRecord(recordId, recordDisplayName, parentId);
     this->refreshRecordTable();
 }
 
-void MainWindow::onRecordFieldsChanged(const QString& recordId)
+void MainWindow::onRecordFieldsChanged(const QVariant& recordId)
 {
     if (this->recordTreeWidget->getSelectedRecordId() == recordId)
     {
@@ -1619,14 +1653,13 @@ void MainWindow::onRecordFieldsChanged(const QString& recordId)
     }
 }
 
-void MainWindow::onRecordRemoved(const QString& recordId)
+void MainWindow::onRecordRemoved(const QVariant& recordId)
 {
     this->recordTreeWidget->removeRecord(recordId);
 }
 
-void MainWindow::onRecordReparented(const QString& recordId, const QString& oldParentId, const QString& newParentId)
+void MainWindow::onRecordReparented(const QVariant& recordId, const QVariant& oldParentId, const QVariant& newParentId)
 {
-    Q_UNUSED(recordId)
     Q_UNUSED(oldParentId)
     Q_UNUSED(newParentId)
 
@@ -1637,7 +1670,7 @@ void MainWindow::onRecordReparented(const QString& recordId, const QString& oldP
 
     // Update view.
     this->refreshRecordTree();
-    this->recordTreeWidget->selectRecord(recordId);
+    this->recordTreeWidget->selectRecord(recordId, true);
 }
 
 void MainWindow::onRecordSetsChanged()
@@ -1645,10 +1678,10 @@ void MainWindow::onRecordSetsChanged()
     this->refreshRecordTree();
 }
 
-void MainWindow::onRecordUpdated(const QString& oldId,
+void MainWindow::onRecordUpdated(const QVariant& oldId,
                                  const QString& oldDisplayName,
                                  const QString& oldEditorIconFieldId,
-                                 const QString& newId,
+                                 const QVariant& newId,
                                  const QString& newDisplayName,
                                  const QString& newEditorIconFieldId)
 {
@@ -1661,7 +1694,7 @@ void MainWindow::onRecordUpdated(const QString& oldId,
 
 void MainWindow::onRecordLinkActivated(const QString& recordId)
 {
-    this->recordTreeWidget->selectRecord(recordId);
+    this->recordTreeWidget->selectRecord(recordId, true);
 }
 
 void MainWindow::onUndoStackChanged(bool clean)
@@ -1715,9 +1748,9 @@ void MainWindow::refreshRecordTree()
 
 void MainWindow::refreshRecordTable()
 {
-    const QString& id = this->recordTreeWidget->getSelectedRecordId();
+    const QVariant& id = this->recordTreeWidget->getSelectedRecordId();
 
-    if (id.isEmpty() || !this->controller->getRecordsController().hasRecord(id))
+    if (id.isNull() || !this->controller->getRecordsController().hasRecord(id))
     {
         // Clear table.
         this->recordFieldTableWidget->setRowCount(0);
@@ -1747,7 +1780,7 @@ void MainWindow::refreshRecordTable()
     }
 }
 
-void MainWindow::showReadOnlyMessage(const QString& recordId)
+void MainWindow::showReadOnlyMessage(const QVariant& recordId)
 {
     QMessageBox::information(
                 this,

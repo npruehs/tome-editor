@@ -81,7 +81,8 @@ const MessageList ReferencedFileDoesNotExistTask::execute(const TaskContext& con
             if (!file.exists())
             {
                 Message message;
-                message.content = tr("The file %1 referenced by record %2 field %3 does not exist.").arg(fileName, record.id, fieldId);
+                message.content = tr("The file %1 referenced by record %2 field %3 does not exist.")
+                        .arg(fileName, record.id.toString(), fieldId);
                 message.messageCode = MessageCode;
                 message.severity = Severity::Error;
                 message.targetSiteId = record.id;

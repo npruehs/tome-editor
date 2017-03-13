@@ -37,10 +37,8 @@ const QString ExportController::PlaceholderListItem = "$LIST_ITEM$";
 const QString ExportController::PlaceholderRecordDisplayName = "$RECORD_DISPLAY_NAME$";
 const QString ExportController::PlaceholderRecordFields = "$RECORD_FIELDS$";
 const QString ExportController::PlaceholderRecordId = "$RECORD_ID$";
-const QString ExportController::PlaceholderRecordIntegerId = "$RECORD_INTEGER_ID$";
 const QString ExportController::PlaceholderRecordParentId = "$RECORD_PARENT$";
 const QString ExportController::PlaceholderRecordRootId = "$RECORD_ROOT$";
-const QString ExportController::PlaceholderRecordUuid = "$RECORD_UUID$";
 const QString ExportController::PlaceholderRecords = "$RECORDS$";
 const QString ExportController::PlaceholderValueType = "$VALUE_TYPE$";
 
@@ -139,10 +137,10 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             const Record& record = recordSet.records[j];
 
             // Report progress.
-            emit this->progressChanged(tr("Exporting Data"), record.id, j, recordSet.records.size());
+            emit this->progressChanged(tr("Exporting Data"), record.displayName, j, recordSet.records.size());
 
             // Check if should export.
-            if (record.parentId.isEmpty())
+            if (record.parentId.isNull())
             {
                 // Root node.
                 if (!exportTemplate.exportRoots)
@@ -171,7 +169,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             }
 
             // Check if ignored.
-            if (exportTemplate.ignoredRecords.contains(record.id))
+            if (exportTemplate.ignoredRecords.contains(record.id.toString()))
             {
                 continue;
             }
@@ -182,7 +180,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
 
             for (int i = 0; i < ancestors.size(); ++i)
             {
-                if (exportTemplate.ignoredRecords.contains(ancestors[i].id))
+                if (exportTemplate.ignoredRecords.contains(ancestors[i].id.toString()))
                 {
                     anyAncestorIgnored = true;
                     break;
@@ -221,10 +219,10 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             }
 
             // Get record data.
-            QString recordRoot = this->recordsController.getRootRecordId(record.id);
-            QString recordParent;
+            QVariant recordRoot = this->recordsController.getRootRecordId(record.id);
+            QVariant recordParent;
 
-            if (!record.parentId.isEmpty())
+            if (!record.parentId.isNull())
             {
                 RecordFieldValueMap parentFieldValues = recordsController.getRecordFieldValues(record.parentId);
 
@@ -479,12 +477,10 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 fieldValueString = fieldValueString.replace(PlaceholderFieldComponent, fieldComponent);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldDisplayName, fieldDisplayName);
                 fieldValueString = fieldValueString.replace(PlaceholderFieldDescription, fieldDescription);
-                fieldValueString = fieldValueString.replace(PlaceholderRecordId, record.id);
-                fieldValueString = fieldValueString.replace(PlaceholderRecordParentId, recordParent);
-                fieldValueString = fieldValueString.replace(PlaceholderRecordRootId, recordRoot);
+                fieldValueString = fieldValueString.replace(PlaceholderRecordId, record.id.toString());
+                fieldValueString = fieldValueString.replace(PlaceholderRecordParentId, recordParent.toString());
+                fieldValueString = fieldValueString.replace(PlaceholderRecordRootId, recordRoot.toString());
                 fieldValueString = fieldValueString.replace(PlaceholderRecordDisplayName, record.displayName);
-                fieldValueString = fieldValueString.replace(PlaceholderRecordIntegerId, QString::number(record.integerId));
-                fieldValueString = fieldValueString.replace(PlaceholderRecordUuid, record.uuid);
 
                 // Add delimiter, if necessary.
                 if (!fieldValuesString.isEmpty() && !fieldValueString.isEmpty())
@@ -535,14 +531,12 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             }
 
             // Replace other record placeholders.
-            recordString = recordString.replace(PlaceholderRecordId, record.id);
-            recordString = recordString.replace(PlaceholderRecordParentId, recordParent);
-            recordString = recordString.replace(PlaceholderRecordRootId, recordRoot);
+            recordString = recordString.replace(PlaceholderRecordId, record.id.toString());
+            recordString = recordString.replace(PlaceholderRecordParentId, recordParent.toString());
+            recordString = recordString.replace(PlaceholderRecordRootId, recordRoot.toString());
             recordString = recordString.replace(PlaceholderRecordFields, fieldValuesString);
             recordString = recordString.replace(PlaceholderComponents, componentsString);
             recordString = recordString.replace(PlaceholderRecordDisplayName, record.displayName);
-            recordString = recordString.replace(PlaceholderRecordIntegerId, QString::number(record.integerId));
-            recordString = recordString.replace(PlaceholderRecordUuid, record.uuid);
 
             if (!recordsString.isEmpty() && !recordString.isEmpty())
             {

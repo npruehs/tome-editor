@@ -375,19 +375,19 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
     if (typeName == BuiltInType::Reference)
     {
-        QStringList recordIds = this->recordsController.getRecordIds();
+        QVariantList recordIds = this->recordsController.getRecordIds();
 
         // Only show allowed record references.
         QStringList references;
 
-        for (const QString recordId : recordIds)
+        for (const QVariant recordId : recordIds)
         {
             const QString& validationError =
                     this->facetsController.validateFieldValue(this->getFieldType(), recordId);
 
             if (validationError.isEmpty())
             {
-                references.push_back(recordId);
+                references.push_back(recordId.toString());
             }
         }
 

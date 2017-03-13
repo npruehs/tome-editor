@@ -62,10 +62,8 @@ namespace Tome
             static const QString PlaceholderRecordDisplayName;
             static const QString PlaceholderRecordFields;
             static const QString PlaceholderRecordId;
-            static const QString PlaceholderRecordIntegerId;
             static const QString PlaceholderRecordParentId;
             static const QString PlaceholderRecordRootId;
-            static const QString PlaceholderRecordUuid;
             static const QString PlaceholderRecords;
             static const QString PlaceholderValueType;
 

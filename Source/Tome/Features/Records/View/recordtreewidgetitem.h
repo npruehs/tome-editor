@@ -8,22 +8,22 @@ namespace Tome
     class RecordTreeWidgetItem : public QTreeWidgetItem
     {
         public:
-            RecordTreeWidgetItem(const QString& id, const QString& displayName, const QString& parentId, const bool readOnly);
+            RecordTreeWidgetItem(const QVariant& id, const QString& displayName, const QVariant& parentId, const bool readOnly);
 
-            QString getId() const;
+            QVariant getId() const;
             QString getDisplayName() const;
-            QString getParentId() const;
+            QVariant getParentId() const;
             bool isReadOnly() const;
 
-            void setId(const QString& id);
+            void setId(const QVariant& id);
             void setDisplayName(const QString& displayName);
-            void setParentId(const QString& parentId);
+            void setParentId(const QVariant& parentId);
             void setReadOnly(const bool readOnly);
 
         private:
-            QString id;
+            QVariant id;
             QString displayName;
-            QString parentId;
+            QVariant parentId;
             bool readOnly;
     };
 }

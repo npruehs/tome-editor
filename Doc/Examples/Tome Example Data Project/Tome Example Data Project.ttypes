@@ -72,4 +72,13 @@
             <ConstrainingFacet Key="MaxLength" Value="64"/>
         </ConstrainingFacets>
     </Type>
+    <Type Name="Sprite">
+        <FundamentalFacets>
+            <FundamentalFacet Key="BaseType" Value="File"/>
+        </FundamentalFacets>
+        <ConstrainingFacets>
+            <ConstrainingFacet Key="RemovedFilePrefix" Value=""/>
+            <ConstrainingFacet Key="RemovedFileSuffix" Value=".png"/>
+        </ConstrainingFacets>
+    </Type>
 </Types>

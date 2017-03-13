@@ -26,7 +26,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <!-- version should MATCH as closely as possible with the underlying software -->
     <!-- Is the version a prerelease of a version? https://docs.nuget.org/create/versioning#creating-prerelease-packages -->
     <!-- Note that unstable versions like 0.0.1 can be considered a released version, but it's possible that one can release a 0.0.1-beta before you release a 0.0.1 version. If the version number is final, that is considered a released version and not a prerelease. -->
-    <version>0.8-beta</version>
+    <version>0.9-beta</version>
     <packageSourceUrl>https://github.com/npruehs/tome-editor</packageSourceUrl>
     <!-- owners is a poor name for maintainers of the package. It sticks around by this name for compatibility reasons. It basically means you. -->
     <owners>Nick Prühs</owners>
@@ -55,41 +55,46 @@ Developing games is all about data. With game systems for modifying data and use
 Tome solves two problems that arise with every new game you build: First, you can import the definition of your game's data so game designers can create new data records and modify existing ones very conveniently. Second, you can export the results to any format your game engine understands.
     </description>
     <releaseNotes>
-Data import release.
+Integer IDs and UUIDs release.
 
-The beta release of Tome adds the ability to import data from various sources, as well as the possibility to generate a localization kit.
+The second beta release of Tome greatly improves overall usability of the tool, and increases the range of different types of projects that Tome can be used for.
 
 ## New Features
-
-* **Undo.** All operations can now be un-done and re-done. The title bar shows a small asterisk while there are any unsaved changes, and shows a confirmation dialog when trying to quit with unsaved changes.
-* **Data Import.** Tome can now import record data from Excel and CSV files and Google Sheets. You can specify the column containing your record IDs, which records to parent newly imported records to, how table columns relate to your Tome fields, and which table rows to ignore, if any.
-* **Localization Support.** Export templates may now add a separate field value template for localized fields (for exporting localization keys instead of current string values when exporting data). They can also use an option for exporting localized fields only (for exporting localization kits).
+- **Integer IDs and UUIDs.** When creating new projects, you can now decide whether to use manually chosen string IDs, automatically incremented integer IDs or automatically generated UUIDs for all records.
+- **Multi-Editing.** You can now edit the field values of multiple records with the same parent at once, and revert or remove multiple records with the same parent at once.
+- **File Datatype.** The new built-in File datatype allows browsing the file system and storing relative file paths, with or without prefix and/or extension. The record table shows a preview of the selected file, if it's an image, and image file fields can be used as record icons in the record tree.
 
 ## Data
-
-* Added export placeholder for record roots.
-* Record parent placeholders are now available in field value templates as well.
+- Added placeholder for the MD5 hash of all record data.
+- Added importing of list values, separated by commas.
+- Added integrity checks for components without fields, unused fields, unused types, broken record references and fields that always have their default value.
+- Skipping record rows with empty ids while importing.
 
 ## Usability
-
-* Added navigation buttons and hotkeys for returning to previously selected records.
-* Added a context menu to the record tree.
-* Increased width of all progress bar dialogs to always fit its contents.
-* Missing export template files no longer cause loading a project to stop, but log an error instead.
-
-## Documentation
-
-* Added CSV and XLIFF example localization export templates.
+- Asking the user whether to save unsaved changes before creating a new project or opening an existing one.
+- Disabled record context menu actions while no record is selected.
+- Added deselection of records.
+- Added adding new child records.
+- Showing more descriptive error messages if an XLSX sheet could not be found.
+- Automatically focussing line edit for entering names of new components or new derived types.
+- Showing more detailed information on derived types in Custom Types window.
+- Stripping whitespaces when automatically converting display names to ids in New Record window.
+- Sorting type names strictly by name, instead of always showing built-in types first.
+- Added progress bars when running integrity checks.
+- Showing issue counts after running integrity checks.
+- Added option for showing record field values along with their component names, which causes grouping of fields by component.
+- Remembering the location of the last succesfully opened project.
+- Added a menu item for reloading the current project.
+- The record id is no longer automatically updated to reflect the record display name, except when creating new records.
 
 ## Bug Fixes
-
-* Fixed a bug that caused record reference dropdowns to show record display names instead of ids.
-* Fixed a bug that caused the Windows Explorer or Finder window not to open when selecting Navigate To from the Project Overview window.
-* Fixed a bug that caused another field value delimiter to be added when exporting, even if no more fields were succeeding after the current one (e.g. all following are skipped).
-* Fixed a bug that caused another field value delimiter to be added when exporting, even if the field value string was completely empty.
-* Fixed a bug that caused another record delimiter to be added when exporting, even if the record string was completely empty (e.g. every single field has been skipped).
-* Fixed a bug that caused changes to fields with map types not to be properly reflected by the UI when adding or editing key-value pairs whose keys already existed.
-* Fixed a bug that caused inherited field values not to be properly displayed within a hierarchy of three or more levels.
+- Fixed a crash that could occur when renaming a record with children.
+- Fixed a crash that could occur when validating a Required Reference Ancestor facet and the reference to validate could not be found.
+- Fixed a crash that could occur when importing data with a parent record that didn't exist.
+- Fixed a bug that caused the progress bar not to disappear if any error occurred while importing data from an XLSX file.
+- Fixed a bug that caused CSV and Excel files not to be correctly closed after an import.
+- Fixed a bug that prevented the error list from correctly being filtered by severity.
+- Fixed a bug that occasionally caused lists to be incorrectly sorted.
     </releaseNotes>
     <!-- =============================== -->      
 

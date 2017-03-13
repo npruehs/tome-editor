@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Records>
-    <Record Id="Archer" IntegerId="0" UUID="7972c09a-4e8c-457e-af40-3f22287421df" DisplayName="Archer" Parent="Unit">
+    <Record Id="Archer" DisplayName="Archer" Parent="Unit">
         <Acceleration Value="5"/>
         <AllowedTargets>
             <Item Value="Air"/>
@@ -29,17 +29,17 @@
         <Sprite Value="Sprites/Archer"/>
         <SpriteColor Value="#FFFFFFFF"/>
     </Record>
-    <Record Id="Arrow" IntegerId="1" UUID="748cd4f8-5d59-4b69-8f07-4f6b4e3dffe2" DisplayName="Arrow" Parent="Projectile">
+    <Record Id="Arrow" DisplayName="Arrow" Parent="Projectile">
         <MovementSpeed Value="30"/>
         <Sprite Value="Sprites/Arrow"/>
         <SpriteColor Value="#FFFFFFFF"/>
     </Record>
-    <Record Id="Fireball" IntegerId="2" UUID="da0df829-d029-403f-9f83-2a0f076c9132" DisplayName="Fireball" Parent="Projectile">
+    <Record Id="Fireball" DisplayName="Fireball" Parent="Projectile">
         <MovementSpeed Value="25"/>
         <Sprite Value="Sprites/Fireball"/>
         <SpriteColor Value="#FFFF464A"/>
     </Record>
-    <Record Id="Knight" IntegerId="3" UUID="e02cbdcc-ab0c-4722-a2a7-646250d35ed5" DisplayName="Knight" Parent="Unit">
+    <Record Id="Knight" DisplayName="Knight" Parent="Unit">
         <Acceleration Value="8"/>
         <AllowedTargets>
             <Item Value="Ground"/>
@@ -67,7 +67,7 @@
         <Sprite Value="Sprites/Knight"/>
         <SpriteColor Value="#FFFFFFFF"/>
     </Record>
-    <Record Id="Mage" IntegerId="4" UUID="5f392295-a700-445f-b48f-7c12600cfa6c" DisplayName="Mage" Parent="Unit">
+    <Record Id="Mage" DisplayName="Mage" Parent="Unit">
         <Acceleration Value="4"/>
         <AllowedTargets>
             <Item Value="Air"/>
@@ -100,7 +100,7 @@
         <Sprite Value="Sprites/Mage"/>
         <SpriteColor Value="#FFFFFFFF"/>
     </Record>
-    <Record Id="Peasant" IntegerId="5" UUID="d6049151-facf-4fee-bf3c-5b6c86c90954" DisplayName="Peasant" Parent="Unit">
+    <Record Id="Peasant" DisplayName="Peasant" Parent="Unit">
         <Acceleration Value="4.5"/>
         <AllowedTargets>
             <Item Value="Ground"/>
@@ -127,7 +127,7 @@
         <Sprite Value="Sprites/Peasant"/>
         <SpriteColor Value="#FFFFFFFF"/>
     </Record>
-    <Record Id="Projectile" IntegerId="6" UUID="16fc7b62-20a7-4df0-970f-7573ac7d26fd" DisplayName="Projectile">
+    <Record Id="Projectile" DisplayName="Projectile" ReadOnly="true" EditorIconFieldId="Sprite">
         <Acceleration Value="4.500"/>
         <Mass Value="1.000"/>
         <MovementSpeed Value="12.750"/>
@@ -135,7 +135,7 @@
         <Sprite Value=""/>
         <SpriteColor Value="#ffffff"/>
     </Record>
-    <Record Id="Unit" IntegerId="7" UUID="728ea1e8-b6db-49da-9963-0499a93c5472" DisplayName="Unit">
+    <Record Id="Unit" DisplayName="Unit" EditorIconFieldId="Sprite">
         <Acceleration Value="4.500"/>
         <AllowedTargets>
             <Item Value="Ground"/>

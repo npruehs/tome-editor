@@ -3,6 +3,8 @@
 
 #include <QSharedPointer>
 
+#include "../Model/recordidtype.h"
+
 namespace Tome
 {
     class ComponentSet;
@@ -45,10 +47,11 @@ namespace Tome
             ~ProjectController();
 
             QString buildFullFilePath(QString filePath, QString projectPath, QString desiredExtension) const;
-            void createProject(const QString& projectName, const QString& projectPath);
+            void createProject(const QString& projectName, const QString& projectPath, const Tome::RecordIdType::RecordIdType recordIdType);
             const QString getFullProjectPath() const;
             const QString getProjectName() const;
             const QString getProjectPath() const;
+            RecordIdType::RecordIdType getProjectRecordIdType() const;
             bool getProjectIgnoreReadOnly() const;
             bool isProjectLoaded() const;
             void loadComponentSet(const QString& projectPath, ComponentSet& componentSet) const;

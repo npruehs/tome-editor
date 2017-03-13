@@ -6,6 +6,7 @@
 #include "../Model/recordfieldstate.h"
 #include "../../Fields/Model/fielddefinitionlist.h"
 #include "../../Components/Model/componentlist.h"
+#include "../../Projects/Model/recordidtype.h"
 #include "../../Records/Model/recordfieldvaluemap.h"
 #include "../../Records/Controller/recordnamevalidator.h"
 
@@ -23,17 +24,17 @@ class RecordWindow : public QDialog
 
         QString getRecordDisplayName() const;
         QString getRecordEditorIconFieldId() const;
-        QString getRecordId() const;
+        QVariant getRecordId() const;
         QMap<QString, Tome::RecordFieldState::RecordFieldState> getRecordFields() const;
         QString getRecordSetName() const;
 
         void clearRecordFields();
 
-        void setDisallowedRecordIds(const QStringList disallowedRecordIds);
+        void setDisallowedRecordIds(const QVariantList disallowedRecordIds);
         void setRecordDisplayName(const QString& displayName);
-        void setRecordId(const QString& id);
+        void setRecordId(const QVariant& id);
         void setRecordIdLocked(const bool recordIdLocked);
-        void setRecordIntegerId(const long id);
+        void setRecordIdType(const Tome::RecordIdType::RecordIdType recordIdType);
         void setRecordEditorIconFieldId(const QString& editorIconFieldId);
         void setRecordField(const QString& fieldId, const QString& fieldComponent, const Tome::RecordFieldState::RecordFieldState state);
         void setRecordFields(const Tome::FieldDefinitionList& fieldDefinitions);
@@ -42,7 +43,6 @@ class RecordWindow : public QDialog
         void setRecordComponents(const Tome::ComponentList& components);
         void setRecordSetName(const QString& recordSetName);
         void setRecordSetNames(const QStringList& recordSetNames);
-        void setRecordUuid(const QString& uuid);
         void clearRecordComponents();
 
     public slots:
@@ -65,11 +65,14 @@ class RecordWindow : public QDialog
 
         Ui::RecordWindow *ui;
 
-        QStringList disallowedRecordIds;
+        QVariantList disallowedRecordIds;
         RecordNameValidator nameValidator;
 
         // Whether to automatically update the record id to reflect the display name, or not.
         bool recordIdLocked;
+
+        QVariant recordId;
+        Tome::RecordIdType::RecordIdType recordIdType;
 
         bool validate();
 };

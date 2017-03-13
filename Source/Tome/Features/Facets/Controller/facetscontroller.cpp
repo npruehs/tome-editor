@@ -97,7 +97,6 @@ QVariant FacetsController::getFacetValue(const QString& fieldType, const QString
 
 void FacetsController::registerFacet(Tome::Facet* facet)
 {
-    qInfo(QString("Registering facet %1.").arg(facet->getKey()).toUtf8().constData());
     this->facets.push_back(facet);
 }
 

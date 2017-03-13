@@ -53,9 +53,14 @@ QString RecordWindow::getRecordEditorIconFieldId() const
     return this->ui->comboBoxEditorIconField->currentData().toString();
 }
 
-QString RecordWindow::getRecordId() const
+QVariant RecordWindow::getRecordId() const
 {
-    return this->ui->lineEditId->text();
+    if (this->recordIdType == RecordIdType::String)
+    {
+        return this->ui->lineEditId->text();
+    }
+
+    return this->recordId;
 }
 
 QMap<QString, RecordFieldState::RecordFieldState> RecordWindow::getRecordFields() const
@@ -107,7 +112,7 @@ void RecordWindow::clearRecordFields()
     this->ui->comboBoxEditorIconField->clear();
 }
 
-void RecordWindow::setDisallowedRecordIds(const QStringList disallowedRecordIds)
+void RecordWindow::setDisallowedRecordIds(const QVariantList disallowedRecordIds)
 {
     this->disallowedRecordIds = disallowedRecordIds;
 }
@@ -117,9 +122,20 @@ void RecordWindow::setRecordDisplayName(const QString& displayName)
     this->ui->lineEditDisplayName->setText(displayName);
 }
 
-void RecordWindow::setRecordId(const QString& id)
+void RecordWindow::setRecordId(const QVariant& id)
 {
-    this->ui->lineEditId->setText(id);
+    this->recordId = id;
+
+    if (this->recordIdType == RecordIdType::String)
+    {
+        QString recordIdString = id.isNull() ? QString() : id.toString();
+        this->ui->lineEditId->setText(recordIdString);
+    }
+    else
+    {
+        QString recordIdString = id.isNull() ? tr("Unassigned") : id.toString();
+        this->ui->labelId->setText(recordIdString);
+    }
 }
 
 void RecordWindow::setRecordIdLocked(const bool recordIdLocked)
@@ -127,10 +143,29 @@ void RecordWindow::setRecordIdLocked(const bool recordIdLocked)
     this->recordIdLocked = recordIdLocked;
 }
 
-void RecordWindow::setRecordIntegerId(const long id)
+void RecordWindow::setRecordIdType(const RecordIdType::RecordIdType recordIdType)
 {
-    QString idString = id > 0 ? QString::number(id) : tr("Unassigned");
-    this->ui->labelIntegerIdValue->setText(idString);
+    this->recordIdType = recordIdType;
+
+    switch (recordIdType)
+    {
+        case RecordIdType::Integer:
+        case RecordIdType::Uuid:
+        case RecordIdType::Invalid:
+            this->ui->labelIdLineEdit->hide();
+            this->ui->lineEditId->hide();
+
+            this->ui->labelIdLabel->show();
+            this->ui->labelId->show();
+            break;
+
+        case RecordIdType::String:
+            this->ui->labelIdLineEdit->show();
+            this->ui->lineEditId->show();
+
+            this->ui->labelIdLabel->hide();
+            this->ui->labelId->hide();
+    }
 }
 
 void RecordWindow::setRecordEditorIconFieldId(const QString& editorIconFieldId)
@@ -250,7 +285,7 @@ void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, 
 void RecordWindow::on_lineEditDisplayName_textEdited(const QString& displayName)
 {
     // If the user manually changed the record id we must not change it when the display name changes.
-    if ( !recordIdLocked )
+    if (this->recordIdType == RecordIdType::String && !recordIdLocked)
     {
         this->setRecordId(stripWhitespaces(displayName));
     }
@@ -301,7 +336,7 @@ void RecordWindow::onCheckBoxStateChanged(int state)
 bool RecordWindow::validate()
 {
     // Id must not be empty.
-    if (this->getRecordId().size() == 0)
+    if (this->recordIdType == RecordIdType::String && this->getRecordId().isNull())
     {
         QMessageBox::information(
                     this,
@@ -371,12 +406,6 @@ void RecordWindow::setRecordSetNames(const QStringList& recordSetNames)
 {
     this->ui->comboBoxRecordSet->clear();
     this->ui->comboBoxRecordSet->addItems(recordSetNames);
-}
-
-void RecordWindow::setRecordUuid(const QString& uuid)
-{
-    QString idString = !uuid.isEmpty() ? uuid : tr("Unassigned");
-    this->ui->labelUuidValue->setText(idString);
 }
 
 void RecordWindow::setRecordComponent(const QString& componentId, const Tome::RecordFieldState::RecordFieldState state)

@@ -246,7 +246,7 @@ void CustomTypesWindow::on_actionDelete_Custom_Type_triggered()
     }
 
     // Check custom type type (ha ha).
-    QUndoCommand* command;
+    QUndoCommand* command = nullptr;
 
     const CustomType& type = this->typesController.getCustomType(typeName);
 

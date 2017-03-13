@@ -1,4 +1,5 @@
 {
+  "hash": "$HASH$",
   "records": [
 $RECORDS$
   ]

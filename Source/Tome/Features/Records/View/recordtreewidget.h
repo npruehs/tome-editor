@@ -28,10 +28,10 @@ namespace Tome
                              ProjectController& projectController,
                              SettingsController& settingsController);
 
-            void addRecord(const QString& id, const QString& displayName, const QString& parentId);
+            void addRecord(const QVariant& id, const QString& displayName, const QVariant& parentId);
 
-            QString getSelectedRecordId() const;
-            QStringList getSelectedRecordIds() const;
+            QVariant getSelectedRecordId() const;
+            QVariantList getSelectedRecordIds() const;
 
             RecordTreeWidgetItem* getSelectedRecordItem() const;
             QList<RecordTreeWidgetItem*> getSelectedRecordItems() const;
@@ -39,22 +39,22 @@ namespace Tome
             void navigateForward();
             void navigateBackward();
 
-            void updateRecord(const QString& oldId,
+            void updateRecord(const QVariant& oldId,
                               const QString& oldDisplayName,
                               const QString& oldEditorIconFieldId,
-                              const QString& newId,
+                              const QVariant& newId,
                               const QString& newDisplayName,
                               const QString& newEditorIconFieldId);
 
-            void selectRecord(const QString& id);
+            void selectRecord(const QVariant& id, const bool addToHistory);
             void setContextMenuActions(QList<QAction*> actions);
             void setRecords(const RecordList& records);
 
-            void removeRecord(const QString& id);
+            void removeRecord(const QVariant& id);
 
         signals:
             void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
-            void recordReparented(const QString& recordId, const QString& newParentId);
+            void recordReparented(const QVariant& recordId, const QVariant& newParentId);
 
         protected:
             void contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
@@ -71,13 +71,13 @@ namespace Tome
             RecordsController& recordsController;
             SettingsController& settingsController;
 
-            QStack<QString> selectedRecordUndoStack;
-            QStack<QString> selectedRecordRedoStack;
+            QStack<QVariant> selectedRecordUndoStack;
+            QStack<QVariant> selectedRecordRedoStack;
             bool navigating;
 
             QList<QAction*> contextMenuActions;
 
-            RecordTreeWidgetItem* getRecordItem(const QString& id);
+            RecordTreeWidgetItem* getRecordItem(const QVariant& id);
             void updateRecordItem(RecordTreeWidgetItem* recordTreeItem);
             void updateRecordItemRecursively(RecordTreeWidgetItem* recordTreeItem);
     };

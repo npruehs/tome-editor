@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include <QApplication>
+#include <QFileInfo>
 #include <QSysInfo>
 
 #include "commandlineoptions.h"
@@ -58,7 +59,7 @@ Controller::Controller(CommandLineOptions* options) :
     componentsController(new ComponentsController()),
     typesController(new TypesController()),
     fieldDefinitionsController(new FieldDefinitionsController(*this->componentsController, *this->typesController)),
-    recordsController(new RecordsController(*this->fieldDefinitionsController, *this->typesController)),
+    recordsController(new RecordsController(*this->fieldDefinitionsController, *this->projectController, *this->typesController)),
     facetsController(new FacetsController(*this->recordsController, *this->typesController)),
     exportController(new ExportController(*this->facetsController, *this->fieldDefinitionsController, *this->recordsController, *this->typesController)),
     settingsController(new SettingsController()),
@@ -202,6 +203,7 @@ int Controller::start()
 
     // Log system information.
     qInfo(QString("Tome Version: %1").arg(QApplication::instance()->applicationVersion()).toUtf8().constData());
+    qInfo(QString("Log File: %1").arg(QFileInfo(FileMessageHandler::logfileName).absoluteFilePath()).toUtf8().constData());
     qInfo(QString("Qt Build Architecture: %1").arg(QSysInfo::buildAbi()).toUtf8().constData());
     qInfo(QString("CPU Architecture: %1").arg(QSysInfo::currentCpuArchitecture()).toUtf8().constData());
     qInfo(QString("OS: %1 %2").arg(QSysInfo::prettyProductName(), QSysInfo::kernelVersion()).toUtf8().constData());

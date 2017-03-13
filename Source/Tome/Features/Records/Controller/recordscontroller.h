@@ -10,6 +10,7 @@ namespace Tome
 {
     class FieldDefinition;
     class FieldDefinitionsController;
+    class ProjectController;
     class TypesController;
 
     class RecordsController : public QObject
@@ -17,9 +18,11 @@ namespace Tome
         Q_OBJECT
 
         public:
-            RecordsController(const FieldDefinitionsController& fieldDefinitionsController, const TypesController& typesController);
+            RecordsController(const FieldDefinitionsController& fieldDefinitionsController,
+                              const ProjectController& projectController,
+                              const TypesController& typesController);
 
-            const Record addRecord(const QString& id,
+            const Record addRecord(const QVariant& id,
                                    const QString& displayName,
                                    const QString& editorIconFieldId,
                                    const QStringList& fieldIds,
@@ -28,20 +31,20 @@ namespace Tome
 
             const QString computeRecordsHash() const;
 
-            const Record duplicateRecord(const QString& existingRecordId, const QString& newRecordId);
+            const Record duplicateRecord(const QVariant& existingRecordId, const QVariant& newRecordId);
 
             /**
              * @brief getAncestors Gets the list of all ancestors of the record with the specified id, direct parent first.
              * @param id Id of the record to get the ancestors of.
              * @return List of all ancestors of the record with the specified id, direct parent first.
              */
-            const RecordList getAncestors(const QString& id) const;
+            const RecordList getAncestors(const QVariant& id) const;
 
-            const RecordList getChildren(const QString& id) const;
-            const RecordList getDescendents(const QString& id) const;
-            const QVariant getInheritedFieldValue(const QString& id, const QString& fieldId) const;
-            const RecordFieldValueMap getInheritedFieldValues(const QString& id) const;
-            const QString getParentId(const QString& id) const;
+            const RecordList getChildren(const QVariant& id) const;
+            const RecordList getDescendents(const QVariant& id) const;
+            const QVariant getInheritedFieldValue(const QVariant& id, const QString& fieldId) const;
+            const RecordFieldValueMap getInheritedFieldValues(const QVariant& id) const;
+            const QVariant getParentId(const QVariant& id) const;
 
             const RecordSetList& getRecordSets() const;
 
@@ -50,13 +53,13 @@ namespace Tome
              * @param id Id of the record to get.
              * @return Record with the specified id.
              */
-            const Record& getRecord(const QString& id) const;
+            const Record& getRecord(const QVariant& id) const;
 
             const RecordList getRecords() const;
 
-            const QStringList getRecordIds() const;
+            const QVariantList getRecordIds() const;
 
-            const QString getRecordEditorIconFieldId(const QString& id) const;
+            const QString getRecordEditorIconFieldId(const QVariant& id) const;
 
             /**
              * @brief getRecordNames Returns the list of the names of all records of this project.
@@ -71,12 +74,12 @@ namespace Tome
              * @param id Id of the record the get the map of field values of.
              * @return Map of actual field values of the record with the specified id.
              */
-            const RecordFieldValueMap getRecordFieldValues(const QString& id) const;
+            const RecordFieldValueMap getRecordFieldValues(const QVariant& id) const;
 
-            const QString getRootRecordId(const QString& id) const;
+            const QVariant getRootRecordId(const QVariant& id) const;
 
-            bool hasRecord(const QString& id) const;
-            bool haveTheSameParent(const QStringList ids) const;
+            bool hasRecord(const QVariant& id) const;
+            bool haveTheSameParent(const QVariantList ids) const;
             int indexOf(const Record& record) const;
 
             /**
@@ -85,34 +88,34 @@ namespace Tome
              * @param recordId Record to check the ancestors of.
              * @return true, if the first record is an ancestor of the second one, and false otherwise.
              */
-            bool isAncestorOf(const QString& possibleAncestor, const QString& recordId) const;
+            bool isAncestorOf(const QVariant& possibleAncestor, const QVariant& recordId) const;
 
-            void removeRecord(const QString& recordId);
+            void removeRecord(const QVariant& recordId);
             void removeRecordSet(const QString& name);
 
-            void revertRecord(const QString& recordId);
+            void revertRecord(const QVariant& recordId);
 
-            void reparentRecord(const QString& recordId, const QString& newParentId);
-            void setReadOnly(const QString& recordId, const bool readOnly);
+            void reparentRecord(const QVariant& recordId, const QVariant& newParentId);
+            void setReadOnly(const QVariant& recordId, const bool readOnly);
             void setRecordSets(RecordSetList& model);
-            void updateRecord(const QString oldId,
-                              const QString newId,
+            void updateRecord(const QVariant oldId,
+                              const QVariant newId,
                               const QString newDisplayName,
                               const QString newEditorIconFieldId,
                               const QStringList& fieldIds,
                               const QString& recordSetName);
-            void updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue);
+            void updateRecordFieldValue(const QVariant& recordId, const QString& fieldId, const QVariant& fieldValue);
 
         signals:
             void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue);
-            void recordAdded(const QString& recordId, const QString& recordDisplayName, const QString& parentId);
-            void recordFieldsChanged(const QString& recordId);
-            void recordRemoved(const QString& recordId);
-            void recordReparented(const QString& recordId, const QString& oldParentId, const QString& newParentId);
-            void recordUpdated(const QString& oldId,
+            void recordAdded(const QVariant& recordId, const QString& recordDisplayName, const QVariant& parentId);
+            void recordFieldsChanged(const QVariant& recordId);
+            void recordRemoved(const QVariant& recordId);
+            void recordReparented(const QVariant& recordId, const QVariant& oldParentId, const QVariant& newParentId);
+            void recordUpdated(const QVariant& oldId,
                                const QString& oldDisplayName,
                                const QString& oldEditorIconFieldId,
-                               const QString& newId,
+                               const QVariant& newId,
                                const QString& newDisplayName,
                                const QString& newEditorIconFieldId);
             void recordSetsChanged();
@@ -124,21 +127,25 @@ namespace Tome
 
         private:
             RecordSetList* model;
-            long nextRecordIntegerId;
+            qlonglong nextRecordIntegerId;
 
             const FieldDefinitionsController& fieldDefinitionsController;
+            const ProjectController& projectController;
             const TypesController& typesController;
 
-            void addRecordField(const QString& recordId, const QString& fieldId);
+            void addRecordField(const QVariant& recordId, const QString& fieldId);
             const QString generateUuid() const;
-            Record* getRecordById(const QString& id) const;
+            Record* getRecordById(const QVariant& id) const;
             void moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent);
-            void moveRecordToSet(const QString& recordId, const QString& recordSetName);
-            void removeRecordField(const QString& recordId, const QString& fieldId);
+            void moveRecordToSet(const QVariant& recordId, const QString& recordSetName);
+            void removeRecordField(const QVariant& recordId, const QString& fieldId);
             void renameRecordField(const QString oldFieldId, const QString newFieldId);
-            QVariant revertFieldValue(const QString& recordId, const QString& fieldId);
-            void updateRecordReferences(const QString oldReference, const QString newReference);
+            QVariant revertFieldValue(const QVariant& recordId, const QString& fieldId);
+            void updateRecordReferences(const QVariant oldReference, const QVariant newReference);
             void verifyRecordIds();
+            void verifyRecordIntegerIds();
+            void verifyRecordStringIds();
+            void verifyRecordUuids();
     };
 }
 

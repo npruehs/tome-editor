@@ -13,25 +13,25 @@ TEMPLATE = app
 
 # Expose application version in Windows property window and in application code.
 # http://www.openguru.com/2009/11/qt-best-way-to-set-application-version.html
-VERSION = 0.8
-VERSION_NAME = Pegasus
+VERSION = 0.9
+VERSION_NAME = Unicorn
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 DEFINES += APP_VERSION_NAME=\\\"$$VERSION_NAME\\\"
 
 RC_ICONS = ../Media/Icons/Tome.ico
 ICON = ../Media/Icons/Tome.icns
 
-Debug:DESTDIR = ../../Bin/debug/Tome
-Debug:OBJECTS_DIR = ../../Obj/debug/Tome
-Debug:MOC_DIR = ../../Obj/debug/Tome/.moc
-Debug:RCC_DIR = ../../Obj/debug/Tome/.rcc
-Debug:UI_DIR = ../../Obj/debug/Tome/.ui
+Debug:DESTDIR = ../Bin/debug/Tome
+Debug:OBJECTS_DIR = ../Obj/debug/Tome
+Debug:MOC_DIR = ../Obj/debug/Tome/.moc
+Debug:RCC_DIR = ../Obj/debug/Tome/.rcc
+Debug:UI_DIR = ../Obj/debug/Tome/.ui
 
-Release:DESTDIR = ../../Bin/release/Tome
-Release:OBJECTS_DIR = ../../Obj/release/Tome
-Release:MOC_DIR = ../../Obj/release/Tome/.moc
-Release:RCC_DIR = ../../Obj/release/Tome/.rcc
-Release:UI_DIR = ../../Obj/release/Tome/.ui
+Release:DESTDIR = ../Bin/release/Tome
+Release:OBJECTS_DIR = ../Obj/release/Tome
+Release:MOC_DIR = ../Obj/release/Tome/.moc
+Release:RCC_DIR = ../Obj/release/Tome/.rcc
+Release:UI_DIR = ../Obj/release/Tome/.ui
 
 SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Core/mainwindow.cpp \
@@ -317,7 +317,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Facets/Controller/removedfileprefixfacet.h \
     ../Source/Tome/Features/Facets/Controller/removedfilesuffixfacet.h \
     ../Source/Tome/Features/Integrity/Controller/referencedfiledoesnotexisttask.h \
-    ../Source/Tome/Features/Records/View/labeledpixmapwidget.h
+    ../Source/Tome/Features/Records/View/labeledpixmapwidget.h \
+    ../Source/Tome/Features/Projects/Model/recordidtype.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \

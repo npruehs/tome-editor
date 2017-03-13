@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TomeProject Version="5">
+<TomeProject Version="6" RecordIdType="String">
     <Name>Tome Example Data Project</Name>
     <Locale>en_US</Locale>
     <Components>

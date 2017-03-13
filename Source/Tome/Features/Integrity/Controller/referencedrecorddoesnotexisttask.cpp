@@ -53,7 +53,8 @@ const MessageList ReferencedRecordDoesNotExistTask::execute(const TaskContext& c
             if (!referencedRecordId.isEmpty() && !context.recordsController.hasRecord(referencedRecordId))
             {
                 Message message;
-                message.content = tr("The record %1 referenced by record %2 field %3 does not exist.").arg(referencedRecordId, record.id, fieldId);
+                message.content = tr("The record %1 referenced by record %2 field %3 does not exist.")
+                        .arg(referencedRecordId, record.id.toString(), fieldId);
                 message.messageCode = MessageCode;
                 message.severity = Severity::Error;
                 message.targetSiteId = record.id;

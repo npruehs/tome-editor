@@ -4,6 +4,7 @@ using namespace Tome;
 
 
 Project::Project()
-    : ignoreReadOnly(false)
+    : ignoreReadOnly(false),
+      recordIdType(RecordIdType::String)
 {
 }
