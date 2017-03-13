@@ -1,8 +1,8 @@
 #ifndef DUPLICATERECORDCOMMAND_H
 #define DUPLICATERECORDCOMMAND_H
 
-#include <QString>
 #include <QUndoCommand>
+#include <QVariant>
 
 namespace Tome
 {
@@ -12,16 +12,16 @@ namespace Tome
     {
         public:
             DuplicateRecordCommand(RecordsController& recordsController,
-                                   const QString& existingRecordId,
-                                   const QString& newRecordId);
+                                   const QVariant& existingRecordId,
+                                   const QVariant& newRecordId);
             virtual void undo();
             virtual void redo();
 
         private:
             RecordsController& recordsController;
 
-            const QString existingRecordId;
-            const QString newRecordId;
+            const QVariant existingRecordId;
+            const QVariant newRecordId;
     };
 }
 

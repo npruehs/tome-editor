@@ -20,6 +20,8 @@
 #include "../Controller/Commands/updatemapcommand.h"
 #include "../Model/builtintype.h"
 #include "../../Facets/Controller/facetscontroller.h"
+#include "../../Facets/Controller/localizedstringfacet.h"
+#include "../../Facets/Controller/requiredreferenceancestorfacet.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Search/Controller/findusagescontroller.h"
@@ -244,7 +246,7 @@ void CustomTypesWindow::on_actionDelete_Custom_Type_triggered()
     }
 
     // Check custom type type (ha ha).
-    QUndoCommand* command;
+    QUndoCommand* command = nullptr;
 
     const CustomType& type = this->typesController.getCustomType(typeName);
 
@@ -521,7 +523,23 @@ void CustomTypesWindow::updateRow(const int index, const CustomType& type)
     if (type.isDerivedType())
     {
         this->ui->tableWidget->setItem(index, 1, new QTableWidgetItem("Derived Type"));
-        this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(type.getBaseType()));
+
+        // Combine detail information.
+        QString details = type.getBaseType();
+
+        QVariant requiredAncestor = this->facetsController.getFacetValue(type.name, RequiredReferenceAncestorFacet::FacetKey);
+        if (requiredAncestor.isValid())
+        {
+            details += QString(" (%1)").arg(requiredAncestor.toString());
+        }
+
+        QVariant localized = this->facetsController.getFacetValue(type.name, LocalizedStringFacet::FacetKey);
+        if (localized.isValid() && localized.toBool())
+        {
+            details += tr(" (Localized)");
+        }
+
+        this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(details));
     }
     else if (type.isEnumeration())
     {

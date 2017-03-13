@@ -11,13 +11,14 @@ namespace Tome
 {
     class FieldDefinitionsController;
     class RecordsController;
+    class TypesController;
 
     class ImportController : public QObject
     {
             Q_OBJECT
 
         public:
-            ImportController(FieldDefinitionsController& fieldDefinitionsController, RecordsController& recordsController);
+            ImportController(FieldDefinitionsController& fieldDefinitionsController, RecordsController& recordsController, TypesController& typesController);
 
             void addRecordImportTemplate(const RecordTableImportTemplate& importTemplate);
 
@@ -45,6 +46,7 @@ namespace Tome
         private:
             FieldDefinitionsController& fieldDefinitionsController;
             RecordsController& recordsController;
+            TypesController& typesController;
 
             RecordTableImportTemplateList* model;
     };

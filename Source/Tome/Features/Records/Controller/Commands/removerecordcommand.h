@@ -19,7 +19,7 @@ namespace Tome
             RemoveRecordCommand(RecordsController& recordsController,
                                 FieldDefinitionsController& fieldDefinitionsController,
                                 TypesController& typesController,
-                                const QString& id);
+                                const QVariant& id);
 
             virtual void undo();
             virtual void redo();
@@ -29,10 +29,10 @@ namespace Tome
             FieldDefinitionsController& fieldDefinitionsController;
             TypesController& typesController;
 
-            const QString id;
+            const QVariant id;
 
             RecordList removedRecords;
-            QMap<QString, RecordFieldValueMap> removedRecordFieldValues;
+            QMap<QVariant, RecordFieldValueMap> removedRecordFieldValues;
     };
 }
 

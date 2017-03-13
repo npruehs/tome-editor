@@ -25,7 +25,7 @@
     <widget class="QLineEdit" name="lineEditDisplayName"/>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="labelId">
+    <widget class="QLabel" name="labelIdLineEdit">
      <property name="text">
       <string>Id:</string>
      </property>
@@ -34,14 +34,34 @@
    <item row="1" column="1">
     <widget class="QLineEdit" name="lineEditId"/>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label">
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelRecordSet">
+     <property name="text">
+      <string>Record Set:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QComboBox" name="comboBoxRecordSet"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="labelEditorIconField">
+     <property name="text">
+      <string>Editor Icon Field:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QComboBox" name="comboBoxEditorIconField"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="labelComponents">
      <property name="text">
       <string>Components:</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="6" column="1">
     <widget class="QScrollArea" name="scrollAreaComponents">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -66,7 +86,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>440</width>
+        <width>427</width>
         <height>69</height>
        </rect>
       </property>
@@ -74,14 +94,14 @@
      </widget>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="7" column="0">
     <widget class="QLabel" name="labelFields">
      <property name="text">
       <string>Fields:</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="7" column="1">
     <widget class="QScrollArea" name="scrollAreaFields">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -106,7 +126,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>440</width>
+        <width>427</width>
         <height>69</height>
        </rect>
       </property>
@@ -120,7 +140,7 @@
      </widget>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="8" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -130,15 +150,19 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="labelRecordSet">
+   <item row="2" column="1">
+    <widget class="QLabel" name="labelId">
      <property name="text">
-      <string>Record Set:</string>
+      <string/>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="comboBoxRecordSet"/>
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelIdLabel">
+     <property name="text">
+      <string>Id:</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

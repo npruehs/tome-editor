@@ -30,11 +30,11 @@ void RemoveFieldDefinitionCommand::undo()
                                                         this->fieldDefinitionSetName);
 
     // Add record field values again.
-    for (QVariantMap::iterator it = this->removedRecordFieldValues.begin();
+    for (QMap<QVariant, QVariant>::iterator it = this->removedRecordFieldValues.begin();
          it != this->removedRecordFieldValues.end();
          ++it)
     {
-        const QString recordId = it.key();
+        const QVariant recordId = it.key();
         const QVariant recordFieldValue = it.value();
 
         this->recordsController.updateRecordFieldValue(recordId, this->id, recordFieldValue);

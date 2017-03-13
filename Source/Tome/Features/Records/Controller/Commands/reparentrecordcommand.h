@@ -1,8 +1,8 @@
 #ifndef REPARENTRECORDCOMMAND_H
 #define REPARENTRECORDCOMMAND_H
 
-#include <QString>
 #include <QUndoCommand>
+#include <QVariant>
 
 namespace Tome
 {
@@ -12,8 +12,8 @@ namespace Tome
     {
         public:
             ReparentRecordCommand(RecordsController& recordsController,
-                                  const QString& recordId,
-                                  const QString& newParentId);
+                                  const QVariant& recordId,
+                                  const QVariant& newParentId);
 
             virtual void undo();
             virtual void redo();
@@ -21,10 +21,10 @@ namespace Tome
         private:
             RecordsController& recordsController;
 
-            const QString recordId;
-            const QString newParentId;
+            const QVariant recordId;
+            const QVariant newParentId;
 
-            QString oldParentId;
+            QVariant oldParentId;
     };
 }
 

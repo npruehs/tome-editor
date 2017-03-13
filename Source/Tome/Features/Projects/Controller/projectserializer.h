@@ -36,6 +36,7 @@ namespace Tome
             static const QString AttributeExportLeafs;
             static const QString AttributeIgnoreReadOnly;
             static const QString AttributeKey;
+            static const QString AttributeRecordIdType;
             static const QString AttributeTomeType;
             static const QString AttributeValue;
             static const QString AttributeVersion;

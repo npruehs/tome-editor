@@ -6,18 +6,18 @@ using namespace Tome;
 
 
 ReparentRecordCommand::ReparentRecordCommand(RecordsController& recordsController,
-                                             const QString& recordId,
-                                             const QString& newParentId)
+                                             const QVariant& recordId,
+                                             const QVariant& newParentId)
     : recordsController(recordsController),
       recordId(recordId),
       newParentId(newParentId)
 {
-    this->setText(tr("Reparent Record - %1").arg(recordId));
+    this->setText(tr("Reparent Record - %1").arg(recordId.toString()));
 }
 
 void ReparentRecordCommand::undo()
 {
-    qInfo(QString("Undo reparent record %1.").arg(this->recordId).toUtf8().constData());
+    qInfo(QString("Undo reparent record %1.").arg(this->recordId.toString()).toUtf8().constData());
 
     // Restore parent.
     this->recordsController.reparentRecord(this->recordId, this->oldParentId);

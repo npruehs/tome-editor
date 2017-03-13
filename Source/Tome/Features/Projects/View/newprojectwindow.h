@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QString>
 
+#include "../Model/recordidtype.h"
+
 namespace Ui {
     class NewProjectWindow;
 }
@@ -18,8 +20,10 @@ class NewProjectWindow : public QDialog
 
         QString getProjectName() const;
         QString getProjectPath() const;
+        Tome::RecordIdType::RecordIdType getProjectRecordIdType() const;
 
     private slots:
+        void on_comboBoxRecordIdType_currentTextChanged(const QString &text);
         void on_pushButtonBrowse_clicked();
 
     private:

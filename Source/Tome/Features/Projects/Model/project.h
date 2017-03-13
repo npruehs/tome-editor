@@ -6,6 +6,7 @@
 #include <QVector>
 #include <QLocale>
 
+#include "recordidtype.h"
 #include "../../Components/Model/componentsetlist.h"
 #include "../../Export/Model/recordexporttemplatelist.h"
 #include "../../Fields/Model/fielddefinitionsetlist.h"
@@ -25,6 +26,7 @@ namespace Tome
             QString path;
             QLocale locale;
             bool ignoreReadOnly;
+            RecordIdType::RecordIdType recordIdType;
 
             ComponentSetList componentSets;
             FieldDefinitionSetList fieldDefinitionSets;

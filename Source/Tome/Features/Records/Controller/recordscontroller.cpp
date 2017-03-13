@@ -2,8 +2,14 @@
 
 #include <stdexcept>
 
+#include <QCryptographicHash>
+#include <QSet>
+#include <QUuid>
+
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../Fields/Model/fielddefinition.h"
+#include "../../Projects/Controller/projectcontroller.h"
+#include "../../Projects/Model/recordidtype.h"
 #include "../../Types/Controller/typescontroller.h"
 #include "../../Types/Model/builtintype.h"
 #include "../../../Util/listutils.h"
@@ -12,8 +18,11 @@
 using namespace Tome;
 
 
-RecordsController::RecordsController(const FieldDefinitionsController& fieldDefinitionsController, const TypesController& typesController)
+RecordsController::RecordsController(const FieldDefinitionsController& fieldDefinitionsController,
+                                     const ProjectController& projectController,
+                                     const TypesController& typesController)
     : fieldDefinitionsController(fieldDefinitionsController),
+      projectController(projectController),
       typesController(typesController)
 {
     connect(&this->fieldDefinitionsController,
@@ -29,15 +38,43 @@ RecordsController::RecordsController(const FieldDefinitionsController& fieldDefi
             SLOT(onFieldUpdated(const Tome::FieldDefinition&, const Tome::FieldDefinition&)));
 }
 
-const Record RecordsController::addRecord(const QString& id, const QString& displayName, const QStringList& fieldIds, const QString& recordSetName)
+const Record RecordsController::addRecord(const QVariant& id,
+                                          const QString& displayName,
+                                          const QString& editorIconFieldId,
+                                          const QStringList& fieldIds,
+                                          const QString& recordSetName)
 {
-    qInfo(QString("Adding record %1.").arg(id).toUtf8().constData());
-
+    // Create new record.
     Record record = Record();
-    record.id = id;
+
+    // Assign id.
+    RecordIdType::RecordIdType recordIdType = this->projectController.getProjectRecordIdType();
+
+    switch (recordIdType)
+    {
+        case RecordIdType::String:
+            record.id = id;
+            break;
+        case RecordIdType::Integer:
+            record.id = id.isNull() ? this->nextRecordIntegerId++ : id;
+            break;
+        case RecordIdType::Uuid:
+            record.id = id.isNull() ? this->generateUuid() : id;
+            break;
+        case RecordIdType::Invalid:
+            const QString errorMessage = "Invalid project record id type.";
+            qCritical(errorMessage.toUtf8().constData());
+            throw std::out_of_range(errorMessage.toStdString());
+    }
+
+    qInfo(QString("Adding record %1.").arg(record.id.toString()).toUtf8().constData());
+
+    // Assign display name, icon and record set.
     record.displayName = displayName;
+    record.editorIconFieldId = editorIconFieldId;
     record.recordSetName = recordSetName;
 
+    // Set field default values.
     for (QStringList::const_iterator it = fieldIds.begin();
          it != fieldIds.end();
          ++it)
@@ -48,6 +85,7 @@ const Record RecordsController::addRecord(const QString& id, const QString& disp
         record.fieldValues.insert(fieldId, field.defaultValue);
     }
 
+    // Add to record set.
     for (RecordSetList::iterator it = this->model->begin();
          it != this->model->end();
          ++it)
@@ -59,7 +97,7 @@ const Record RecordsController::addRecord(const QString& id, const QString& disp
             RecordList& records = recordSet.records;
             int index = findInsertionIndex(records, record, recordLessThanDisplayName);
             records.insert(index, record);
-            emit this->recordAdded(id, displayName, QString());
+            emit this->recordAdded(record.id, displayName, QString());
             return record;
         }
     }
@@ -78,20 +116,108 @@ void RecordsController::addRecordSet(const RecordSet& recordSet)
     emit this->recordSetsChanged();
 }
 
-const Record RecordsController::duplicateRecord(const QString& existingRecordId, const QString& newRecordId)
+const QString RecordsController::computeRecordsHash() const
 {
-    qInfo(QString("Duplicating record %1 to %2.").arg(existingRecordId, newRecordId).toUtf8().constData());
+    // Prepare MD5 hashing.
+    QCryptographicHash hash(QCryptographicHash::Md5);
+
+    // Hash all record files.
+    for (int i = 0; i < this->model->size(); ++i)
+    {
+        const RecordSet& recordSet = this->model->at(i);
+
+        // Hash all records.
+        for (int j = 0; j < recordSet.records.size(); ++j)
+        {
+            const Record& record = recordSet.records[j];
+            const RecordFieldValueMap fieldValues = this->getRecordFieldValues(record.id);
+
+            // Hash all fields.
+            for (RecordFieldValueMap::const_iterator itFields = fieldValues.begin();
+                 itFields != fieldValues.end();
+                 ++itFields)
+            {
+                QString fieldId = itFields.key();
+                QVariant fieldValue = itFields.value();
+
+                // Hash field key.
+                hash.addData(fieldId.toUtf8());
+
+                // Hash list field items.
+                QVariantList list = fieldValue.toList();
+                if (!list.isEmpty())
+                {
+                    for (int k = 0; k < list.count(); ++k)
+                    {
+                        hash.addData(list[k].toString().toUtf8());
+                    }
+                    continue;
+                }
+
+                // Hash map field items.
+                QVariantMap map = fieldValue.toMap();
+                if (!map.isEmpty())
+                {
+                    for (QVariantMap::iterator it = map.begin();
+                         it != map.end();
+                         ++it)
+                    {
+                        const QString k = it.key();
+                        const QVariant v = it.value();
+
+                        hash.addData(k.toUtf8());
+                        hash.addData(v.toString().toUtf8());
+                    }
+                    continue;
+                }
+
+                // Hash field value.
+                hash.addData(fieldValue.toString().toUtf8());
+            }
+        }
+    }
+
+    return hash.result().toHex();
+}
+
+const Record RecordsController::duplicateRecord(const QVariant& existingRecordId, const QVariant& newRecordId)
+{
+    qInfo(QString("Duplicating record %1 to %2.")
+          .arg(existingRecordId.toString(), newRecordId.toString())
+          .toUtf8().constData());
 
     // Get record to duplicate.
     const Record& existingRecord = this->getRecord(existingRecordId);
 
     // Create duplicate.
     Record newRecord = Record();
-    newRecord.id = newRecordId;
-    newRecord.displayName = newRecordId;
+    newRecord.editorIconFieldId = existingRecord.editorIconFieldId;
     newRecord.parentId = existingRecord.parentId;
     newRecord.fieldValues = existingRecord.fieldValues;
     newRecord.recordSetName = existingRecord.recordSetName;
+
+    // Assign id.
+    RecordIdType::RecordIdType recordIdType = this->projectController.getProjectRecordIdType();
+
+    switch (recordIdType)
+    {
+        case RecordIdType::String:
+            newRecord.id = newRecordId;
+            newRecord.displayName = newRecordId.toString();
+            break;
+        case RecordIdType::Integer:
+            newRecord.id = this->nextRecordIntegerId++;
+            newRecord.displayName = existingRecord.displayName + "*";
+            break;
+        case RecordIdType::Uuid:
+            newRecord.id = this->generateUuid();
+            newRecord.displayName = existingRecord.displayName + "*";
+            break;
+        case RecordIdType::Invalid:
+            const QString errorMessage = "Invalid project record id type.";
+            qCritical(errorMessage.toUtf8().constData());
+            throw std::out_of_range(errorMessage.toStdString());
+    }
 
     // Add new record.
     int recordSetIndex = 0;
@@ -111,15 +237,15 @@ const Record RecordsController::duplicateRecord(const QString& existingRecordId,
     return newRecord;
 }
 
-const RecordList RecordsController::getAncestors(const QString& id) const
+const RecordList RecordsController::getAncestors(const QVariant& id) const
 {
     RecordList ancestors;
 
     // Climb hierarchy.
     Record* record = this->getRecordById(id);
-    QString parentId = record->parentId;
+    QVariant parentId = record->parentId;
 
-    while (!parentId.isEmpty())
+    while (!parentId.isNull())
     {
         record = this->getRecordById(parentId);
         ancestors.push_back(*record);
@@ -129,7 +255,7 @@ const RecordList RecordsController::getAncestors(const QString& id) const
     return ancestors;
 }
 
-const RecordList RecordsController::getChildren(const QString& id) const
+const RecordList RecordsController::getChildren(const QVariant& id) const
 {
     RecordList children;
 
@@ -151,7 +277,7 @@ const RecordList RecordsController::getChildren(const QString& id) const
     return children;
 }
 
-const RecordList RecordsController::getDescendents(const QString& id) const
+const RecordList RecordsController::getDescendents(const QVariant& id) const
 {
     RecordList descendents;
 
@@ -181,7 +307,7 @@ const RecordList RecordsController::getDescendents(const QString& id) const
     return descendents;
 }
 
-const QVariant RecordsController::getInheritedFieldValue(const QString& id, const QString& fieldId) const
+const QVariant RecordsController::getInheritedFieldValue(const QVariant& id, const QString& fieldId) const
 {
     RecordList ancestors = this->getAncestors(id);
 
@@ -198,7 +324,7 @@ const QVariant RecordsController::getInheritedFieldValue(const QString& id, cons
     return QVariant();
 }
 
-const RecordFieldValueMap RecordsController::getInheritedFieldValues(const QString& id) const
+const RecordFieldValueMap RecordsController::getInheritedFieldValues(const QVariant& id) const
 {
     // Resolve parents.
     RecordList ancestors = this->getAncestors(id);
@@ -222,12 +348,17 @@ const RecordFieldValueMap RecordsController::getInheritedFieldValues(const QStri
     return fieldValues;
 }
 
+const QVariant RecordsController::getParentId(const QVariant& id) const
+{
+    return this->getRecord(id).parentId;
+}
+
 const RecordSetList& RecordsController::getRecordSets() const
 {
     return *this->model;
 }
 
-const Record& RecordsController::getRecord(const QString& id) const
+const Record& RecordsController::getRecord(const QVariant& id) const
 {
     return *this->getRecordById(id);
 }
@@ -249,10 +380,10 @@ const RecordList RecordsController::getRecords() const
     return records;
 }
 
-const QStringList RecordsController::getRecordIds() const
+const QVariantList RecordsController::getRecordIds() const
 {
     RecordList records = this->getRecords();
-    QStringList ids;
+    QVariantList ids;
 
     for (int i = 0; i < records.size(); ++i)
     {
@@ -261,6 +392,30 @@ const QStringList RecordsController::getRecordIds() const
     }
 
     return ids;
+}
+
+const QString RecordsController::getRecordEditorIconFieldId(const QVariant& id) const
+{
+    Record* record = this->getRecordById(id);
+
+    if (!record->editorIconFieldId.isEmpty())
+    {
+        return record->editorIconFieldId;
+    }
+
+    // Resolve parents.
+    RecordList ancestors = this->getAncestors(id);
+
+    for (int i = ancestors.count() - 1; i >= 0; --i)
+    {
+        const Record& ancestor = ancestors.at(i);
+        if (!ancestor.editorIconFieldId.isEmpty())
+        {
+            return ancestor.editorIconFieldId;
+        }
+    }
+
+    return QString();
 }
 
 const QStringList RecordsController::getRecordNames() const
@@ -290,7 +445,7 @@ const QStringList RecordsController::getRecordSetNames() const
     return names;
 }
 
-const RecordFieldValueMap RecordsController::getRecordFieldValues(const QString& id) const
+const RecordFieldValueMap RecordsController::getRecordFieldValues(const QVariant& id) const
 {
     Record* record = this->getRecordById(id);
 
@@ -308,13 +463,13 @@ const RecordFieldValueMap RecordsController::getRecordFieldValues(const QString&
     return fieldValues;
 }
 
-const QString RecordsController::getRootRecordId(const QString& id) const
+const QVariant RecordsController::getRootRecordId(const QVariant& id) const
 {
     const RecordList ancestors = this->getAncestors(id);
     return ancestors.empty() ? id : ancestors.last().id;
 }
 
-bool RecordsController::hasRecord(const QString& id) const
+bool RecordsController::hasRecord(const QVariant& id) const
 {
     for (int i = 0; i < this->model->size(); ++i)
     {
@@ -334,15 +489,40 @@ bool RecordsController::hasRecord(const QString& id) const
     return false;
 }
 
+bool RecordsController::haveTheSameParent(const QVariantList ids) const
+{
+    if (ids.count() <= 1)
+    {
+        return true;
+    }
+
+    QVariant recordId = ids[0];
+    QVariant parentId = this->getParentId(recordId);
+
+    for (int i = 1; i < ids.count(); ++i)
+    {
+        const QVariant recordId = ids[i];
+        const QVariant nextParentId = this->getParentId(recordId);
+
+        // Check parent.
+        if (parentId != nextParentId)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 int RecordsController::indexOf(const Record& record) const
 {
     return this->model->at(0).records.indexOf(record);
 }
 
-bool RecordsController::isAncestorOf(const QString& possibleAncestor, const QString& recordId) const
+bool RecordsController::isAncestorOf(const QVariant& possibleAncestor, const QVariant& recordId) const
 {
     // Check if both are valid records.
-    if (possibleAncestor.isEmpty() || recordId.isEmpty())
+    if (possibleAncestor.isNull() || recordId.isNull())
     {
         return false;
     }
@@ -360,9 +540,9 @@ bool RecordsController::isAncestorOf(const QString& possibleAncestor, const QStr
     return false;
 }
 
-void RecordsController::removeRecord(const QString& recordId)
+void RecordsController::removeRecord(const QVariant& recordId)
 {
-    qInfo(QString("Removing record %1.").arg(recordId).toUtf8().constData());
+    qInfo(QString("Removing record %1.").arg(recordId.toString()).toUtf8().constData());
 
     // Remove children.
     RecordList children = this->getChildren(recordId);
@@ -417,9 +597,9 @@ void RecordsController::removeRecordSet(const QString& name)
     }
 }
 
-void RecordsController::revertRecord(const QString& recordId)
+void RecordsController::revertRecord(const QVariant& recordId)
 {
-    qInfo(QString("Reverting record %1.").arg(recordId).toUtf8().constData());
+    qInfo(QString("Reverting record %1.").arg(recordId.toString()).toUtf8().constData());
 
     const RecordFieldValueMap& fields = this->getRecordFieldValues(recordId);
 
@@ -442,17 +622,19 @@ void RecordsController::revertRecord(const QString& recordId)
     emit this->progressChanged(tr("Reverting fields"), QString(), 1, 1);
 }
 
-void RecordsController::reparentRecord(const QString& recordId, const QString& newParentId)
+void RecordsController::reparentRecord(const QVariant& recordId, const QVariant& newParentId)
 {
-    qInfo(QString("Reparenting record %1 to %2.").arg(recordId, newParentId).toUtf8().constData());
+    qInfo(QString("Reparenting record %1 to %2.")
+          .arg(recordId.toString(), newParentId.toString())
+          .toUtf8().constData());
 
     Record& record = *this->getRecordById(recordId);
-    QString oldParentId = record.parentId;
+    QVariant oldParentId = record.parentId;
     record.parentId = newParentId;
     emit this->recordReparented(recordId, oldParentId, newParentId);
 }
 
-void RecordsController::setReadOnly(const QString& recordId, const bool readOnly)
+void RecordsController::setReadOnly(const QVariant& recordId, const bool readOnly)
 {
     Record& record = *this->getRecordById(recordId);
     record.readOnly = readOnly;
@@ -461,21 +643,51 @@ void RecordsController::setReadOnly(const QString& recordId, const bool readOnly
 void RecordsController::setRecordSets(RecordSetList& model)
 {
     this->model = &model;
+
+    this->verifyRecordIds();
 }
 
-void RecordsController::updateRecord(const QString oldId, const QString newId, const QString newDisplayName, const QStringList& fieldIds, const QString& recordSetName)
+void RecordsController::updateRecord(const QVariant oldId,
+                                     const QVariant newId,
+                                     const QString newDisplayName,
+                                     const QString newEditorIconFieldId,
+                                     const QStringList& fieldIds,
+                                     const QString& recordSetName)
 {
-    // Update references to record.
-    this->updateRecordReferences(oldId, newId);
+    Record& oldRecord = *this->getRecordById(oldId);
+    const QString oldDisplayName = oldRecord.displayName;
+    const QString oldEditorIconFieldId = oldRecord.editorIconFieldId;
+
+    if (oldId != newId)
+    {
+        // Changing the id requires cloning the record, because we
+        // to ensure that all references and parent relations are
+        // cleanly updated as well.
+        this->addRecord(newId, newDisplayName, newEditorIconFieldId, fieldIds, recordSetName);
+
+        Record& newRecord = *this->getRecordById(newId);
+        newRecord.fieldValues = oldRecord.fieldValues;
+        newRecord.readOnly = oldRecord.readOnly;
+
+        this->reparentRecord(newId, oldRecord.parentId);
+
+        // Update references to record.
+        this->updateRecordReferences(oldId, newId);
+
+        // Remove old record.
+        this->removeRecord(oldId);
+    }
 
     // Update record itself.
-    Record& record = *this->getRecordById(oldId);
-    const QString oldDisplayName = record.displayName;
-
-    bool needsSorting = oldDisplayName != newDisplayName;
-
-    record.id = newId;
+    Record& record = *this->getRecordById(newId);
     record.displayName = newDisplayName;
+    record.editorIconFieldId = newEditorIconFieldId;
+
+    // Move record, if necessary.
+    if (record.recordSetName != recordSetName)
+    {
+        this->moveRecordToSet(record.id, recordSetName);
+    }
 
     // Update record fields.
     const FieldDefinitionList fields = this->fieldDefinitionsController.getFieldDefinitions();
@@ -507,11 +719,8 @@ void RecordsController::updateRecord(const QString oldId, const QString newId, c
         }
     }
 
-    // Move record, if necessary.
-    if (record.recordSetName != recordSetName)
-    {
-        this->moveRecordToSet(record.id, recordSetName);
-    }
+    // Sort record model to ensure deterministic serialization.
+    bool needsSorting = oldDisplayName != newDisplayName;
 
     if (needsSorting)
     {
@@ -524,12 +733,14 @@ void RecordsController::updateRecord(const QString oldId, const QString newId, c
     }
 
     // Notify listeners.
-    emit this->recordUpdated(oldId, oldDisplayName, newId, newDisplayName);
+    emit this->recordUpdated(oldId, oldDisplayName, oldEditorIconFieldId, newId, newDisplayName, newEditorIconFieldId);
 }
 
-void RecordsController::updateRecordFieldValue(const QString& recordId, const QString& fieldId, const QVariant& fieldValue)
+void RecordsController::updateRecordFieldValue(const QVariant& recordId, const QString& fieldId, const QVariant& fieldValue)
 {
-    qInfo(QString("Updating record %1 field %2 to value %3.").arg(recordId, fieldId, fieldValue.toString()).toUtf8().constData());
+    qInfo(QString("Updating record %1 field %2 to value %3.")
+          .arg(recordId.toString(), fieldId, fieldValue.toString())
+          .toUtf8().constData());
 
     Record& record = *this->getRecordById(recordId);
 
@@ -556,7 +767,7 @@ void RecordsController::onFieldAdded(const FieldDefinition& fieldDefinition)
 
 void RecordsController::onFieldRemoved(const FieldDefinition& fieldDefinition)
 {
-    QList<QString> changedRecords;
+    QVariantList changedRecords;
 
     // Remove field from all records first, before notifying any listeners.
     // Notifying them earlier can cause inconsistent behaviour due to
@@ -589,7 +800,7 @@ void RecordsController::onFieldUpdated(const FieldDefinition& oldFieldDefinition
     this->moveFieldToComponent(newFieldDefinition.id, oldFieldDefinition.component, newFieldDefinition.component);
 }
 
-void RecordsController::addRecordField(const QString& recordId, const QString& fieldId)
+void RecordsController::addRecordField(const QVariant& recordId, const QString& fieldId)
 {
     Record& record = *this->getRecordById(recordId);
     const FieldDefinition& field =
@@ -600,7 +811,12 @@ void RecordsController::addRecordField(const QString& recordId, const QString& f
     emit recordFieldsChanged(recordId);
 }
 
-Record* RecordsController::getRecordById(const QString& id) const
+const QString RecordsController::generateUuid() const
+{
+    return QUuid::createUuid().toString().mid(1, 36);
+}
+
+Record* RecordsController::getRecordById(const QVariant& id) const
 {
     for (int i = 0; i < this->model->size(); ++i)
     {
@@ -617,7 +833,7 @@ Record* RecordsController::getRecordById(const QString& id) const
         }
     }
 
-    const QString errorMessage = "Record not found: " + id;
+    const QString errorMessage = "Record not found: " + id.toString();
     qCritical(errorMessage.toUtf8().constData());
     throw std::out_of_range(errorMessage.toStdString());
 }
@@ -710,9 +926,11 @@ void RecordsController::moveFieldToComponent(const QString& fieldId, const QStri
     }
 }
 
-void RecordsController::moveRecordToSet(const QString& recordId, const QString& recordSetName)
+void RecordsController::moveRecordToSet(const QVariant& recordId, const QString& recordSetName)
 {
-    qInfo(QString("Moving record %1 to set %2.").arg(recordId, recordSetName).toUtf8().constData());
+    qInfo(QString("Moving record %1 to set %2.")
+          .arg(recordId.toString(), recordSetName)
+          .toUtf8().constData());
 
     Record record = this->getRecord(recordId);
 
@@ -748,9 +966,11 @@ void RecordsController::moveRecordToSet(const QString& recordId, const QString& 
     }
 }
 
-void RecordsController::removeRecordField(const QString& recordId, const QString& fieldId)
+void RecordsController::removeRecordField(const QVariant& recordId, const QString& fieldId)
 {
-    qInfo(QString("Removing field %1 from record %2.").arg(fieldId, recordId).toUtf8().constData());
+    qInfo(QString("Removing field %1 from record %2.")
+          .arg(fieldId, recordId.toString())
+          .toUtf8().constData());
 
     Record& record = *this->getRecordById(recordId);
     record.fieldValues.remove(fieldId);
@@ -791,9 +1011,11 @@ void RecordsController::renameRecordField(const QString oldFieldId, const QStrin
     }
 }
 
-QVariant RecordsController::revertFieldValue(const QString& recordId, const QString& fieldId)
+QVariant RecordsController::revertFieldValue(const QVariant& recordId, const QString& fieldId)
 {
-    qInfo(QString("Reverting field %1 of record %2.").arg(fieldId, recordId).toUtf8().constData());
+    qInfo(QString("Reverting field %1 of record %2.")
+          .arg(fieldId, recordId.toString())
+          .toUtf8().constData());
 
     // Check if there's anything to revert to.
     QVariant valueToRevertTo = this->getInheritedFieldValue(recordId, fieldId);
@@ -814,7 +1036,7 @@ QVariant RecordsController::revertFieldValue(const QString& recordId, const QStr
     return valueToRevertTo;
 }
 
-void RecordsController::updateRecordReferences(const QString oldReference, const QString newReference)
+void RecordsController::updateRecordReferences(const QVariant oldReference, const QVariant newReference)
 {
     if (oldReference == newReference)
     {
@@ -829,7 +1051,7 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
         const Record& record = records.at(i);
 
         // Report progress.
-        emit this->progressChanged(tr("Updating references"), record.id, i, records.count());
+        emit this->progressChanged(tr("Updating references"), record.displayName, i, records.count());
 
         // Update references.
         const RecordFieldValueMap fieldValues = this->getRecordFieldValues(record.id);
@@ -841,7 +1063,7 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
             const QString fieldId = it.key();
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
 
-            if (this->typesController.isReferenceType(field.fieldType))
+            if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference))
             {
                 const QString reference = it.value().toString();
 
@@ -859,7 +1081,7 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
         const Record& record = records.at(i);
 
         // Report progress.
-        emit this->progressChanged(tr("Reparenting records"), record.id, i, records.count());
+        emit this->progressChanged(tr("Reparenting records"), record.displayName, i, records.count());
 
         if (record.parentId == oldReference)
         {
@@ -869,4 +1091,127 @@ void RecordsController::updateRecordReferences(const QString oldReference, const
 
     // Report finish.
     emit this->progressChanged(tr("Reparenting records"), QString(), 1, 1);
+}
+
+void RecordsController::verifyRecordIds()
+{
+    RecordIdType::RecordIdType recordIdType = this->projectController.getProjectRecordIdType();
+
+    switch (recordIdType)
+    {
+        case RecordIdType::String:
+            this->verifyRecordStringIds();
+            break;
+        case RecordIdType::Integer:
+            this->verifyRecordIntegerIds();
+            break;
+        case RecordIdType::Uuid:
+            this->verifyRecordUuids();
+            break;
+        case RecordIdType::Invalid:
+            const QString errorMessage = "Invalud project record id type.";
+            qCritical(errorMessage.toUtf8().constData());
+            throw std::out_of_range(errorMessage.toStdString());
+    }
+}
+
+void RecordsController::verifyRecordIntegerIds()
+{
+    QSet<qlonglong> recordIntegerIds;
+    QList<Record*> recordsWithDuplicateIntegerIds;
+
+    this->nextRecordIntegerId = 1;
+
+    for (RecordSet& recordSet : *this->model)
+    {
+        for (int i = 0; i < recordSet.records.count(); ++i)
+        {
+            Record& record = recordSet.records[i];
+            qlonglong recordIntegerId = record.id.toLongLong();
+
+            emit this->progressChanged(tr("Verifying Record Ids - %1").arg(recordSet.name), record.displayName, i, recordSet.records.count());
+
+            // Verify integer id.
+            if (recordIntegerIds.contains(recordIntegerId))
+            {
+                // Assign new id later, in order to avoid stealing ids from other records.
+                recordsWithDuplicateIntegerIds << &record;
+            }
+            else
+            {
+                recordIntegerIds.insert(recordIntegerId);
+            }
+
+            if (recordIntegerId >= this->nextRecordIntegerId)
+            {
+                this->nextRecordIntegerId = recordIntegerId + 1;
+            }
+        }
+    }
+
+    // Assign new integer ids where necessary.
+    for (Record* record : recordsWithDuplicateIntegerIds)
+    {
+        qlonglong oldRecordIntegerId = record->id.toLongLong();
+        qlonglong newRecordIntegerId = this->nextRecordIntegerId++;
+
+        record->id = newRecordIntegerId;
+
+        qWarning(QString("Record %1 had duplicate integer id, assigned new integer id %3.")
+                 .arg(QString::number(oldRecordIntegerId), QString::number(newRecordIntegerId))
+                 .toUtf8()
+                 .constData());
+    }
+
+    emit this->progressChanged(QString(), QString(), 1, 1);
+}
+
+void RecordsController::verifyRecordStringIds()
+{
+    // Ensure unique ids for all records.
+    QSet<QString> recordStringIds;
+
+    for (RecordSet& recordSet : *this->model)
+    {
+        for (int i = 0; i < recordSet.records.count(); ++i)
+        {
+            Record& record = recordSet.records[i];
+
+            emit this->progressChanged(tr("Verifying Record Ids - %1").arg(recordSet.name), record.displayName, i, recordSet.records.count());
+
+            // Verify string id.
+            if (recordStringIds.contains(record.id.toString()))
+            {
+                qCritical(QString("Duplicate record %1. This will lead to undefined behaviour.").arg(record.id.toString()).toUtf8().constData());
+            }
+            else
+            {
+                recordStringIds.insert(record.id.toString());
+            }
+        }
+    }
+
+    emit this->progressChanged(QString(), QString(), 1, 1);
+}
+
+void RecordsController::verifyRecordUuids()
+{
+    for (RecordSet& recordSet : *this->model)
+    {
+        for (int i = 0; i < recordSet.records.count(); ++i)
+        {
+            Record& record = recordSet.records[i];
+
+            emit this->progressChanged(tr("Verifying Record Ids - %1").arg(recordSet.name), record.displayName, i, recordSet.records.count());
+
+            // Verify UUID.
+            if (record.id.isNull())
+            {
+                record.id = this->generateUuid();
+                qWarning(QString("Record %1 had no UUID, assigned %2.").arg(record.displayName, record.id.toString()).toUtf8().constData());
+            }
+        }
+    }
+
+    emit this->progressChanged(QString(), QString(), 1, 1);
 }

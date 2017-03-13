@@ -92,6 +92,12 @@ void MapWindow::accept()
     }
 }
 
+void MapWindow::showEvent(QShowEvent* event)
+{
+    QDialog::showEvent(event);
+    this->ui->lineEditName->setFocus();
+}
+
 bool MapWindow::validate()
 {
     // Name must not be empty.

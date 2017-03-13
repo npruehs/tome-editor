@@ -12,16 +12,30 @@
 #include "../../Export/Controller/exportcontroller.h"
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
 #include "../../Import/Controller/importcontroller.h"
+#include "../../Projects/Controller/projectcontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
-#include "../../../Core/controller.h"
+#include "../../../Util/pathutils.h"
 
 using namespace Tome;
 
-ProjectOverviewWindow::ProjectOverviewWindow(Controller* controller, QWidget *parent) :
+ProjectOverviewWindow::ProjectOverviewWindow(ProjectController& projectController,
+                                             ComponentsController& componentsController,
+                                             ExportController& exportController,
+                                             FieldDefinitionsController& fieldDefinitionsController,
+                                             ImportController& importController,
+                                             RecordsController& recordsController,
+                                             TypesController& typesController,
+                                             QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ProjectOverviewWindow),
-    controller(controller)
+    componentsController(componentsController),
+    exportController(exportController),
+    fieldDefinitionsController(fieldDefinitionsController),
+    importController(importController),
+    projectController(projectController),
+    recordsController(recordsController),
+    typesController(typesController)
 {
     this->ui->setupUi(this);
 
@@ -210,18 +224,13 @@ void ProjectOverviewWindow::navigateToSelectedFile(QListWidgetItem* item)
 
     // Get file path.
     const QString& filePath = item->data(Qt::DisplayRole).toString();
-    const QFileInfo file(filePath);
-    const QUrl url = QUrl::fromLocalFile(file.absolutePath());
-
-    // Open in explorer or finder.
-    QDesktopServices::openUrl(url);
+    showFileInExplorerOrFinder(filePath);
 }
 
 void ProjectOverviewWindow::updateComponentData()
 {
     // Count component sets and components.
-    ComponentsController& componentsController = this->controller->getComponentsController();
-    const ComponentSetList& componentSets = componentsController.getComponentSets();
+    const ComponentSetList& componentSets = this->componentsController.getComponentSets();
     const int componentSetCount = componentSets.count();
     const int componentCount = componentsController.getComponents().count();
     const QString componentsText = tr("%1 component%2 (in %3 file%4)").arg(
@@ -237,10 +246,10 @@ void ProjectOverviewWindow::updateComponentData()
     for (int i = 0; i < componentSets.count(); ++i)
     {
         const ComponentSet& componentSet = componentSets[i];
-        const QString& componentSetPath = this->controller->buildFullFilePath(
+        const QString& componentSetPath = this->projectController.buildFullFilePath(
                     componentSet.name,
-                    this->controller->getProjectPath(),
-                    Controller::ComponentFileExtension);
+                    this->projectController.getProjectPath(),
+                    ProjectController::ComponentFileExtension);
 
         // Add list item.
         QListWidgetItem* item = new QListWidgetItem();
@@ -253,8 +262,7 @@ void ProjectOverviewWindow::updateComponentData()
 void ProjectOverviewWindow::updateCustomTypeData()
 {
     // Count custom type sets and custom types.
-    TypesController& typesController = this->controller->getTypesController();
-    const CustomTypeSetList& customTypeSets = typesController.getCustomTypeSets();
+    const CustomTypeSetList& customTypeSets = this->typesController.getCustomTypeSets();
     const int typeSetCount = customTypeSets.count();
     const int typeCount = typesController.getCustomTypes().count();
     const QString typesText = tr("%1 type%2 (in %3 file%4)").arg(
@@ -270,10 +278,10 @@ void ProjectOverviewWindow::updateCustomTypeData()
     for (int i = 0; i < customTypeSets.count(); ++i)
     {
         const CustomTypeSet& customTypeSet = customTypeSets[i];
-        const QString& customTypeSetPath = this->controller->buildFullFilePath(
+        const QString& customTypeSetPath = this->projectController.buildFullFilePath(
                     customTypeSet.name,
-                    this->controller->getProjectPath(),
-                    Controller::TypeFileExtension);
+                    this->projectController.getProjectPath(),
+                    ProjectController::TypeFileExtension);
 
         // Add list item.
         QListWidgetItem* item = new QListWidgetItem();
@@ -286,8 +294,7 @@ void ProjectOverviewWindow::updateCustomTypeData()
 void ProjectOverviewWindow::updateExportTemplateData()
 {
     // Count export templates.
-    ExportController& exportController = this->controller->getExportController();
-    const RecordExportTemplateList& exportTemplateList = exportController.getRecordExportTemplates();
+    const RecordExportTemplateList& exportTemplateList = this->exportController.getRecordExportTemplates();
     const int exportTemplateCount = exportTemplateList.count();
     const QString exportTemplatesText = tr("%1 export template%2").arg(
                 QString::number(exportTemplateCount),
@@ -302,10 +309,10 @@ void ProjectOverviewWindow::updateExportTemplateData()
          ++it)
     {
         const RecordExportTemplate& exportTemplate = *it;
-        const QString& exportTemplatePath = this->controller->buildFullFilePath(
+        const QString& exportTemplatePath = this->projectController.buildFullFilePath(
                     exportTemplate.path,
-                    this->controller->getProjectPath(),
-                    Controller::RecordExportTemplateFileExtension);
+                    this->projectController.getProjectPath(),
+                    ProjectController::RecordExportTemplateFileExtension);
 
         // Add list item.
         QListWidgetItem* item = new QListWidgetItem();
@@ -318,10 +325,9 @@ void ProjectOverviewWindow::updateExportTemplateData()
 void ProjectOverviewWindow::updateFieldDefinitionData()
 {
     // Count field definition sets and field definitions.
-    FieldDefinitionsController& fieldDefintionsController = this->controller->getFieldDefinitionsController();
-    const FieldDefinitionSetList& fieldDefinitionSets = fieldDefintionsController.getFieldDefinitionSets();
+    const FieldDefinitionSetList& fieldDefinitionSets = this->fieldDefinitionsController.getFieldDefinitionSets();
     const int fieldDefinitionSetCount = fieldDefinitionSets.count();
-    const int fieldDefintionCount = fieldDefintionsController.getFieldDefinitions().count();
+    const int fieldDefintionCount = this->fieldDefinitionsController.getFieldDefinitions().count();
     const QString fieldsText = tr("%1 field%2 (in %3 file%4)").arg(
                 QString::number(fieldDefintionCount),
                 fieldDefintionCount != 1 ? "s" : "",
@@ -335,10 +341,10 @@ void ProjectOverviewWindow::updateFieldDefinitionData()
     for (int i = 0; i < fieldDefinitionSets.count(); ++i)
     {
         const FieldDefinitionSet& fieldDefinitionSet = fieldDefinitionSets[i];
-        const QString& fieldDefinitionSetPath = this->controller->buildFullFilePath(
+        const QString& fieldDefinitionSetPath = this->projectController.buildFullFilePath(
                     fieldDefinitionSet.name,
-                    this->controller->getProjectPath(),
-                    Controller::FieldDefinitionFileExtension);
+                    this->projectController.getProjectPath(),
+                    ProjectController::FieldDefinitionFileExtension);
 
         // Add list item.
         QListWidgetItem* item = new QListWidgetItem();
@@ -351,8 +357,7 @@ void ProjectOverviewWindow::updateFieldDefinitionData()
 void ProjectOverviewWindow::updateImportTemplateData()
 {
     // Count import templates.
-    ImportController& importController = this->controller->getImportController();
-    const RecordTableImportTemplateList& importTemplateList = importController.getRecordTableImportTemplates();
+    const RecordTableImportTemplateList& importTemplateList = this->importController.getRecordTableImportTemplates();
     const int importTemplateCount = importTemplateList.count();
     const QString importTemplatesText = tr("%1 import template%2").arg(
                 QString::number(importTemplateCount),
@@ -367,10 +372,10 @@ void ProjectOverviewWindow::updateImportTemplateData()
          ++it)
     {
         const RecordTableImportTemplate& importTemplate = *it;
-        const QString& importTemplatePath = this->controller->buildFullFilePath(
+        const QString& importTemplatePath = this->projectController.buildFullFilePath(
                     importTemplate.path,
-                    this->controller->getProjectPath(),
-                    Controller::RecordImportTemplateFileExtension);
+                    this->projectController.getProjectPath(),
+                    ProjectController::RecordImportTemplateFileExtension);
 
         // Add list item.
         QListWidgetItem* item = new QListWidgetItem();
@@ -383,8 +388,7 @@ void ProjectOverviewWindow::updateImportTemplateData()
 void ProjectOverviewWindow::updateRecordData()
 {
     // Count records sets and records.
-    RecordsController& recordsController = this->controller->getRecordsController();
-    const RecordSetList& recordSets = recordsController.getRecordSets();
+    const RecordSetList& recordSets = this->recordsController.getRecordSets();
     const int recordSetCount = recordSets.count();
     const int recordCount = recordsController.getRecords().count();
     const QString recordsText = tr("%1 record%2 (in %3 file%4)").arg(
@@ -400,10 +404,10 @@ void ProjectOverviewWindow::updateRecordData()
     for (int i = 0; i < recordSets.count(); ++i)
     {
         const RecordSet& recordSet = recordSets[i];
-        const QString& recordSetPath = this->controller->buildFullFilePath(
+        const QString& recordSetPath = this->projectController.buildFullFilePath(
                     recordSet.name,
-                    this->controller->getProjectPath(),
-                    Controller::RecordFileExtension);
+                    this->projectController.getProjectPath(),
+                    ProjectController::RecordFileExtension);
 
         // Add list item.
         QListWidgetItem* item = new QListWidgetItem();
@@ -418,7 +422,7 @@ void ProjectOverviewWindow::onAddExistingComponentsFileClicked(bool checked)
     Q_UNUSED(checked)
 
     // Open file browser dialog.
-    const QString& projectPath = this->controller->getProjectPath();
+    const QString& projectPath = this->projectController.getProjectPath();
     const QString& componentSetFileName = QFileDialog::getOpenFileName(this,
                                                                   tr("Add Existing Components File"),
                                                                   projectPath,
@@ -437,10 +441,10 @@ void ProjectOverviewWindow::onAddExistingComponentsFileClicked(bool checked)
         // Load components.
         ComponentSet componentSet = ComponentSet();
         componentSet.name = relativeComponentFilePath;
-        this->controller->loadComponentSet(projectPath, componentSet);
+        this->projectController.loadComponentSet(projectPath, componentSet);
 
         // Update model.
-        this->controller->getComponentsController().addComponentSet(componentSet);
+        this->componentsController.addComponentSet(componentSet);
 
         // Update view.
         this->updateComponentData();
@@ -461,7 +465,7 @@ void ProjectOverviewWindow::onAddExistingCustomTypesFileClicked(bool checked)
     Q_UNUSED(checked)
 
     // Open file browser dialog.
-    const QString& projectPath = this->controller->getProjectPath();
+    const QString& projectPath = this->projectController.getProjectPath();
     const QString& customTypeSetFileName = QFileDialog::getOpenFileName(this,
                                                                   tr("Add Existing Types File"),
                                                                   projectPath,
@@ -480,10 +484,10 @@ void ProjectOverviewWindow::onAddExistingCustomTypesFileClicked(bool checked)
         // Load custom types.
         CustomTypeSet customTypeSet = CustomTypeSet();
         customTypeSet.name = relativeCustomTypeFilePath;
-        this->controller->loadCustomTypeSet(projectPath, customTypeSet);
+        this->projectController.loadCustomTypeSet(projectPath, customTypeSet);
 
         // Update model.
-        this->controller->getTypesController().addCustomTypeSet(customTypeSet);
+        this->typesController.addCustomTypeSet(customTypeSet);
 
         // Update view.
         this->updateCustomTypeData();
@@ -504,7 +508,7 @@ void ProjectOverviewWindow::onAddExistingExportTemplateFileClicked(bool checked)
     Q_UNUSED(checked)
 
     // Open file browser dialog.
-    const QString& projectPath = this->controller->getProjectPath();
+    const QString& projectPath = this->projectController.getProjectPath();
     const QString& exportTemplateFileName = QFileDialog::getOpenFileName(this,
                                                                   tr("Add Existing Export Template File"),
                                                                   projectPath,
@@ -523,10 +527,10 @@ void ProjectOverviewWindow::onAddExistingExportTemplateFileClicked(bool checked)
         // Load export template.
         RecordExportTemplate exportTemplate = RecordExportTemplate();
         exportTemplate.path = relativeExportTemplateFilePath;
-        this->controller->loadExportTemplate(projectPath, exportTemplate);
+        this->projectController.loadExportTemplate(projectPath, exportTemplate);
 
         // Update model.
-        this->controller->getExportController().addRecordExportTemplate(exportTemplate);
+        this->exportController.addRecordExportTemplate(exportTemplate);
 
         // Update view.
         this->updateExportTemplateData();
@@ -547,7 +551,7 @@ void ProjectOverviewWindow::onAddExistingFieldDefinitionsFileClicked(bool checke
     Q_UNUSED(checked)
 
     // Open file browser dialog.
-    const QString& projectPath = this->controller->getProjectPath();
+    const QString& projectPath = this->projectController.getProjectPath();
     const QString& fieldDefinitionSetFileName = QFileDialog::getOpenFileName(this,
                                                                   tr("Add Existing Field Definitions File"),
                                                                   projectPath,
@@ -566,10 +570,10 @@ void ProjectOverviewWindow::onAddExistingFieldDefinitionsFileClicked(bool checke
         // Load field definitions.
         FieldDefinitionSet fieldDefinitionSet = FieldDefinitionSet();
         fieldDefinitionSet.name = relativeFieldDefinitionFilePath;
-        this->controller->loadFieldDefinitionSet(projectPath, fieldDefinitionSet);
+        this->projectController.loadFieldDefinitionSet(projectPath, fieldDefinitionSet);
 
         // Update model.
-        this->controller->getFieldDefinitionsController().addFieldDefinitionSet(fieldDefinitionSet);
+        this->fieldDefinitionsController.addFieldDefinitionSet(fieldDefinitionSet);
 
         // Update view.
         this->updateFieldDefinitionData();
@@ -590,7 +594,7 @@ void ProjectOverviewWindow::onAddExistingImportTemplateFileClicked(bool checked)
     Q_UNUSED(checked)
 
     // Open file browser dialog.
-    const QString& projectPath = this->controller->getProjectPath();
+    const QString& projectPath = this->projectController.getProjectPath();
     const QString& importTemplateFileName = QFileDialog::getOpenFileName(this,
                                                                   tr("Add Existing Import Template File"),
                                                                   projectPath,
@@ -609,10 +613,10 @@ void ProjectOverviewWindow::onAddExistingImportTemplateFileClicked(bool checked)
         // Load import template.
         RecordTableImportTemplate importTemplate = RecordTableImportTemplate();
         importTemplate.path = relativeImportTemplateFilePath;
-        this->controller->loadImportTemplate(projectPath, importTemplate);
+        this->projectController.loadImportTemplate(projectPath, importTemplate);
 
         // Update model.
-        this->controller->getImportController().addRecordImportTemplate(importTemplate);
+        this->importController.addRecordImportTemplate(importTemplate);
 
         // Update view.
         this->updateImportTemplateData();
@@ -633,7 +637,7 @@ void ProjectOverviewWindow::onAddExistingRecordsFileClicked(bool checked)
     Q_UNUSED(checked)
 
     // Open file browser dialog.
-    const QString& projectPath = this->controller->getProjectPath();
+    const QString& projectPath = this->projectController.getProjectPath();
     const QString& recordSetFileName = QFileDialog::getOpenFileName(this,
                                                                   tr("Add Existing Records File"),
                                                                   projectPath,
@@ -652,10 +656,10 @@ void ProjectOverviewWindow::onAddExistingRecordsFileClicked(bool checked)
         // Load records.
         RecordSet recordSet = RecordSet();
         recordSet.name = relativeRecordFilePath;
-        this->controller->loadRecordSet(projectPath, recordSet);
+        this->projectController.loadRecordSet(projectPath, recordSet);
 
         // Update model.
-        this->controller->getRecordsController().addRecordSet(recordSet);
+        this->recordsController.addRecordSet(recordSet);
 
         // Update view.
         this->updateRecordData();
@@ -676,7 +680,7 @@ void ProjectOverviewWindow::onAddNewComponentsFileClicked(bool checked)
     Q_UNUSED(checked)
 
     // Open file browser dialog.
-    const QString& projectPath = this->controller->getProjectPath();
+    const QString& projectPath = this->projectController.getProjectPath();
     const QString& componentSetFileName = QFileDialog::getSaveFileName(this,
                                                                   tr("Add New Components File"),
                                                                   projectPath,
@@ -695,7 +699,7 @@ void ProjectOverviewWindow::onAddNewComponentsFileClicked(bool checked)
     componentSet.name = relativeComponentFilePath;
 
     // Update model.
-    this->controller->getComponentsController().addComponentSet(componentSet);
+    this->componentsController.addComponentSet(componentSet);
 
     // Update view.
     this->updateComponentData();
@@ -706,7 +710,7 @@ void ProjectOverviewWindow::onAddNewCustomTypesFileClicked(bool checked)
     Q_UNUSED(checked)
 
     // Open file browser dialog.
-    const QString& projectPath = this->controller->getProjectPath();
+    const QString& projectPath = this->projectController.getProjectPath();
     const QString& customTypeSetFileName = QFileDialog::getSaveFileName(this,
                                                                   tr("Add New Types File"),
                                                                   projectPath,
@@ -725,7 +729,7 @@ void ProjectOverviewWindow::onAddNewCustomTypesFileClicked(bool checked)
     customTypeSet.name = relativeCustomTypeFilePath;
 
     // Update model.
-    this->controller->getTypesController().addCustomTypeSet(customTypeSet);
+    this->typesController.addCustomTypeSet(customTypeSet);
 
     // Update view.
     this->updateCustomTypeData();
@@ -736,7 +740,7 @@ void ProjectOverviewWindow::onAddNewFieldDefinitionsFileClicked(bool checked)
     Q_UNUSED(checked)
 
     // Open file browser dialog.
-    const QString& projectPath = this->controller->getProjectPath();
+    const QString& projectPath = this->projectController.getProjectPath();
     const QString& fieldDefinitionSetFileName = QFileDialog::getSaveFileName(this,
                                                                   tr("Add New Field Definitions File"),
                                                                   projectPath,
@@ -755,7 +759,7 @@ void ProjectOverviewWindow::onAddNewFieldDefinitionsFileClicked(bool checked)
     fieldDefinitionSet.name = relativeFieldDefinitionFilePath;
 
     // Update model.
-    this->controller->getFieldDefinitionsController().addFieldDefinitionSet(fieldDefinitionSet);
+    this->fieldDefinitionsController.addFieldDefinitionSet(fieldDefinitionSet);
 
     // Update view.
     this->updateFieldDefinitionData();
@@ -766,7 +770,7 @@ void ProjectOverviewWindow::onAddNewRecordsFileClicked(bool checked)
     Q_UNUSED(checked)
 
     // Open file browser dialog.
-    const QString& projectPath = this->controller->getProjectPath();
+    const QString& projectPath = this->projectController.getProjectPath();
     const QString& recordSetFileName = QFileDialog::getSaveFileName(this,
                                                                   tr("Add New Records File"),
                                                                   projectPath,
@@ -785,7 +789,7 @@ void ProjectOverviewWindow::onAddNewRecordsFileClicked(bool checked)
     recordSet.name = relativeRecordFilePath;
 
     // Update model.
-    this->controller->getRecordsController().addRecordSet(recordSet);
+    this->recordsController.addRecordSet(recordSet);
 
     // Update view.
     this->updateRecordData();
@@ -853,7 +857,7 @@ void ProjectOverviewWindow::onRemoveComponentsFileClicked(bool checked)
 
     // Update model.
     const QString& componentSetName = selectedComponentSetItem->data(Qt::UserRole).toString();
-    this->controller->getComponentsController().removeComponentSet(componentSetName);
+    this->componentsController.removeComponentSet(componentSetName);
 
     // Update view.
     this->updateComponentData();
@@ -873,7 +877,7 @@ void ProjectOverviewWindow::onRemoveCustomTypesFileClicked(bool checked)
 
     // Update model.
     const QString& customTypeSetName = selectedCustomTypeSetItem->data(Qt::UserRole).toString();
-    this->controller->getTypesController().removeCustomTypeSet(customTypeSetName);
+    this->typesController.removeCustomTypeSet(customTypeSetName);
 
     // Update view.
     this->updateCustomTypeData();
@@ -893,7 +897,7 @@ void ProjectOverviewWindow::onRemoveExportTemplateFileClicked(bool checked)
 
     // Update model.
     const QString& exportTemplateName = selectedExportTemplateItem->data(Qt::UserRole).toString();
-    this->controller->getExportController().removeExportTemplate(exportTemplateName);
+    this->exportController.removeExportTemplate(exportTemplateName);
 
     // Update view.
     this->updateExportTemplateData();
@@ -913,7 +917,7 @@ void ProjectOverviewWindow::onRemoveFieldDefinitionsFileClicked(bool checked)
 
     // Update model.
     const QString& fieldDefinitionSetName = selectedFieldDefinitionSetItem->data(Qt::UserRole).toString();
-    this->controller->getFieldDefinitionsController().removeFieldDefinitionSet(fieldDefinitionSetName);
+    this->fieldDefinitionsController.removeFieldDefinitionSet(fieldDefinitionSetName);
 
     // Update view.
     this->updateFieldDefinitionData();
@@ -933,7 +937,7 @@ void ProjectOverviewWindow::onRemoveImportTemplateFileClicked(bool checked)
 
     // Update model.
     const QString& importTemplateName = selectedImportTemplateItem->data(Qt::UserRole).toString();
-    this->controller->getImportController().removeImportTemplate(importTemplateName);
+    this->importController.removeImportTemplate(importTemplateName);
 
     // Update view.
     this->updateImportTemplateData();
@@ -953,7 +957,7 @@ void ProjectOverviewWindow::onRemoveRecordsFileClicked(bool checked)
 
     // Update model.
     const QString& recordSetName = selectedRecordSetItem->data(Qt::UserRole).toString();
-    this->controller->getRecordsController().removeRecordSet(recordSetName);
+    this->recordsController.removeRecordSet(recordSetName);
 
     // Update view.
     this->updateRecordData();

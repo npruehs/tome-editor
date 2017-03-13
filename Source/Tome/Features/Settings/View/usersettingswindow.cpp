@@ -30,6 +30,11 @@ bool UserSettingsWindow::getRunIntegrityChecksOnSave()
     return this->ui->checkBoxRunIntegrityChecksOnSave->isChecked();
 }
 
+bool UserSettingsWindow::getShowComponentNamesInRecordTable()
+{
+    return this->ui->checkBoxShowComponentNamesInRecordTable->isChecked();
+}
+
 bool UserSettingsWindow::getShowDescriptionColumnInsteadOfFieldTooltips()
 {
     return this->ui->checkBoxShowDescriptionColumnInsteadOfFieldTooltips->isChecked();
@@ -50,6 +55,9 @@ void UserSettingsWindow::showEvent(QShowEvent* event)
 
     bool runIntegrityChecksOnSave = this->settingsController.getRunIntegrityChecksOnSave();
     this->ui->checkBoxRunIntegrityChecksOnSave->setChecked(runIntegrityChecksOnSave);
+
+    bool showComponentNamesInRecordTable = this->settingsController.getShowComponentNamesInRecordTable();
+    this->ui->checkBoxShowComponentNamesInRecordTable->setChecked(showComponentNamesInRecordTable);
 
     bool showDescriptionColumnInsteadOfFieldTooltips = this->settingsController.getShowDescriptionColumnInsteadOfFieldTooltips();
     this->ui->checkBoxShowDescriptionColumnInsteadOfFieldTooltips->setChecked(showDescriptionColumnInsteadOfFieldTooltips);

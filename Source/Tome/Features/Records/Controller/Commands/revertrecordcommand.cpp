@@ -5,15 +5,15 @@
 using namespace Tome;
 
 
-RevertRecordCommand::RevertRecordCommand(RecordsController& recordsController, const QString& recordId)
+RevertRecordCommand::RevertRecordCommand(RecordsController& recordsController, const QVariant& recordId)
     : recordsController(recordsController), recordId(recordId)
 {
-    this->setText(tr("Revert Record - %1").arg(recordId));
+    this->setText(tr("Revert Record - %1").arg(recordId.toString()));
 }
 
 void RevertRecordCommand::undo()
 {
-    qInfo(QString("Undo revert record %1.").arg(this->recordId).toUtf8().constData());
+    qInfo(QString("Undo revert record %1.").arg(this->recordId.toString()).toUtf8().constData());
 
     // Restore record.
     for (RecordFieldValueMap::iterator it = this->oldRecordFieldValues.begin();

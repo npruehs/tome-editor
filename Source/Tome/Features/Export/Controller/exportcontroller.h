@@ -55,6 +55,7 @@ namespace Tome
             static const QString PlaceholderFieldKey;
             static const QString PlaceholderFieldType;
             static const QString PlaceholderFieldValue;
+            static const QString PlaceholderHash;
             static const QString PlaceholderItemType;
             static const QString PlaceholderKeyType;
             static const QString PlaceholderListItem;

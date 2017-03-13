@@ -13,6 +13,7 @@ class ListItemWindow;
 namespace Tome
 {
     class FacetsController;
+    class ProjectController;
     class RecordsController;
     class TypesController;
 
@@ -24,7 +25,11 @@ namespace Tome
             Q_OBJECT
 
         public:
-            explicit ListWidget(FacetsController& facetsController, RecordsController& recordsController, TypesController& typesController, QWidget *parent = 0);
+            explicit ListWidget(FacetsController& facetsController,
+                                ProjectController& projectController,
+                                RecordsController& recordsController,
+                                TypesController& typesController,
+                                QWidget *parent = 0);
             ~ListWidget();
 
             QString getFieldType() const;
@@ -51,6 +56,7 @@ namespace Tome
             QListWidget* listWidget;
 
             FacetsController& facetsController;
+            ProjectController& projectController;
             RecordsController& recordsController;
             TypesController& typesController;
 

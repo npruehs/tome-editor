@@ -24,6 +24,7 @@ class UserSettingsWindow : public QDialog
 
         bool getRunIntegrityChecksOnLoad();
         bool getRunIntegrityChecksOnSave();
+        bool getShowComponentNamesInRecordTable();
         bool getShowDescriptionColumnInsteadOfFieldTooltips();
         bool getExpandRecordTreeOnRefresh();
 

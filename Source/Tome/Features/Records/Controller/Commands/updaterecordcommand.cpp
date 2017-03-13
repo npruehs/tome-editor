@@ -6,29 +6,32 @@ using namespace Tome;
 
 
 UpdateRecordCommand::UpdateRecordCommand(RecordsController& recordsController,
-                                         const QString& oldId,
-                                         const QString& newId,
+                                         const QVariant& oldId,
+                                         const QVariant& newId,
                                          const QString& newDisplayName,
+                                         const QString& newEditorIconFieldId,
                                          const QStringList& newFieldIds,
                                          const QString& newRecordSetName)
     : recordsController(recordsController),
       oldId(oldId),
       newId(newId),
       newDisplayName(newDisplayName),
+      newEditorIconFieldId(newEditorIconFieldId),
       newFieldIds(newFieldIds),
       newRecordSetName(newRecordSetName)
 {
-    this->setText(tr("Update Record - %1").arg(oldId));
+    this->setText(tr("Update Record - %1").arg(oldDisplayName));
 }
 
 void UpdateRecordCommand::undo()
 {
-    qInfo(QString("Undo update record %1.").arg(this->oldId).toUtf8().constData());
+    qInfo(QString("Undo update record %1.").arg(this->oldDisplayName).toUtf8().constData());
 
     // Restore record.
     this->recordsController.updateRecord(this->newId,
                                          this->oldId,
                                          this->oldDisplayName,
+                                         this->oldEditorIconFieldId,
                                          this->oldFieldIds,
                                          this->oldRecordSetName);
 }
@@ -39,6 +42,7 @@ void UpdateRecordCommand::redo()
     const Record& record = this->recordsController.getRecord(this->oldId);
 
     this->oldDisplayName = record.displayName;
+    this->oldEditorIconFieldId = record.editorIconFieldId;
     this->oldRecordSetName = record.recordSetName;
     this->oldFieldIds = QStringList();
 
@@ -53,6 +57,7 @@ void UpdateRecordCommand::redo()
     this->recordsController.updateRecord(this->oldId,
                                          this->newId,
                                          this->newDisplayName,
+                                         this->newEditorIconFieldId,
                                          this->newFieldIds,
                                          this->newRecordSetName);
 }

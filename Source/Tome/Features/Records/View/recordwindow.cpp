@@ -4,6 +4,9 @@
 #include <QCheckBox>
 #include <QMessageBox>
 
+#include "../../../Util/stringutils.h"
+
+
 using namespace Tome;
 
 const QString RecordWindow::PropertyFieldComponent = "FieldComponent";
@@ -38,7 +41,6 @@ void RecordWindow::showEvent(QShowEvent* event)
 {
     QDialog::showEvent(event);
     this->ui->lineEditDisplayName->setFocus();
-    this->recordIdLocked = false;
 }
 
 QString RecordWindow::getRecordDisplayName() const
@@ -46,9 +48,19 @@ QString RecordWindow::getRecordDisplayName() const
     return this->ui->lineEditDisplayName->text();
 }
 
-QString RecordWindow::getRecordId() const
+QString RecordWindow::getRecordEditorIconFieldId() const
 {
-    return this->ui->lineEditId->text();
+    return this->ui->comboBoxEditorIconField->currentData().toString();
+}
+
+QVariant RecordWindow::getRecordId() const
+{
+    if (this->recordIdType == RecordIdType::String)
+    {
+        return this->ui->lineEditId->text();
+    }
+
+    return this->recordId;
 }
 
 QMap<QString, RecordFieldState::RecordFieldState> RecordWindow::getRecordFields() const
@@ -96,9 +108,11 @@ void RecordWindow::clearRecordFields()
         delete item->widget();
         delete item;
     }
+
+    this->ui->comboBoxEditorIconField->clear();
 }
 
-void RecordWindow::setDisallowedRecordIds(const QStringList disallowedRecordIds)
+void RecordWindow::setDisallowedRecordIds(const QVariantList disallowedRecordIds)
 {
     this->disallowedRecordIds = disallowedRecordIds;
 }
@@ -108,9 +122,62 @@ void RecordWindow::setRecordDisplayName(const QString& displayName)
     this->ui->lineEditDisplayName->setText(displayName);
 }
 
-void RecordWindow::setRecordId(const QString& id)
+void RecordWindow::setRecordId(const QVariant& id)
 {
-    this->ui->lineEditId->setText(id);
+    this->recordId = id;
+
+    if (this->recordIdType == RecordIdType::String)
+    {
+        QString recordIdString = id.isNull() ? QString() : id.toString();
+        this->ui->lineEditId->setText(recordIdString);
+    }
+    else
+    {
+        QString recordIdString = id.isNull() ? tr("Unassigned") : id.toString();
+        this->ui->labelId->setText(recordIdString);
+    }
+}
+
+void RecordWindow::setRecordIdLocked(const bool recordIdLocked)
+{
+    this->recordIdLocked = recordIdLocked;
+}
+
+void RecordWindow::setRecordIdType(const RecordIdType::RecordIdType recordIdType)
+{
+    this->recordIdType = recordIdType;
+
+    switch (recordIdType)
+    {
+        case RecordIdType::Integer:
+        case RecordIdType::Uuid:
+        case RecordIdType::Invalid:
+            this->ui->labelIdLineEdit->hide();
+            this->ui->lineEditId->hide();
+
+            this->ui->labelIdLabel->show();
+            this->ui->labelId->show();
+            break;
+
+        case RecordIdType::String:
+            this->ui->labelIdLineEdit->show();
+            this->ui->lineEditId->show();
+
+            this->ui->labelIdLabel->hide();
+            this->ui->labelId->hide();
+    }
+}
+
+void RecordWindow::setRecordEditorIconFieldId(const QString& editorIconFieldId)
+{
+    for (int i = 0; i < this->ui->comboBoxEditorIconField->count(); ++i)
+    {
+        if (this->ui->comboBoxEditorIconField->itemData(i).toString() == editorIconFieldId)
+        {
+            this->ui->comboBoxEditorIconField->setCurrentIndex(i);
+            return;
+        }
+    }
 }
 
 void RecordWindow::setRecordField(const QString& fieldId, const QString& fieldComponent, const RecordFieldState::RecordFieldState state)
@@ -152,10 +219,13 @@ void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions)
     this->clearRecordFields();
 
     // Add all passed fields.
+    this->ui->comboBoxEditorIconField->addItem(QString(), QString());
+
     for (int i = 0; i < fieldDefinitions.size(); ++i)
     {
         const FieldDefinition& fieldDefinition = fieldDefinitions.at(i);
         this->setRecordField(fieldDefinition.id, fieldDefinition.component, RecordFieldState::Disabled);
+        this->ui->comboBoxEditorIconField->addItem(fieldDefinition.displayName, fieldDefinition.id);
     }
 }
 
@@ -167,8 +237,9 @@ void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, 
     // Add all components.
     setRecordComponents( componentDefinitions );
 
-
     // Add all passed fields.
+    this->ui->comboBoxEditorIconField->addItem(QString(), QString());
+
     for (int i = 0; i < fieldDefinitions.size(); ++i)
     {
         const FieldDefinition& fieldDefinition = fieldDefinitions.at(i);
@@ -187,6 +258,7 @@ void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, 
 
         // Add to view.
         this->setRecordField(fieldDefinition.id, fieldDefinition.component, fieldState);
+        this->ui->comboBoxEditorIconField->addItem(fieldDefinition.displayName, fieldDefinition.id);
 
         // Modify state of component checkboxes based on fieldState
         for (int i = 0; i < this->ui->scrollAreaComponentsContents->layout()->count(); ++i)
@@ -213,9 +285,9 @@ void RecordWindow::setRecordFields(const FieldDefinitionList& fieldDefinitions, 
 void RecordWindow::on_lineEditDisplayName_textEdited(const QString& displayName)
 {
     // If the user manually changed the record id we must not change it when the display name changes.
-    if ( !recordIdLocked )
+    if (this->recordIdType == RecordIdType::String && !recordIdLocked)
     {
-        this->setRecordId(displayName);
+        this->setRecordId(stripWhitespaces(displayName));
     }
 }
 
@@ -264,7 +336,7 @@ void RecordWindow::onCheckBoxStateChanged(int state)
 bool RecordWindow::validate()
 {
     // Id must not be empty.
-    if (this->getRecordId().size() == 0)
+    if (this->recordIdType == RecordIdType::String && this->getRecordId().isNull())
     {
         QMessageBox::information(
                     this,

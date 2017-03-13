@@ -47,6 +47,8 @@
     <addaction name="actionOpen_Project"/>
     <addaction name="actionSave_Project"/>
     <addaction name="separator"/>
+    <addaction name="actionReload_Project"/>
+    <addaction name="separator"/>
     <addaction name="menuRecent_Projects"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -77,6 +79,7 @@
      <string>Records</string>
     </property>
     <addaction name="actionNew_Record"/>
+    <addaction name="actionAdd_Child"/>
     <addaction name="actionEdit_Record"/>
     <addaction name="actionDuplicate_Record"/>
     <addaction name="actionRevert_Record"/>
@@ -404,6 +407,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="actionAdd_Child">
+   <property name="text">
+    <string>Add Child...</string>
+   </property>
+  </action>
+  <action name="actionReload_Project">
+   <property name="text">
+    <string>Reload Project</string>
    </property>
   </action>
  </widget>

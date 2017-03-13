@@ -14,6 +14,11 @@ FieldTypeDoesNotExistTask::FieldTypeDoesNotExistTask()
 {
 }
 
+const QString FieldTypeDoesNotExistTask::getDisplayName() const
+{
+    return MessageCode + tr(" - Field Type Does Not Exist");
+}
+
 const MessageList FieldTypeDoesNotExistTask::execute(const TaskContext& context) const
 {
     MessageList messages;
@@ -29,7 +34,7 @@ const MessageList FieldTypeDoesNotExistTask::execute(const TaskContext& context)
         if (!context.typesController.isBuiltInType(field.fieldType) && !context.typesController.isCustomType(field.fieldType))
         {
             Message message;
-            message.content = tr("Field type %1 does not exist.").arg(field.fieldType);
+            message.content = tr("The type %1 of the field %2 does not exist.").arg(field.fieldType, field.id);
             message.messageCode = MessageCode;
             message.severity = Severity::Error;
             message.targetSiteId = field.id;

@@ -20,10 +20,10 @@ const int FieldDefinitionWindow::DefaultFormRows = 7;
 const int FieldDefinitionWindow::ValueFormRow = 3;
 
 
-FieldDefinitionWindow::FieldDefinitionWindow(
-        FieldDefinitionsController& fieldDefinitionsController,
+FieldDefinitionWindow::FieldDefinitionWindow(FieldDefinitionsController& fieldDefinitionsController,
         ComponentsController& componentsController,
         FacetsController& facetsController,
+        ProjectController& projectController,
         RecordsController& recordsController,
         TypesController& typesController,
         QWidget *parent) :
@@ -32,13 +32,14 @@ FieldDefinitionWindow::FieldDefinitionWindow(
     fieldDefinitionsController(fieldDefinitionsController),
     componentsController(componentsController),
     facetsController(facetsController),
+    projectController(projectController),
     recordsController(recordsController),
     typesController(typesController)
 {
     ui->setupUi(this);
 
     // Add widget for specifying the default field value.
-    this->fieldValueWidget = new FieldValueWidget(this->facetsController, this->recordsController, this->typesController, this);
+    this->fieldValueWidget = new FieldValueWidget(this->facetsController, this->projectController, this->recordsController, this->typesController, this);
     QFormLayout* layout = static_cast<QFormLayout*>(this->layout());
     layout->insertRow(ValueFormRow, tr("Default Value:"), this->fieldValueWidget);
 }

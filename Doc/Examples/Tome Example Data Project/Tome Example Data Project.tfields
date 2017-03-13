@@ -26,6 +26,6 @@
     <Field Id="ResourceCosts" DisplayName="Resource Costs" Description="Resources to pay in order to create this entity." Type="ResourceCostMap" Component="CostsComponent" DefaultValue=""/>
     <Field Id="RotationSpeed" DisplayName="Rotation Speed" Description="Rotation speed of this entity, in degrees / second." Type="NonNegativeReal" Component="PhysicsComponent" DefaultValue="360.0000"/>
     <Field Id="SightRadius" DisplayName="Sight Radius" Description="Range of sight of this entity, in m." Type="NonNegativeReal" Component="SightComponent" DefaultValue="25.0000"/>
-    <Field Id="Sprite" DisplayName="Sprite" Description="Name of the sprite used to visualize this entity." Type="String" Component="VisualizationComponent" DefaultValue=""/>
+    <Field Id="Sprite" DisplayName="Sprite" Description="Name of the sprite used to visualize this entity." Type="Sprite" Component="VisualizationComponent" DefaultValue=""/>
     <Field Id="SpriteColor" DisplayName="Sprite Color" Description="Color to render the sprite of this entity with." Type="Color" Component="VisualizationComponent" DefaultValue="#ffffff"/>
 </Fields>

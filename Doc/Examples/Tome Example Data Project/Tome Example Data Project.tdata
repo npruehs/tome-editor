@@ -127,7 +127,7 @@
         <Sprite Value="Sprites/Peasant"/>
         <SpriteColor Value="#FFFFFFFF"/>
     </Record>
-    <Record Id="Projectile" DisplayName="Projectile">
+    <Record Id="Projectile" DisplayName="Projectile" ReadOnly="true" EditorIconFieldId="Sprite">
         <Acceleration Value="4.500"/>
         <Mass Value="1.000"/>
         <MovementSpeed Value="12.750"/>
@@ -135,7 +135,7 @@
         <Sprite Value=""/>
         <SpriteColor Value="#ffffff"/>
     </Record>
-    <Record Id="Unit" DisplayName="Unit">
+    <Record Id="Unit" DisplayName="Unit" EditorIconFieldId="Sprite">
         <Acceleration Value="4.500"/>
         <AllowedTargets>
             <Item Value="Ground"/>
@@ -146,7 +146,7 @@
         <Cooldown Value="1.200"/>
         <DamageType Value="Normal"/>
         <Health Value="200"/>
-        <HealthRegeneration Value="0"/>
+        <HealthRegeneration Value="1"/>
         <Invulnerable Value="False"/>
         <MP5 Value="3"/>
         <Mana Value="100"/>

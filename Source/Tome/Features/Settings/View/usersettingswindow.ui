@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>133</height>
+    <height>156</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,9 +15,16 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QCheckBox" name="checkBoxShowComponentNamesInRecordTable">
+     <property name="text">
+      <string>Show component names in record table</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="checkBoxShowDescriptionColumnInsteadOfFieldTooltips">
      <property name="text">
-      <string>Show Description column instead of field tooltips in record table</string>
+      <string>Show description column instead of field tooltips in record table</string>
      </property>
     </widget>
    </item>

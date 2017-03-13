@@ -81,6 +81,12 @@ void ListWindow::accept()
     }
 }
 
+void ListWindow::showEvent(QShowEvent* event)
+{
+    QDialog::showEvent(event);
+    this->ui->lineEdit->setFocus();
+}
+
 bool ListWindow::validate()
 {
     // Name must not be empty.

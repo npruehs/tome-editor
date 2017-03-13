@@ -9,8 +9,10 @@ const QString SettingsController::SettingPath = "path";
 const QString SettingsController::SettingRecentProjects = "recentProjects";
 const QString SettingsController::SettingRunIntegrityChecksOnLoad = "runIntegrityChecksOnLoad";
 const QString SettingsController::SettingRunIntegrityChecksOnSave = "runIntegrityChecksOnSave";
+const QString SettingsController::SettingShowComponentNamesInRecordTable = "showComponentNamesInRecordTable";
 const QString SettingsController::SettingShowDescriptionColumnInsteadOfFieldTooltips = "showDetailsColumnInsteadOfFieldTooltips";
 const QString SettingsController::SettingExpandRecordTreeOnRefresh = "expandRecordTreeOnRefresh";
+const QString SettingsController::SettingLastProjectPath = "lastProjectPath";
 
 
 SettingsController::SettingsController()
@@ -65,6 +67,11 @@ bool SettingsController::getRunIntegrityChecksOnSave() const
     return this->settings->value(SettingRunIntegrityChecksOnSave).toBool();
 }
 
+bool SettingsController::getShowComponentNamesInRecordTable() const
+{
+    return this->settings->value(SettingShowComponentNamesInRecordTable).toBool();
+}
+
 bool SettingsController::getShowDescriptionColumnInsteadOfFieldTooltips() const
 {
     return this->settings->value(SettingShowDescriptionColumnInsteadOfFieldTooltips).toBool();
@@ -73,6 +80,11 @@ bool SettingsController::getShowDescriptionColumnInsteadOfFieldTooltips() const
 bool SettingsController::getExpandRecordTreeOnRefresh() const
 {
     return this->settings->value(SettingExpandRecordTreeOnRefresh).toBool();
+}
+
+const QString SettingsController::getLastProjectPath() const
+{
+    return this->settings->value(SettingLastProjectPath).toString();
 }
 
 void SettingsController::removeRecentProject(const QString& path)
@@ -111,6 +123,14 @@ void SettingsController::setRunIntegrityChecksOnSave(bool runIntegrityChecksOnSa
     this->settings->setValue(SettingRunIntegrityChecksOnSave, runIntegrityChecksOnSave);
 }
 
+void SettingsController::setShowComponentNamesInRecordTable(bool showComponentNamesInRecordTable)
+{
+    qInfo(QString("Setting show component names in record table to %1.")
+          .arg(showComponentNamesInRecordTable ? "true" : "false")
+          .toUtf8().constData());
+    this->settings->setValue(SettingShowComponentNamesInRecordTable, showComponentNamesInRecordTable);
+}
+
 void SettingsController::setShowDescriptionColumnInsteadOfFieldTooltips(bool showDescriptionColumnInsteadOfFieldTooltips)
 {
     qInfo(QString("Setting show description column in stead of field tooltips to %1.")
@@ -127,3 +147,11 @@ void SettingsController::setExpandRecordTreeOnRefresh(bool expandRecordTreeOnRef
     this->settings->setValue(SettingExpandRecordTreeOnRefresh, expandRecordTreeOnRefresh);
 }
 
+void SettingsController::setLastProjectPath( const QString &path )
+
+{
+    qInfo(QString("Setting last project path to %1.")
+          .arg(path)
+          .toUtf8().constData());
+    this->settings->setValue(SettingLastProjectPath, path);
+}
