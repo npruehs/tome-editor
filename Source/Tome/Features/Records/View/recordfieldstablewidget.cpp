@@ -131,7 +131,42 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
     QString keyString = this->getFieldKeyString(field);
 
     // Compose value string.
-    QString valueString = this->typesController.valueToString(value, field.fieldType);
+    QString valueString;
+
+    if (this->typesController.isCustomType(field.fieldType))
+    {
+        const CustomType& customType = this->typesController.getCustomType(field.fieldType);
+
+        if (customType.isList())
+        {
+            if (this->typesController.isTypeOrDerivedFromType(customType.getItemType(), BuiltInType::Reference))
+            {
+                // Replace by list of record display names.
+                QVariantList recordIds = value.toList();
+                QVariantList recordDisplayNames;
+
+                for (const QVariant& recordId : recordIds)
+                {
+                    if (this->recordsController.hasRecord(recordId))
+                    {
+                        const Record& record = this->recordsController.getRecord(recordId);
+                        recordDisplayNames << record.displayName;
+                    }
+                    else
+                    {
+                        recordDisplayNames << recordId.toString();
+                    }
+                }
+
+                valueString = toString(recordDisplayNames);
+            }
+        }
+    }
+
+    if (valueString.isEmpty())
+    {
+        valueString = this->typesController.valueToString(value, field.fieldType);
+    }
 
     // Show field name.
     this->item(i, 0)->setData(Qt::DisplayRole, keyString);
