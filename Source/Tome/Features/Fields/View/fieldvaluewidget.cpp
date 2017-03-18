@@ -276,7 +276,7 @@ QVariant FieldValueWidget::getFieldValueForType(const QString& typeName) const
 
     if (typeName == BuiltInType::Reference)
     {
-        return this->comboBox->currentText();
+        return this->comboBox->currentData();
     }
 
     if (typeName == BuiltInType::Vector2I)
@@ -375,26 +375,25 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
     if (typeName == BuiltInType::Reference)
     {
-        QVariantList recordIds = this->recordsController.getRecordIds();
+        this->comboBox->clear();
+
+        // Allow clearing the field.
+        this->comboBox->addItem(QString(), QVariant());
 
         // Only show allowed record references.
-        QStringList references;
+        const RecordList records = this->recordsController.getRecords();
 
-        for (const QVariant recordId : recordIds)
+        for (const Record& record : records)
         {
             const QString& validationError =
-                    this->facetsController.validateFieldValue(this->getFieldType(), recordId);
+                    this->facetsController.validateFieldValue(this->getFieldType(), record.id);
 
             if (validationError.isEmpty())
             {
-                references.push_back(recordId.toString());
+                this->comboBox->addItem(record.displayName, record.id);
             }
         }
 
-        // Allow clearing the field.
-        references.push_front(QString());
-
-        this->setEnumeration(references);
         this->setCurrentWidget(this->comboBox);
         return;
     }
@@ -535,8 +534,14 @@ void FieldValueWidget::setFieldValueForType(const QVariant& fieldValue, const QS
 
     if (typeName == BuiltInType::Reference)
     {
-        this->comboBox->setCurrentText(fieldValue.toString());
-        return;
+        for (int i = 0; i < this->comboBox->count(); ++i)
+        {
+            if (this->comboBox->itemData(i) == fieldValue)
+            {
+                this->comboBox->setCurrentIndex(i);
+                return;
+            }
+        }
     }
 
     if (typeName == BuiltInType::Vector2I)
