@@ -32,6 +32,11 @@ namespace Tome
     {
         return e1.displayName.toLower() < e2.displayName.toLower();
     }
+
+    inline bool recordLessThanId(const Record& e1, const Record& e2)
+    {
+        return e1.id.toString().toLower() < e2.id.toString().toLower();
+    }
 }
 
 #endif // RECORD_H
