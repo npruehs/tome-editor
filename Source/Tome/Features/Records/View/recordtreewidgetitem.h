@@ -20,6 +20,11 @@ namespace Tome
             void setParentId(const QVariant& parentId);
             void setReadOnly(const bool readOnly);
 
+            bool operator<(const QTreeWidgetItem& other) const Q_DECL_OVERRIDE
+            {
+                return this->text(0) >= other.text(0);
+            }
+
         private:
             QVariant id;
             QString displayName;

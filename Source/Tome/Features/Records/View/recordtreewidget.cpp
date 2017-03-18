@@ -334,6 +334,11 @@ void RecordTreeWidget::setRecords(const RecordList& records)
 
     // Fill tree widget.
     this->insertTopLevelItems(0, items);
+
+    this->setSortingEnabled(true);
+    this->sortByColumn(0);
+    this->setSortingEnabled(false);
+
     if (this->settingsController.getExpandRecordTreeOnRefresh())
     {
         this->expandAll();
