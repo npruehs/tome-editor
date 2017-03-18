@@ -22,8 +22,8 @@ namespace Tome
                                          const QString& description,
                                          const QString& fieldDefinitionSetName);
 
-            virtual void undo();
-            virtual void redo();
+            virtual void undo() Q_DECL_OVERRIDE;
+            virtual void redo() Q_DECL_OVERRIDE;
 
         private:
             FieldDefinitionsController& fieldDefinitionsController;

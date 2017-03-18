@@ -53,7 +53,7 @@ namespace Tome
             QString validate();
 
         protected:
-            virtual void focusInEvent(QFocusEvent* event);
+            virtual void focusInEvent(QFocusEvent* event) Q_DECL_OVERRIDE;
 
     private slots:
             void onColorDialogCurrentColorChanged(const QColor& color);

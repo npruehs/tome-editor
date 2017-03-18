@@ -14,8 +14,8 @@ namespace Tome
         public:
             FieldIsNeverUsedTask();
 
-            const QString getDisplayName() const;
-            const MessageList execute(const TaskContext& context) const;
+            const QString getDisplayName() const Q_DECL_OVERRIDE;
+            const MessageList execute(const TaskContext& context) const Q_DECL_OVERRIDE;
 
             static const QString MessageCode;
     };

@@ -20,8 +20,8 @@ namespace Tome
                              const QStringList& fieldIds,
                              const QString& recordSetName,
                              const QVariant parentId = QVariant());
-            virtual void undo();
-            virtual void redo();
+            virtual void undo() Q_DECL_OVERRIDE;
+            virtual void redo() Q_DECL_OVERRIDE;
 
         private:
             RecordsController& recordsController;

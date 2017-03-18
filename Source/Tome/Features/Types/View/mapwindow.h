@@ -37,7 +37,7 @@ class MapWindow : public QDialog
         void accept();
 
     protected:
-        virtual void showEvent(QShowEvent* event);
+        virtual void showEvent(QShowEvent* event) Q_DECL_OVERRIDE;
 
     private:
         Ui::MapWindow *ui;

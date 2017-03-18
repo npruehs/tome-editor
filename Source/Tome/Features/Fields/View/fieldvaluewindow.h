@@ -46,7 +46,7 @@ class FieldValueWindow : public QDialog
         void revert();
 
     protected:
-        virtual void showEvent(QShowEvent* event);
+        virtual void showEvent(QShowEvent* event) Q_DECL_OVERRIDE;
 
     private slots:
         void on_toolButtonRevert_clicked();

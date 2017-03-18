@@ -16,15 +16,15 @@ namespace Tome
         public:
             RequiredReferenceAncestorFacet();
 
-            QWidget* createWidget(const FacetContext& context) const;
-            const QVariant getDefaultValue() const;
-            const QString getDescriptionForValue(const QVariant facetValue) const;
-            const QString getDisplayName() const;
-            const QString getKey() const;
-            const QString getTargetType() const;
-            const QVariant getWidgetValue(QWidget* widget) const;
-            void setWidgetValue(QWidget* widget, const QVariant value) const;
-            QString validateValue(const FacetContext& context, const QVariant value, const QVariant facetValue) const;
+            QWidget* createWidget(const FacetContext& context) const Q_DECL_OVERRIDE;
+            const QVariant getDefaultValue() const Q_DECL_OVERRIDE;
+            const QString getDescriptionForValue(const QVariant facetValue) const Q_DECL_OVERRIDE;
+            const QString getDisplayName() const Q_DECL_OVERRIDE;
+            const QString getKey() const Q_DECL_OVERRIDE;
+            const QString getTargetType() const Q_DECL_OVERRIDE;
+            const QVariant getWidgetValue(QWidget* widget) const Q_DECL_OVERRIDE;
+            void setWidgetValue(QWidget* widget, const QVariant value) const Q_DECL_OVERRIDE;
+            QString validateValue(const FacetContext& context, const QVariant value, const QVariant facetValue) const Q_DECL_OVERRIDE;
 
             static const QString FacetKey;
     };

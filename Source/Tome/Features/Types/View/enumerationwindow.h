@@ -35,7 +35,7 @@ class EnumerationWindow : public QDialog
         void accept();
 
     protected:
-        virtual void showEvent(QShowEvent* event);
+        virtual void showEvent(QShowEvent* event) Q_DECL_OVERRIDE;
 
     private slots:
         void on_actionNew_Member_triggered();
