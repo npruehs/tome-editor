@@ -148,8 +148,13 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
     // Show hyperlink for reference fields, and normal text for other fields.
     if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference))
     {
-        const Record& record = this->recordsController.getRecord(value);
-        QString href = QString("<a href='%1'>%2</a>").arg(record.id.toString(), record.displayName);
+        QString href;
+
+        if (this->recordsController.hasRecord(value))
+        {
+            const Record& record = this->recordsController.getRecord(value);
+            href = QString("<a href='%1'>%2</a>").arg(record.id.toString(), record.displayName);
+        }
 
         QModelIndex index = this->model()->index(i, 1);
 
