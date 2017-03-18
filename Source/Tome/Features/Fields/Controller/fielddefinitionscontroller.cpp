@@ -33,13 +33,13 @@ const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QStri
         const QString& description,
         const QString& fieldDefinitionSetName)
 {
-    qInfo(QString("Adding field definition %1.").arg(id).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Adding field definition %1.").arg(id)));
 
     // Check if already exists.
     if (this->hasFieldDefinition(id))
     {
         const QString errorMessage = "Field with the specified id already exists: " + id;
-        qCritical(errorMessage.toUtf8().constData());
+        qCritical(qUtf8Printable(errorMessage));
         throw std::out_of_range(errorMessage.toStdString());
     }
 
@@ -71,7 +71,7 @@ const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QStri
     }
 
     const QString errorMessage = "Field definition set not found: " + fieldDefinitionSetName;
-    qCritical(errorMessage.toUtf8().constData());
+    qCritical(qUtf8Printable(errorMessage));
     throw std::out_of_range(errorMessage.toStdString());
 }
 
@@ -170,7 +170,7 @@ int FieldDefinitionsController::indexOf(const FieldDefinition& fieldDefinition) 
 
 void FieldDefinitionsController::removeFieldDefinition(const QString& fieldId)
 {
-    qInfo(QString("Removing field definition %1.").arg(fieldId).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Removing field definition %1.").arg(fieldId)));
 
     for (int i = 0; i < this->model->size(); ++i)
     {
@@ -223,7 +223,7 @@ void FieldDefinitionsController::updateFieldDefinition(const QString oldId,
     if (oldId != newId && this->hasFieldDefinition(newId))
     {
         const QString errorMessage = "Field with the specified id already exists: " + newId;
-        qCritical(errorMessage.toUtf8().constData());
+        qCritical(qUtf8Printable(errorMessage));
         throw std::out_of_range(errorMessage.toStdString());
     }
 
@@ -317,14 +317,13 @@ FieldDefinition* FieldDefinitionsController::getFieldDefinitionById(const QStrin
     }
 
     const QString errorMessage = "Field not found: " + id;
-    qCritical(errorMessage.toUtf8().constData());
+    qCritical(qUtf8Printable(errorMessage));
     throw std::out_of_range(errorMessage.toStdString());
 }
 
 void FieldDefinitionsController::moveFieldDefinitionToSet(const QString& fieldDefinitionId, const QString& fieldDefinitionSetName)
 {
-    qInfo(QString("Moving field definition %1 to set %2.").arg(fieldDefinitionId, fieldDefinitionSetName)
-          .toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Moving field definition %1 to set %2.").arg(fieldDefinitionId, fieldDefinitionSetName)));
 
     FieldDefinition fieldDefinition = this->getFieldDefinition(fieldDefinitionId);
 

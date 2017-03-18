@@ -13,7 +13,7 @@ RemoveMapCommand::RemoveMapCommand(TypesController& typesController, const QStri
 
 void RemoveMapCommand::undo()
 {
-    qInfo(QString("Undo remove map %1.").arg(this->name).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Undo remove map %1.").arg(this->name)));
 
     // Add custom type again.
     this->typesController.addMap(this->name, this->keyType, this->valueType, this->customTypeSetName);

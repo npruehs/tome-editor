@@ -17,7 +17,7 @@ ReparentRecordCommand::ReparentRecordCommand(RecordsController& recordsControlle
 
 void ReparentRecordCommand::undo()
 {
-    qInfo(QString("Undo reparent record %1.").arg(this->recordId.toString()).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Undo reparent record %1.").arg(this->recordId.toString())));
 
     // Restore parent.
     this->recordsController.reparentRecord(this->recordId, this->oldParentId);

@@ -13,7 +13,7 @@ ComponentsController::ComponentsController()
 
 const Component ComponentsController::addComponent(const QString& componentName, const QString& componentSetName)
 {
-    qInfo(QString("Adding component %1.").arg(componentName).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Adding component %1.").arg(componentName)));
     Component component = Component(componentName);
 
     for (ComponentSetList::iterator it = this->model->begin();
@@ -33,7 +33,7 @@ const Component ComponentsController::addComponent(const QString& componentName,
     }
 
     const QString errorMessage = "Component set not found: " + componentSetName;
-    qCritical(errorMessage.toUtf8().constData());
+    qCritical(qUtf8Printable(errorMessage));
     throw std::out_of_range(errorMessage.toStdString());
 }
 
@@ -97,7 +97,7 @@ const QString ComponentsController::getSetNameOfComponent(const Component compon
     }
 
     const QString errorMessage = "Component not found: " + component;
-    qCritical(errorMessage.toUtf8().constData());
+    qCritical(qUtf8Printable(errorMessage));
     throw std::out_of_range(errorMessage.toStdString());
 }
 
@@ -121,7 +121,7 @@ int ComponentsController::indexOf(const Component& component) const
 
 void ComponentsController::removeComponent(const Component component)
 {
-    qInfo(QString("Removing component %1.").arg(component).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Removing component %1.").arg(component)));
 
     for (ComponentSetList::iterator itSets = this->model->begin();
          itSets != this->model->end();

@@ -16,7 +16,7 @@ RemoveComponentCommand::RemoveComponentCommand(Tome::ComponentsController& compo
 
 void RemoveComponentCommand::undo()
 {
-    qInfo(QString("Undo remove component %1.").arg(this->componentName).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Undo remove component %1.").arg(this->componentName)));
 
     // Add component again.
     this->componentsController.addComponent(this->componentName, this->componentSetName);

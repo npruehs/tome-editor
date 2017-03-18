@@ -25,7 +25,7 @@ UpdateRecordCommand::UpdateRecordCommand(RecordsController& recordsController,
 
 void UpdateRecordCommand::undo()
 {
-    qInfo(QString("Undo update record %1.").arg(this->oldDisplayName).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Undo update record %1.").arg(this->oldDisplayName)));
 
     // Restore record.
     this->recordsController.updateRecord(this->newId,

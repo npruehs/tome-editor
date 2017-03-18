@@ -22,7 +22,7 @@ RemoveRecordCommand::RemoveRecordCommand(RecordsController& recordsController,
 
 void RemoveRecordCommand::undo()
 {
-    qInfo(QString("Undo remove record %1.").arg(this->id.toString()).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Undo remove record %1.").arg(this->id.toString())));
 
     // Add records again.
     for (RecordList::iterator itRecords = this->removedRecords.begin();

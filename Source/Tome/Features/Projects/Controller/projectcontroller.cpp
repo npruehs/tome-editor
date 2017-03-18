@@ -72,7 +72,7 @@ QString ProjectController::buildFullFilePath(QString filePath, QString projectPa
 
 void ProjectController::createProject(const QString& projectName, const QString& projectPath, const RecordIdType::RecordIdType recordIdType)
 {
-    qInfo(QString("Creating new project %1 at %2.").arg(projectName, projectPath).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Creating new project %1 at %2.").arg(projectName, projectPath)));
 
     // Create new project.
     QSharedPointer<Project> newProject = QSharedPointer<Project>::create();
@@ -154,20 +154,20 @@ void ProjectController::loadComponentSet(const QString& projectPath, ComponentSe
 
     QFile componentFile(fullComponentSetPath);
 
-    qInfo(QString("Opening components file %1.").arg(fullComponentSetPath).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Opening components file %1.").arg(fullComponentSetPath)));
 
     if (componentFile.open(QIODevice::ReadOnly))
     {
         try
         {
             componentSerializer.deserialize(componentFile, componentSet);
-            qInfo(QString("Opened components file %1 with %2 components.")
-                  .arg(fullComponentSetPath, QString::number(componentSet.components.count())).toUtf8().constData());
+            qInfo(qUtf8Printable(QString("Opened components file %1 with %2 components.")
+                  .arg(fullComponentSetPath, QString::number(componentSet.components.count()))));
         }
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + fullComponentSetPath + "\r\n" + e.what();
-            qCritical(errorMessage.toUtf8().constData());
+            qCritical(qUtf8Printable(errorMessage));
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -194,20 +194,20 @@ void ProjectController::loadCustomTypeSet(const QString& projectPath, CustomType
 
     QFile typeFile(fullTypeSetPath);
 
-    qInfo(QString("Opening types file %1.").arg(fullTypeSetPath).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Opening types file %1.").arg(fullTypeSetPath)));
 
     if (typeFile.open(QIODevice::ReadOnly))
     {
         try
         {
             typesSerializer.deserialize(typeFile, typeSet);
-            qInfo(QString("Opened types file %1 with %2 custom types.")
-                  .arg(fullTypeSetPath, QString::number(typeSet.types.count())).toUtf8().constData());
+            qInfo(qUtf8Printable(QString("Opened types file %1 with %2 custom types.")
+                  .arg(fullTypeSetPath, QString::number(typeSet.types.count()))));
         }
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + fullTypeSetPath + "\r\n" + e.what();
-            qCritical(errorMessage.toUtf8().constData());
+            qCritical(qUtf8Printable(errorMessage));
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -231,7 +231,7 @@ void ProjectController::loadExportTemplate(const QString& projectPath, RecordExp
 
         QFile exportTemplateFile(fullExportTemplatePath);
 
-        qInfo(QString("Opening export template file %1.").arg(fullExportTemplatePath).toUtf8().constData());
+        qInfo(qUtf8Printable(QString("Opening export template file %1.").arg(fullExportTemplatePath)));
 
         if (exportTemplateFile.open(QIODevice::ReadOnly))
         {
@@ -242,7 +242,7 @@ void ProjectController::loadExportTemplate(const QString& projectPath, RecordExp
             catch (const std::runtime_error& e)
             {
                 QString errorMessage = QObject::tr("File could not be read: ") + fullExportTemplatePath + "\r\n" + e.what();
-                qCritical(errorMessage.toUtf8().constData());
+                qCritical(qUtf8Printable(errorMessage));
                 throw std::runtime_error(errorMessage.toStdString());
             }
         }
@@ -301,7 +301,7 @@ void ProjectController::loadExportTemplate(const QString& projectPath, RecordExp
     {
         QString errorMessage = QObject::tr("Export template %1 is missing a required file: %2")
                 .arg(exportTemplate.name, e.what());
-        qCritical(errorMessage.toUtf8().constData());
+        qCritical(qUtf8Printable(errorMessage));
     }
 }
 
@@ -315,20 +315,20 @@ void ProjectController::loadFieldDefinitionSet(const QString& projectPath, Field
 
     QFile fieldDefinitionFile(fullFieldDefinitionSetPath);
 
-    qInfo(QString("Opening field definitions file %1.").arg(fullFieldDefinitionSetPath).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Opening field definitions file %1.").arg(fullFieldDefinitionSetPath)));
 
     if (fieldDefinitionFile.open(QIODevice::ReadOnly))
     {
         try
         {
             fieldDefinitionSerializer.deserialize(fieldDefinitionFile, fieldDefinitionSet);
-            qInfo(QString("Opened field definitions file %1 with %2 fields.")
-                  .arg(fullFieldDefinitionSetPath, QString::number(fieldDefinitionSet.fieldDefinitions.count())).toUtf8().constData());
+            qInfo(qUtf8Printable(QString("Opened field definitions file %1 with %2 fields.")
+                  .arg(fullFieldDefinitionSetPath, QString::number(fieldDefinitionSet.fieldDefinitions.count()))));
         }
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + fullFieldDefinitionSetPath + "\r\n" + e.what();
-            qCritical(errorMessage.toUtf8().constData());
+            qCritical(qUtf8Printable(errorMessage));
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -349,20 +349,20 @@ void ProjectController::loadImportTemplate(const QString& projectPath, RecordTab
 
     QFile importTemplateFile(fullImportTemplatePath);
 
-    qInfo(QString("Opening import template file %1.").arg(fullImportTemplatePath).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Opening import template file %1.").arg(fullImportTemplatePath)));
 
     if (importTemplateFile.open(QIODevice::ReadOnly))
     {
         try
         {
             importTemplateSerializer.deserialize(importTemplateFile, importTemplate);
-            qInfo(QString("Opened import template file %1.")
-                  .arg(fullImportTemplatePath).toUtf8().constData());
+            qInfo(qUtf8Printable(QString("Opened import template file %1.")
+                  .arg(fullImportTemplatePath)));
         }
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + fullImportTemplatePath + "\r\n" + e.what();
-            qCritical(errorMessage.toUtf8().constData());
+            qCritical(qUtf8Printable(errorMessage));
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -381,20 +381,20 @@ void ProjectController::loadRecordSet(const QString& projectPath, RecordSet& rec
 
     QFile recordFile(fullRecordSetPath);
 
-    qInfo(QString("Opening records file %1.").arg(fullRecordSetPath).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Opening records file %1.").arg(fullRecordSetPath)));
 
     if (recordFile.open(QIODevice::ReadOnly))
     {
         try
         {
             this->recordSetSerializer->deserialize(recordFile, recordSet);
-            qInfo(QString("Opened records file %1 with %2 records.")
-                  .arg(fullRecordSetPath, QString::number(recordSet.records.count())).toUtf8().constData());
+            qInfo(qUtf8Printable(QString("Opened records file %1 with %2 records.")
+                  .arg(fullRecordSetPath, QString::number(recordSet.records.count()))));
         }
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + fullRecordSetPath + "\r\n" + e.what();
-            qCritical(errorMessage.toUtf8().constData());
+            qCritical(qUtf8Printable(errorMessage));
             throw std::runtime_error(errorMessage.toStdString());
         }
     }
@@ -418,7 +418,7 @@ void ProjectController::openProject(const QString& projectFileName)
 
     const QString projectPath = projectFileInfo.path();
 
-    qInfo(QString("Opening project %1.").arg(projectFileName).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Opening project %1.").arg(projectFileName)));
 
     if (projectFile.open(QIODevice::ReadOnly))
     {
@@ -434,7 +434,7 @@ void ProjectController::openProject(const QString& projectFileName)
         catch (const std::runtime_error& e)
         {
             QString errorMessage = QObject::tr("File could not be read: ") + projectFileName + "\r\n" + e.what();
-            qCritical(errorMessage.toUtf8().constData());
+            qCritical(qUtf8Printable(errorMessage));
             throw std::runtime_error(errorMessage.toStdString());
         }
 
@@ -535,7 +535,7 @@ void ProjectController::saveProject(QSharedPointer<Project> project) const
     // Write project file.
     QFile projectFile(fullProjectPath);
 
-    qInfo(QString("Saving project %1.").arg(fullProjectPath).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Saving project %1.").arg(fullProjectPath)));
 
     if (projectFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
     {
@@ -561,7 +561,7 @@ void ProjectController::saveProject(QSharedPointer<Project> project) const
         // Write file.
         QFile componentSetFile(fullComponentSetPath);
 
-        qInfo(QString("Saving components file %1.").arg(fullComponentSetPath).toUtf8().constData());
+        qInfo(qUtf8Printable(QString("Saving components file %1.").arg(fullComponentSetPath)));
 
         if (componentSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
@@ -588,7 +588,7 @@ void ProjectController::saveProject(QSharedPointer<Project> project) const
         // Write file.
         QFile fieldDefinitionSetFile(fullFieldDefinitionSetPath);
 
-        qInfo(QString("Saving field definitions file %1.").arg(fullFieldDefinitionSetPath).toUtf8().constData());
+        qInfo(qUtf8Printable(QString("Saving field definitions file %1.").arg(fullFieldDefinitionSetPath)));
 
         if (fieldDefinitionSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
@@ -613,7 +613,7 @@ void ProjectController::saveProject(QSharedPointer<Project> project) const
         // Write file.
         QFile recordSetFile(fullRecordSetPath);
 
-        qInfo(QString("Saving records file %1.").arg(fullRecordSetPath).toUtf8().constData());
+        qInfo(qUtf8Printable(QString("Saving records file %1.").arg(fullRecordSetPath)));
 
         if (recordSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
@@ -642,7 +642,7 @@ void ProjectController::saveProject(QSharedPointer<Project> project) const
         // Write file.
         QFile exportTemplateFile(fullExportTemplatePath);
 
-        qInfo(QString("Saving export template file %1.").arg(fullExportTemplatePath).toUtf8().constData());
+        qInfo(qUtf8Printable(QString("Saving export template file %1.").arg(fullExportTemplatePath)));
 
         if (exportTemplateFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
@@ -669,7 +669,7 @@ void ProjectController::saveProject(QSharedPointer<Project> project) const
         // Write file.
         QFile typeSetFile(fullTypeSetPath);
 
-        qInfo(QString("Saving types file %1.").arg(fullTypeSetPath).toUtf8().constData());
+        qInfo(qUtf8Printable(QString("Saving types file %1.").arg(fullTypeSetPath)));
 
         if (typeSetFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {
@@ -698,7 +698,7 @@ void ProjectController::saveProject(QSharedPointer<Project> project) const
         // Write file.
         QFile importTemplateFile(fullImportTemplatePath);
 
-        qInfo(QString("Saving import template file %1.").arg(fullImportTemplatePath).toUtf8().constData());
+        qInfo(qUtf8Printable(QString("Saving import template file %1.").arg(fullImportTemplatePath)));
 
         if (importTemplateFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
         {

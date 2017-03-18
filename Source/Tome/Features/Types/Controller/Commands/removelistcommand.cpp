@@ -13,7 +13,7 @@ RemoveListCommand::RemoveListCommand(TypesController& typesController, const QSt
 
 void RemoveListCommand::undo()
 {
-    qInfo(QString("Undo remove list %1.").arg(this->name).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Undo remove list %1.").arg(this->name)));
 
     // Add custom type again.
     this->typesController.addList(this->name, this->itemType, this->customTypeSetName);
