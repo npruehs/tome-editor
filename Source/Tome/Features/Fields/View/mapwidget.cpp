@@ -112,8 +112,8 @@ void MapWidget::setMap(const QVariantMap& map)
 
     this->tableWidget->setSortingEnabled(false);
 
-    for (QVariantMap::const_iterator it = map.begin();
-         it != map.end();
+    for (QVariantMap::const_iterator it = map.cbegin();
+         it != map.cend();
          ++it)
     {
         this->tableWidget->setItem(row, 0, new QTableWidgetItem(it.key()));

@@ -79,8 +79,8 @@ void ExportTemplateSerializer::serialize(QIODevice& device, const RecordExportTe
             // Write export type map.
             writer.writeStartElement(ElementTypeMap);
             {
-                for (QMap<QString, QString>::const_iterator itTypeMap = exportTemplate.typeMap.begin();
-                     itTypeMap != exportTemplate.typeMap.end();
+                for (QMap<QString, QString>::const_iterator itTypeMap = exportTemplate.typeMap.cbegin();
+                     itTypeMap != exportTemplate.typeMap.cend();
                      ++itTypeMap)
                 {
                     writer.writeStartElement(ElementMapping);

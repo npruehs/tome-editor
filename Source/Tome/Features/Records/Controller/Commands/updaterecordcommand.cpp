@@ -46,8 +46,8 @@ void UpdateRecordCommand::redo()
     this->oldRecordSetName = record.recordSetName;
     this->oldFieldIds = QStringList();
 
-    for (RecordFieldValueMap::const_iterator it = record.fieldValues.begin();
-         it != record.fieldValues.end();
+    for (RecordFieldValueMap::const_iterator it = record.fieldValues.cbegin();
+         it != record.fieldValues.cend();
          ++it)
     {
         this->oldFieldIds << it.key();

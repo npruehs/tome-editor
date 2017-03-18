@@ -304,8 +304,8 @@ void ProjectOverviewWindow::updateExportTemplateData()
     // Add list items.
     this->ui->listWidgetExportTemplates->clear();
 
-    for (RecordExportTemplateList::const_iterator it = exportTemplateList.begin();
-         it != exportTemplateList.end();
+    for (RecordExportTemplateList::const_iterator it = exportTemplateList.cbegin();
+         it != exportTemplateList.cend();
          ++it)
     {
         const RecordExportTemplate& exportTemplate = *it;
@@ -367,8 +367,8 @@ void ProjectOverviewWindow::updateImportTemplateData()
     // Add list items.
     this->ui->listWidgetImportTemplates->clear();
 
-    for (RecordTableImportTemplateList::const_iterator it = importTemplateList.begin();
-         it != importTemplateList.end();
+    for (RecordTableImportTemplateList::const_iterator it = importTemplateList.cbegin();
+         it != importTemplateList.cend();
          ++it)
     {
         const RecordTableImportTemplate& importTemplate = *it;

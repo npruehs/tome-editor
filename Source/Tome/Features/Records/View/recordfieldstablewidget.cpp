@@ -72,8 +72,8 @@ void RecordFieldsTableWidget::setRecord(const QVariant recordId)
     // Sort by display name and component.
     FieldDefinitionList fields;
 
-    for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
-         it != fieldValues.end();
+    for (RecordFieldValueMap::const_iterator it = fieldValues.cbegin();
+         it != fieldValues.cend();
          ++it)
     {
         const QString fieldId = it.key();

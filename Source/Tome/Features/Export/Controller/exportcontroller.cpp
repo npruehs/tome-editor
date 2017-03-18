@@ -284,8 +284,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
 
                         QVariantMap map = fieldValue.toMap();
 
-                        for (QVariantMap::const_iterator it = map.begin();
-                             it != map.end();
+                        for (QVariantMap::const_iterator it = map.cbegin();
+                             it != map.cend();
                              ++it)
                         {
                             QString mapItem = exportTemplate.mapItemTemplate;
@@ -495,8 +495,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
             // Collect components.
             QStringList components;
 
-            for (QMap<QString, QVariant>::const_iterator itFields = fieldValues.begin();
-                 itFields != fieldValues.end();
+            for (QMap<QString, QVariant>::const_iterator itFields = fieldValues.cbegin();
+                 itFields != fieldValues.cend();
                  ++itFields)
             {
                 QString fieldId = itFields.key();

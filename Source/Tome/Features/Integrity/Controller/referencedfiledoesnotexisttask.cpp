@@ -40,8 +40,8 @@ const MessageList ReferencedFileDoesNotExistTask::execute(const TaskContext& con
     {
         const Record& record = records.at(i);
 
-        for (RecordFieldValueMap::const_iterator it = record.fieldValues.begin();
-             it != record.fieldValues.end();
+        for (RecordFieldValueMap::const_iterator it = record.fieldValues.cbegin();
+             it != record.fieldValues.cend();
              ++it)
         {
             // Check if is file.

@@ -111,8 +111,8 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
             // Write record export template paths.
             writer.writeStartElement(ElementRecordExportTemplates);
             {
-                for (RecordExportTemplateList::const_iterator it = project->recordExportTemplates.begin();
-                     it != project->recordExportTemplates.end();
+                for (RecordExportTemplateList::const_iterator it = project->recordExportTemplates.cbegin();
+                     it != project->recordExportTemplates.cend();
                      ++it)
                 {
                     const RecordExportTemplate& exportTemplate = *it;
@@ -135,8 +135,8 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
             // Write record import template paths.
             writer.writeStartElement(ElementRecordImportTemplates);
             {
-                for (RecordTableImportTemplateList::const_iterator it = project->recordTableImportTemplates.begin();
-                     it != project->recordTableImportTemplates.end();
+                for (RecordTableImportTemplateList::const_iterator it = project->recordTableImportTemplates.cbegin();
+                     it != project->recordTableImportTemplates.cend();
                      ++it)
                 {
                     const RecordTableImportTemplate& importTemplate = *it;

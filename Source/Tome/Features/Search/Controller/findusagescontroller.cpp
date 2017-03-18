@@ -34,8 +34,8 @@ const SearchResultList FindUsagesController::findUsagesOfField(const QString& fi
 
         const RecordFieldValueMap& fieldValues = this->recordsController.getRecordFieldValues(record.id);
 
-        for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
-             it != fieldValues.end();
+        for (RecordFieldValueMap::const_iterator it = fieldValues.cbegin();
+             it != fieldValues.cend();
              ++it)
         {
             const QString& recordFieldId = it.key();
@@ -78,8 +78,8 @@ const SearchResultList FindUsagesController::findUsagesOfRecord(const QVariant& 
 
         const RecordFieldValueMap& fieldValues = this->recordsController.getRecordFieldValues(record.id);
 
-        for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
-             it != fieldValues.end();
+        for (RecordFieldValueMap::const_iterator it = fieldValues.cbegin();
+             it != fieldValues.cend();
              ++it)
         {
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(it.key());
@@ -124,8 +124,8 @@ const SearchResultList FindUsagesController::findUsagesOfType(const QString& typ
 
         const RecordFieldValueMap& fieldValues = this->recordsController.getRecordFieldValues(record.id);
 
-        for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
-             it != fieldValues.end();
+        for (RecordFieldValueMap::const_iterator it = fieldValues.cbegin();
+             it != fieldValues.cend();
              ++it)
         {
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(it.key());

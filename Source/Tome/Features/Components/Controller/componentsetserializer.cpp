@@ -28,8 +28,8 @@ void ComponentSetSerializer::serialize(QIODevice& device, const Tome::ComponentS
         // Write components.
         writer.writeStartElement(ElementComponents);
         {
-            for (ComponentList::const_iterator it = componentSet.components.begin();
-                 it != componentSet.components.end();
+            for (ComponentList::const_iterator it = componentSet.components.cbegin();
+                 it != componentSet.components.cend();
                  ++it)
             {
                 Component component = *it;

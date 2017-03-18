@@ -682,8 +682,8 @@ void MainWindow::on_actionNew_Record_triggered()
 
         const QMap<QString, RecordFieldState::RecordFieldState> recordFields = this->recordWindow->getRecordFields();
 
-        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.begin();
-             it != recordFields.end();
+        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.cbegin();
+             it != recordFields.cend();
              ++it)
         {
             const QString& fieldId = it.key();
@@ -767,8 +767,8 @@ void MainWindow::on_actionAdd_Child_triggered()
 
         const QMap<QString, RecordFieldState::RecordFieldState> recordFields = this->recordWindow->getRecordFields();
 
-        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.begin();
-             it != recordFields.end();
+        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.cbegin();
+             it != recordFields.cend();
              ++it)
         {
             const QString& fieldId = it.key();
@@ -859,8 +859,8 @@ void MainWindow::on_actionEdit_Record_triggered()
 
         const QMap<QString, RecordFieldState::RecordFieldState> recordFields = this->recordWindow->getRecordFields();
 
-        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.begin();
-             it != recordFields.end();
+        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.cbegin();
+             it != recordFields.cend();
              ++it)
         {
             const QString& fieldId = it.key();
@@ -1716,8 +1716,8 @@ void MainWindow::refreshExportMenu()
     const RecordExportTemplateList& recordExportTemplateList =
             this->controller->getExportController().getRecordExportTemplates();
 
-    for (RecordExportTemplateList::const_iterator it = recordExportTemplateList.begin();
-         it != recordExportTemplateList.end();
+    for (RecordExportTemplateList::const_iterator it = recordExportTemplateList.cbegin();
+         it != recordExportTemplateList.cend();
          ++it)
     {
         QAction* exportAction = new QAction(it->name, this);
@@ -1732,8 +1732,8 @@ void MainWindow::refreshImportMenu()
     const RecordTableImportTemplateList& recordTableImportTemplateList =
             this->controller->getImportController().getRecordTableImportTemplates();
 
-    for (RecordTableImportTemplateList::const_iterator it = recordTableImportTemplateList.begin();
-         it != recordTableImportTemplateList.end();
+    for (RecordTableImportTemplateList::const_iterator it = recordTableImportTemplateList.cbegin();
+         it != recordTableImportTemplateList.cend();
          ++it)
     {
         QAction* importAction = new QAction(it->name, this);

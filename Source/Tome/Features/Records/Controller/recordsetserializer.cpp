@@ -62,8 +62,8 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
                         stream.writeAttribute(ElementEditorIconFieldId, record.editorIconFieldId);
                     }
 
-                    for (QMap<QString, QVariant>::const_iterator it = record.fieldValues.begin();
-                         it != record.fieldValues.end();
+                    for (QMap<QString, QVariant>::const_iterator it = record.fieldValues.cbegin();
+                         it != record.fieldValues.cend();
                          ++it)
                     {
                         QVariant value = it.value();

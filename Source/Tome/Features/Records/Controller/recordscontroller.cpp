@@ -75,8 +75,8 @@ const Record RecordsController::addRecord(const QVariant& id,
     record.recordSetName = recordSetName;
 
     // Set field default values.
-    for (QStringList::const_iterator it = fieldIds.begin();
-         it != fieldIds.end();
+    for (QStringList::const_iterator it = fieldIds.cbegin();
+         it != fieldIds.cend();
          ++it)
     {
         const QString fieldId = *it;
@@ -133,8 +133,8 @@ const QString RecordsController::computeRecordsHash() const
             const RecordFieldValueMap fieldValues = this->getRecordFieldValues(record.id);
 
             // Hash all fields.
-            for (RecordFieldValueMap::const_iterator itFields = fieldValues.begin();
-                 itFields != fieldValues.end();
+            for (RecordFieldValueMap::const_iterator itFields = fieldValues.cbegin();
+                 itFields != fieldValues.cend();
                  ++itFields)
             {
                 QString fieldId = itFields.key();
@@ -336,8 +336,8 @@ const RecordFieldValueMap RecordsController::getInheritedFieldValues(const QVari
         const Record& ancestor = ancestors.at(i);
 
         // Combine map.
-        for (RecordFieldValueMap::const_iterator it = ancestor.fieldValues.begin();
-             it != ancestor.fieldValues.end();
+        for (RecordFieldValueMap::const_iterator it = ancestor.fieldValues.cbegin();
+             it != ancestor.fieldValues.cend();
              ++it)
         {
             fieldValues[it.key()] = it.value();
@@ -605,8 +605,8 @@ void RecordsController::revertRecord(const QVariant& recordId)
     // Revert all fields.
     int i = 0;
 
-    for (RecordFieldValueMap::const_iterator it = fields.begin();
-         it != fields.end();
+    for (RecordFieldValueMap::const_iterator it = fields.cbegin();
+         it != fields.cend();
          ++it, ++i)
     {
         const QString& fieldId = it.key();
@@ -691,8 +691,8 @@ void RecordsController::updateRecord(const QVariant oldId,
     const FieldDefinitionList fields = this->fieldDefinitionsController.getFieldDefinitions();
     const RecordFieldValueMap inheritedFieldValues = this->getInheritedFieldValues(record.id);
 
-    for (FieldDefinitionList::const_iterator it = fields.begin();
-         it != fields.end();
+    for (FieldDefinitionList::const_iterator it = fields.cbegin();
+         it != fields.cend();
          ++it)
     {
         const FieldDefinition& field = *it;
@@ -1050,8 +1050,8 @@ void RecordsController::updateRecordReferences(const QVariant oldReference, cons
         // Update references.
         const RecordFieldValueMap fieldValues = this->getRecordFieldValues(record.id);
 
-        for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
-             it != fieldValues.end();
+        for (RecordFieldValueMap::const_iterator it = fieldValues.cbegin();
+             it != fieldValues.cend();
              ++it)
         {
             const QString fieldId = it.key();

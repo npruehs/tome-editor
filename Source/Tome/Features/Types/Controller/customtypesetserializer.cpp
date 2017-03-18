@@ -55,8 +55,8 @@ void CustomTypeSetSerializer::serialize(QIODevice& device, const CustomTypeSet& 
                     // Write facet maps.
                     writer.writeStartElement(ElementFundamentalFacets);
                     {
-                        for (QVariantMap::const_iterator itFundamentalFacets = type.fundamentalFacets.begin();
-                             itFundamentalFacets != type.fundamentalFacets.end();
+                        for (QVariantMap::const_iterator itFundamentalFacets = type.fundamentalFacets.cbegin();
+                             itFundamentalFacets != type.fundamentalFacets.cend();
                              ++itFundamentalFacets)
                         {
                             writer.writeStartElement(ElementFundamentalFacet);
@@ -69,8 +69,8 @@ void CustomTypeSetSerializer::serialize(QIODevice& device, const CustomTypeSet& 
 
                     writer.writeStartElement(ElementConstrainingFacets);
                     {
-                        for (QVariantMap::const_iterator itConstrainingFacets = type.constrainingFacets.begin();
-                             itConstrainingFacets != type.constrainingFacets.end();
+                        for (QVariantMap::const_iterator itConstrainingFacets = type.constrainingFacets.cbegin();
+                             itConstrainingFacets != type.constrainingFacets.cend();
                              ++itConstrainingFacets)
                         {
                             writer.writeStartElement(ElementConstrainingFacet);

@@ -163,8 +163,8 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
     QString progressBarTitle = tr("Importing %1 With %2").arg(contextName, importTemplateName);
     int index = 0;
 
-    for (QMap<QString, RecordFieldValueMap>::const_iterator itRecords = data.begin();
-         itRecords != data.end();
+    for (QMap<QString, RecordFieldValueMap>::const_iterator itRecords = data.cbegin();
+         itRecords != data.cend();
          ++itRecords)
     {
         ++index;
@@ -202,8 +202,8 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
         // Get current record field values.
         const RecordFieldValueMap oldRecordFieldValues = this->recordsController.getRecordFieldValues(recordId);
 
-        for (RecordFieldValueMap::const_iterator itFields = newRecordFieldValues.begin();
-             itFields != newRecordFieldValues.end();
+        for (RecordFieldValueMap::const_iterator itFields = newRecordFieldValues.cbegin();
+             itFields != newRecordFieldValues.cend();
              ++itFields)
         {
             // Get field.

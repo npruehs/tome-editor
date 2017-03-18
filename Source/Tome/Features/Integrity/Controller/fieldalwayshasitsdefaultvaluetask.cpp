@@ -34,8 +34,8 @@ const MessageList FieldAlwaysHasItsDefaultValueTask::execute(const TaskContext& 
     {
         const Record& record = records.at(i);
 
-        for (RecordFieldValueMap::const_iterator it = record.fieldValues.begin();
-             it != record.fieldValues.end();
+        for (RecordFieldValueMap::const_iterator it = record.fieldValues.cbegin();
+             it != record.fieldValues.cend();
              ++it)
         {
             const QString& fieldId = it.key();

@@ -66,8 +66,8 @@ namespace Tome
     {
         QString s("[");
 
-        for (QVariantMap::const_iterator it = map.begin();
-             it != map.end();
+        for (QVariantMap::const_iterator it = map.cbegin();
+             it != map.cend();
              ++it)
         {
             QVariant key = it.key();
