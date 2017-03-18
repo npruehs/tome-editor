@@ -1797,7 +1797,7 @@ void MainWindow::showWindow(QWidget* widget)
     widget->activateWindow();
 
     // Check if dock widget.
-    QDockWidget* dockWidget = dynamic_cast<QDockWidget*>(widget);
+    QDockWidget* dockWidget = qobject_cast<QDockWidget*>(widget);
     if (dockWidget != NULL)
     {
         // Tabify dock widget.
