@@ -448,7 +448,7 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
     if (customType.isList())
     {
-        this->listWidget->setFieldType(customType.getItemType());
+        this->listWidget->setItemType(customType.getItemType());
         this->setCurrentWidget(this->listWidget);
         return;
     }

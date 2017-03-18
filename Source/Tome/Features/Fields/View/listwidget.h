@@ -32,10 +32,10 @@ namespace Tome
                                 QWidget *parent = 0);
             ~ListWidget();
 
-            QString getFieldType() const;
+            QString getItemType() const;
             QVariantList getItems() const;
 
-            void setFieldType(const QString& fieldType);
+            void setItemType(const QString& itemType);
             void setItems(const QVariantList& items);
 
         private slots:
@@ -46,7 +46,7 @@ namespace Tome
             void moveItemDown();
 
         private:
-            QString fieldType;
+            QString itemType;
             QVariantList items;
 
             ListItemWindow* listItemWindow;
@@ -60,7 +60,9 @@ namespace Tome
             RecordsController& recordsController;
             TypesController& typesController;
 
+            void addListWidgetItem(const QVariant& itemData);
             int getSelectedItemIndex() const;
+            void updateListWidgetItem(QListWidgetItem* listWidgetItem, const QVariant& itemData);
     };
 }
 #endif // LISTWIDGET_H
