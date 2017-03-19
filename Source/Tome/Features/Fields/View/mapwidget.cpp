@@ -5,6 +5,7 @@
 #include "mapitemwindow.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
+#include "../../Types/Model/builtintype.h"
 #include "../../../Util/memoryutils.h"
 
 
@@ -112,12 +113,18 @@ void MapWidget::setMap(const QVariantMap& map)
 
     this->tableWidget->setSortingEnabled(false);
 
+    bool hasReferenceKeys = this->typesController.isTypeOrDerivedFromType(this->keyType, BuiltInType::Reference);
+    bool hasReferenceValues = this->typesController.isTypeOrDerivedFromType(this->valueType, BuiltInType::Reference);
+
     for (QVariantMap::const_iterator it = map.cbegin();
          it != map.cend();
          ++it)
     {
-        this->tableWidget->setItem(row, 0, new QTableWidgetItem(it.key()));
-        this->tableWidget->setItem(row, 1, new QTableWidgetItem(QVariant(it.value()).toString()));
+        QTableWidgetItem* keyItem = this->createTableWidgetItem(it.key(), hasReferenceKeys);
+        this->tableWidget->setItem(row, 0, keyItem);
+
+        QTableWidgetItem* valueItem = this->createTableWidgetItem(it.value(), hasReferenceValues);
+        this->tableWidget->setItem(row, 1, valueItem);
 
         ++row;
     }
@@ -171,8 +178,8 @@ void MapWidget::editItem(QTableWidgetItem* item)
     QTableWidgetItem* keyTableWidgetItem = this->tableWidget->item(item->row(), 0);
     QTableWidgetItem* valueTableWidgetItem = this->tableWidget->item(item->row(), 1);
 
-    QVariant currentKey = keyTableWidgetItem->text();
-    QVariant currentValue = valueTableWidgetItem->text();
+    QVariant currentKey = keyTableWidgetItem->data(Qt::UserRole);
+    QVariant currentValue = valueTableWidgetItem->data(Qt::UserRole);
 
     // Update view.
     this->mapItemWindow->setKeyType(this->keyType);
@@ -226,4 +233,30 @@ void MapWidget::clearTable()
     headers << tr("Key");
     headers << tr("Value");
     this->tableWidget->setHorizontalHeaderLabels(headers);
+}
+
+QTableWidgetItem* MapWidget::createTableWidgetItem(QVariant value, bool isReference)
+{
+    QTableWidgetItem* item = new QTableWidgetItem();
+
+    if (isReference)
+    {
+        if (this->recordsController.hasRecord(value))
+        {
+            const Record& record = this->recordsController.getRecord(value);
+            item->setText(record.displayName);
+        }
+        else
+        {
+            item->setText(value.toString());
+        }
+    }
+    else
+    {
+        item->setText(value.toString());
+    }
+
+    item->setData(Qt::UserRole, value);
+
+    return item;
 }

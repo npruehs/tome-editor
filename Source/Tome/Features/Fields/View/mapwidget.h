@@ -61,6 +61,8 @@ namespace Tome
             ProjectController& projectController;
             RecordsController& recordsController;
             TypesController& typesController;
+
+            QTableWidgetItem* createTableWidgetItem(QVariant value, bool isReference);
     };
 }
 
