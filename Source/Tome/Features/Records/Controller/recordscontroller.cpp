@@ -1140,6 +1140,14 @@ void RecordsController::verifyRecordIntegerIds()
             {
                 this->nextRecordIntegerId = recordIntegerId + 1;
             }
+
+            // Convert to integers.
+            record.id = record.id.toLongLong();
+
+            if (!record.parentId.isNull())
+            {
+                record.parentId = record.parentId.toLongLong();
+            }
         }
     }
 
