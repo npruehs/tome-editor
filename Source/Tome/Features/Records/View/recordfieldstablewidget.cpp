@@ -106,6 +106,9 @@ void RecordFieldsTableWidget::setRecord(const QVariant recordId)
     {
         this->updateFieldValue(i);
     }
+
+    // Resize first column.
+    this->resizeColumnToContents(0);
 }
 
 void RecordFieldsTableWidget::setShowComponentNames(bool showComponentNames)
