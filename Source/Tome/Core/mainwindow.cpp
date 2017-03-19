@@ -362,6 +362,13 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     // Maximize window.
     this->showMaximized();
 
+    // Set splitter sizes.
+    int splitterWidth = this->ui->splitter->width();
+    QList<int> splitterSizes;
+    splitterSizes << splitterWidth * 1 / 5;
+    splitterSizes << splitterWidth * 4 / 5;
+    this->ui->splitter->setSizes(splitterSizes);
+
     // Set window title.
     this->updateWindowTitle();
 
