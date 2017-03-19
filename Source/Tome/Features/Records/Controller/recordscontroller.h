@@ -1,6 +1,8 @@
 #ifndef RECORDSCONTROLLER_H
 #define RECORDSCONTROLLER_H
 
+#include <random>
+
 #include <QStringList>
 
 #include "../Model/recordsetlist.h"
@@ -127,13 +129,16 @@ namespace Tome
 
         private:
             RecordSetList* model;
-            qlonglong nextRecordIntegerId;
 
             const FieldDefinitionsController& fieldDefinitionsController;
             const ProjectController& projectController;
             const TypesController& typesController;
 
+            std::mt19937 recordIdGenerator;
+            std::uniform_int_distribution<int> recordIdDistribution;
+
             void addRecordField(const QVariant& recordId, const QString& fieldId);
+            int generateIntegerId();
             const QString generateUuid() const;
             Record* getRecordById(const QVariant& id) const;
             void moveFieldToComponent(const QString& fieldId, const QString& oldComponent, const QString& newComponent);

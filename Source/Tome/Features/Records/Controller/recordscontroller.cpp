@@ -1,9 +1,11 @@
 #include "recordscontroller.h"
 
+#include <limits>
 #include <stdexcept>
 
 #include <QCryptographicHash>
 #include <QSet>
+#include <QTime>
 #include <QUuid>
 
 #include "../../Fields/Controller/fielddefinitionscontroller.h"
@@ -23,7 +25,9 @@ RecordsController::RecordsController(const FieldDefinitionsController& fieldDefi
                                      const TypesController& typesController)
     : fieldDefinitionsController(fieldDefinitionsController),
       projectController(projectController),
-      typesController(typesController)
+      typesController(typesController),
+      recordIdGenerator((uint)QTime::currentTime().msec()),
+      recordIdDistribution(1, std::numeric_limits<int>::max())
 {
     connect(&this->fieldDefinitionsController,
             SIGNAL(fieldDefinitionAdded(const Tome::FieldDefinition&)),
@@ -56,7 +60,7 @@ const Record RecordsController::addRecord(const QVariant& id,
             record.id = id;
             break;
         case RecordIdType::Integer:
-            record.id = id.isNull() ? this->nextRecordIntegerId++ : id;
+            record.id = id.isNull() ? this->generateIntegerId() : id;
             break;
         case RecordIdType::Uuid:
             record.id = id.isNull() ? this->generateUuid() : id;
@@ -205,7 +209,7 @@ const Record RecordsController::duplicateRecord(const QVariant& existingRecordId
             newRecord.displayName = newRecordId.toString();
             break;
         case RecordIdType::Integer:
-            newRecord.id = this->nextRecordIntegerId++;
+            newRecord.id = this->generateIntegerId();
             newRecord.displayName = existingRecord.displayName + "*";
             break;
         case RecordIdType::Uuid:
@@ -808,6 +812,11 @@ void RecordsController::addRecordField(const QVariant& recordId, const QString& 
     emit recordFieldsChanged(recordId);
 }
 
+int RecordsController::generateIntegerId()
+{
+    return recordIdDistribution(recordIdGenerator);
+}
+
 const QString RecordsController::generateUuid() const
 {
     return QUuid::createUuid().toString().mid(1, 36);
@@ -1114,8 +1123,6 @@ void RecordsController::verifyRecordIntegerIds()
     QSet<qlonglong> recordIntegerIds;
     QList<Record*> recordsWithDuplicateIntegerIds;
 
-    this->nextRecordIntegerId = 1;
-
     for (RecordSet& recordSet : *this->model)
     {
         for (int i = 0; i < recordSet.records.count(); ++i)
@@ -1136,11 +1143,6 @@ void RecordsController::verifyRecordIntegerIds()
                 recordIntegerIds.insert(recordIntegerId);
             }
 
-            if (recordIntegerId >= this->nextRecordIntegerId)
-            {
-                this->nextRecordIntegerId = recordIntegerId + 1;
-            }
-
             // Convert to integers.
             record.id = record.id.toLongLong();
 
@@ -1155,7 +1157,7 @@ void RecordsController::verifyRecordIntegerIds()
     for (Record* record : recordsWithDuplicateIntegerIds)
     {
         qlonglong oldRecordIntegerId = record->id.toLongLong();
-        qlonglong newRecordIntegerId = this->nextRecordIntegerId++;
+        qlonglong newRecordIntegerId = this->generateIntegerId();
 
         record->id = newRecordIntegerId;
 
