@@ -78,6 +78,7 @@ namespace Tome
             QList<QAction*> contextMenuActions;
 
             RecordTreeWidgetItem* getRecordItem(const QVariant& id);
+            void sort();
             void updateRecordItem(RecordTreeWidgetItem* recordTreeItem);
             void updateRecordItemRecursively(RecordTreeWidgetItem* recordTreeItem);
     };

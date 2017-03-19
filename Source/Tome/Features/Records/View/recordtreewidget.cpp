@@ -55,7 +55,7 @@ void RecordTreeWidget::addRecord(const QVariant& id, const QString& displayName,
         this->insertTopLevelItem(0, recordItem);
     }
 
-    this->sortItems(0, Qt::AscendingOrder);
+    this->sort();
 
     // Select new record.
     this->setCurrentItem(recordItem);
@@ -161,7 +161,7 @@ void RecordTreeWidget::updateRecord(const QVariant& oldId,
     // Sort by display name.
     if (oldDisplayName != newDisplayName)
     {
-        this->sortItems(0, Qt::AscendingOrder);
+        this->sort();
     }
 
     if (oldEditorIconFieldId != newEditorIconFieldId)
@@ -334,10 +334,7 @@ void RecordTreeWidget::setRecords(const RecordList& records)
 
     // Fill tree widget.
     this->insertTopLevelItems(0, items);
-
-    this->setSortingEnabled(true);
-    this->sortByColumn(0);
-    this->setSortingEnabled(false);
+    this->sort();
 
     if (this->settingsController.getExpandRecordTreeOnRefresh())
     {
@@ -464,4 +461,11 @@ RecordTreeWidgetItem* RecordTreeWidget::getRecordItem(const QVariant& id)
     }
 
     return nullptr;
+}
+
+void RecordTreeWidget::sort()
+{
+    this->setSortingEnabled(true);
+    this->sortByColumn(0);
+    this->setSortingEnabled(false);
 }
