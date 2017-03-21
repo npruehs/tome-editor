@@ -282,7 +282,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                         // Build map string.
                         fieldValueText = QString();
 
-                        QVariantMap map = fieldValue.toMap();
+                        const QVariantMap map = fieldValue.toMap();
 
                         for (QVariantMap::const_iterator it = map.cbegin();
                              it != map.cend();
