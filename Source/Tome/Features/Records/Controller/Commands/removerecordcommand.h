@@ -32,7 +32,7 @@ namespace Tome
             const QVariant id;
 
             RecordList removedRecords;
-            QMap<QVariant, RecordFieldValueMap> removedRecordFieldValues;
+            QList<QPair<QVariant, RecordFieldValueMap>> removedRecordFieldValues;
     };
 }
 

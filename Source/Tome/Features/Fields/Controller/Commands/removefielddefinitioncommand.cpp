@@ -30,12 +30,12 @@ void RemoveFieldDefinitionCommand::undo()
                                                         this->fieldDefinitionSetName);
 
     // Add record field values again.
-    for (QMap<QVariant, QVariant>::iterator it = this->removedRecordFieldValues.begin();
+    for (QList<QPair<QVariant, QVariant>>::iterator it = this->removedRecordFieldValues.begin();
          it != this->removedRecordFieldValues.end();
          ++it)
     {
-        const QVariant recordId = it.key();
-        const QVariant recordFieldValue = it.value();
+        const QVariant recordId = (*it).first;
+        const QVariant recordFieldValue = (*it).second;
 
         this->recordsController.updateRecordFieldValue(recordId, this->id, recordFieldValue);
     }
@@ -62,7 +62,7 @@ void RemoveFieldDefinitionCommand::redo()
         if (record.fieldValues.contains(this->id))
         {
             const QVariant recordFieldValue = record.fieldValues[this->id];
-            this->removedRecordFieldValues[record.id] = recordFieldValue;
+            this->removedRecordFieldValues << QPair<QVariant, QVariant>(record.id, recordFieldValue);
         }
     }
 
