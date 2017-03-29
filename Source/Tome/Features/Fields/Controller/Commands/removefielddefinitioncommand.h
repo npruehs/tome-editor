@@ -33,7 +33,7 @@ namespace Tome
             QString description;
             QString fieldDefinitionSetName;
 
-            QMap<QVariant, QVariant> removedRecordFieldValues;
+            QList<QPair<QVariant, QVariant>> removedRecordFieldValues;
     };
 }
 

@@ -50,12 +50,12 @@ void RemoveRecordCommand::undo()
     }
 
     // Restore references.
-    for (QMap<QVariant, RecordFieldValueMap>::iterator itRecords = this->removedRecordFieldValues.begin();
+    for (QList<QPair<QVariant, RecordFieldValueMap>>::iterator itRecords = this->removedRecordFieldValues.begin();
          itRecords != this->removedRecordFieldValues.end();
          ++itRecords)
     {
-        const QVariant& recordId = itRecords.key();
-        const RecordFieldValueMap removedValues = itRecords.value();
+        const QVariant& recordId = (*itRecords).first;
+        const RecordFieldValueMap removedValues = (*itRecords).second;
 
         for (RecordFieldValueMap::const_iterator itFields = removedValues.cbegin();
              itFields != removedValues.cend();
@@ -127,7 +127,7 @@ void RemoveRecordCommand::redo()
             }
         }
 
-        this->removedRecordFieldValues.insert(record.id, removedFieldValues);
+        this->removedRecordFieldValues << QPair<QVariant, RecordFieldValueMap>(record.id, removedFieldValues);
     }
 
     // Remove records recursively.

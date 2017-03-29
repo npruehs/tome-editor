@@ -381,7 +381,8 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
         this->comboBox->addItem(QString(), QVariant());
 
         // Only show allowed record references.
-        const RecordList records = this->recordsController.getRecords();
+        RecordList records = this->recordsController.getRecords();
+        std::sort(records.begin(), records.end(), recordLessThanDisplayName);
 
         for (const Record& record : records)
         {

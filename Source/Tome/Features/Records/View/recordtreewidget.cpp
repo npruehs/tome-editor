@@ -288,14 +288,14 @@ void RecordTreeWidget::setRecords(const RecordList& records)
     this->selectedRecordRedoStack.clear();
 
     // Create record tree items.
-    QMap<QVariant, RecordTreeWidgetItem*> recordItems;
+    QMap<QString, RecordTreeWidgetItem*> recordItems;
 
     for (int i = 0; i < records.size(); ++i)
     {
         const Record& record = records[i];
         RecordTreeWidgetItem* recordItem =
                 new RecordTreeWidgetItem(record.id, record.displayName, record.parentId, record.readOnly);
-        recordItems.insert(record.id, recordItem);
+        recordItems.insert(record.id.toString(), recordItem);
         updateRecordItem( recordItem );
 
         // Report progress.
@@ -308,13 +308,13 @@ void RecordTreeWidget::setRecords(const RecordList& records)
     // Build hierarchy and prepare item list for tree widget.
     QList<QTreeWidgetItem* > items;
 
-    for (QMap<QVariant, RecordTreeWidgetItem*>::iterator it = recordItems.begin();
+    for (QMap<QString, RecordTreeWidgetItem*>::iterator it = recordItems.begin();
          it != recordItems.end();
          ++it)
     {
         RecordTreeWidgetItem* recordItem = it.value();
-        QVariant recordItemParentId = recordItem->getParentId();
-        if (!recordItemParentId.isNull())
+        QString recordItemParentId = recordItem->getParentId().toString();
+        if (!recordItemParentId.isEmpty())
         {
             if (recordItems.contains(recordItemParentId))
             {
