@@ -284,8 +284,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
 
                         const QVariantMap map = fieldValue.toMap();
 
-                        for (QVariantMap::const_iterator it = map.cbegin();
-                             it != map.cend();
+                        for (QVariantMap::const_iterator it = map.begin();
+                             it != map.end();
                              ++it)
                         {
                             QString mapItem = exportTemplate.mapItemTemplate;
@@ -294,7 +294,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                             mapItem = mapItem.replace(PlaceholderFieldValue, QVariant(it.value()).toString());
                             fieldValueText.append(mapItem);
 
-                            if (it + 1 != map.end())
+                            if ((it + 1) != map.end())
                             {
                                 fieldValueText.append(exportTemplate.mapItemDelimiter);
                             }
