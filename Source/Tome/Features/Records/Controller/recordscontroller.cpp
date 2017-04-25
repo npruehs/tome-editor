@@ -681,19 +681,20 @@ void RecordsController::updateRecord(const QVariant oldId,
     }
 
     // Update record itself.
-    Record& record = *this->getRecordById(newId);
-    record.displayName = newDisplayName;
-    record.editorIconFieldId = newEditorIconFieldId;
+    Record* record = this->getRecordById(newId);
+    record->displayName = newDisplayName;
+    record->editorIconFieldId = newEditorIconFieldId;
 
     // Move record, if necessary.
-    if (record.recordSetName != recordSetName)
+    if (record->recordSetName != recordSetName)
     {
-        this->moveRecordToSet(record.id, recordSetName);
+        this->moveRecordToSet(newId, recordSetName);
+        record = this->getRecordById(newId);
     }
 
     // Update record fields.
     const FieldDefinitionList fields = this->fieldDefinitionsController.getFieldDefinitions();
-    const RecordFieldValueMap inheritedFieldValues = this->getInheritedFieldValues(record.id);
+    const RecordFieldValueMap inheritedFieldValues = this->getInheritedFieldValues(record->id);
 
     for (FieldDefinitionList::const_iterator it = fields.cbegin();
          it != fields.cend();
@@ -708,16 +709,16 @@ void RecordsController::updateRecord(const QVariant oldId,
         }
 
         // Check if field was added or removed.
-        const bool fieldWasEnabled = record.fieldValues.contains(field.id);
+        const bool fieldWasEnabled = record->fieldValues.contains(field.id);
         const bool fieldIsEnabled = fieldIds.contains(field.id);
 
         if (fieldIsEnabled && !fieldWasEnabled)
         {
-            this->addRecordField(record.id, field.id);
+            this->addRecordField(record->id, field.id);
         }
         else if (fieldWasEnabled && !fieldIsEnabled)
         {
-            this->removeRecordField(record.id, field.id);
+            this->removeRecordField(record->id, field.id);
         }
     }
 
@@ -934,10 +935,12 @@ void RecordsController::moveFieldToComponent(const QString& fieldId, const QStri
 
 void RecordsController::moveRecordToSet(const QVariant& recordId, const QString& recordSetName)
 {
-    qInfo(qUtf8Printable(QString("Moving record %1 to set %2.")
-          .arg(recordId.toString(), recordSetName)));
+    QVariant rid = recordId;
 
-    Record record = this->getRecord(recordId);
+    qInfo(qUtf8Printable(QString("Moving record %1 to set %2.")
+          .arg(rid.toString(), recordSetName)));
+
+    Record record = this->getRecord(rid);
 
     for (RecordSetList::iterator itSets = this->model->begin();
          itSets != this->model->end();
@@ -961,7 +964,7 @@ void RecordsController::moveRecordToSet(const QVariant& recordId, const QString&
                  it != records.end();
                  ++it)
             {
-                if ((*it).id == recordId)
+                if ((*it).id == rid)
                 {
                     records.erase(it);
                     break;
