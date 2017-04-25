@@ -27,3 +27,37 @@ void TestListUtils::findInsertionIndexFirst()
     // ASSERT.
     QCOMPARE(insertionIndex, 0);
 }
+
+void TestListUtils::findInsertionIndexMid()
+{
+    // ARRANGE.
+    QStringList strings;
+    strings << "a";
+    strings << "c";
+    strings << "d";
+
+    QString string = "b";
+
+    // ACT.
+    int insertionIndex = findInsertionIndex(strings, string, qStringLessThanLowerCase);
+
+    // ASSERT.
+    QCOMPARE(insertionIndex, 1);
+}
+
+void TestListUtils::findInsertionIndexLast()
+{
+    // ARRANGE.
+    QStringList strings;
+    strings << "a";
+    strings << "b";
+    strings << "c";
+
+    QString string = "d";
+
+    // ACT.
+    int insertionIndex = findInsertionIndex(strings, string, qStringLessThanLowerCase);
+
+    // ASSERT.
+    QCOMPARE(insertionIndex, 3);
+}

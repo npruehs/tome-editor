@@ -10,6 +10,8 @@ class TestListUtils : public QObject
 
     private slots:
         void findInsertionIndexFirst();
+        void findInsertionIndexMid();
+        void findInsertionIndexLast();
 };
 
 #endif // TESTLISTUTILS_H
