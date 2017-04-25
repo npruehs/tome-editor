@@ -336,7 +336,7 @@ void RecordWindow::onCheckBoxStateChanged(int state)
 bool RecordWindow::validate()
 {
     // Id must not be empty.
-    if (this->recordIdType == RecordIdType::String && this->getRecordId().isNull())
+    if (this->recordIdType == RecordIdType::String && this->getRecordId().toString().isEmpty())
     {
         QMessageBox::information(
                     this,
