@@ -61,3 +61,68 @@ void TestListUtils::findInsertionIndexLast()
     // ASSERT.
     QCOMPARE(insertionIndex, 3);
 }
+
+void TestListUtils::toStringEmptyList()
+{
+    // ARRANGE.
+    QVariantList numbers;
+
+    // ACT.
+    QString listString = toString(numbers);
+
+    // ASSERT.
+    QCOMPARE(listString, QString("[]"));
+}
+
+void TestListUtils::toStringOneElementList()
+{
+    // ARRANGE.
+    QVariantList numbers;
+    numbers << 1;
+
+    // ACT.
+    QString listString = toString(numbers);
+
+    // ASSERT.
+    QCOMPARE(listString, QString("[1]"));
+}
+
+void TestListUtils::toStringThreeElementsList()
+{
+    // ARRANGE.
+    QVariantList numbers;
+    numbers << 1;
+    numbers << 2;
+    numbers << 3;
+
+    // ACT.
+    QString listString = toString(numbers);
+
+    // ASSERT.
+    QCOMPARE(listString, QString("[1, 2, 3]"));
+}
+
+void TestListUtils::toStringEmptyMap()
+{
+    // ARRANGE.
+    QVariantMap numbers;
+
+    // ACT.
+    QString mapString = toString(numbers);
+
+    // ASSERT.
+    QCOMPARE(mapString, QString("[]"));
+}
+
+void TestListUtils::toStringOneElementMap()
+{
+    // ARRANGE.
+    QVariantMap numbers;
+    numbers.insert("one", 1);
+
+    // ACT.
+    QString mapString = toString(numbers);
+
+    // ASSERT.
+    QCOMPARE(mapString, QString("[{one:1}]"));
+}

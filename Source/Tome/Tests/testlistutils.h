@@ -12,6 +12,13 @@ class TestListUtils : public QObject
         void findInsertionIndexFirst();
         void findInsertionIndexMid();
         void findInsertionIndexLast();
+
+        void toStringEmptyList();
+        void toStringOneElementList();
+        void toStringThreeElementsList();
+
+        void toStringEmptyMap();
+        void toStringOneElementMap();
 };
 
 #endif // TESTLISTUTILS_H
