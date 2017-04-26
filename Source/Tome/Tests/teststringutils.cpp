@@ -112,3 +112,39 @@ void TestStringUtils::containsWhitespacesTwoAdjacentTabs()
     // ASSERT.
     QCOMPARE(contains, true);
 }
+
+void TestStringUtils::splitAtCapitalLettersNone()
+{
+    // ARRANGE.
+    QString string = "Onetwothree";
+
+    // ACT.
+    QString split = splitAtCapitalLetters(string);
+
+    // ASSERT.
+    QCOMPARE(split, QString("Onetwothree"));
+}
+
+void TestStringUtils::splitAtCapitalLettersOne()
+{
+    // ARRANGE.
+    QString string = "OneTwothree";
+
+    // ACT.
+    QString split = splitAtCapitalLetters(string);
+
+    // ASSERT.
+    QCOMPARE(split, QString("One Twothree"));
+}
+
+void TestStringUtils::splitAtCapitalLettersTwo()
+{
+    // ARRANGE.
+    QString string = "OneTwoThree";
+
+    // ACT.
+    QString split = splitAtCapitalLetters(string);
+
+    // ASSERT.
+    QCOMPARE(split, QString("One Two Three"));
+}

@@ -18,6 +18,10 @@ class TestStringUtils : public QObject
         void containsWhitespacesOneTab();
         void containsWhitespacesTwoTabs();
         void containsWhitespacesTwoAdjacentTabs();
+
+        void splitAtCapitalLettersNone();
+        void splitAtCapitalLettersOne();
+        void splitAtCapitalLettersTwo();
 };
 
 #endif // TESTSTRINGUTILS_H
