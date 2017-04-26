@@ -11,6 +11,7 @@ build_script:
 test_script:
   - qmake Project\Tome.pro "CONFIG+=debug" "CONFIG+=test"
   - mingw32-make
+  - ps: dir
   - C:\projects\tome-editor\Bin\debug\Tome\Tome.exe -o xunit-results.xml,xunitxml
   - ps: |
       $wc = New-Object 'System.Net.WebClient'
