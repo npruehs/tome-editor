@@ -7,7 +7,10 @@ namespace Tome
 {
     inline bool containsWhitespaces(const QString& s)
     {
-        return s.simplified().contains(" ");
+        return s.contains(" ") ||
+               s.contains("\t") ||
+               s.contains("\r") ||
+               s.contains("\n");
     }
 
     inline bool qStringLessThanLowerCase(const QString& e1, const QString& e2)
