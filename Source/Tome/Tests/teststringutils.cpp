@@ -148,3 +148,111 @@ void TestStringUtils::splitAtCapitalLettersTwo()
     // ASSERT.
     QCOMPARE(split, QString("One Two Three"));
 }
+
+void TestStringUtils::stripWhitespacesNone()
+{
+    // ARRANGE.
+    QString string = "ab";
+
+    // ACT.
+    QString stripped = stripWhitespaces(string);
+
+    // ASSERT.
+    QCOMPARE(stripped, QString("ab"));
+}
+
+void TestStringUtils::stripWhitespacesOneSpace()
+{
+    // ARRANGE.
+    QString string = "a b";
+
+    // ACT.
+    QString stripped = stripWhitespaces(string);
+
+    // ASSERT.
+    QCOMPARE(stripped, QString("ab"));
+}
+
+void TestStringUtils::stripWhitespacesOneLeadingSpace()
+{
+    // ARRANGE.
+    QString string = " ab";
+
+    // ACT.
+    QString stripped = stripWhitespaces(string);
+
+    // ASSERT.
+    QCOMPARE(stripped, QString("ab"));
+}
+
+void TestStringUtils::stripWhitespacesOneTrailingSpace()
+{
+    // ARRANGE.
+    QString string = "ab ";
+
+    // ACT.
+    QString stripped = stripWhitespaces(string);
+
+    // ASSERT.
+    QCOMPARE(stripped, QString("ab"));
+}
+
+void TestStringUtils::stripWhitespacesTwoSpaces()
+{
+    // ARRANGE.
+    QString string = "a b c";
+
+    // ACT.
+    QString stripped = stripWhitespaces(string);
+
+    // ASSERT.
+    QCOMPARE(stripped, QString("abc"));
+}
+
+void TestStringUtils::stripWhitespacesTwoAdjacentSpaces()
+{
+    // ARRANGE.
+    QString string = "a  b";
+
+    // ACT.
+    QString stripped = stripWhitespaces(string);
+
+    // ASSERT.
+    QCOMPARE(stripped, QString("ab"));
+}
+
+void TestStringUtils::stripWhitespacesOneTab()
+{
+    // ARRANGE.
+    QString string = "a\tb";
+
+    // ACT.
+    QString stripped = stripWhitespaces(string);
+
+    // ASSERT.
+    QCOMPARE(stripped, QString("ab"));
+}
+
+void TestStringUtils::stripWhitespacesTwoTabs()
+{
+    // ARRANGE.
+    QString string = "a\tb\tc";
+
+    // ACT.
+    QString stripped = stripWhitespaces(string);
+
+    // ASSERT.
+    QCOMPARE(stripped, QString("abc"));
+}
+
+void TestStringUtils::stripWhitespacesTwoAdjacentTabs()
+{
+    // ARRANGE.
+    QString string = "a\t\tb";
+
+    // ACT.
+    QString stripped = stripWhitespaces(string);
+
+    // ASSERT.
+    QCOMPARE(stripped, QString("ab"));
+}

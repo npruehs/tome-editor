@@ -22,6 +22,16 @@ class TestStringUtils : public QObject
         void splitAtCapitalLettersNone();
         void splitAtCapitalLettersOne();
         void splitAtCapitalLettersTwo();
+
+        void stripWhitespacesNone();
+        void stripWhitespacesOneSpace();
+        void stripWhitespacesOneLeadingSpace();
+        void stripWhitespacesOneTrailingSpace();
+        void stripWhitespacesTwoSpaces();
+        void stripWhitespacesTwoAdjacentSpaces();
+        void stripWhitespacesOneTab();
+        void stripWhitespacesTwoTabs();
+        void stripWhitespacesTwoAdjacentTabs();
 };
 
 #endif // TESTSTRINGUTILS_H
