@@ -12,6 +12,8 @@ test_script:
   - qmake Project\Tome.pro "CONFIG+=debug" "CONFIG+=test"
   - mingw32-make
   - ..\Bin\debug\Tome\Tome.exe -o xunit-results.xml,xunitxml
+  - dir ..\Bin\debug\Tome
+  - dir
   - ps: |
       $wc = New-Object 'System.Net.WebClient'
-      $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path ..\Bin\debug\Tome\xunit-results.xml))
+      $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\xunit-results.xml))
