@@ -352,8 +352,10 @@ test
 
     SOURCES -= ../Source/Tome/main.cpp
 
-    HEADERS += ../Source/Tome/Tests/testlistutils.h
+    HEADERS += ../Source/Tome/Tests/testlistutils.h \
+        ../Source/Tome/Tests/teststringutils.h
 
     SOURCES += ../Source/Tome/testmain.cpp \
-        ../Source/Tome/Tests/testlistutils.cpp
+        ../Source/Tome/Tests/testlistutils.cpp \
+        ../Source/Tome/Tests/teststringutils.cpp
 }
