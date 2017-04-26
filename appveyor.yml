@@ -1,9 +1,17 @@
-version: '0.4.{build}'
+version: '0.9.{build}'
 
 install:
-  - set QTDIR=C:\Qt\5.7\mingw53_32
+  - set QTDIR=C:\Qt\5.8\mingw53_32
   - set PATH=%PATH%;%QTDIR%\bin;C:\MinGW\bin
 
 build_script:
   - qmake Project\Tome.pro
   - mingw32-make
+
+test_script:
+  - qmake Project\Tome.pro "CONFIG+=test"
+  - mingw32-make
+  - Bin\debug\Tome\Tome.exe -o xunit-results.xml,xunitxml
+  - ps: |
+      $wc = New-Object 'System.Net.WebClient'
+      $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path Bin\debug\Tome\xunit-results.xml))
