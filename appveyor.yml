@@ -9,7 +9,7 @@ build_script:
   - mingw32-make
 
 test_script:
-  - qmake Project\Tome.pro "CONFIG+=test"
+  - qmake Project\Tome.pro "CONFIG+=debug" "CONFIG+=test"
   - mingw32-make
   - C:\projects\tome-editor\Bin\debug\Tome\Tome.exe -o xunit-results.xml,xunitxml
   - ps: |
