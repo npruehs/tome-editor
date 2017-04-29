@@ -93,8 +93,7 @@ void CustomTypeSetSerializer::serialize(QIODevice& device, const CustomTypeSet& 
 void CustomTypeSetSerializer::deserialize(QIODevice& device, CustomTypeSet& customTypeSet) const
 {
     // Open device stream.
-    QXmlStreamReader streamReader(&device);
-    XmlReader reader(streamReader);
+    XmlReader reader(&device);
 
     // Begin document.
     reader.readStartDocument();

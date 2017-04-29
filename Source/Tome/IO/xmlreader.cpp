@@ -3,15 +3,19 @@
 #include <stdexcept>
 
 
-XmlReader::XmlReader(QXmlStreamReader& reader)
-    : reader(reader)
+XmlReader::XmlReader(QIODevice* device)
+    : device(device)
 {
-    this->reader.readNext();
+}
+
+XmlReader::~XmlReader()
+{
+    delete this->reader;
 }
 
 QString XmlReader::getElementName() const
 {
-    return this->reader.name().toString();
+    return this->reader->name().toString();
 }
 
 bool XmlReader::isAtElement(const QString& elementName) const
@@ -21,7 +25,7 @@ bool XmlReader::isAtElement(const QString& elementName) const
 
 QString XmlReader::readAttribute(const QString& attributeName) const
 {
-    return this->reader.attributes().value(attributeName).toString();
+    return this->reader->attributes().value(attributeName).toString();
 }
 
 void XmlReader::readEmptyElement(const QString& expectedElementName)
@@ -42,16 +46,19 @@ void XmlReader::readEndElement()
 
 void XmlReader::readStartDocument()
 {
+    this->reader = new QXmlStreamReader(device);
+    this->reader->readNext();
+
     this->readToken(QXmlStreamReader::StartDocument);
 }
 
 void XmlReader::readStartElement(const QString& expectedElementName)
 {
-    const qint64 line = this->reader.lineNumber();
-    const qint64 column = this->reader.columnNumber();
+    const qint64 line = this->reader->lineNumber();
+    const qint64 column = this->reader->columnNumber();
 
     // Verify token type.
-    if (!this->reader.isStartElement())
+    if (!this->reader->isStartElement())
     {
         throwTokenError(line, column);
     }
@@ -74,10 +81,10 @@ QString XmlReader::readTextElement(const QString& textElementName)
     this->readStartElement(textElementName);
 
     // Read text.
-    QString text = this->reader.text().toString();
+    QString text = this->reader->text().toString();
 
     // Read end element.
-    this->reader.readNext();
+    this->reader->readNext();
 
     // Advance to next token.
     this->moveToNextToken();
@@ -87,21 +94,21 @@ QString XmlReader::readTextElement(const QString& textElementName)
 
 void XmlReader::moveToNextToken()
 {
-    this->reader.readNext();
+    this->reader->readNext();
 
-    while (this->reader.isWhitespace())
+    while (this->reader->isWhitespace())
     {
-        this->reader.readNext();
+        this->reader->readNext();
     }
 }
 
 void XmlReader::readToken(const QXmlStreamReader::TokenType& expectedTokenType)
 {
-    const qint64 line = this->reader.lineNumber();
-    const qint64 column = this->reader.columnNumber();
+    const qint64 line = this->reader->lineNumber();
+    const qint64 column = this->reader->columnNumber();
 
     // Verify token type.
-    const QXmlStreamReader::TokenType tokenType = this->reader.tokenType();
+    const QXmlStreamReader::TokenType tokenType = this->reader->tokenType();
     if (tokenType != expectedTokenType)
     {
         throwTokenError(line, column);

@@ -155,8 +155,7 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
 void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> project) const
 {
     // Open device stream.
-    QXmlStreamReader streamReader(&device);
-    XmlReader reader(streamReader);
+    XmlReader reader(&device);
 
     // Begin document.
     reader.readStartDocument();

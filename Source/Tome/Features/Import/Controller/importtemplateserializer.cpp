@@ -100,8 +100,7 @@ void ImportTemplateSerializer::serialize(QIODevice& device, const RecordTableImp
 void ImportTemplateSerializer::deserialize(QIODevice& device, RecordTableImportTemplate& importTemplate) const
 {
     // Open device stream.
-    QXmlStreamReader streamReader(&device);
-    XmlReader reader(streamReader);
+    XmlReader reader(&device);
 
     // Begin document.
     reader.readStartDocument();

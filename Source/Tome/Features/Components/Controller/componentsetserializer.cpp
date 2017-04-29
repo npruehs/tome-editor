@@ -45,8 +45,7 @@ void ComponentSetSerializer::serialize(QIODevice& device, const Tome::ComponentS
 void ComponentSetSerializer::deserialize(QIODevice& device, ComponentSet& componentSet) const
 {
     // Open device stream.
-    QXmlStreamReader stream(&device);
-    XmlReader reader(stream);
+    XmlReader reader(&device);
 
     // Begin document.
     reader.readStartDocument();

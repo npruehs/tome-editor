@@ -127,8 +127,7 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
 void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) const
 {
     // Open device stream.
-    QXmlStreamReader stream(&device);
-    XmlReader reader(stream);
+    XmlReader reader(&device);
 
     // Begin document.
     reader.readStartDocument();

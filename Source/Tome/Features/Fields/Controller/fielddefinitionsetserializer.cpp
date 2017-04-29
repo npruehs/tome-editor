@@ -95,8 +95,7 @@ void FieldDefinitionSetSerializer::serialize(QIODevice& device, const FieldDefin
 void FieldDefinitionSetSerializer::deserialize(QIODevice& device, FieldDefinitionSet& fieldDefinitionSet) const
 {
     // Open device stream.
-    QXmlStreamReader stream(&device);
-    XmlReader reader(stream);
+    XmlReader reader(&device);
 
     // Begin document.
     reader.readStartDocument();

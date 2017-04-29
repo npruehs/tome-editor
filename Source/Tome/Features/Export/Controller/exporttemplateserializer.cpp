@@ -119,8 +119,7 @@ void ExportTemplateSerializer::serialize(QIODevice& device, const RecordExportTe
 void ExportTemplateSerializer::deserialize(QIODevice& device, RecordExportTemplate& exportTemplate) const
 {
     // Open device stream.
-    QXmlStreamReader streamReader(&device);
-    XmlReader reader(streamReader);
+    XmlReader reader(&device);
 
     // Begin document.
     reader.readStartDocument();
