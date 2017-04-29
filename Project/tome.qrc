@@ -27,5 +27,6 @@
         <file>../Source/Tome/Features/Components/Model/TomeComponents.xsd</file>
         <file>../Source/Tome/Features/Fields/Model/TomeFields.xsd</file>
         <file>../Source/Tome/Features/Import/Model/TomeImportTemplate.xsd</file>
+        <file>../Source/Tome/Features/Export/Model/TomeExportTemplate2.xsd</file>
     </qresource>
 </RCC>
