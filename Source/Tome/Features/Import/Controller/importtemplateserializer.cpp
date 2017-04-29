@@ -100,8 +100,11 @@ void ImportTemplateSerializer::serialize(QIODevice& device, const RecordTableImp
 void ImportTemplateSerializer::deserialize(QIODevice& device, RecordTableImportTemplate& importTemplate) const
 {
     // Open device stream.
-    QXmlStreamReader streamReader(&device);
-    XmlReader reader(streamReader);
+    XmlReader reader(&device);
+
+    // Validate import template file.
+    reader.validate(":/Source/Tome/Features/Import/Model/TomeImportTemplate.xsd",
+                    QObject::tr("Invalid import template file: %1 (line %2, column %3)"));
 
     // Begin document.
     reader.readStartDocument();

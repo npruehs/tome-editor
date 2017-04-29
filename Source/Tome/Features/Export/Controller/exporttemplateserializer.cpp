@@ -119,15 +119,15 @@ void ExportTemplateSerializer::serialize(QIODevice& device, const RecordExportTe
 void ExportTemplateSerializer::deserialize(QIODevice& device, RecordExportTemplate& exportTemplate) const
 {
     // Open device stream.
-    QXmlStreamReader streamReader(&device);
-    XmlReader reader(streamReader);
+    XmlReader reader(&device);
+
+    // Validate export template file.
+    reader.validate(":/Source/Tome/Features/Export/Model/TomeExportTemplate2.xsd",
+                    QObject::tr("Invalid export template file: %1 (line %2, column %3)"));
 
     // Begin document.
     reader.readStartDocument();
     {
-        // Read version.
-        int version = reader.readAttribute(AttributeVersion).toInt();
-
         // Read export flags.
         bool exportAsTable = reader.readAttribute(AttributeExportAsTable) == "true";
         bool exportRoots = reader.readAttribute(AttributeExportRoots) == "true";
@@ -164,26 +164,23 @@ void ExportTemplateSerializer::deserialize(QIODevice& device, RecordExportTempla
             reader.readEndElement();
 
             // Read ignore lists.
-            if (version > 1)
+            reader.readStartElement(ElementIgnoredRecords);
             {
-                reader.readStartElement(ElementIgnoredRecords);
+                while (reader.isAtElement(ElementId))
                 {
-                    while (reader.isAtElement(ElementId))
-                    {
-                        exportTemplate.ignoredRecords << reader.readTextElement(ElementId);
-                    }
+                    exportTemplate.ignoredRecords << reader.readTextElement(ElementId);
                 }
-                reader.readEndElement();
-
-                reader.readStartElement(ElementIgnoredFields);
-                {
-                    while (reader.isAtElement(ElementId))
-                    {
-                        exportTemplate.ignoredFields << reader.readTextElement(ElementId);
-                    }
-                }
-                reader.readEndElement();
             }
+            reader.readEndElement();
+
+            reader.readStartElement(ElementIgnoredFields);
+            {
+                while (reader.isAtElement(ElementId))
+                {
+                    exportTemplate.ignoredFields << reader.readTextElement(ElementId);
+                }
+            }
+            reader.readEndElement();
         }
         reader.readEndElement();
     }

@@ -155,15 +155,15 @@ void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> pro
 void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> project) const
 {
     // Open device stream.
-    QXmlStreamReader streamReader(&device);
-    XmlReader reader(streamReader);
+    XmlReader reader(&device);
+
+    // Validate project file.
+    reader.validate(":/Source/Tome/Features/Projects/Model/TomeProject6.xsd",
+                    QObject::tr("Invalid project file: %1 (line %2, column %3)"));
 
     // Begin document.
     reader.readStartDocument();
     {
-        // Read version.
-        int version = reader.readAttribute(AttributeVersion).toInt();
-
         // Read record id type.
         project->recordIdType = RecordIdType::fromString(reader.readAttribute(AttributeRecordIdType));
 
@@ -182,34 +182,15 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             project->name = reader.readTextElement(ElementName);
 
             // Read project locale.
-            if (version > 1)
-            {
-                project->locale = QLocale(reader.readTextElement(ElementLocale));
-            }
+            project->locale = QLocale(reader.readTextElement(ElementLocale));
 
             // Read components.
             reader.readStartElement(ElementComponents);
             {
-                if (version > 3)
-                {
-                    while (reader.isAtElement(ElementPath))
-                    {
-                        ComponentSet componentSet = ComponentSet();
-                        componentSet.name = reader.readTextElement(ElementPath);
-                        project->componentSets.push_back(componentSet);
-                    }
-                }
-                else
+                while (reader.isAtElement(ElementPath))
                 {
                     ComponentSet componentSet = ComponentSet();
-                    componentSet.name = project->name;
-
-                    while (reader.isAtElement(ElementName))
-                    {
-                        const QString component = reader.readTextElement(ElementName);
-                        componentSet.components.push_back(component);
-                    }
-
+                    componentSet.name = reader.readTextElement(ElementPath);
                     project->componentSets.push_back(componentSet);
                 }
             }
@@ -242,57 +223,11 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             // Read record export templates.
             reader.readStartElement(ElementRecordExportTemplates);
             {
-                if (version > 3)
+                while (reader.isAtElement(ElementPath))
                 {
-                    while (reader.isAtElement(ElementPath))
-                    {
-                        RecordExportTemplate exportTemplate = RecordExportTemplate();
-                        exportTemplate.path = reader.readTextElement(ElementPath);
-                        project->recordExportTemplates << exportTemplate;
-                    }
-                }
-                else
-                {
-                    while (reader.isAtElement(ElementTemplate))
-                    {
-                        bool exportAsTable = reader.readAttribute(AttributeExportAsTable) == "true";
-                        bool exportRoots = reader.readAttribute(AttributeExportRoots) == "true";
-                        bool exportInnerNodes = reader.readAttribute(AttributeExportInnerNodes) == "true";
-                        bool exportLeafs = reader.readAttribute(AttributeExportLeafs) == "true";
-
-                        reader.readStartElement(ElementTemplate);
-                        {
-                            RecordExportTemplate exportTemplate = RecordExportTemplate();
-
-                            exportTemplate.exportAsTable = exportAsTable;
-                            exportTemplate.exportRoots = exportRoots;
-                            exportTemplate.exportInnerNodes = exportInnerNodes;
-                            exportTemplate.exportLeafs = exportLeafs;
-
-                            exportTemplate.name = reader.readTextElement(ElementName);
-                            exportTemplate.path = exportTemplate.name;
-                            exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);
-
-                            // Read export type map.
-                            reader.readStartElement(ElementTypeMap);
-                            {
-                                while (reader.isAtElement(ElementMapping))
-                                {
-                                    QString typeMapKey = reader.readAttribute(AttributeTomeType);
-                                    QString typeMapValue = reader.readAttribute(AttributeExportedType);
-
-                                    exportTemplate.typeMap.insert(typeMapKey, typeMapValue);
-
-                                    // Advance reader.
-                                    reader.readEmptyElement(ElementMapping);
-                                }
-                            }
-                            reader.readEndElement();
-
-                            project->recordExportTemplates << exportTemplate;
-                        }
-                        reader.readEndElement();
-                    }
+                    RecordExportTemplate exportTemplate = RecordExportTemplate();
+                    exportTemplate.path = reader.readTextElement(ElementPath);
+                    project->recordExportTemplates << exportTemplate;
                 }
             }
             reader.readEndElement();
@@ -300,68 +235,26 @@ void ProjectSerializer::deserialize(QIODevice& device, QSharedPointer<Project> p
             // Read types.
             reader.readStartElement(ElementTypes);
             {
-                if (version > 3)
-                {
-                    while (reader.isAtElement(ElementPath))
-                    {
-                        CustomTypeSet typeSet = CustomTypeSet();
-                        typeSet.name = reader.readTextElement(ElementPath);
-                        project->typeSets.push_back(typeSet);
-                    }
-                }
-                else
+                while (reader.isAtElement(ElementPath))
                 {
                     CustomTypeSet typeSet = CustomTypeSet();
-                    typeSet.name = project->name;
-
-                    while (reader.isAtElement(ElementType))
-                    {
-                        CustomType type = CustomType();
-
-                        type.name = reader.readAttribute(ElementName);
-
-                        reader.readStartElement(ElementType);
-                        {
-                            // Read type restriction map.
-                            reader.readStartElement(ElementRestrictions);
-                            {
-                                while (reader.isAtElement(ElementRestriction))
-                                {
-                                    QString restrictionKey = reader.readAttribute(AttributeKey);
-                                    QString restrictionValue = reader.readAttribute(AttributeValue);
-
-                                    type.fundamentalFacets.insert(restrictionKey, restrictionValue);
-
-                                    // Advance reader.
-                                    reader.readEmptyElement(ElementRestriction);
-                                }
-                            }
-                            reader.readEndElement();
-                        }
-                        reader.readEndElement();
-
-                        typeSet.types.push_back(type);
-                    }
-
+                    typeSet.name = reader.readTextElement(ElementPath);
                     project->typeSets.push_back(typeSet);
                 }
             }
             reader.readEndElement();
 
             // Read record export templates.
-            if (version > 4)
+            reader.readStartElement(ElementRecordImportTemplates);
             {
-                reader.readStartElement(ElementRecordImportTemplates);
+                while (reader.isAtElement(ElementPath))
                 {
-                    while (reader.isAtElement(ElementPath))
-                    {
-                        RecordTableImportTemplate importTemplate = RecordTableImportTemplate();
-                        importTemplate.path = reader.readTextElement(ElementPath);
-                        project->recordTableImportTemplates << importTemplate;
-                    }
+                    RecordTableImportTemplate importTemplate = RecordTableImportTemplate();
+                    importTemplate.path = reader.readTextElement(ElementPath);
+                    project->recordTableImportTemplates << importTemplate;
                 }
-                reader.readEndElement();
             }
+            reader.readEndElement();
         }
         // End project.
         reader.readEndElement();

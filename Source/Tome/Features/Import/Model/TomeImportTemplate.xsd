@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Template" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Template">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Name" type="xs:string" minOccurs="0" />
+        <xs:element name="SourceType" type="xs:string" minOccurs="0" />
+        <xs:element name="IdColumn" type="xs:string" minOccurs="0" />
+        <xs:element name="RootRecordId" type="xs:string" minOccurs="0" />
+        <xs:element name="ColumnMap" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Mapping" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="ColumnName" type="xs:string" />
+                  <xs:attribute name="FieldId" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="IgnoredIds" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Parameters" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="Key" type="xs:string" />
+                  <xs:attribute name="Value" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="Version" type="xs:int" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

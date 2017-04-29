@@ -6,7 +6,8 @@
 class XmlReader
 {
     public:
-        XmlReader(QXmlStreamReader& reader);
+        XmlReader(QIODevice *device);
+        ~XmlReader();
 
         /**
          * @brief getElementName Gets the name of the current element.
@@ -62,8 +63,11 @@ class XmlReader
          */
         QString readTextElement(const QString& textElementName);
 
+        void validate(const QString& schemaFileName, const QString& validationErrorMessage);
+
     private:
-        QXmlStreamReader& reader;
+        QIODevice* device = nullptr;
+        QXmlStreamReader* reader = nullptr;
 
         void moveToNextToken();
         void readToken(const QXmlStreamReader::TokenType& expectedTokenType);
