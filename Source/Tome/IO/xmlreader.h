@@ -63,6 +63,8 @@ class XmlReader
          */
         QString readTextElement(const QString& textElementName);
 
+        void validate(const QString& schemaFileName, const QString& validationErrorMessage);
+
     private:
         QIODevice* device;
         QXmlStreamReader* reader;

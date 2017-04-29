@@ -2,6 +2,12 @@
 
 #include <stdexcept>
 
+#include <QFile>
+#include <QXmlSchema>
+#include <QXmlSchemaValidator>
+
+#include "messagehandler.h"
+
 
 XmlReader::XmlReader(QIODevice* device)
     : device(device)
@@ -90,6 +96,52 @@ QString XmlReader::readTextElement(const QString& textElementName)
     this->moveToNextToken();
 
     return text;
+}
+
+void XmlReader::validate(const QString& schemaFileName,
+                         const QString& validationErrorMessage)
+{
+    // Load schema.
+    QXmlSchema schema;
+
+    MessageHandler messageHandler;
+    schema.setMessageHandler(&messageHandler);
+
+    QFile schemaFile(schemaFileName);
+
+    if (!schemaFile.open(QFile::ReadOnly))
+    {
+        QString errorMessage = "Schema file could not be opened: " + schemaFileName;
+        qCritical(qUtf8Printable(errorMessage));
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+
+    schema.load(&schemaFile);
+
+    if (!schema.isValid())
+    {
+        QString errorMessage = "Schema file is invalid: " + schemaFileName;
+        qCritical(qUtf8Printable(errorMessage));
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+
+    // Validate data.
+    const QByteArray xmlData = this->device->readAll();
+
+    QXmlSchemaValidator validator(schema);
+
+    if (!validator.validate(xmlData))
+    {
+        QString errorMessage = validationErrorMessage.arg
+                    (messageHandler.getDescription(),
+                     QString::number(messageHandler.getSourceLocation().line()),
+                     QString::number(messageHandler.getSourceLocation().column()));
+
+        qCritical(qUtf8Printable(errorMessage));
+        throw std::runtime_error(errorMessage.toStdString());
+    }
+
+    this->device->reset();
 }
 
 void XmlReader::moveToNextToken()
