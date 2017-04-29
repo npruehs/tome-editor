@@ -16,7 +16,10 @@ XmlReader::XmlReader(QIODevice* device)
 
 XmlReader::~XmlReader()
 {
-    delete this->reader;
+    if (this->reader)
+    {
+        delete this->reader;
+    }
 }
 
 QString XmlReader::getElementName() const

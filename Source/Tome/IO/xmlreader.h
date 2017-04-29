@@ -66,8 +66,8 @@ class XmlReader
         void validate(const QString& schemaFileName, const QString& validationErrorMessage);
 
     private:
-        QIODevice* device;
-        QXmlStreamReader* reader;
+        QIODevice* device = nullptr;
+        QXmlStreamReader* reader = nullptr;
 
         void moveToNextToken();
         void readToken(const QXmlStreamReader::TokenType& expectedTokenType);
