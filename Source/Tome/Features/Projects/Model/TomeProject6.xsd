@@ -49,7 +49,15 @@
         </xs:element>
       </xs:sequence>
       <xs:attribute name="Version" type="xs:int" fixed="6" use="required" />
-      <xs:attribute name="RecordIdType" type="xs:string" />
+      <xs:attribute name="RecordIdType">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="String"/>
+            <xs:enumeration value="Integer"/>
+            <xs:enumeration value="Uuid"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
     </xs:complexType>
   </xs:element>
 </xs:schema>

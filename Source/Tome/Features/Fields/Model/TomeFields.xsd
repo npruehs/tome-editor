@@ -8,8 +8,8 @@
             <xs:sequence>
               <xs:element name="DefaultValue" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:attribute name="Value" type="xs:string" />
                   <xs:attribute name="Key" type="xs:string" />
+                  <xs:attribute name="Value" type="xs:string" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

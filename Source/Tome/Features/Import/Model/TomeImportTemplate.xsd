@@ -4,7 +4,15 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element name="Name" type="xs:string" minOccurs="0" />
-        <xs:element name="SourceType" type="xs:string" minOccurs="0" />
+        <xs:element name="SourceType" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="CSV"/>
+              <xs:enumeration value="GoogleSheets"/>
+              <xs:enumeration value="XLSX"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
         <xs:element name="IdColumn" type="xs:string" minOccurs="0" />
         <xs:element name="RootRecordId" type="xs:string" minOccurs="0" />
         <xs:element name="ColumnMap" minOccurs="0" maxOccurs="unbounded">

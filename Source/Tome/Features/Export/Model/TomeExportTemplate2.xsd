@@ -33,11 +33,11 @@
         </xs:element>
       </xs:sequence>
       <xs:attribute name="Version" type="xs:int" fixed="2" use="required" />
-      <xs:attribute name="ExportRoots" type="xs:string" />
-      <xs:attribute name="ExportInnerNodes" type="xs:string" />
-      <xs:attribute name="ExportLeafs" type="xs:string" />
-      <xs:attribute name="ExportAsTable" type="xs:string" />
-      <xs:attribute name="ExportLocalizedFieldsOnly" type="xs:string" />
+      <xs:attribute name="ExportRoots" type="xs:boolean" />
+      <xs:attribute name="ExportInnerNodes" type="xs:boolean" />
+      <xs:attribute name="ExportLeafs" type="xs:boolean" />
+      <xs:attribute name="ExportAsTable" type="xs:boolean" />
+      <xs:attribute name="ExportLocalizedFieldsOnly" type="xs:boolean" />
     </xs:complexType>
   </xs:element>
 </xs:schema>
