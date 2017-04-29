@@ -1827,6 +1827,7 @@ void MainWindow::updateMenus()
 
     // Update actions.
     this->ui->actionSave_Project->setEnabled(projectLoaded);
+    this->ui->actionReload_Project->setEnabled(projectLoaded);
 
     this->ui->actionProject_Overview->setEnabled(projectLoaded);
 
