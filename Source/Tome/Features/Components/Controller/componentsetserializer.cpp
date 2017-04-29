@@ -47,6 +47,10 @@ void ComponentSetSerializer::deserialize(QIODevice& device, ComponentSet& compon
     // Open device stream.
     XmlReader reader(&device);
 
+    // Validate components file.
+    reader.validate(":/Source/Tome/Features/Components/Model/TomeComponents.xsd",
+                    QObject::tr("Invalid components file: %1 (line %2, column %3)"));
+
     // Begin document.
     reader.readStartDocument();
     {

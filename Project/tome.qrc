@@ -24,5 +24,6 @@
         <file>../Media/Icons/Undo_16x.png</file>
         <file>../Media/Icons/NavigateBackwards_6270.png</file>
         <file>../Media/Icons/NavigateForward_6271.png</file>
+        <file>../Source/Tome/Features/Components/Model/TomeComponents.xsd</file>
     </qresource>
 </RCC>
