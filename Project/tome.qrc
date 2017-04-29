@@ -25,5 +25,6 @@
         <file>../Media/Icons/NavigateBackwards_6270.png</file>
         <file>../Media/Icons/NavigateForward_6271.png</file>
         <file>../Source/Tome/Features/Components/Model/TomeComponents.xsd</file>
+        <file>../Source/Tome/Features/Fields/Model/TomeFields.xsd</file>
     </qresource>
 </RCC>

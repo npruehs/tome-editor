@@ -97,6 +97,10 @@ void FieldDefinitionSetSerializer::deserialize(QIODevice& device, FieldDefinitio
     // Open device stream.
     XmlReader reader(&device);
 
+    // Validate fields file.
+    reader.validate(":/Source/Tome/Features/Fields/Model/TomeFields.xsd",
+                    QObject::tr("Invalid fields file: %1 (line %2, column %3)"));
+
     // Begin document.
     reader.readStartDocument();
     {
