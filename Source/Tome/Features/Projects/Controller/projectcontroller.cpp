@@ -142,12 +142,6 @@ void ProjectController::loadComponentSet(const QString& projectPath, ComponentSe
 {
     ComponentSetSerializer componentSerializer = ComponentSetSerializer();
 
-    // TODO(np): Remove as soon as backwards compatibility is removed from ProjectSerializer.
-    if (componentSet.components.size() > 0)
-    {
-        return;
-    }
-
     // Open component file.
     QString fullComponentSetPath =
             buildFullFilePath(componentSet.name, projectPath, ComponentFileExtension);
@@ -181,12 +175,6 @@ void ProjectController::loadComponentSet(const QString& projectPath, ComponentSe
 void ProjectController::loadCustomTypeSet(const QString& projectPath, CustomTypeSet& typeSet) const
 {
     CustomTypeSetSerializer typesSerializer = CustomTypeSetSerializer();
-
-    // TODO(np): Remove as soon as backwards compatibility is removed from ProjectSerializer.
-    if (typeSet.types.size() > 0)
-    {
-        return;
-    }
 
     // Open types file.
     QString fullTypeSetPath =
@@ -222,35 +210,31 @@ void ProjectController::loadExportTemplate(const QString& projectPath, RecordExp
 {
     ExportTemplateSerializer exportTemplateSerializer = ExportTemplateSerializer();
 
-     // TODO(np): Remove empty check as soon as backwards compatibility is removed from ProjectSerializer.
-    if (exportTemplate.fileExtension.isEmpty())
+    // Read template file.
+    QString fullExportTemplatePath =
+            buildFullFilePath(exportTemplate.path, projectPath, RecordExportTemplateFileExtension);
+
+    QFile exportTemplateFile(fullExportTemplatePath);
+
+    qInfo(qUtf8Printable(QString("Opening export template file %1.").arg(fullExportTemplatePath)));
+
+    if (exportTemplateFile.open(QIODevice::ReadOnly))
     {
-        // Read template file.
-        QString fullExportTemplatePath =
-                buildFullFilePath(exportTemplate.path, projectPath, RecordExportTemplateFileExtension);
-
-        QFile exportTemplateFile(fullExportTemplatePath);
-
-        qInfo(qUtf8Printable(QString("Opening export template file %1.").arg(fullExportTemplatePath)));
-
-        if (exportTemplateFile.open(QIODevice::ReadOnly))
+        try
         {
-            try
-            {
-                exportTemplateSerializer.deserialize(exportTemplateFile, exportTemplate);
-            }
-            catch (const std::runtime_error& e)
-            {
-                QString errorMessage = QObject::tr("File could not be read: ") + fullExportTemplatePath + "\r\n" + e.what();
-                qCritical(qUtf8Printable(errorMessage));
-                throw std::runtime_error(errorMessage.toStdString());
-            }
+            exportTemplateSerializer.deserialize(exportTemplateFile, exportTemplate);
         }
-        else
+        catch (const std::runtime_error& e)
         {
-            QString errorMessage = QObject::tr("File could not be read:\r\n") + fullExportTemplatePath;
+            QString errorMessage = QObject::tr("File could not be read: ") + fullExportTemplatePath + "\r\n" + e.what();
+            qCritical(qUtf8Printable(errorMessage));
             throw std::runtime_error(errorMessage.toStdString());
         }
+    }
+    else
+    {
+        QString errorMessage = QObject::tr("File could not be read:\r\n") + fullExportTemplatePath;
+        throw std::runtime_error(errorMessage.toStdString());
     }
 
     // Read template contents.

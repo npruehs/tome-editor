@@ -161,12 +161,6 @@ void FieldDefinitionSetSerializer::deserialize(QIODevice& device, FieldDefinitio
                 }
 
                 // Read facets.
-                // TODO(np): Remove in next major release.
-                while (reader.isAtElement(ElementFacet))
-                {
-                    reader.readEmptyElement(ElementFacet);
-                }
-
                 reader.readEndElement();
 
                 // Finish field definition.
