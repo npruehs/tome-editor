@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network sql
+QT       += core gui network sql xmlpatterns
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -318,7 +318,8 @@ HEADERS  += ../Source/Tome/Core/mainwindow.h \
     ../Source/Tome/Features/Facets/Controller/removedfilesuffixfacet.h \
     ../Source/Tome/Features/Integrity/Controller/referencedfiledoesnotexisttask.h \
     ../Source/Tome/Features/Records/View/labeledpixmapwidget.h \
-    ../Source/Tome/Features/Projects/Model/recordidtype.h
+    ../Source/Tome/Features/Projects/Model/recordidtype.h \
+    ../Source/Tome/IO/messagehandler.h
 
 FORMS    += ../Source/Tome/Core/mainwindow.ui \
     ../Source/Tome/Features/Help/View/aboutwindow.ui \
