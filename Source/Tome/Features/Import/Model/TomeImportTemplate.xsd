@@ -3,8 +3,8 @@
   <xs:element name="Template">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="Name" type="xs:string" minOccurs="0" />
-        <xs:element name="SourceType" minOccurs="0">
+        <xs:element name="Name" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="SourceType" minOccurs="1" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:string">
               <xs:enumeration value="CSV"/>
@@ -13,34 +13,34 @@
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
-        <xs:element name="IdColumn" type="xs:string" minOccurs="0" />
-        <xs:element name="RootRecordId" type="xs:string" minOccurs="0" />
-        <xs:element name="ColumnMap" minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="IdColumn" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="RootRecordId" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="ColumnMap" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Mapping" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:attribute name="ColumnName" type="xs:string" />
-                  <xs:attribute name="FieldId" type="xs:string" />
+                  <xs:attribute name="ColumnName" type="xs:string" use="required" />
+                  <xs:attribute name="FieldId" type="xs:string" use="required" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="IgnoredIds" minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="IgnoredIds" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Id" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Parameters" minOccurs="0">
+        <xs:element name="Parameters" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:attribute name="Key" type="xs:string" />
-                  <xs:attribute name="Value" type="xs:string" />
+                  <xs:attribute name="Key" type="xs:string" use="required" />
+                  <xs:attribute name="Value" type="xs:string" use="required" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

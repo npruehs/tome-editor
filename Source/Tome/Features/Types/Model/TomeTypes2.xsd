@@ -6,32 +6,32 @@
         <xs:element name="Type" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="FundamentalFacets" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="FundamentalFacets" minOccurs="1" maxOccurs="1">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="FundamentalFacet" minOccurs="0" maxOccurs="unbounded">
                       <xs:complexType>
-                        <xs:attribute name="Key" type="xs:string" />
-                        <xs:attribute name="Value" type="xs:string" />
+                        <xs:attribute name="Key" type="xs:string" use="required" />
+                        <xs:attribute name="Value" type="xs:string" use="required" />
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element name="ConstrainingFacets" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="ConstrainingFacets" minOccurs="1" maxOccurs="1">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="ConstrainingFacet" minOccurs="0" maxOccurs="unbounded">
                       <xs:complexType>
-                        <xs:attribute name="Key" type="xs:string" />
-                        <xs:attribute name="Value" type="xs:string" />
+                        <xs:attribute name="Key" type="xs:string" use="required" />
+                        <xs:attribute name="Value" type="xs:string" use="required" />
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
-            <xs:attribute name="Name" type="xs:string" />
+            <xs:attribute name="Name" type="xs:string" use="required" />
           </xs:complexType>
         </xs:element>
       </xs:sequence>

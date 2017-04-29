@@ -3,28 +3,28 @@
   <xs:element name="Template">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="Name" type="xs:string" minOccurs="0" />
-        <xs:element name="FileExtension" type="xs:string" minOccurs="0" />
-        <xs:element name="TypeMap" minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Name" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="FileExtension" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="TypeMap" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Mapping" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:attribute name="TomeType" type="xs:string" />
-                  <xs:attribute name="ExportedType" type="xs:string" />
+                  <xs:attribute name="TomeType" type="xs:string" use="required" />
+                  <xs:attribute name="ExportedType" type="xs:string" use="required" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="IgnoredRecords" minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="IgnoredRecords" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Id" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="IgnoredFields" minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="IgnoredFields" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Id" type="xs:string" minOccurs="0" />

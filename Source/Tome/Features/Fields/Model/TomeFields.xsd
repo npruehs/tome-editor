@@ -13,10 +13,10 @@
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
-            <xs:attribute name="Id" type="xs:string" />
-            <xs:attribute name="DisplayName" type="xs:string" />
-            <xs:attribute name="Description" type="xs:string" />
-            <xs:attribute name="Type" type="xs:string" />
+            <xs:attribute name="Id" type="xs:string" use="required" />
+            <xs:attribute name="DisplayName" type="xs:string" use="required" />
+            <xs:attribute name="Description" type="xs:string" use="required" />
+            <xs:attribute name="Type" type="xs:string" use="required" />
             <xs:attribute name="Component" type="xs:string" />
             <xs:attribute name="DefaultValue" type="xs:string" />
           </xs:complexType>
