@@ -29,5 +29,6 @@
         <file>../Source/Tome/Features/Import/Model/TomeImportTemplate.xsd</file>
         <file>../Source/Tome/Features/Export/Model/TomeExportTemplate2.xsd</file>
         <file>../Source/Tome/Features/Types/Model/TomeTypes2.xsd</file>
+        <file>../Source/Tome/Features/Projects/Model/TomeProject6.xsd</file>
     </qresource>
 </RCC>
