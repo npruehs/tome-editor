@@ -345,5 +345,3 @@ FORMS    += ../Source/Tome/Core/mainwindow.ui \
 
 RESOURCES += \
     tome.qrc
-
-DISTFILES +=

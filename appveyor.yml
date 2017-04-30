@@ -9,6 +9,6 @@ build_script:
   - mingw32-make
 
 test_script:
-  - qmake Project\Tome.pro "CONFIG+=debug" "CONFIG+=test"
+  - qmake Project\TomeTest.pro "CONFIG+=debug"
   - mingw32-make
   - ..\Bin\debug\Tome\Tome.exe
