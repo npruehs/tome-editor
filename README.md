@@ -74,6 +74,19 @@ You might also take a look at our [development wiki](https://github.com/npruehs/
 
 Finally, [open a pull request](https://help.github.com/articles/creating-a-pull-request/) so we can review your changes together, and finally integrate it into the next release.
 
+## Building API documentation
+
+We are using [Doxygen](http://www.stack.nl/~dimitri/doxygen/) for documenting the API of Tome. You can generate the files and add them to QtCreator as follows:
+
+1. Run [Doxygen](http://www.stack.nl/~dimitri/doxygen/) for the Doxyfile in the repository root, e.g. by entering `"C:\Program Files\doxygen\bin\doxygen.exe" Doxyfile`.
+1. Run QHelpGenerator for the generated [Qt Help Project](http://doc.qt.io/qt-5/qthelp-framework.html) file, e.g. by entering `"C:\Program Files (x86)\Qt\5.8\mingw53_32\bin\qhelpgenerator.exe" Doc\Api\html\index.qhp`.
+1. In QtCreator, add the generated file `Doc\Api\html\index.qch` to Tools > Options > Help > Documentation.
+
+You should now be able to access the full API documentation
+
+* in your browser, at `Doc\Api\html\index.html`.
+* in QtCreator, by pressing F1 while your cursor is at any Tome symbol.
+
 ## License
 
 Tome is released under the [GNU Lesser General Public License 3.0](https://github.com/npruehs/game-data-editor/blob/master/LICENSE).
