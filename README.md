@@ -74,6 +74,35 @@ You might also take a look at our [development wiki](https://github.com/npruehs/
 
 Finally, [open a pull request](https://help.github.com/articles/creating-a-pull-request/) so we can review your changes together, and finally integrate it into the next release.
 
+## Building Tome
+
+Tome is built and deployed using the usual Qt tools for [Windows](https://doc.qt.io/qt-5/windows-deployment.html) and [Mac OS X](http://doc.qt.io/qt-5/osx-deployment.html).
+
+### Tome for Windows
+
+1. Open a command prompt.
+1. Call `C:\Program Files (x86)\Qt\5.8\mingw53_32\bin\qtenv2.bat` to set up your environment variables.
+1. Make a release build of Tome in QtCreator.
+1. Navigate to the output directory `Bin\release\Tome`.
+1. Run `windeployqt.exe Tome.exe`.
+
+### Tome Issue Reporter for Windows
+
+1. Open a command prompt.
+1. Call `C:\Program Files (x86)\Qt\5.8\mingw53_32\bin\qtenv2.bat` to set up your environment variables.
+1. Make a release build of TomeIssueReporter in QtCreator.
+1. Navigate to the output directory `Bin\release\TomeIssueReporter`.
+1. Run `windeployqt.exe TomeIssueReporter.exe`.
+1. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll` to the output directory.
+1. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll` to the output directory.
+
+### Tome for Mac OS X
+
+1. Open a shell.
+1. Make a release build of Tome in QtCreator.
+1. Navigate to the output directory `Bin\release\Tome`.
+1. Run `Qt/5.8/clang_64/bin/macdeployqt Tome.app -dmg`.
+
 ## Building API documentation
 
 We are using [Doxygen](http://www.stack.nl/~dimitri/doxygen/) for documenting the API of Tome. You can generate the files and add them to QtCreator as follows:
