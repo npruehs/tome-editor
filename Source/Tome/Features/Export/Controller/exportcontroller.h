@@ -14,6 +14,9 @@ namespace Tome
     class RecordsController;
     class TypesController;
 
+    /**
+     * @brief Controller for exporting records using templates.
+     */
     class ExportController : public QObject
     {
             Q_OBJECT

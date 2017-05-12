@@ -11,6 +11,9 @@ namespace Tome
     class RecordsController;
     class TypesController;
 
+    /**
+     * @brief Controller for finding usages of fields, records and custom types.
+     */
     class FindUsagesController : public QObject
     {
         Q_OBJECT

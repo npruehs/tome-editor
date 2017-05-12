@@ -7,6 +7,9 @@
 
 namespace Tome
 {
+    /**
+     * @brief Controller for performing undo-able commands.
+     */
     class UndoController : public QObject
     {
             Q_OBJECT

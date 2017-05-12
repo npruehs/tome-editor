@@ -10,6 +10,9 @@ namespace Tome
     class RecordsController;
     class TypesController;
 
+    /**
+     * @brief Controller for validating type facets.
+     */
     class FacetsController
     {
         public:

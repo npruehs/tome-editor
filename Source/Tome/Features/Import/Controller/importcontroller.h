@@ -13,6 +13,9 @@ namespace Tome
     class RecordsController;
     class TypesController;
 
+    /**
+     * @brief Controller for importing record data.
+     */
     class ImportController : public QObject
     {
             Q_OBJECT

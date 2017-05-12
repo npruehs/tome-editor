@@ -6,6 +6,9 @@
 
 namespace Tome
 {
+    /**
+     * @brief Controller for accessing user settings.
+     */
     class SettingsController
     {
         public:

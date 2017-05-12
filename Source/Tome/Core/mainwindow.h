@@ -43,10 +43,19 @@ class MainWindow : public QMainWindow
         Q_OBJECT
 
     public:
+        /**
+         * @brief Constructs the main window and all other windows.
+         * @param controller Controller owning the main window.
+         * @param parent Optional owning widget.
+         */
         explicit MainWindow(Tome::Controller* controller, QWidget *parent = 0);
         ~MainWindow();
 
     protected:
+        /**
+         * @brief Asks the user whether they want to save unsaved changes, and handles the close event accordingly.
+         * @param event Event that wants to close the main window.
+         */
         void closeEvent(QCloseEvent* event);
 
     private slots:

@@ -16,6 +16,9 @@ namespace Tome
     class RecordSetSerializer;
     class RecordTableImportTemplate;
 
+    /**
+     * @brief Controller for creating, loading and saving projects.
+     */
     class ProjectController : public QObject
     {
              Q_OBJECT

@@ -9,6 +9,9 @@ namespace Tome
     class ComponentsController;
     class TypesController;
 
+    /**
+     * @brief Controller for adding, updating and removing field definitions.
+     */
     class FieldDefinitionsController : public QObject
     {
             Q_OBJECT

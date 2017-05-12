@@ -8,6 +8,9 @@
 
 namespace Tome
 {
+    /**
+     * @brief Controller for adding, updating and removing custom types.
+     */
     class TypesController : public QObject
     {
             Q_OBJECT

@@ -15,6 +15,9 @@ namespace Tome
     class ProjectController;
     class TypesController;
 
+    /**
+     * @brief Controller for adding, updating and removing records.
+     */
     class RecordsController : public QObject
     {
         Q_OBJECT

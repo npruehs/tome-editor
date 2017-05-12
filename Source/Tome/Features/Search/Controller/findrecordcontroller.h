@@ -9,6 +9,9 @@ namespace Tome
 {
     class RecordsController;
 
+    /**
+     * @brief Controller for finding specific records.
+     */
     class FindRecordController : public QObject
     {
         Q_OBJECT

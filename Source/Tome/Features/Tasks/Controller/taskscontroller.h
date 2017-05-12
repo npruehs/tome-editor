@@ -18,6 +18,9 @@ namespace Tome
     class RecordsController;
     class TypesController;
 
+    /**
+     * @brief Controller for runnings tasks on all records.
+     */
     class TasksController : public QObject
     {
             Q_OBJECT

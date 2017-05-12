@@ -9,6 +9,9 @@
 
 namespace Tome
 {
+    /**
+     * @brief Controller for adding and removing components.
+     */
     class ComponentsController : public QObject
     {
             Q_OBJECT
