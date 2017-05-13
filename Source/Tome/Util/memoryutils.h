@@ -6,7 +6,7 @@
 namespace Tome
 {
     /**
-     * @brief deleteLayout Deletes the passed layout and all of its children.
+     * @brief Deletes the passed layout and all of its children.
      * @param layout Layout to delete.
      */
     inline void deleteLayout(QLayout* layout)
