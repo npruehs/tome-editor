@@ -10,6 +10,9 @@ namespace Tome
 {
     class FacetContext;
 
+    /**
+     * @brief Specifies a maximum value for a custom Integer type.
+     */
     class MaximumIntegerValueFacet : public QObject, public Facet
     {
             Q_OBJECT

@@ -9,6 +9,9 @@ namespace Tome
 {
     class FacetContext;
 
+    /**
+     * @brief Specifies a maximum length for a custom String type.
+     */
     class MaximumStringLengthFacet : public QObject, public Facet
     {
             Q_OBJECT
