@@ -58,7 +58,7 @@ namespace Tome
             /**
              * @brief Gets the name of the component set containing the specified component.
              *
-             * Throws std::out_of_range if that component could not be found.
+             * @exception std::out_of_range if the component could not be found.
              *
              * @param component Component to get the name of the containing set of.
              * @return Name of the set containing the specified component.

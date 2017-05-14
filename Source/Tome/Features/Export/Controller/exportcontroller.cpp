@@ -79,7 +79,7 @@ const RecordExportTemplate ExportController::getRecordExportTemplate(const QStri
 
     QString errorMessage = QObject::tr("Export template not  found: ") + name;
     qCritical(qUtf8Printable(errorMessage));
-    throw std::runtime_error(errorMessage.toStdString());
+    throw std::out_of_range(errorMessage.toStdString());
 }
 
 const RecordExportTemplateList ExportController::getRecordExportTemplates() const
@@ -570,7 +570,7 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
     emit this->progressChanged(tr("Exporting Data"), QString(), 1, 1);
 }
 
-void ExportController::removeExportTemplate(const QString& name)
+bool ExportController::removeExportTemplate(const QString& name)
 {
     qInfo(qUtf8Printable(QString("Removing export template %1.").arg(name)));
 
@@ -585,9 +585,11 @@ void ExportController::removeExportTemplate(const QString& name)
 
             // Notify listeners.
             emit this->exportTemplatesChanged();
-            return;
+            return true;
         }
     }
+
+    return false;
 }
 
 void ExportController::setRecordExportTemplates(RecordExportTemplateList& exportTemplates)
