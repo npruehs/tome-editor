@@ -13,11 +13,6 @@ namespace Tome
     {
         public:
             /**
-             * @brief Constructs a new, empty template for exporting record data.
-             */
-            RecordExportTemplate();
-
-            /**
              * @brief Delimiter to insert between two components.
              */
             QString componentDelimiter;

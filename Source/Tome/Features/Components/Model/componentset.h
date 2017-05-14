@@ -12,11 +12,6 @@ namespace Tome
     {
         public:
             /**
-             * @brief Constructs a new component set without name or components.
-             */
-            ComponentSet();
-
-            /**
              * @brief Name of this component set.
              */
             QString name;

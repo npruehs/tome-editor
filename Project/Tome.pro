@@ -35,7 +35,6 @@ Release:UI_DIR = ../Obj/release/Tome/.ui
 
 SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Core/mainwindow.cpp \
-    ../Source/Tome/Features/Fields/Model/fielddefinitionset.cpp \
     ../Source/Tome/Features/Fields/Controller/fielddefinitionsetserializer.cpp \
     ../Source/Tome/Features/Help/View/aboutwindow.cpp \
     ../Source/Tome/Features/Projects/View/newprojectwindow.cpp \
@@ -44,14 +43,12 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Records/Model/record.cpp \
     ../Source/Tome/Features/Records/Model/recordset.cpp \
     ../Source/Tome/Features/Records/Controller/recordsetserializer.cpp \
-    ../Source/Tome/Features/Fields/Model/fielddefinition.cpp \
     ../Source/Tome/IO/xmlreader.cpp \
     ../Source/Tome/Features/Fields/View/fielddefinitionwindow.cpp \
     ../Source/Tome/Features/Fields/View/fielddefinitionswindow.cpp \
     ../Source/Tome/Features/Records/View/recordwindow.cpp \
     ../Source/Tome/Features/Fields/View/fieldvaluewindow.cpp \
     ../Source/Tome/Features/Fields/View/fieldvaluewidget.cpp \
-    ../Source/Tome/Features/Export/Model/recordexporttemplate.cpp \
     ../Source/Tome/Features/Components/View/componentswindow.cpp \
     ../Source/Tome/Features/Components/View/componentwindow.cpp \
     ../Source/Tome/Features/Types/View/customtypeswindow.cpp \
@@ -95,7 +92,6 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Integrity/Controller/mapkeytypenotsupportedtask.cpp \
     ../Source/Tome/Features/Integrity/Controller/mapvaluetypedoesnotexisttask.cpp \
     ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.cpp \
-    ../Source/Tome/Features/Components/Model/componentset.cpp \
     ../Source/Tome/Features/Components/Controller/componentsetserializer.cpp \
     ../Source/Tome/Features/Types/Model/customtypeset.cpp \
     ../Source/Tome/Features/Types/Controller/customtypesetserializer.cpp \

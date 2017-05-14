@@ -67,6 +67,9 @@ namespace Tome
 
             /**
              * @brief Exports all records using the passed export template to a file at the specified path.
+             *
+             * @exception std::runtime_error if the file at the specified path could not be written.
+             *
              * @param exportTemplate Template to apply when exporting the records.
              * @param filePath Path of the file to write the exported data to.
              */

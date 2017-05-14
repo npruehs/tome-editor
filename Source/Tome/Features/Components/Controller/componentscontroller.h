@@ -24,6 +24,9 @@ namespace Tome
 
             /**
              * @brief Adds a new component to the specified component set.
+             *
+             * @exception std::out_of_range if the component set could not be found.
+             *
              * @param componentName Name of the component to add.
              * @param componentSetName Name of the component set to add the component to.
              * @return

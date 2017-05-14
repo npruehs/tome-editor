@@ -10,8 +10,6 @@ namespace Tome
     class FieldDefinitionSet
     {
         public:
-            FieldDefinitionSet();
-
             QString name;
             FieldDefinitionList fieldDefinitions;
     };

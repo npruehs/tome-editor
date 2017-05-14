@@ -12,8 +12,6 @@ namespace Tome
     class FieldDefinition
     {
         public:
-            FieldDefinition();
-
             Component component;
             QVariant defaultValue;
             QString description;
