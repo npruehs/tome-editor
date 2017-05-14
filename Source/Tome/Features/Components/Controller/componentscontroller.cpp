@@ -119,7 +119,7 @@ int ComponentsController::indexOf(const Component& component) const
     return -1;
 }
 
-void ComponentsController::removeComponent(const Component component)
+bool ComponentsController::removeComponent(const Component component)
 {
     qInfo(qUtf8Printable(QString("Removing component %1.").arg(component)));
 
@@ -137,13 +137,15 @@ void ComponentsController::removeComponent(const Component component)
             {
                 emit this->componentRemoved(component);
                 components.erase(it);
-                return;
+                return true;
             }
         }
     }
+
+    return false;
 }
 
-void ComponentsController::removeComponentSet(const QString& name)
+bool ComponentsController::removeComponentSet(const QString& name)
 {
     for (ComponentSetList::iterator it = this->model->begin();
          it != this->model->end();
@@ -153,9 +155,11 @@ void ComponentsController::removeComponentSet(const QString& name)
         {
             // Update model.
             this->model->erase(it);
-            return;
+            return true;
         }
     }
+
+    return false;
 }
 
 void ComponentsController::setComponents(ComponentSetList& model)

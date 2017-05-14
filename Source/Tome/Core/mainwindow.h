@@ -46,7 +46,7 @@ class MainWindow : public QMainWindow
         /**
          * @brief Constructs the main window and all other windows.
          * @param controller Controller owning the main window.
-         * @param parent Optional owning widget.
+         * @param parent Optional owner widget.
          */
         explicit MainWindow(Tome::Controller* controller, QWidget *parent = 0);
         ~MainWindow();
