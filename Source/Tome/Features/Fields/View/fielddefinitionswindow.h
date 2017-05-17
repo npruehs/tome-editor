@@ -25,11 +25,26 @@ namespace Tome
     class UndoController;
 }
 
+/**
+ * @brief Window for adding and removing field definitions.
+ */
 class FieldDefinitionsWindow : public QMainWindow
 {
         Q_OBJECT
 
     public:
+    /**
+         * @brief Constructs a new window for adding and removing field definitions.
+         * @param fieldDefinitionsController Controller for adding, updating and removing field definitions.
+         * @param componentsController Controller for adding and removing components.
+         * @param facetsController Controller for validating type facets.
+         * @param findUsagesController Controller for finding usages of fields, records and custom types.
+         * @param projectController Controller for creating, loading and saving projects.
+         * @param recordsController Controller for adding, updating and removing records.
+         * @param typesController Controller for adding, updating and removing custom types.
+         * @param undoController Controller for performing undo-able commands.
+         * @param parent Optional owner widget.
+         */
         explicit FieldDefinitionsWindow(
                 Tome::FieldDefinitionsController& fieldDefinitionsController,
                 Tome::ComponentsController& componentsController,
@@ -39,14 +54,22 @@ class FieldDefinitionsWindow : public QMainWindow
                 Tome::RecordsController& recordsController,
                 Tome::TypesController& typesController,
                 Tome::UndoController& undoController,
-                QWidget *parent = 0);
+                QWidget* parent = 0);
         ~FieldDefinitionsWindow();
 
     signals:
-        void fieldChanged();
+        /**
+         * @brief A field definition has changed.
+         * @param fieldId Id of the field that has changed.
+         */
+        void fieldChanged(const QString fieldId);
 
     protected:
-        void showEvent(QShowEvent * event);
+        /**
+         * @brief Updates the view, if necessary, and shows the window.
+         * @param event Event for showing the window.
+         */
+        void showEvent(QShowEvent* event);
 
     private slots:
         void on_actionNew_Field_triggered();

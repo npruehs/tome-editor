@@ -25,7 +25,7 @@ FieldDefinitionsController::FieldDefinitionsController(const ComponentsControlle
                 SLOT(onTypeRenamed(const QString&, const QString&)));
 }
 
-const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QString& id,
+void FieldDefinitionsController::addFieldDefinition(const QString& id,
         const QString& displayName,
         const QString& fieldType,
         const QVariant& defaultValue,
@@ -66,7 +66,7 @@ const FieldDefinition FieldDefinitionsController::addFieldDefinition(const QStri
             fieldDefinitions.insert(index, fieldDefinition);
             emit this->fieldDefinitionAdded(fieldDefinition);
 
-            return fieldDefinition;
+            return;
         }
     }
 
@@ -161,11 +161,6 @@ bool FieldDefinitionsController::hasFieldDefinition(const QString& id) const
     }
 
     return false;
-}
-
-int FieldDefinitionsController::indexOf(const FieldDefinition& fieldDefinition) const
-{
-    return this->model->at(0).fieldDefinitions.indexOf(fieldDefinition);
 }
 
 void FieldDefinitionsController::removeFieldDefinition(const QString& fieldId)

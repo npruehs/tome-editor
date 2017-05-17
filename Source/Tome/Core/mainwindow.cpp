@@ -492,8 +492,8 @@ void MainWindow::on_actionField_Definions_triggered()
 
         connect(
                     this->fieldDefinitionsWindow,
-                    SIGNAL(fieldChanged()),
-                    SLOT(onFieldChanged())
+                    SIGNAL(fieldChanged(const QString)),
+                    SLOT(onFieldChanged(const QString))
                     );
     }
 
@@ -1554,7 +1554,7 @@ void MainWindow::openProject(QString path)
     }
 }
 
-void MainWindow::onFieldChanged()
+void MainWindow::onFieldChanged(const QString fieldId)
 {
     this->refreshRecordTable();
 }

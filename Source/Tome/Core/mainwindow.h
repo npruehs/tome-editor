@@ -100,7 +100,7 @@ class MainWindow : public QMainWindow
         void exportRecords(QAction* exportAction);
         void importRecords(QAction* importAction);
         void onExportTemplatesChanged();
-        void onFieldChanged();
+        void onFieldChanged(const QString fieldId);
         void onImportError(const QString& error);
         void onImportFinished();
         void onImportStarted();

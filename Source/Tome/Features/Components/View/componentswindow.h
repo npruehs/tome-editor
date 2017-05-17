@@ -36,7 +36,7 @@ class ComponentsWindow : public QMainWindow
         explicit ComponentsWindow(Tome::ComponentsController& componentsController,
                                   Tome::FieldDefinitionsController& fieldDefinitionsController,
                                   Tome::UndoController& undoController,
-                                  QWidget *parent = 0);
+                                  QWidget* parent = 0);
         ~ComponentsWindow();
 
     private slots:

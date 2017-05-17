@@ -9,9 +9,24 @@ namespace Tome
 {
     class FieldDefinitionsController;
 
+    /**
+     * @brief Updates the properties of a field definition.
+     */
     class UpdateFieldDefinitionCommand : public QUndoCommand, public QObject
     {
         public:
+            /**
+             * @brief Constructs a new command for updating the properties of a field definition.
+             * @param fieldDefinitionsController Controller for adding, updating and removing field definitions.
+             * @param oldId Current id of the field to update.
+             * @param newId New id of the field to update.
+             * @param displayName New display name of the field.
+             * @param fieldType New type of the field.
+             * @param defaultValue New default value of the field.
+             * @param component New component the field should belong to.
+             * @param description New textual description of the field.
+             * @param fieldDefinitionSetName Name of the new field definition set the field should belong to.
+             */
             UpdateFieldDefinitionCommand(FieldDefinitionsController& fieldDefinitionsController,
                                          const QString& oldId,
                                          const QString& newId,
@@ -22,7 +37,14 @@ namespace Tome
                                          const QString& description,
                                          const QString& fieldDefinitionSetName);
 
+            /**
+             * @brief Reverts all property changes made by this command.
+             */
             virtual void undo() Q_DECL_OVERRIDE;
+
+            /**
+             * @brief Updates the field.
+             */
             virtual void redo() Q_DECL_OVERRIDE;
 
         private:

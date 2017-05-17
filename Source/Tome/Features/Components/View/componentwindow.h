@@ -19,7 +19,7 @@ class ComponentWindow : public QDialog
          * @brief Constructs a new window for adding a new component.
          * @param parent Optional owner widget.
          */
-        explicit ComponentWindow(QWidget *parent = 0);
+        explicit ComponentWindow(QWidget* parent = 0);
         ~ComponentWindow();
 
         /**
