@@ -140,7 +140,6 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Records/Controller/Commands/revertrecordcommand.cpp \
     ../Source/Tome/Features/Records/Controller/Commands/reparentrecordcommand.cpp \
     ../Source/Tome/Features/Records/Controller/Commands/removerecordcommand.cpp \
-    ../Source/Tome/Features/Import/Model/recordtableimporttemplate.cpp \
     ../Source/Tome/Features/Import/Controller/importcontroller.cpp \
     ../Source/Tome/Features/Import/Controller/recorddatasource.cpp \
     ../Source/Tome/Features/Import/Controller/csvrecorddatasource.cpp \

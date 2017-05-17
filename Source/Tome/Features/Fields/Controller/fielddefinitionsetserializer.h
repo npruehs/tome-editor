@@ -7,11 +7,12 @@ namespace Tome
 {
     class FieldDefinitionSet;
 
+    /**
+     * @brief Reads and writes fields from any device.
+     */
     class FieldDefinitionSetSerializer
     {
         public:
-            FieldDefinitionSetSerializer();
-
             /**
              * @brief serialize Writes the passed field definition set to the specified device.
              * @param device Device to write the field definition set to.
@@ -20,7 +21,7 @@ namespace Tome
             void serialize(QIODevice& device, const FieldDefinitionSet& fieldDefinitionSet) const;
 
             /**
-             * @brief serialize Reads the passed field definition set from the specified device.
+             * @brief serialize Reads the field definition set from the specified device.
              * @param device Device to read the field definition set from.
              * @param fieldDefinitionSet Field definition set to fill.
              */

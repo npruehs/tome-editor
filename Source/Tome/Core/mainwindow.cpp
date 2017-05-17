@@ -1556,6 +1556,8 @@ void MainWindow::openProject(QString path)
 
 void MainWindow::onFieldChanged(const QString fieldId)
 {
+    Q_UNUSED(fieldId)
+
     this->refreshRecordTable();
 }
 

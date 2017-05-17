@@ -7,12 +7,24 @@ namespace Tome
 {
     class RecordTableImportTemplate;
 
+    /**
+     * @brief Reads and writes record import templates from any device.
+     */
     class ImportTemplateSerializer
     {
         public:
-            ImportTemplateSerializer();
-
+            /**
+             * @brief serialize Writes the passed record import template to the specified device.
+             * @param device Device to write the record import template to.
+             * @param importTemplate Record import templatet to write.
+             */
             void serialize(QIODevice& device, const RecordTableImportTemplate& importTemplate) const;
+
+            /**
+             * @brief deserialize Reads the record import template from the specified device.
+             * @param device Device to read the record import template from.
+             * @param importTemplate Record import template to read the data into.
+             */
             void deserialize(QIODevice& device, RecordTableImportTemplate& importTemplate) const;
 
         private:

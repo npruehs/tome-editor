@@ -21,11 +21,6 @@ const QString FieldDefinitionSetSerializer::ElementField = "Field";
 const QString FieldDefinitionSetSerializer::ElementFields = "Fields";
 
 
-FieldDefinitionSetSerializer::FieldDefinitionSetSerializer()
-{
-
-}
-
 void FieldDefinitionSetSerializer::serialize(QIODevice& device, const FieldDefinitionSet& fieldDefinitionSet) const
 {
     // Open device stream.
