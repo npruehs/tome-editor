@@ -12,10 +12,6 @@ using namespace Tome;
 const QString FieldIsNeverUsedTask::MessageCode = "TO0301";
 
 
-FieldIsNeverUsedTask::FieldIsNeverUsedTask()
-{
-}
-
 const QString FieldIsNeverUsedTask::getDisplayName() const
 {
     return MessageCode + tr(" - Field Is Never Used");

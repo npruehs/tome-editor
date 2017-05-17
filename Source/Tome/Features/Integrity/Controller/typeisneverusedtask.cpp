@@ -12,10 +12,6 @@ using namespace Tome;
 const QString TypeIsNeverUsedTask::MessageCode = "TO0302";
 
 
-TypeIsNeverUsedTask::TypeIsNeverUsedTask()
-{
-}
-
 const QString TypeIsNeverUsedTask::getDisplayName() const
 {
     return MessageCode + tr(" - Type Is Never Used");

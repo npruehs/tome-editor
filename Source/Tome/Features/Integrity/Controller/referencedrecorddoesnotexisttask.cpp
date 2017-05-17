@@ -12,10 +12,6 @@ using namespace Tome;
 const QString ReferencedRecordDoesNotExistTask::MessageCode = "TO0201";
 
 
-ReferencedRecordDoesNotExistTask::ReferencedRecordDoesNotExistTask()
-{
-}
-
 const QString ReferencedRecordDoesNotExistTask::getDisplayName() const
 {
     return MessageCode + tr(" - Referenced Record Does Not Exist");

@@ -10,10 +10,6 @@ using namespace Tome;
 const QString ListItemTypeNotSupportedTask::MessageCode = "TO0102";
 
 
-ListItemTypeNotSupportedTask::ListItemTypeNotSupportedTask()
-{
-}
-
 const QString ListItemTypeNotSupportedTask::getDisplayName() const
 {
     return MessageCode + tr(" - List Item Type Not Supported");

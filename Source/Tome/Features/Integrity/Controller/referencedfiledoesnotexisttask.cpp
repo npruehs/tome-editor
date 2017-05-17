@@ -20,10 +20,6 @@ using namespace Tome;
 const QString ReferencedFileDoesNotExistTask::MessageCode = "TO0202";
 
 
-ReferencedFileDoesNotExistTask::ReferencedFileDoesNotExistTask()
-{
-}
-
 const QString ReferencedFileDoesNotExistTask::getDisplayName() const
 {
     return MessageCode + tr(" - Referenced File Does Not Exist");
