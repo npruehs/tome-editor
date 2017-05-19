@@ -41,10 +41,6 @@ const QString ProjectSerializer::ElementTypeMap = "TypeMap";
 const int ProjectSerializer::Version = 6;
 
 
-ProjectSerializer::ProjectSerializer()
-{
-}
-
 void ProjectSerializer::serialize(QIODevice& device, QSharedPointer<Project> project) const
 {
     // Open device stream.

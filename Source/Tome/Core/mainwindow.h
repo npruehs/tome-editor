@@ -38,6 +38,9 @@ namespace Tome
     class SearchResultsDockWidget;
 }
 
+/**
+ * @brief Main view of Tome. Sets up and owns all other views.
+ */
 class MainWindow : public QMainWindow
 {
         Q_OBJECT

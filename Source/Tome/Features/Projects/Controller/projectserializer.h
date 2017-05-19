@@ -8,11 +8,12 @@ namespace Tome
 {
     class Project;
 
+    /**
+     * @brief Reads and writes projects from any device.
+     */
     class ProjectSerializer
     {
         public:
-            ProjectSerializer();
-
             /**
              * @brief serialize Writes the passed project to the specified device.
              * @param device Device to write the project to.
