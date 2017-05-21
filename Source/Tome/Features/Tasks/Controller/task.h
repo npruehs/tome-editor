@@ -8,9 +8,15 @@ namespace Tome
 {
     class TaskContext;
 
+    /**
+     * @brief Automated task that may result in a list of messages, warnings and errors.
+     */
     class Task
     {
         public:
+            /**
+             * @brief Constructs a new automated task that may result in a list of messages, warnings and errors.
+             */
             Task();
             virtual ~Task();
 

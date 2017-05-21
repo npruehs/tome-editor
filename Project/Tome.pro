@@ -67,7 +67,6 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Records/View/recordtreewidget.cpp \
     ../Source/Tome/Features/Tasks/Controller/task.cpp \
     ../Source/Tome/Features/Tasks/Controller/taskscontroller.cpp \
-    ../Source/Tome/Features/Tasks/Model/message.cpp \
     ../Source/Tome/Features/Tasks/Model/taskcontext.cpp \
     ../Source/Tome/Features/Integrity/Controller/fieldtypedoesnotexisttask.cpp \
     ../Source/Tome/Features/Integrity/Controller/listitemtypedoesnotexisttask.cpp \
