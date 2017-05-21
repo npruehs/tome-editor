@@ -80,7 +80,6 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Integrity/Controller/listitemtypenotsupportedtask.cpp \
     ../Source/Tome/Features/Search/Controller/findusagescontroller.cpp \
     ../Source/Tome/Features/Search/View/searchresultsdockwidget.cpp \
-    ../Source/Tome/Features/Search/Model/searchresult.cpp \
     ../Source/Tome/Features/Records/View/duplicaterecordwindow.cpp \
     ../Source/Tome/Core/commandlineoptions.cpp \
     ../Source/Tome/Features/Types/View/mapwindow.cpp \

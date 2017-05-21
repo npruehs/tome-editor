@@ -7,13 +7,25 @@
 
 namespace Tome
 {
+    /**
+     * @brief Result of a search operation.
+     */
     class SearchResult
     {
         public:
-            SearchResult();
-
+            /**
+             * @brief Actual search result.
+             */
             QString content;
+
+            /**
+             * @brief Where the search result was found.
+             */
             QVariant targetSiteId;
+
+            /**
+             * @brief Type of the location where the search result was found.
+             */
             TargetSiteType::TargetSiteType targetSiteType;
     };
 }
