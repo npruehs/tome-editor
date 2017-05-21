@@ -4,6 +4,9 @@
 #include <QtTest/QtTest>
 
 
+/**
+ * @brief Unit tests for string utility functions.
+ */
 class TestStringUtils : public QObject
 {
     Q_OBJECT
