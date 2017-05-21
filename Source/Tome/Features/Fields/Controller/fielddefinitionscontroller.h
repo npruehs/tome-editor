@@ -105,7 +105,6 @@ namespace Tome
              */
             void removeFieldDefinition(const QString& fieldId);
 
-
             /**
              * @brief Removes the field definition set with the specified name from the project, including all fields.
              * @param name Name of the field definition set to remove.
@@ -146,7 +145,7 @@ namespace Tome
         signals:
             /**
              * @brief A new field definition has been added to the project.
-             * @param fieldDefinition New field defintion that has been added to the project..
+             * @param fieldDefinition New field defintion that has been added to the project.
              */
             void fieldDefinitionAdded(const Tome::FieldDefinition& fieldDefinition);
 

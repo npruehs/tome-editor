@@ -7,6 +7,9 @@ namespace Tome
 {
     class RecordSet;
 
+    /**
+     * @brief Reads and writes records from any device.
+     */
     class RecordSetSerializer : public QObject
     {
             Q_OBJECT
@@ -27,6 +30,13 @@ namespace Tome
             void deserialize(QIODevice& device, RecordSet& recordSet) const;
 
         signals:
+            /**
+             * @brief Progress of the current record operation has changed.
+             * @param title Title of the current record operation step.
+             * @param text Details of the current record operation step.
+             * @param currentValue Current progress value of the current record operation step.
+             * @param maximumValue Maximum progress value of the current record operation step.
+             */
             void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const;
 
         private:

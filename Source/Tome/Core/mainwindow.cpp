@@ -1825,7 +1825,7 @@ void MainWindow::showWindow(QWidget* widget)
 void MainWindow::updateMenus()
 {
     bool projectLoaded = this->controller->getProjectController().isProjectLoaded();
-    bool anyRecordSelected = this->recordTreeWidget->getSelectedRecordItem() != nullptr;
+    bool anyRecordSelected = !this->recordTreeWidget->getSelectedRecordIds().empty();
 
     // Update actions.
     this->ui->actionSave_Project->setEnabled(projectLoaded);

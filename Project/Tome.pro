@@ -40,8 +40,6 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Projects/View/newprojectwindow.cpp \
     ../Source/Tome/Features/Projects/Controller/projectserializer.cpp \
     ../Source/Tome/Features/Projects/Model/project.cpp \
-    ../Source/Tome/Features/Records/Model/record.cpp \
-    ../Source/Tome/Features/Records/Model/recordset.cpp \
     ../Source/Tome/Features/Records/Controller/recordsetserializer.cpp \
     ../Source/Tome/IO/xmlreader.cpp \
     ../Source/Tome/Features/Fields/View/fielddefinitionwindow.cpp \

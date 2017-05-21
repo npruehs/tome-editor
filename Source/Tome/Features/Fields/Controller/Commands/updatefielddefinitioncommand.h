@@ -43,7 +43,7 @@ namespace Tome
             virtual void undo() Q_DECL_OVERRIDE;
 
             /**
-             * @brief Updates the field.
+             * @brief Updates the properties of the field.
              */
             virtual void redo() Q_DECL_OVERRIDE;
 
