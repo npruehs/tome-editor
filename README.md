@@ -81,35 +81,35 @@ Tome is built and deployed using the usual Qt tools for [Windows](https://doc.qt
 ### Tome for Windows
 
 1. Open a command prompt.
-1. Call `C:\Program Files (x86)\Qt\5.8\mingw53_32\bin\qtenv2.bat` to set up your environment variables.
-1. Make a release build of Tome in QtCreator.
-1. Navigate to the output directory `Bin\release\Tome`.
-1. Run `windeployqt.exe Tome.exe`.
+2. Call `C:\Program Files (x86)\Qt\5.8\mingw53_32\bin\qtenv2.bat` to set up your environment variables.
+3. Make a release build of Tome in QtCreator.
+4. Navigate to the output directory `Bin\release\Tome`.
+5. Run `windeployqt.exe Tome.exe`.
 
 ### Tome Issue Reporter for Windows
 
 1. Open a command prompt.
-1. Call `C:\Program Files (x86)\Qt\5.8\mingw53_32\bin\qtenv2.bat` to set up your environment variables.
-1. Make a release build of TomeIssueReporter in QtCreator.
-1. Navigate to the output directory `Bin\release\TomeIssueReporter`.
-1. Run `windeployqt.exe TomeIssueReporter.exe`.
-1. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll` to the output directory.
-1. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll` to the output directory.
+2. Call `C:\Program Files (x86)\Qt\5.8\mingw53_32\bin\qtenv2.bat` to set up your environment variables.
+3. Make a release build of TomeIssueReporter in QtCreator.
+4. Navigate to the output directory `Bin\release\TomeIssueReporter`.
+5. Run `windeployqt.exe TomeIssueReporter.exe`.
+6. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll` to the output directory.
+7. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll` to the output directory.
 
 ### Tome for Mac OS X
 
 1. Open a shell.
-1. Make a release build of Tome in QtCreator.
-1. Navigate to the output directory `Bin\release\Tome`.
-1. Run `Qt/5.8/clang_64/bin/macdeployqt Tome.app -dmg`.
+2. Make a release build of Tome in QtCreator.
+3. Navigate to the output directory `Bin\release\Tome`.
+4. Run `Qt/5.8/clang_64/bin/macdeployqt Tome.app -dmg`.
 
 ## Building API documentation
 
 We are using [Doxygen](http://www.stack.nl/~dimitri/doxygen/) for documenting the API of Tome. You can generate the files and add them to QtCreator as follows:
 
 1. Run [Doxygen](http://www.stack.nl/~dimitri/doxygen/) for the Doxyfile in the repository root, e.g. by entering `"C:\Program Files\doxygen\bin\doxygen.exe" Doxyfile`.
-1. Run QHelpGenerator for the generated [Qt Help Project](http://doc.qt.io/qt-5/qthelp-framework.html) file, e.g. by entering `"C:\Program Files (x86)\Qt\5.8\mingw53_32\bin\qhelpgenerator.exe" Doc\Api\html\index.qhp`.
-1. In QtCreator, add the generated file `Doc\Api\html\index.qch` to Tools > Options > Help > Documentation.
+2. Run QHelpGenerator for the generated [Qt Help Project](http://doc.qt.io/qt-5/qthelp-framework.html) file, e.g. by entering `"C:\Program Files (x86)\Qt\5.8\mingw53_32\bin\qhelpgenerator.exe" Doc\Api\html\index.qhp`.
+3. In QtCreator, add the generated file `Doc\Api\html\index.qch` to Tools > Options > Help > Documentation.
 
 You should now be able to access the full API documentation
 
