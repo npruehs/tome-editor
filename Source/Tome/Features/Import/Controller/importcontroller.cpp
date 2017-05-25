@@ -45,7 +45,7 @@ const RecordTableImportTemplate ImportController::getRecordTableImportTemplate(c
 
     QString errorMessage = QObject::tr("Import template not  found: ") + name;
     qCritical(qUtf8Printable(errorMessage));
-    throw std::runtime_error(errorMessage.toStdString());
+    throw std::out_of_range(errorMessage.toStdString());
 }
 
 const RecordTableImportTemplateList ImportController::getRecordTableImportTemplates() const
@@ -100,7 +100,7 @@ void ImportController::importRecords(const RecordTableImportTemplate& importTemp
     dataSource->importData(importTemplate, context);
 }
 
-void ImportController::removeImportTemplate(const QString& name)
+bool ImportController::removeImportTemplate(const QString& name)
 {
     qInfo(qUtf8Printable(QString("Removing import template %1.").arg(name)));
 
@@ -115,9 +115,11 @@ void ImportController::removeImportTemplate(const QString& name)
 
             // Notify listeners.
             emit this->importTemplatesChanged();
-            return;
+            return true;
         }
     }
+
+    return false;
 }
 
 void ImportController::setRecordTableImportTemplates(RecordTableImportTemplateList& importTemplates)

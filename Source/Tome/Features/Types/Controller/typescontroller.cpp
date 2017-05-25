@@ -10,10 +10,6 @@
 using namespace Tome;
 
 
-TypesController::TypesController()
-{
-}
-
 void TypesController::addCustomTypeSet(const CustomTypeSet& customTypeSet)
 {
     this->model->push_back(customTypeSet);
@@ -143,11 +139,6 @@ const QStringList TypesController::getTypeNames() const
 
     typeNames.sort();
     return typeNames;
-}
-
-int TypesController::indexOf(const CustomType& customType) const
-{
-    return this->model->at(0).types.indexOf(customType);
 }
 
 bool TypesController::isBuiltInType(const QString& name) const
@@ -351,7 +342,7 @@ void TypesController::updateMap(const QString& oldName, const QString& newName, 
 
 QString TypesController::valueToString(const QVariant& value, const QString& typeName) const
 {
-    // Vector2I.
+    // Vector.
     if (typeName == BuiltInType::Vector2I || typeName == BuiltInType::Vector2R ||
         typeName == BuiltInType::Vector3I || typeName == BuiltInType::Vector3R)
     {
@@ -378,7 +369,7 @@ QString TypesController::valueToString(const QVariant& value, const QString& typ
         return string;
     }
 
-    // Custom list.
+    // Custom list or map.
     if (this->isCustomType(typeName))
     {
         const CustomType& customType = this->getCustomType(typeName);

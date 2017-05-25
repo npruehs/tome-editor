@@ -20,11 +20,25 @@ namespace Ui
     class ProjectOverviewWindow;
 }
 
+/**
+ * @brief Window for adding files to or removing files from the project.
+ */
 class ProjectOverviewWindow : public QDialog
 {
         Q_OBJECT
 
     public:
+        /**
+         * @brief Constructs a new window for adding files to or removing files from the project.
+         * @param projectController Controller for creating, loading and saving projects.
+         * @param componentsController Controller for adding and removing components.
+         * @param exportController Controller for exporting records using templates.
+         * @param fieldDefinitionsController Controller for adding, updating and removing field definitions.
+         * @param importController Controller for importing record data.
+         * @param recordsController Controller for adding, updating and removing records.
+         * @param typesController Controller for adding, updating and removing custom types.
+         * @param parent Optional owner widget.
+         */
         explicit ProjectOverviewWindow(Tome::ProjectController& projectController,
                                        Tome::ComponentsController& componentsController,
                                        Tome::ExportController& exportController,
@@ -36,6 +50,10 @@ class ProjectOverviewWindow : public QDialog
         ~ProjectOverviewWindow();
 
     protected:
+        /**
+         * @brief Updates the view, if necessary, and shows the window.
+         * @param event Event for showing the window.
+         */
         virtual void showEvent(QShowEvent* event) Q_DECL_OVERRIDE;
 
     private:

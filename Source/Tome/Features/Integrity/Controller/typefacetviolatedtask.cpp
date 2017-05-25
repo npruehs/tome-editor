@@ -11,10 +11,6 @@ using namespace Tome;
 const QString TypeFacetViolatedTask::MessageCode = "TO0200";
 
 
-TypeFacetViolatedTask::TypeFacetViolatedTask()
-{
-}
-
 const QString TypeFacetViolatedTask::getDisplayName() const
 {
     return MessageCode + tr(" - Type Facet Violated");

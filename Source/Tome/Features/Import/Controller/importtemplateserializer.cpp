@@ -28,10 +28,6 @@ const QString ImportTemplateSerializer::ElementTemplate = "Template";
 const int ImportTemplateSerializer::Version = 1;
 
 
-ImportTemplateSerializer::ImportTemplateSerializer()
-{
-}
-
 void ImportTemplateSerializer::serialize(QIODevice& device, const RecordTableImportTemplate& importTemplate) const
 {
     // Open device stream.

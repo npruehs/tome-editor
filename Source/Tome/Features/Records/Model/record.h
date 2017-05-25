@@ -10,18 +10,45 @@
 
 namespace Tome
 {
+    /**
+     * @brief Data record that combines the values of various fields.
+     */
     class Record
     {
         public:
-            Record();
-
+            /**
+             * @brief Unique id of this record.
+             */
             QVariant id;
 
+            /**
+             * @brief Display name of this record.
+             */
             QString displayName;
+
+            /**
+             * @brief Id of the field to use as editor icon for this record.
+             */
             QString editorIconFieldId;
+
+            /**
+             * @brief Values of all fields of this record.
+             */
             RecordFieldValueMap fieldValues;
+
+            /**
+             * @brief Id of the parent of this record, or null if this record is a root of the record tree.
+             */
             QVariant parentId;
+
+            /**
+             * @brief Whether to prevent this record from being edited, reparented or removed.
+             */
             bool readOnly = false;
+
+            /**
+             * @brief Name of the set this record belongs to.
+             */
             QString recordSetName;
     };
 

@@ -517,11 +517,6 @@ bool RecordsController::haveTheSameParent(const QVariantList ids) const
     return true;
 }
 
-int RecordsController::indexOf(const Record& record) const
-{
-    return this->model->at(0).records.indexOf(record);
-}
-
 bool RecordsController::isAncestorOf(const QVariant& possibleAncestor, const QVariant& recordId) const
 {
     // Check if both are valid records.
@@ -653,8 +648,8 @@ void RecordsController::updateRecord(const QVariant oldId,
                                      const QVariant newId,
                                      const QString newDisplayName,
                                      const QString newEditorIconFieldId,
-                                     const QStringList& fieldIds,
-                                     const QString& recordSetName)
+                                     const QStringList& newFieldIds,
+                                     const QString& newRecordSetName)
 {
     Record& oldRecord = *this->getRecordById(oldId);
     const QString oldDisplayName = oldRecord.displayName;
@@ -665,7 +660,7 @@ void RecordsController::updateRecord(const QVariant oldId,
         // Changing the id requires cloning the record, because we
         // to ensure that all references and parent relations are
         // cleanly updated as well.
-        this->addRecord(newId, newDisplayName, newEditorIconFieldId, fieldIds, recordSetName);
+        this->addRecord(newId, newDisplayName, newEditorIconFieldId, newFieldIds, newRecordSetName);
 
         Record& newRecord = *this->getRecordById(newId);
         newRecord.fieldValues = oldRecord.fieldValues;
@@ -686,9 +681,9 @@ void RecordsController::updateRecord(const QVariant oldId,
     record->editorIconFieldId = newEditorIconFieldId;
 
     // Move record, if necessary.
-    if (record->recordSetName != recordSetName)
+    if (record->recordSetName != newRecordSetName)
     {
-        this->moveRecordToSet(newId, recordSetName);
+        this->moveRecordToSet(newId, newRecordSetName);
         record = this->getRecordById(newId);
     }
 
@@ -710,7 +705,7 @@ void RecordsController::updateRecord(const QVariant oldId,
 
         // Check if field was added or removed.
         const bool fieldWasEnabled = record->fieldValues.contains(field.id);
-        const bool fieldIsEnabled = fieldIds.contains(field.id);
+        const bool fieldIsEnabled = newFieldIds.contains(field.id);
 
         if (fieldIsEnabled && !fieldWasEnabled)
         {
@@ -1115,7 +1110,7 @@ void RecordsController::verifyRecordIds()
             this->verifyRecordUuids();
             break;
         case RecordIdType::Invalid:
-            const QString errorMessage = "Invalud project record id type.";
+            const QString errorMessage = "Invalid project record id type.";
             qCritical(qUtf8Printable(errorMessage));
             throw std::out_of_range(errorMessage.toStdString());
     }

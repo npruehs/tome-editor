@@ -4,6 +4,9 @@
 #include <QtTest/QtTest>
 
 
+/**
+ * @brief Unit tests for list utility functions.
+ */
 class TestListUtils : public QObject
 {
     Q_OBJECT

@@ -492,8 +492,8 @@ void MainWindow::on_actionField_Definions_triggered()
 
         connect(
                     this->fieldDefinitionsWindow,
-                    SIGNAL(fieldChanged()),
-                    SLOT(onFieldChanged())
+                    SIGNAL(fieldChanged(const QString)),
+                    SLOT(onFieldChanged(const QString))
                     );
     }
 
@@ -1554,8 +1554,10 @@ void MainWindow::openProject(QString path)
     }
 }
 
-void MainWindow::onFieldChanged()
+void MainWindow::onFieldChanged(const QString fieldId)
 {
+    Q_UNUSED(fieldId)
+
     this->refreshRecordTable();
 }
 
@@ -1823,7 +1825,7 @@ void MainWindow::showWindow(QWidget* widget)
 void MainWindow::updateMenus()
 {
     bool projectLoaded = this->controller->getProjectController().isProjectLoaded();
-    bool anyRecordSelected = this->recordTreeWidget->getSelectedRecordItem() != nullptr;
+    bool anyRecordSelected = !this->recordTreeWidget->getSelectedRecordIds().empty();
 
     // Update actions.
     this->ui->actionSave_Project->setEnabled(projectLoaded);

@@ -17,11 +17,22 @@ namespace Tome
     class RecordsController;
     class TypesController;
 
+    /**
+     * @brief Allows adding, editing, and removing map items.
+     */
     class MapWidget : public QWidget
     {
             Q_OBJECT
 
         public:
+            /**
+             * @brief Constructs a new widget for adding, editing, and removing map items.
+             * @param facetsController Controller for validating type facets.
+             * @param projectController Controller for creating, loading and saving projects.
+             * @param recordsController Controller for adding, updating and removing records.
+             * @param typesController Controller for adding, updating and removing custom types.
+             * @param parent Optional owner widget.
+             */
             explicit MapWidget(FacetsController& facetsController,
                                ProjectController& projectController,
                                RecordsController& recordsController,
@@ -29,13 +40,40 @@ namespace Tome
                                QWidget *parent = 0);
             ~MapWidget();
 
+            /**
+             * @brief Gets the type of the keys of the map.
+             * @return Type of the keys of the map.
+             */
             QString getKeyType() const;
+
+            /**
+             * @brief Gets the type of the values of the map.
+             * @return Type of the values of the map.
+             */
             QString getValueType() const;
+
+            /**
+             * @brief Gets all current map items.
+             * @return All current map items.
+             */
             QVariantMap getMap() const;
 
+            /**
+             * @brief Gets the type of the keys of the map.
+             * @param keyType Type of the keys of the map.
+             */
             void setKeyType(const QString& keyType);
+
+            /**
+             * @brief Gets the type of the values of the map.
+             * @param valueType Type of the values of the map.
+             */
             void setValueType(const QString& valueType);
 
+            /**
+             * @brief Sets all current map items.
+             * @param map All current map items.
+             */
             void setMap(const QVariantMap& map);
 
         private slots:

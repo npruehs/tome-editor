@@ -25,10 +25,6 @@ const QString CustomTypeSetSerializer::ElementTypes = "Types";
 const int CustomTypeSetSerializer::Version = 2;
 
 
-CustomTypeSetSerializer::CustomTypeSetSerializer()
-{
-}
-
 void CustomTypeSetSerializer::serialize(QIODevice& device, const CustomTypeSet& customTypeSet) const
 {
     // Open device stream.

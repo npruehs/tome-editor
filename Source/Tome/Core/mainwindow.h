@@ -38,15 +38,27 @@ namespace Tome
     class SearchResultsDockWidget;
 }
 
+/**
+ * @brief Main view of Tome. Sets up and owns all other views.
+ */
 class MainWindow : public QMainWindow
 {
         Q_OBJECT
 
     public:
+        /**
+         * @brief Constructs the main window and all other windows.
+         * @param controller Controller owning the main window.
+         * @param parent Optional owner widget.
+         */
         explicit MainWindow(Tome::Controller* controller, QWidget *parent = 0);
         ~MainWindow();
 
     protected:
+        /**
+         * @brief Asks the user whether they want to save unsaved changes, and handles the close event accordingly.
+         * @param event Event that wants to close the main window.
+         */
         void closeEvent(QCloseEvent* event);
 
     private slots:
@@ -91,7 +103,7 @@ class MainWindow : public QMainWindow
         void exportRecords(QAction* exportAction);
         void importRecords(QAction* importAction);
         void onExportTemplatesChanged();
-        void onFieldChanged();
+        void onFieldChanged(const QString fieldId);
         void onImportError(const QString& error);
         void onImportFinished();
         void onImportStarted();

@@ -9,6 +9,9 @@ namespace Tome
 {
     class FacetContext;
 
+    /**
+     * @brief Marks a custom String type for localization.
+     */
     class LocalizedStringFacet : public QObject, public Facet
     {
             Q_OBJECT
@@ -26,6 +29,9 @@ namespace Tome
             void setWidgetValue(QWidget* widget, const QVariant value) const Q_DECL_OVERRIDE;
             QString validateValue(const FacetContext& context, const QVariant value, const QVariant facetValue) const Q_DECL_OVERRIDE;
 
+            /**
+             * @brief Key of the restriction of the domain of the custom type used for serialization.
+             */
             static const QString FacetKey;
     };
 }

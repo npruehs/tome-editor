@@ -10,10 +10,6 @@ using namespace Tome;
 const QString FieldTypeDoesNotExistTask::MessageCode = "TO0100";
 
 
-FieldTypeDoesNotExistTask::FieldTypeDoesNotExistTask()
-{
-}
-
 const QString FieldTypeDoesNotExistTask::getDisplayName() const
 {
     return MessageCode + tr(" - Field Type Does Not Exist");

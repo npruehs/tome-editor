@@ -9,14 +9,18 @@ namespace Tome
 {
     class TaskContext;
 
+    /**
+     * @brief Finds custom types who aren't used by any field definitions.
+     */
     class TypeIsNeverUsedTask : public QObject, public Task
     {
         public:
-            TypeIsNeverUsedTask();
-
             const QString getDisplayName() const Q_DECL_OVERRIDE;
             const MessageList execute(const TaskContext& context) const Q_DECL_OVERRIDE;
 
+            /**
+             * @brief Unique message code of this task. Used for looking up more verbose documentation.
+             */
             static const QString MessageCode;
     };
 }

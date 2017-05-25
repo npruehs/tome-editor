@@ -223,7 +223,7 @@ void FieldDefinitionsWindow::on_actionEdit_Field_triggered()
                  this->fieldDefinitionWindow->getFieldDefinitionSetName());
 
         // Notify listeners.
-        emit fieldChanged();
+        emit fieldChanged(this->fieldDefinitionWindow->getFieldId());
     }
 }
 
@@ -271,7 +271,7 @@ void FieldDefinitionsWindow::onFieldDefinitionRemoved(const FieldDefinition& fie
     this->ui->tableWidget->removeRow(index);
 
     // Notify listeners.
-    emit fieldChanged();
+    emit fieldChanged(fieldDefinition.id);
 }
 
 void FieldDefinitionsWindow::onFieldDefinitionUpdated(const FieldDefinition& oldFieldDefinition, const FieldDefinition& newFieldDefinition)

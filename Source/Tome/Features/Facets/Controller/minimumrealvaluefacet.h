@@ -9,6 +9,9 @@ namespace Tome
 {
     class FacetContext;
 
+    /**
+     * @brief Specifies a minimum value for a custom Real type.
+     */
     class MinimumRealValueFacet : public QObject, public Facet
     {
             Q_OBJECT

@@ -9,6 +9,9 @@ namespace Tome
 {
     class FacetContext;
 
+    /**
+     * @brief Specifies a maximum value for a custom Real type.
+     */
     class MaximumRealValueFacet : public QObject, public Facet
     {
             Q_OBJECT

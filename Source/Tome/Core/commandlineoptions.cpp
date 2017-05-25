@@ -2,10 +2,6 @@
 
 using namespace Tome;
 
-CommandLineOptions::CommandLineOptions()
-    : noGui(false)
-{
-}
 
 void CommandLineOptions::parse(int argc, char* argv[])
 {
