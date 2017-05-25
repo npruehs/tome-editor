@@ -116,6 +116,8 @@ You should now be able to access the full API documentation
 * in your browser, at `Doc\Api\html\index.html`.
 * in QtCreator, by pressing F1 while your cursor is at any Tome symbol.
 
+The most recent API documentation is also available at [http://www.tome-editor.org/api/1.0/](http://www.tome-editor.org/api/1.0/).
+
 ## License
 
 Tome is released under the [GNU Lesser General Public License 3.0](https://github.com/npruehs/game-data-editor/blob/master/LICENSE).
