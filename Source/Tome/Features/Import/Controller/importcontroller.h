@@ -63,6 +63,7 @@ namespace Tome
             /**
              * @brief Removes the record import template with the specified name from the project.
              * @param name Name of the record import template to remove.
+             * @return true, if the import template was removed, and false otherwise.
              */
             bool removeImportTemplate(const QString& name);
 
