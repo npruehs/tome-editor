@@ -56,7 +56,7 @@ void NewProjectWindow::on_comboBoxRecordIdType_currentTextChanged(const QString 
     switch (this->getProjectRecordIdType())
     {
         case RecordIdType::Integer:
-            this->ui->labelRecordIdTypeDescription->setText(tr("Automatically assign increasing positive integer ids to all records."));
+            this->ui->labelRecordIdTypeDescription->setText(tr("Automatically assign pesudo-random positive integer ids to all records."));
             break;
 
         case RecordIdType::String:

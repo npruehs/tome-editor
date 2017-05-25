@@ -19,7 +19,7 @@ UpdateRecordFieldValueCommand::UpdateRecordFieldValueCommand(RecordsController& 
 
 void UpdateRecordFieldValueCommand::undo()
 {
-    qInfo(QString("Undo set field value %1.").arg(this->fieldId).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Undo set field value %1.").arg(this->fieldId)));
 
     // Restore field value.
     this->recordsController.updateRecordFieldValue(this->recordId, this->fieldId, this->oldFieldValue);

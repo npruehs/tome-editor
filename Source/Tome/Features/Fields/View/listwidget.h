@@ -25,6 +25,14 @@ namespace Tome
             Q_OBJECT
 
         public:
+            /**
+             * @brief Constructs a new widget for adding, editing, re-ordering and removing list items.
+             * @param facetsController Controller for validating type facets.
+             * @param projectController Controller for creating, loading and saving projects.
+             * @param recordsController Controller for adding, updating and removing records.
+             * @param typesController Controller for adding, updating and removing custom types.
+             * @param parent Optional owner widget.
+             */
             explicit ListWidget(FacetsController& facetsController,
                                 ProjectController& projectController,
                                 RecordsController& recordsController,
@@ -32,10 +40,28 @@ namespace Tome
                                 QWidget *parent = 0);
             ~ListWidget();
 
-            QString getFieldType() const;
+            /**
+             * @brief Gets the type of the list items.
+             * @return Type of the list items.
+             */
+            QString getItemType() const;
+
+            /**
+             * @brief Gets all current list items.
+             * @return All current list items.
+             */
             QVariantList getItems() const;
 
-            void setFieldType(const QString& fieldType);
+            /**
+             * @brief Sets the type of the list items.
+             * @param itemType Type of the list items.
+             */
+            void setItemType(const QString& itemType);
+
+            /**
+             * @brief Sets all current list items.
+             * @param items All current list items.
+             */
             void setItems(const QVariantList& items);
 
         private slots:
@@ -46,7 +72,7 @@ namespace Tome
             void moveItemDown();
 
         private:
-            QString fieldType;
+            QString itemType;
             QVariantList items;
 
             ListItemWindow* listItemWindow;
@@ -60,7 +86,9 @@ namespace Tome
             RecordsController& recordsController;
             TypesController& typesController;
 
+            void addListWidgetItem(const QVariant& itemData);
             int getSelectedItemIndex() const;
+            void updateListWidgetItem(QListWidgetItem* listWidgetItem, const QVariant& itemData);
     };
 }
 #endif // LISTWIDGET_H

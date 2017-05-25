@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TomeProject Version="4">
+<TomeProject Version="6" RecordIdType="String">
     <Name>Tome Example Code Generation Project</Name>
     <Locale>en_US</Locale>
     <Components>
@@ -20,4 +20,5 @@
     <Types>
         <Path>Tome Example Code Generation Project</Path>
     </Types>
+    <RecordImportTemplates/>
 </TomeProject>

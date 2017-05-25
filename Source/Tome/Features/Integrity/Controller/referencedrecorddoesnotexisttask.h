@@ -9,14 +9,18 @@ namespace Tome
 {
     class TaskContext;
 
+    /**
+     * @brief Finds records with Reference type fields who are referencing other records that could not be found.
+     */
     class ReferencedRecordDoesNotExistTask : public QObject, public Task
     {
         public:
-            ReferencedRecordDoesNotExistTask();
+            const QString getDisplayName() const Q_DECL_OVERRIDE;
+            const MessageList execute(const TaskContext& context) const Q_DECL_OVERRIDE;
 
-            const QString getDisplayName() const;
-            const MessageList execute(const TaskContext& context) const;
-
+            /**
+             * @brief Unique message code of this task. Used for looking up more verbose documentation.
+             */
             static const QString MessageCode;
     };
 }

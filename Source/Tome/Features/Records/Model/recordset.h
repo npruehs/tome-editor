@@ -5,12 +5,20 @@
 
 namespace Tome
 {
+    /**
+     * @brief Named set of Tome records.
+     */
     class RecordSet
     {
         public:
-            RecordSet();
-
+            /**
+             * @brief Name of this record set.
+             */
             QString name;
+
+            /**
+             * @brief Records of this record set.
+             */
             RecordList records;
     };
 }

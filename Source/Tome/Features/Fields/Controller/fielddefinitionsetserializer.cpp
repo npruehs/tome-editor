@@ -21,11 +21,6 @@ const QString FieldDefinitionSetSerializer::ElementField = "Field";
 const QString FieldDefinitionSetSerializer::ElementFields = "Fields";
 
 
-FieldDefinitionSetSerializer::FieldDefinitionSetSerializer()
-{
-
-}
-
 void FieldDefinitionSetSerializer::serialize(QIODevice& device, const FieldDefinitionSet& fieldDefinitionSet) const
 {
     // Open device stream.
@@ -95,8 +90,11 @@ void FieldDefinitionSetSerializer::serialize(QIODevice& device, const FieldDefin
 void FieldDefinitionSetSerializer::deserialize(QIODevice& device, FieldDefinitionSet& fieldDefinitionSet) const
 {
     // Open device stream.
-    QXmlStreamReader stream(&device);
-    XmlReader reader(stream);
+    XmlReader reader(&device);
+
+    // Validate fields file.
+    reader.validate(":/Source/Tome/Features/Fields/Model/TomeFields.xsd",
+                    QObject::tr("Invalid fields file: %1 (line %2, column %3)"));
 
     // Begin document.
     reader.readStartDocument();
@@ -158,12 +156,6 @@ void FieldDefinitionSetSerializer::deserialize(QIODevice& device, FieldDefinitio
                 }
 
                 // Read facets.
-                // TODO(np): Remove in next major release.
-                while (reader.isAtElement(ElementFacet))
-                {
-                    reader.readEmptyElement(ElementFacet);
-                }
-
                 reader.readEndElement();
 
                 // Finish field definition.

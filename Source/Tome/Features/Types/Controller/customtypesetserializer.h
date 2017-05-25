@@ -7,12 +7,24 @@ namespace Tome
 {
     class CustomTypeSet;
 
+    /**
+     * @brief Reads and writes custom types from any device.
+     */
     class CustomTypeSetSerializer
     {
         public:
-            CustomTypeSetSerializer();
-
+            /**
+             * @brief Writes the passed custom type set to the specified device.
+             * @param device Device to write the custom type set to.
+             * @param customTypeSet Custom type set to write.
+             */
             void serialize(QIODevice& device, const CustomTypeSet& customTypeSet) const;
+
+            /**
+             * @brief Reads the passed custom type set from the specified device.
+             * @param device Device to read the custom type set from.
+             * @param customTypeSet Custom type set to fill.
+             */
             void deserialize(QIODevice& device, CustomTypeSet& customTypeSet) const;
 
         private:

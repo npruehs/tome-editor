@@ -9,10 +9,6 @@ using namespace Tome;
 const QString ListItemTypeDoesNotExistTask::MessageCode = "TO0101";
 
 
-ListItemTypeDoesNotExistTask::ListItemTypeDoesNotExistTask()
-{
-}
-
 const QString ListItemTypeDoesNotExistTask::getDisplayName() const
 {
     return MessageCode + tr(" - List Item Type Does Not Exist");

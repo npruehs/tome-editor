@@ -19,7 +19,7 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
     if (!file.open(QIODevice::ReadOnly))
     {
         QString errorMessage = QObject::tr("Source file could not be read:\r\n") + filePath;
-        qCritical(errorMessage.toUtf8().constData());
+        qCritical(qUtf8Printable(errorMessage));
         emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
     }
@@ -38,7 +38,7 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
     if (line.isEmpty())
     {
         QString errorMessage = QObject::tr("Source file is empty:\r\n") + filePath;
-        qCritical(errorMessage.toUtf8().constData());
+        qCritical(qUtf8Printable(errorMessage));
         file.close();
         emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
@@ -62,7 +62,7 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
     {
         QString errorMessage = QObject::tr("Could not find id column %1 in source file:\r\n%2")
                 .arg(importTemplate.idColumn, filePath);
-        qCritical(errorMessage.toUtf8().constData());
+        qCritical(qUtf8Printable(errorMessage));
         file.close();
         emit this->dataUnavailable(importTemplate.name, context, errorMessage);
         return;
@@ -81,7 +81,7 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
         {
             QString errorMessage = QObject::tr("Row %1 has %2 columns, but the header has %3 columns.")
                     .arg(QString::number(rowIndex), QString::number(row.count()), QString::number(headers.count()));
-            qCritical(errorMessage.toUtf8().constData());
+            qCritical(qUtf8Printable(errorMessage));
             file.close();
             emit this->dataUnavailable(importTemplate.name, context, errorMessage);
             return;

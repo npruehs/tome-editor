@@ -19,14 +19,14 @@ RequiredReferenceAncestorFacet::RequiredReferenceAncestorFacet()
 QWidget* RequiredReferenceAncestorFacet::createWidget(const FacetContext& context) const
 {
     QComboBox* comboBox = new QComboBox();
-    QVariantList recordIds = context.recordsController.getRecordIds();
+    const RecordList records = context.recordsController.getRecords();
 
     // Allow clearing the field.
-    recordIds.push_front(QString());
+    comboBox->addItem(QString(), QVariant());
 
-    for (QVariant recordId : recordIds)
+    for (const Record& record : records)
     {
-        comboBox->addItem(recordId.toString());
+        comboBox->addItem(record.displayName, record.id);
     }
 
     return comboBox;
@@ -34,7 +34,7 @@ QWidget* RequiredReferenceAncestorFacet::createWidget(const FacetContext& contex
 
 const QVariant RequiredReferenceAncestorFacet::getDefaultValue() const
 {
-    return QString();
+    return QVariant();
 }
 
 const QString RequiredReferenceAncestorFacet::getDescriptionForValue(const QVariant facetValue) const
@@ -63,13 +63,21 @@ const QString RequiredReferenceAncestorFacet::getTargetType() const
 const QVariant RequiredReferenceAncestorFacet::getWidgetValue(QWidget* widget) const
 {
     QComboBox* comboBox = static_cast<QComboBox*>(widget);
-    return comboBox->currentText();
+    return comboBox->currentData();
 }
 
 void RequiredReferenceAncestorFacet::setWidgetValue(QWidget* widget, const QVariant value) const
 {
     QComboBox* comboBox = static_cast<QComboBox*>(widget);
-    comboBox->setCurrentText(value.toString());
+
+    for (int i = 0; i < comboBox->count(); ++i)
+    {
+        if (comboBox->itemData(i) == value)
+        {
+            comboBox->setCurrentIndex(i);
+            return;
+        }
+    }
 }
 
 QString RequiredReferenceAncestorFacet::validateValue(const FacetContext& context, const QVariant value, const QVariant facetValue) const

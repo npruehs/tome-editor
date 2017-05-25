@@ -32,13 +32,17 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
         // Begin records.
         stream.writeStartElement(ElementRecords);
         {
+            // Sort records by display name.
+            RecordList sortedRecords = recordSet.records;
+            std::sort(sortedRecords.begin(), sortedRecords.end(), recordLessThanId);
+
             // Write records.
-            for (int i = 0; i < recordSet.records.size(); ++i)
+            for (int i = 0; i < sortedRecords.size(); ++i)
             {
-                const Record& record = recordSet.records[i];
+                const Record& record = sortedRecords[i];
 
                 // Report progress.
-                emit progressChanged(tr("Saving Data"), record.displayName, i, recordSet.records.size());
+                emit progressChanged(tr("Saving Data"), record.displayName, i, sortedRecords.size());
 
                 // Begin record.
                 stream.writeStartElement(ElementRecord);
@@ -62,8 +66,8 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
                         stream.writeAttribute(ElementEditorIconFieldId, record.editorIconFieldId);
                     }
 
-                    for (QMap<QString, QVariant>::const_iterator it = record.fieldValues.begin();
-                         it != record.fieldValues.end();
+                    for (QMap<QString, QVariant>::const_iterator it = record.fieldValues.cbegin();
+                         it != record.fieldValues.cend();
                          ++it)
                     {
                         QVariant value = it.value();
@@ -123,8 +127,7 @@ void RecordSetSerializer::serialize(QIODevice& device, const RecordSet& recordSe
 void RecordSetSerializer::deserialize(QIODevice& device, RecordSet& recordSet) const
 {
     // Open device stream.
-    QXmlStreamReader stream(&device);
-    XmlReader reader(stream);
+    XmlReader reader(&device);
 
     // Begin document.
     reader.readStartDocument();

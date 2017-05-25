@@ -12,10 +12,6 @@ using namespace Tome;
 const QString FieldIsNeverUsedTask::MessageCode = "TO0301";
 
 
-FieldIsNeverUsedTask::FieldIsNeverUsedTask()
-{
-}
-
 const QString FieldIsNeverUsedTask::getDisplayName() const
 {
     return MessageCode + tr(" - Field Is Never Used");
@@ -34,8 +30,8 @@ const MessageList FieldIsNeverUsedTask::execute(const TaskContext& context) cons
     {
         const Record& record = records.at(i);
 
-        for (RecordFieldValueMap::const_iterator it = record.fieldValues.begin();
-             it != record.fieldValues.end();
+        for (RecordFieldValueMap::const_iterator it = record.fieldValues.cbegin();
+             it != record.fieldValues.cend();
              ++it)
         {
             usedFields.insert(it.key());

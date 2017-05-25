@@ -1,0 +1,4 @@
+        /// <summary>
+        /// $FIELD_DESCRIPTION$
+        /// </summary>
+        public $FIELD_TYPE$ $FIELD_ID$ { get; set; }

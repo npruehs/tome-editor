@@ -14,7 +14,7 @@ AddComponentCommand::AddComponentCommand(ComponentsController& componentsControl
 
 void AddComponentCommand::undo()
 {
-    qInfo(QString("Undo add component %1.").arg(this->componentName).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Undo add component %1.").arg(this->componentName)));
 
     this->componentsController.removeComponent(this->component);
 }

@@ -28,10 +28,6 @@ const QString ImportTemplateSerializer::ElementTemplate = "Template";
 const int ImportTemplateSerializer::Version = 1;
 
 
-ImportTemplateSerializer::ImportTemplateSerializer()
-{
-}
-
 void ImportTemplateSerializer::serialize(QIODevice& device, const RecordTableImportTemplate& importTemplate) const
 {
     // Open device stream.
@@ -55,8 +51,8 @@ void ImportTemplateSerializer::serialize(QIODevice& device, const RecordTableImp
             // Write column map.
             writer.writeStartElement(ElementColumnMap);
             {
-                for (QMap<QString, QString>::const_iterator itColumnMap = importTemplate.columnMap.begin();
-                     itColumnMap != importTemplate.columnMap.end();
+                for (QMap<QString, QString>::const_iterator itColumnMap = importTemplate.columnMap.cbegin();
+                     itColumnMap != importTemplate.columnMap.cend();
                      ++itColumnMap)
                 {
                     writer.writeStartElement(ElementMapping);
@@ -80,8 +76,8 @@ void ImportTemplateSerializer::serialize(QIODevice& device, const RecordTableImp
             // Write parameters.
             writer.writeStartElement(ElementParameters);
             {
-                for (QMap<QString, QString>::const_iterator itParameters = importTemplate.parameters.begin();
-                     itParameters != importTemplate.parameters.end();
+                for (QMap<QString, QString>::const_iterator itParameters = importTemplate.parameters.cbegin();
+                     itParameters != importTemplate.parameters.cend();
                      ++itParameters)
                 {
                     writer.writeStartElement(ElementParameter);
@@ -100,8 +96,11 @@ void ImportTemplateSerializer::serialize(QIODevice& device, const RecordTableImp
 void ImportTemplateSerializer::deserialize(QIODevice& device, RecordTableImportTemplate& importTemplate) const
 {
     // Open device stream.
-    QXmlStreamReader streamReader(&device);
-    XmlReader reader(streamReader);
+    XmlReader reader(&device);
+
+    // Validate import template file.
+    reader.validate(":/Source/Tome/Features/Import/Model/TomeImportTemplate.xsd",
+                    QObject::tr("Invalid import template file: %1 (line %2, column %3)"));
 
     // Begin document.
     reader.readStartDocument();

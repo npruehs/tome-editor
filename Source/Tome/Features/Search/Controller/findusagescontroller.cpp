@@ -17,7 +17,7 @@ FindUsagesController::FindUsagesController(const FieldDefinitionsController& fie
 
 const SearchResultList FindUsagesController::findUsagesOfField(const QString& fieldId) const
 {
-    qInfo(QString("Finding usages of field %1.").arg(fieldId).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Finding usages of field %1.").arg(fieldId)));
 
     // Build search result list.
     SearchResultList results;
@@ -34,8 +34,8 @@ const SearchResultList FindUsagesController::findUsagesOfField(const QString& fi
 
         const RecordFieldValueMap& fieldValues = this->recordsController.getRecordFieldValues(record.id);
 
-        for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
-             it != fieldValues.end();
+        for (RecordFieldValueMap::const_iterator it = fieldValues.cbegin();
+             it != fieldValues.cend();
              ++it)
         {
             const QString& recordFieldId = it.key();
@@ -61,7 +61,7 @@ const SearchResultList FindUsagesController::findUsagesOfField(const QString& fi
 
 const SearchResultList FindUsagesController::findUsagesOfRecord(const QVariant& recordId) const
 {
-    qInfo(QString("Finding usages of record %1.").arg(recordId.toString()).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Finding usages of record %1.").arg(recordId.toString())));
 
     // Build search result list.
     SearchResultList results;
@@ -78,8 +78,8 @@ const SearchResultList FindUsagesController::findUsagesOfRecord(const QVariant& 
 
         const RecordFieldValueMap& fieldValues = this->recordsController.getRecordFieldValues(record.id);
 
-        for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
-             it != fieldValues.end();
+        for (RecordFieldValueMap::const_iterator it = fieldValues.cbegin();
+             it != fieldValues.cend();
              ++it)
         {
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(it.key());
@@ -107,7 +107,7 @@ const SearchResultList FindUsagesController::findUsagesOfRecord(const QVariant& 
 
 const SearchResultList FindUsagesController::findUsagesOfType(const QString& typeName) const
 {
-    qInfo(QString("Finding usages of type %1.").arg(typeName).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Finding usages of type %1.").arg(typeName)));
 
     // Build search result list.
     SearchResultList results;
@@ -124,8 +124,8 @@ const SearchResultList FindUsagesController::findUsagesOfType(const QString& typ
 
         const RecordFieldValueMap& fieldValues = this->recordsController.getRecordFieldValues(record.id);
 
-        for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
-             it != fieldValues.end();
+        for (RecordFieldValueMap::const_iterator it = fieldValues.cbegin();
+             it != fieldValues.cend();
              ++it)
         {
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(it.key());

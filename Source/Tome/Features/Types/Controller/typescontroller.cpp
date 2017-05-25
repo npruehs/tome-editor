@@ -10,10 +10,6 @@
 using namespace Tome;
 
 
-TypesController::TypesController()
-{
-}
-
 void TypesController::addCustomTypeSet(const CustomTypeSet& customTypeSet)
 {
     this->model->push_back(customTypeSet);
@@ -21,7 +17,7 @@ void TypesController::addCustomTypeSet(const CustomTypeSet& customTypeSet)
 
 const CustomType TypesController::addDerivedType(const QString& name, const QString& baseType, const QVariantMap& facets, const QString& customTypeSetName)
 {
-    qInfo(QString("Adding derived type %1 with base type %2.").arg(name, baseType).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Adding derived type %1 with base type %2.").arg(name, baseType)));
 
     CustomType newType = CustomType();
     newType.name = name;
@@ -35,7 +31,7 @@ const CustomType TypesController::addDerivedType(const QString& name, const QStr
 
 const CustomType TypesController::addEnumeration(const QString& name, const QStringList& enumeration, const QString& customTypeSetName)
 {
-    qInfo(QString("Adding enumeration %1.").arg(name).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Adding enumeration %1.").arg(name)));
 
     CustomType newType = CustomType();
     newType.name = name;
@@ -48,7 +44,7 @@ const CustomType TypesController::addEnumeration(const QString& name, const QStr
 
 const CustomType TypesController::addList(const QString& name, const QString& itemType, const QString& customTypeSetName)
 {
-    qInfo(QString("Adding list %1.").arg(name).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Adding list %1.").arg(name)));
 
     CustomType newType = CustomType();
     newType.name = name;
@@ -61,7 +57,7 @@ const CustomType TypesController::addList(const QString& name, const QString& it
 
 const CustomType TypesController::addMap(const QString& name, const QString& keyType, const QString& valueType, const QString& customTypeSetName)
 {
-    qInfo(QString("Adding map %1.").arg(name).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Adding map %1.").arg(name)));
 
     CustomType newType = CustomType();
     newType.name = name;
@@ -145,11 +141,6 @@ const QStringList TypesController::getTypeNames() const
     return typeNames;
 }
 
-int TypesController::indexOf(const CustomType& customType) const
-{
-    return this->model->at(0).types.indexOf(customType);
-}
-
 bool TypesController::isBuiltInType(const QString& name) const
 {
     return this->getBuiltInTypes().contains(name);
@@ -189,7 +180,7 @@ bool TypesController::isTypeOrDerivedFromType(const QString& lhs, const QString&
 
 void TypesController::removeCustomType(const QString& typeName)
 {
-    qInfo(QString("Removing custom type %1.").arg(typeName).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Removing custom type %1.").arg(typeName)));
 
     for (CustomTypeSetList::iterator itSets = this->model->begin();
          itSets != this->model->end();
@@ -351,7 +342,7 @@ void TypesController::updateMap(const QString& oldName, const QString& newName, 
 
 QString TypesController::valueToString(const QVariant& value, const QString& typeName) const
 {
-    // Vector2I.
+    // Vector.
     if (typeName == BuiltInType::Vector2I || typeName == BuiltInType::Vector2R ||
         typeName == BuiltInType::Vector3I || typeName == BuiltInType::Vector3R)
     {
@@ -378,7 +369,7 @@ QString TypesController::valueToString(const QVariant& value, const QString& typ
         return string;
     }
 
-    // Custom list.
+    // Custom list or map.
     if (this->isCustomType(typeName))
     {
         const CustomType& customType = this->getCustomType(typeName);
@@ -419,7 +410,7 @@ void TypesController::addCustomType(CustomType customType, const QString& custom
     }
 
     const QString errorMessage = "Custom type set not found: " + customTypeSetName;
-    qCritical(errorMessage.toUtf8().constData());
+    qCritical(qUtf8Printable(errorMessage));
     throw std::out_of_range(errorMessage.toStdString());
 }
 
@@ -441,13 +432,13 @@ CustomType* TypesController::getCustomTypeByName(const QString& name) const
     }
 
     const QString errorMessage = "Type not found: " + name;
-    qCritical(errorMessage.toUtf8().constData());
+    qCritical(qUtf8Printable(errorMessage));
     throw std::out_of_range(errorMessage.toStdString());
 }
 
 void TypesController::moveCustomTypeToSet(const QString& customTypeName, const QString& customTypeSetName)
 {
-    qInfo(QString("Moving type %1 to set %2.").arg(customTypeName, customTypeSetName).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Moving type %1 to set %2.").arg(customTypeName, customTypeSetName)));
 
     CustomType customType = this->getCustomType(customTypeName);
 
@@ -490,7 +481,7 @@ void TypesController::renameType(const QString oldName, const QString newName)
         return;
     }
 
-    qInfo(QString("Renaming custom type %1 to %2.").arg(oldName, newName).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Renaming custom type %1 to %2.").arg(oldName, newName)));
 
     CustomType& type = *this->getCustomTypeByName(oldName);
 

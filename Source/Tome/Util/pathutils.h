@@ -10,7 +10,7 @@
 namespace Tome
 {
     /**
-     * @brief combinePaths Combines the paths specified by the two passes strings.
+     * @brief Combines the paths specified by the two passes strings.
      * @param first First path to combine.
      * @param second Second path to combine.
      * @return Both paths, combined with the platform-specific path seperator.
@@ -21,7 +21,7 @@ namespace Tome
     }
 
     /**
-     * @brief openFileWithDefaultProgram Opens the specified file with the default program registered in the underlying OS.
+     * @brief Opens the specified file with the default program registered in the underlying OS.
      * @param filePath File to open.
      */
     inline void openFileWithDefaultProgram(const QString& filePath)
@@ -32,7 +32,7 @@ namespace Tome
     }
 
     /**
-     * @brief showFileInExplorerOrFinder Opens the Explorer (on Windows) or the Finder (on Mac OS) and navigates to the specified file.
+     * @brief Opens the Explorer (on Windows) or the Finder (on Mac OS) and navigates to the specified file.
      * @param filePath File to navigate to.
      */
     inline void showFileInExplorerOrFinder(const QString& filePath)

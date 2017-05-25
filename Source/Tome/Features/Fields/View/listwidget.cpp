@@ -4,6 +4,7 @@
 #include "../../Facets/Controller/facetscontroller.h"
 #include "../../Records/Controller/recordscontroller.h"
 #include "../../Types/Controller/typescontroller.h"
+#include "../../Types/Model/builtintype.h"
 #include "../../../Util/memoryutils.h"
 
 
@@ -86,9 +87,9 @@ ListWidget::~ListWidget()
     deleteLayout(this->layout);
 }
 
-QString ListWidget::getFieldType() const
+QString ListWidget::getItemType() const
 {
-    return this->fieldType;
+    return this->itemType;
 }
 
 QVariantList ListWidget::getItems() const
@@ -96,9 +97,9 @@ QVariantList ListWidget::getItems() const
     return this->items;
 }
 
-void ListWidget::setFieldType(const QString& fieldType)
+void ListWidget::setItemType(const QString& itemType)
 {
-    this->fieldType = fieldType;
+    this->itemType = itemType;
 }
 
 void ListWidget::setItems(const QVariantList& items)
@@ -111,7 +112,7 @@ void ListWidget::setItems(const QVariantList& items)
 
     for (int i = 0; i < items.size(); ++i)
     {
-        this->listWidget->addItem(items[i].toString());
+        this->addListWidgetItem(items[i]);
     }
 }
 
@@ -124,7 +125,7 @@ void ListWidget::addItem()
     }
 
     // Update view.
-    this->listItemWindow->setFieldType(this->fieldType);
+    this->listItemWindow->setFieldType(this->itemType);
 
     // Show window.
     int result = this->listItemWindow->exec();
@@ -137,7 +138,7 @@ void ListWidget::addItem()
         this->items.push_back(value);
 
         // Update view.
-        this->listWidget->addItem(value.toString());
+        this->addListWidgetItem(value);
     }
 }
 
@@ -149,10 +150,10 @@ void ListWidget::editItem(QListWidgetItem* item)
         this->listItemWindow = new ListItemWindow(this->facetsController, this->projectController, this->recordsController, this->typesController, this);
     }
 
-    QVariant currentValue = item->text();
+    QVariant currentValue = item->data(Qt::UserRole);
 
     // Update view.
-    this->listItemWindow->setFieldType(this->fieldType);
+    this->listItemWindow->setFieldType(this->itemType);
     this->listItemWindow->setValue(currentValue);
 
     // Show window.
@@ -167,7 +168,7 @@ void ListWidget::editItem(QListWidgetItem* item)
         this->items[index] = value;
 
         // Update view.
-        item->setText(value.toString());
+        this->updateListWidgetItem(item, value);
     }
 }
 
@@ -231,6 +232,13 @@ void ListWidget::moveItemDown()
                 QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
 }
 
+void ListWidget::addListWidgetItem(const QVariant& itemData)
+{
+    QListWidgetItem* listWidgetItem = new QListWidgetItem();
+    this->updateListWidgetItem(listWidgetItem, itemData);
+    this->listWidget->addItem(listWidgetItem);
+}
+
 int ListWidget::getSelectedItemIndex() const
 {
     QModelIndexList selectedIndexes = this->listWidget->selectionModel()->selectedRows();
@@ -241,4 +249,28 @@ int ListWidget::getSelectedItemIndex() const
     }
 
     return selectedIndexes.first().row();
+}
+
+void ListWidget::updateListWidgetItem(QListWidgetItem* listWidgetItem, const QVariant& itemData)
+{
+    bool isReferenceList = this->typesController.isTypeOrDerivedFromType(this->itemType, BuiltInType::Reference);
+
+    if (isReferenceList)
+    {
+        if (this->recordsController.hasRecord(itemData))
+        {
+            const Record& record = this->recordsController.getRecord(itemData);
+            listWidgetItem->setText(record.displayName);
+        }
+        else
+        {
+            listWidgetItem->setText(itemData.toString());
+        }
+    }
+    else
+    {
+        listWidgetItem->setText(itemData.toString());
+    }
+
+    listWidgetItem->setData(Qt::UserRole, itemData);
 }

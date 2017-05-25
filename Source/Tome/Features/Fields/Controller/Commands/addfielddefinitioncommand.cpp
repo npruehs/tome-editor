@@ -26,7 +26,7 @@ AddFieldDefinitionCommand::AddFieldDefinitionCommand(FieldDefinitionsController&
 
 void AddFieldDefinitionCommand::undo()
 {
-    qInfo(QString("Undo add field %1.").arg(this->id).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Undo add field %1.").arg(this->id)));
 
     this->fieldDefinitionsController.removeFieldDefinition(this->id);
 }

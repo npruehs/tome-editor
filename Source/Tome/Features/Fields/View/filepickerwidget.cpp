@@ -52,9 +52,9 @@ QVariant FilePickerWidget::getFileName() const
     return this->lineEdit->text();
 }
 
-void FilePickerWidget::setFileName(const QVariant& v)
+void FilePickerWidget::setFileName(const QVariant& fileName)
 {
-    this->lineEdit->setText(v.toString());
+    this->lineEdit->setText(fileName.toString());
 }
 
 void FilePickerWidget::setFieldType(const QString& fieldType)

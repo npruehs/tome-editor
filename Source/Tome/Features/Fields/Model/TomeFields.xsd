@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Fields" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Fields">
+    <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Field">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="DefaultValue" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="Key" type="xs:string" />
+                  <xs:attribute name="Value" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Id" type="xs:string" use="required" />
+            <xs:attribute name="DisplayName" type="xs:string" use="required" />
+            <xs:attribute name="Description" type="xs:string" use="required" />
+            <xs:attribute name="Type" type="xs:string" use="required" />
+            <xs:attribute name="Component" type="xs:string" />
+            <xs:attribute name="DefaultValue" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

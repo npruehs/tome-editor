@@ -21,7 +21,7 @@ AddMapCommand::AddMapCommand(TypesController& typesController,
 
 void AddMapCommand::undo()
 {
-    qInfo(QString("Undo add map %1.").arg(this->name).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Undo add map %1.").arg(this->name)));
 
     this->typesController.removeCustomType(this->name);
 }

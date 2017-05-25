@@ -1,5 +1,8 @@
 #include "recordnamevalidator.h"
 
+using namespace Tome;
+
+
 RecordNameValidator::RecordNameValidator(QObject *parent)
     : QValidator(parent)
 {
