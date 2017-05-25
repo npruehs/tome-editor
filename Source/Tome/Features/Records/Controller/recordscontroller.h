@@ -37,6 +37,7 @@ namespace Tome
              * @brief Adds a new record to the specified set.
              *
              * @exception std::out_of_range if the record set could not be found.
+             * @exception std::out_of_range if the record id type of the project is invalid.
              *
              * @param id Id of the record to add.
              * @param displayName Display name of the record to add.
@@ -65,6 +66,9 @@ namespace Tome
 
             /**
              * @brief Duplicats the record with the specified id, including all of its field values.
+             *
+             * @exception std::out_of_range if the record id type of the project is invalid.
+             *
              * @param existingRecordId Id of the record to duplicate.
              * @param newRecordId Id of the record to add.
              * @return Copy of the duplicated record.
@@ -221,7 +225,7 @@ namespace Tome
 
             /**
              * @brief Removes the record with the specified id from the project.
-             * @param fieldId Id of the record to remove.
+             * @param recordId Id of the record to remove.
              */
             void removeRecord(const QVariant& recordId);
 
@@ -256,6 +260,11 @@ namespace Tome
 
             /**
              * @brief Marks the record with the specified id as read-only or not, preventing it from being edited, reparented or removed.
+             *
+             * @throws std::out_of_range if the record with the specified id could not be found.
+             *
+             * @see hasRecord for checking whether a record with the specified id exists.
+             *
              * @param recordId Id of the record to make read-only or not.
              * @param readOnly Whether to make the record read-only or not.
              */
@@ -263,12 +272,20 @@ namespace Tome
 
             /**
              * @brief Uses the specified list of record sets as model for this controller.
+             *
+             * @exception std::out_of_range if the record id type of the project is invalid.
+             *
              * @param model New list of record sets to use as model for this controller.
              */
             void setRecordSets(RecordSetList& model);
 
             /**
              * @brief Updates the properties of the specified record.
+             *
+             * @throws std::out_of_range if the record with the specified id could not be found.
+             *
+             * @see hasRecord for checking whether a record with the specified id exists.
+             *
              * @param oldId Current id of the record to update.
              * @param newId New id of the record to update.
              * @param newDisplayName New display name of the record to update.
@@ -285,6 +302,11 @@ namespace Tome
 
             /**
              * @brief Updates the current value of a record field.
+             *
+             * @throws std::out_of_range if the record with the specified id could not be found.
+             *
+             * @see hasRecord for checking whether a record with the specified id exists.
+             *
              * @param recordId Id of the record to update the field value of.
              * @param fieldId Id of the field to update the value of.
              * @param fieldValue New value of the field to update.

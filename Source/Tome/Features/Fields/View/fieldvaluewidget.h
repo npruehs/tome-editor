@@ -60,18 +60,27 @@ namespace Tome
 
             /**
              * @brief Gets the current value of this widget.
+             *
+             * @exception std::runtime_error if the current field type is unknown.
+             *
              * @return Current value of this widget.
              */
             QVariant getFieldValue() const;
 
             /**
              * @brief Sets the current type of the values changed by this widget.
+             *
+             * @exception std::runtime_error if the field type is unknown.
+             *
              * @param fieldType Current type of the values changed by this widget.
              */
             void setFieldType(const QString& fieldType);
 
             /**
              * @brief Sets the current value of this widget.
+             *
+             * @exception std::runtime_error if the current field type is unknown.
+             *
              * @param fieldValue Current value of this widget.
              */
             void setFieldValue(const QVariant& fieldValue);

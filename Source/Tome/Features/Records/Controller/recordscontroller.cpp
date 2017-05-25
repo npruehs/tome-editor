@@ -1110,7 +1110,7 @@ void RecordsController::verifyRecordIds()
             this->verifyRecordUuids();
             break;
         case RecordIdType::Invalid:
-            const QString errorMessage = "Invalud project record id type.";
+            const QString errorMessage = "Invalid project record id type.";
             qCritical(qUtf8Printable(errorMessage));
             throw std::out_of_range(errorMessage.toStdString());
     }

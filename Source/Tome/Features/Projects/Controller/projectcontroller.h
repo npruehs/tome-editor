@@ -190,6 +190,9 @@ namespace Tome
 
             /**
              * @brief Loads the specified component set from disk.
+             *
+             * @exception std::runtime_error if the component set file could not be read.
+             *
              * @param projectPath Absolute path to the project, without file name.
              * @param componentSet Component set to load from disk.
              */
@@ -197,47 +200,67 @@ namespace Tome
 
             /**
              * @brief Loads the specified custom type set from disk.
+             *
+             * @exception std::runtime_error if the custom type set file could not be read.
+             *
              * @param projectPath Absolute path to the project, without file name.
-             * @param Custom type set to load from disk.
+             * @param customTypeSet Custom type set to load from disk.
              */
             void loadCustomTypeSet(const QString& projectPath, CustomTypeSet& customTypeSet) const;
 
             /**
              * @brief Loads the specified export template from disk.
+             *
+             * @exception std::runtime_error if any of the export template files could not be read.
+             *
              * @param projectPath Absolute path to the project, without file name.
-             * @param Export template to load from disk.
+             * @param exportTemplate Export template to load from disk.
              */
             void loadExportTemplate(const QString& projectPath, RecordExportTemplate& exportTemplate) const;
 
             /**
              * @brief Loads the specified field definition set from disk.
+             *
+             * @exception std::runtime_error if the field definition set file could not be read.
+             *
              * @param projectPath Absolute path to the project, without file name.
-             * @param Field definition set to load from disk.
+             * @param fieldDefinitionSet Field definition set to load from disk.
              */
             void loadFieldDefinitionSet(const QString& projectPath, FieldDefinitionSet& fieldDefinitionSet) const;
 
             /**
              * @brief Loads the specified import template set from disk.
+             *
+             * @exception std::runtime_error if the import template file could not be read.
+             *
              * @param projectPath Absolute path to the project, without file name.
-             * @param Import template to load from disk.
+             * @param importTemplate Import template to load from disk.
              */
             void loadImportTemplate(const QString& projectPath, RecordTableImportTemplate& importTemplate) const;
 
             /**
              * @brief Loads the specified record set set from disk.
+             *
+             * @exception std::runtime_error if the record set file could not be read.
+             *
              * @param projectPath Absolute path to the project, without file name.
-             * @param Component set to load from disk.
+             * @param recordSet Record set to load from disk.
              */
             void loadRecordSet(const QString& projectPath, RecordSet& recordSet) const;
 
             /**
              * @brief Opens the specified project file.
+             *
+             * @exception std::runtime_error if the project file could not be read.
+             *
              * @param projectFileName Name of the project file to open.
              */
             void openProject(const QString& projectFileName);
 
             /**
              * @brief Saves the current project to disk, including all data and templates.
+             *
+             * @exception std::runtime_error if any of the project files could not be written.
              */
             void saveProject() const;
 

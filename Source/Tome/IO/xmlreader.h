@@ -38,33 +38,48 @@ class XmlReader
 
         /**
          * @brief Verifies that the reader is at an empty element with the specified name, and advances it to the next token.
-         * @param expectedElementName Expected name of the current element.
+         *
+         * @exception std::runtime_error if the current element isn't an empty element, or doesn't have the specified name.
+         *
+         * @param elementName Expected name of the current element.
          */
         void readEmptyElement(const QString& elementName);
 
         /**
          * @brief Verifies that the reader is at the end of the document, and advances it to the very end.
+         *
+         * @exception std::runtime_error if the current element isn't the end of the document.
          */
         void readEndDocument();
 
         /**
          * @brief Verifies that the reader is at an end element, and advances the reader to the next token.
+         *
+         * @exception std::runtime_error if the current element isn't an end element.
          */
         void readEndElement();
 
         /**
          * @brief Verifies that the reader is at the start of the document, and advances it to the next token.
+         *
+         * @exception std::runtime_error if the current element isn't the start of the document.
          */
         void readStartDocument();
 
         /**
          * @brief Verifies that the reader is at a start element with the specified name, and advances it to the next token.
+         *
+         * @exception std::runtime_error if the current element is not a start element, or doesn't have the specified name.
+         *
          * @param expectedElementName Expected name of the current element.
          */
         void readStartElement(const QString& expectedElementName);
 
         /**
          * @brief Verifies that the reader is at a start element with the specified name, reads its text content, and advances the reader to the next token.
+         *
+         * @exception std::runtime_error if the current element doesn't have the specified name.
+         *
          * @param textElementName Expected name of the current element.
          * @return Text content of the current element.
          */
@@ -72,6 +87,10 @@ class XmlReader
 
         /**
          * @brief Validates the XML document using the specified schema.
+         *
+         * @exception std::runtime_error if the schema file cannot be opened or is invalid.
+         * @exception std::runtime_error if the validation fails.
+         *
          * @param schemaFileName Path to the XML schema.
          * @param validationErrorMessage Error message format string, that may contain placeholders for an error message, line and column, in that order.
          */

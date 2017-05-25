@@ -120,9 +120,10 @@ namespace Tome
             /**
              * @brief Updates the properties of the specified field definition.
              *
-             * @exception std::out_of_range if a field with the specified id already exists.
+             * @exception std::out_of_range if the field definition with the specified id could not be found.
+             * @exception std::out_of_range if a field with the new id already exists.
              *
-             * @see hasFieldDefinition for checking whether a field definition with the specified id already exists.
+             * @see hasFieldDefinition for checking whether a field definition with the specified id exists.
              *
              * @param oldId Current id of the field to update.
              * @param newId New id of the field to update.

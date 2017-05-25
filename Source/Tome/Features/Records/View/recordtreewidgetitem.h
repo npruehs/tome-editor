@@ -68,6 +68,13 @@ namespace Tome
              */
             void setReadOnly(const bool readOnly);
 
+            /**
+             * @brief Compares this record tree widget item with the specified other one for order.
+             * @param other Other record tree widget item to compare this one to.
+             * @return true, if the display name of the record represented by this tree widget item
+             * is larger than the display name of the record represented by the other one,
+             * with respect to alphabetical order, and false otherwise.
+             */
             bool operator<(const QTreeWidgetItem& other) const Q_DECL_OVERRIDE
             {
                 return this->text(0) >= other.text(0);

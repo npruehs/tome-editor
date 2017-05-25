@@ -108,13 +108,13 @@ namespace Tome
 
             /**
              * @brief Sets the Key Type fundamental facet of this type.
-             * @param itemType Type of the map keys.
+             * @param keyType Type of the map keys.
              */
             void setKeyType(const QString& keyType);
 
             /**
              * @brief Sets the Value Type fundamental facet of this type.
-             * @param itemType Type of the map values.
+             * @param valueType Type of the map values.
              */
             void setValueType(const QString& valueType);
 

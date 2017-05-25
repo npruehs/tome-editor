@@ -90,6 +90,11 @@ namespace Tome
 
             /**
              * @brief Gets the custom type with the specified name.
+             *
+             * @throws std::out_of_range if the custom type with the specified name could not be found.
+             *
+             * @see isCustomType for checking whether a custom type with the specified name exists.
+             *
              * @param name Name of the type to get.
              * @return Custom type with the specified name.
              */
@@ -161,6 +166,11 @@ namespace Tome
 
             /**
              * @brief Updates the properties of the specified derived type.
+             *
+             * @throws std::out_of_range if the custom type with the specified name could not be found.
+             *
+             * @see isCustomType for checking whether a custom type with the specified name exists.
+             *
              * @param oldName Current name of the derived type to update.
              * @param newName New name of the derived type to update.
              * @param baseType Name of the new base type of the type to update.
@@ -175,6 +185,11 @@ namespace Tome
 
             /**
              * @brief Updates the properties of the specified enumeration.
+             *
+             * @throws std::out_of_range if the custom type with the specified name could not be found.
+             *
+             * @see isCustomType for checking whether a custom type with the specified name exists.
+             *
              * @param oldName Current name of the enumeration to update.
              * @param newName New name of the enumeration to update.
              * @param enumeration New items of the enumeration to update.
@@ -187,6 +202,11 @@ namespace Tome
 
             /**
              * @brief Updates the properties of the specified list type.
+             *
+             * @throws std::out_of_range if the custom type with the specified name could not be found.
+             *
+             * @see isCustomType for checking whether a custom type with the specified name exists.
+             *
              * @param oldName Current name of the list type to update.
              * @param newName New name of the list type to update.
              * @param itemType New type of the items of the list type to update.
@@ -199,6 +219,11 @@ namespace Tome
 
             /**
              * @brief Updates the properties of the specified map type.
+             *
+             * @throws std::out_of_range if the custom type with the specified name could not be found.
+             *
+             * @see isCustomType for checking whether a custom type with the specified name exists.
+             *
              * @param oldName Current name of the map type to update.
              * @param newName New name of the map type to update.
              * @param keyType New type of the keys of the map type to update.
