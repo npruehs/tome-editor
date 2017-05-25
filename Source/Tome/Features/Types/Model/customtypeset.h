@@ -5,12 +5,20 @@
 
 namespace Tome
 {
+    /**
+     * @brief Named set of Tome custom types.
+     */
     class CustomTypeSet
     {
         public:
-            CustomTypeSet();
-
+            /**
+             * @brief Name of this custom type set.
+             */
             QString name;
+
+            /**
+             * @brief Custom types of this custom type set.
+             */
             CustomTypeList types;
     };
 }

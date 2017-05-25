@@ -33,7 +33,7 @@ class FieldDefinitionsWindow : public QMainWindow
         Q_OBJECT
 
     public:
-    /**
+        /**
          * @brief Constructs a new window for adding and removing field definitions.
          * @param fieldDefinitionsController Controller for adding, updating and removing field definitions.
          * @param componentsController Controller for adding and removing components.

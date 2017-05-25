@@ -92,7 +92,7 @@ class FieldDefinitionWindow : public QDialog
         QString getFieldType() const;
 
         /**
-         * @brief Fills all comboboxes of this window with current data.
+         * @brief Fills all combo boxes of this window with current data.
          */
         void init();
 

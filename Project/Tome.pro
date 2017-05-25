@@ -89,7 +89,6 @@ SOURCES += ../Source/Tome/main.cpp \
     ../Source/Tome/Features/Integrity/Controller/mapvaluetypedoesnotexisttask.cpp \
     ../Source/Tome/Features/Integrity/Controller/mapvaluetypenotsupportedtask.cpp \
     ../Source/Tome/Features/Components/Controller/componentsetserializer.cpp \
-    ../Source/Tome/Features/Types/Model/customtypeset.cpp \
     ../Source/Tome/Features/Types/Controller/customtypesetserializer.cpp \
     ../Source/Tome/Features/Export/Controller/exporttemplateserializer.cpp \
     ../Source/Tome/Features/Search/Controller/findrecordcontroller.cpp \

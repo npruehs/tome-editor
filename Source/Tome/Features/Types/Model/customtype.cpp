@@ -10,10 +10,6 @@ const QString CustomType::FacetKeyType = "KeyType";
 const QString CustomType::FacetValueType = "ValueType";
 
 
-CustomType::CustomType()
-{
-}
-
 QString CustomType::getBaseType() const
 {
     if (!this->isDerivedType())

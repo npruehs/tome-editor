@@ -16,14 +16,14 @@ namespace Tome
 
         public:
             /**
-             * @brief serialize Writes the passed record set to the specified device.
+             * @brief Writes the passed record set to the specified device.
              * @param device Device to write the record set to.
              * @param recordSet Record set to write.
              */
             void serialize(QIODevice& device, const RecordSet& recordSet) const;
 
             /**
-             * @brief serialize Reads the passed record set from the specified device.
+             * @brief Reads the passed record set from the specified device.
              * @param device Device to read the record set from.
              * @param recordSet Record set to fill.
              */
