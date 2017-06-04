@@ -30,7 +30,9 @@ const QVariant RemovedFileSuffixFacet::getDefaultValue() const
 const QString RemovedFileSuffixFacet::getDescriptionForValue(const QVariant facetValue) const
 {
     QString removedFilePrefix = facetValue.toString();
-    return tr("The suffix %1 will automatically be removed.").arg(removedFilePrefix);
+    return removedFilePrefix.length() > 0
+            ? tr("The suffix %1 will automatically be removed.").arg(removedFilePrefix)
+            : QString();
 }
 
 const QString RemovedFileSuffixFacet::getDisplayName() const
