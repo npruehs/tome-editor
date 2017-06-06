@@ -49,6 +49,7 @@
         </xs:element>
       </xs:sequence>
       <xs:attribute name="Version" type="xs:int" fixed="6" use="required" />
+      <xs:attribute name="IgnoreReadOnly" type="xs:boolean" />
       <xs:attribute name="RecordIdType" use="required">
         <xs:simpleType>
           <xs:restriction base="xs:string">
