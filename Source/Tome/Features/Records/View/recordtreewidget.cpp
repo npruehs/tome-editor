@@ -197,7 +197,7 @@ void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
     // Check if has preview icon.
     const QString editorIconFieldId = this->recordsController.getRecordEditorIconFieldId(recordId);
 
-    if (!editorIconFieldId.isEmpty())
+    if (!editorIconFieldId.isEmpty() && this->fieldDefinitionsController.hasFieldDefinition(editorIconFieldId))
     {
         const FieldDefinition& iconField = this->fieldDefinitionsController.getFieldDefinition(editorIconFieldId);
         const RecordFieldValueMap recordFieldValues = this->recordsController.getRecordFieldValues(record.id);
@@ -321,11 +321,6 @@ void RecordTreeWidget::setRecords(const RecordList& records)
                 // Insert into tree.
                 RecordTreeWidgetItem* recordParent = recordItems[recordItemParentId];
                 recordParent->addChild(recordItem);
-            }
-            else
-            {
-                // Reset parent reference.
-                this->recordsController.reparentRecord(recordItem->getId(), QString());
             }
         }
 

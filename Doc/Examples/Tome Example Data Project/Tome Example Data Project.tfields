@@ -4,6 +4,7 @@
     <Field Id="AllowedTargets" DisplayName="Allowed Targets" Description="Targets that can be acquired by this entity." Type="Movement Types" Component="AttackComponent">
         <DefaultValue Value="Ground"/>
     </Field>
+    <Field Id="Armor" DisplayName="Armor" Description="Armor value of this entity. Reduces physical damage taken." Type="Integer" Component="ArmorComponent" DefaultValue="0"/>
     <Field Id="ArmorType" DisplayName="Armor Type" Description="Type of the armor of this entity. Affects actual damage taken by enemy attacks, depending on the attacker's damage type." Type="Armor Type" Component="ArmorComponent" DefaultValue="Cloth"/>
     <Field Id="AttackDamage" DisplayName="Attack Damage" Description="Damage dealt by every attack of this entity. Affected by its damage type and the defender's armor type." Type="Integer" Component="AttackComponent" DefaultValue="12"/>
     <Field Id="AttackRange" DisplayName="Attack Range" Description="Range of attack of this entity, in m." Type="Real" Component="RangeComponent" DefaultValue="18.250"/>
@@ -16,6 +17,7 @@
     <Field Id="MP5" DisplayName="Mana Regeneration" Description="Mana regeneration rate of this entity, in mana / 5 seconds." Type="Integer" Component="ManaComponent" DefaultValue="3"/>
     <Field Id="Mass" DisplayName="Mass" Description="Mass of this entity, in kg. Affects physics and collision separation." Type="NonNegativeReal" Component="PhysicsComponent" DefaultValue="1.0000"/>
     <Field Id="MovementSpeed" DisplayName="Movement Speed" Description="Speed of this entity, in m/s." Type="NonNegativeReal" Component="PhysicsComponent" DefaultValue="12.7500"/>
+    <Field Id="MovementType" DisplayName="Movement Type" Description="How this entity moves across the level." Type="Movement Type" Component="PhysicsComponent" DefaultValue="Ground"/>
     <Field Id="Name" DisplayName="Name" Description="Name of this entity." Type="ShortString" Component="NameComponent" DefaultValue=""/>
     <Field Id="Projectile" DisplayName="Projectile" Description="Type of the projectile fired by this entity when attacking." Type="ProjectileReference" Component="AttackComponent" DefaultValue=""/>
     <Field Id="ProjectileBase" DisplayName="Projectile Base" Description="Position to spawn projectiles at, relative to the position of this entity." Type="Vector (3D Real)" Component="AttackComponent">

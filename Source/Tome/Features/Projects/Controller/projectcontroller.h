@@ -183,6 +183,48 @@ namespace Tome
             bool getProjectIgnoreReadOnly() const;
 
             /**
+             * @brief Checks whether a component set with the specified name has already been added to the project.
+             * @param componentSetName Name of the component set to check.
+             * @return true, if a component set with the specified name has already been added to the project, and false otherwise.
+             */
+            bool hasComponentSet(const QString& componentSetName) const;
+
+            /**
+             * @brief Checks whether a custom type set with the specified name has already been added to the project.
+             * @param customTypeSetName Name of the custom type set to check.
+             * @return true, if a custom type set with the specified name has already been added to the project, and false otherwise.
+             */
+            bool hasCustomTypeSet(const QString& customTypeSetName) const;
+
+            /**
+             * @brief Checks whether an export template with the specified path has already been added to the project.
+             * @param exportTemplatePath Path of the export template to check.
+             * @return true, if an export template with the specified path has already been added to the project, and false otherwise.
+             */
+            bool hasExportTemplate(const QString& exportTemplatePath) const;
+
+            /**
+             * @brief Checks whether a field definition set with the specified name has already been added to the project.
+             * @param fieldDefinitionSetName Name of the field definition set to check.
+             * @return true, if a field definition set with the specified name has already been added to the project, and false otherwise.
+             */
+            bool hasFieldDefinitionSet(const QString& fieldDefinitionSetName) const;
+
+            /**
+             * @brief Checks whether an import template with the specified path has already been added to the project.
+             * @param importTemplatePath Path of the import template to check.
+             * @return true, if an import template with the specified path has already been added to the project, and false otherwise.
+             */
+            bool hasImportTemplate(const QString& importTemplatePath) const;
+
+            /**
+             * @brief Checks whether a record set with the specified name has already been added to the project.
+             * @param recordSetName Name of the record set to check.
+             * @return true, if a record set with the specified name has already been added to the project, and false otherwise.
+             */
+            bool hasRecordSet(const QString& recordSetName) const;
+
+            /**
              * @brief Checks whether any project is loaded.
              * @return true, if any project is currently loaded, and false otherwise.
              */
