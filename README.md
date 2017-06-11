@@ -68,7 +68,7 @@ Tome is developed using the [GitFlow branching model](http://nvie.com/posts/a-su
 
 Tome is based on [Qt 5.8](http://www.qt.io/).
 
-You might also take a look at our [development wiki](https://github.com/npruehs/game-data-editor/wiki) in order to get a better understanding of how everything's tied together.
+You might also want to take a look at the Tome API documentation (see below).
 
 ### Step 4: Open a pull request
 
@@ -85,22 +85,25 @@ Tome is built and deployed using the usual Qt tools for [Windows](https://doc.qt
 3. Make a release build of Tome in QtCreator.
 4. Navigate to the output directory `Bin\release\Tome`.
 5. Run `windeployqt.exe Tome.exe`.
+6. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll` to the output directory (required for Google Sheets import).
+7. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll` to the output directory (required for Google Sheets import).
 
 ### Tome Issue Reporter for Windows
 
 1. Open a command prompt.
 2. Call `C:\Program Files (x86)\Qt\5.8\mingw53_32\bin\qtenv2.bat` to set up your environment variables.
-3. Make a release build of TomeIssueReporter in QtCreator.
-4. Navigate to the output directory `Bin\release\TomeIssueReporter`.
-5. Run `windeployqt.exe TomeIssueReporter.exe`.
-6. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll` to the output directory.
-7. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll` to the output directory.
+3. Correctly set GITHUB_USER and GITHUB_PASSWORD in [config.h](https://github.com/npruehs/tome-editor/blob/develop/Source/TomeIssueReporter/config.h).
+4. Make a release build of TomeIssueReporter in QtCreator.
+5. Navigate to the output directory `Bin\release\TomeIssueReporter`.
+6. Run `windeployqt.exe TomeIssueReporter.exe`.
+7. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll` to the output directory (required for creating GitHub issues).
+8. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll` to the output directory (required for creating GitHub issues).
 
 ### Tome for Mac OS X
 
 1. Open a shell.
 2. Make a release build of Tome in QtCreator.
-3. Navigate to the output directory `Bin\release\Tome`.
+3. Navigate to the output directory, e.g. `build-Tome-Desktop_Qt_5_8_0_clang_64bit-Release`.
 4. Run `Qt/5.8/clang_64/bin/macdeployqt Tome.app -dmg`.
 
 ## Building API documentation
@@ -115,6 +118,8 @@ You should now be able to access the full API documentation
 
 * in your browser, at `Doc\Api\html\index.html`.
 * in QtCreator, by pressing F1 while your cursor is at any Tome symbol.
+
+The most recent API documentation is also available at [http://www.tome-editor.org/api/1.0/](http://www.tome-editor.org/api/1.0/).
 
 ## License
 

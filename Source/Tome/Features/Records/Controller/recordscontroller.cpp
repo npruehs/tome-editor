@@ -248,7 +248,7 @@ const RecordList RecordsController::getAncestors(const QVariant& id) const
     Record* record = this->getRecordById(id);
     QVariant parentId = record->parentId;
 
-    while (!parentId.isNull())
+    while (!parentId.isNull() && this->hasRecord(parentId))
     {
         record = this->getRecordById(parentId);
         ancestors.push_back(*record);

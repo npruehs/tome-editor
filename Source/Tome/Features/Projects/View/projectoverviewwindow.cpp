@@ -436,6 +436,18 @@ void ProjectOverviewWindow::onAddExistingComponentsFileClicked(bool checked)
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeComponentFilePath = projectDirectory.relativeFilePath(componentSetFileName);
 
+    // Check whether the specified file has already been added to the project.
+    if (this->projectController.hasComponentSet(relativeComponentFilePath))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Unable to load component file"),
+                    tr("Component file has already been added to the project."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return;
+    }
+
     try
     {
         // Load components.
@@ -478,6 +490,18 @@ void ProjectOverviewWindow::onAddExistingCustomTypesFileClicked(bool checked)
 
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeCustomTypeFilePath = projectDirectory.relativeFilePath(customTypeSetFileName);
+
+    // Check whether the specified file has already been added to the project.
+    if (this->projectController.hasCustomTypeSet(relativeCustomTypeFilePath))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Unable to load type file"),
+                    tr("Type file has already been added to the project."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return;
+    }
 
     try
     {
@@ -522,6 +546,18 @@ void ProjectOverviewWindow::onAddExistingExportTemplateFileClicked(bool checked)
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeExportTemplateFilePath = projectDirectory.relativeFilePath(exportTemplateFileName);
 
+    // Check whether the specified file has already been added to the project.
+    if (this->projectController.hasExportTemplate(relativeExportTemplateFilePath))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Unable to load export template"),
+                    tr("Export template has already been added to the project."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return;
+    }
+
     try
     {
         // Load export template.
@@ -564,6 +600,18 @@ void ProjectOverviewWindow::onAddExistingFieldDefinitionsFileClicked(bool checke
 
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeFieldDefinitionFilePath = projectDirectory.relativeFilePath(fieldDefinitionSetFileName);
+
+    // Check whether the specified file has already been added to the project.
+    if (this->projectController.hasFieldDefinitionSet(relativeFieldDefinitionFilePath))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Unable to load field definitions file"),
+                    tr("Field definitions file has already been added to the project."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return;
+    }
 
     try
     {
@@ -608,6 +656,18 @@ void ProjectOverviewWindow::onAddExistingImportTemplateFileClicked(bool checked)
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeImportTemplateFilePath = projectDirectory.relativeFilePath(importTemplateFileName);
 
+    // Check whether the specified file has already been added to the project.
+    if (this->projectController.hasImportTemplate(relativeImportTemplateFilePath))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Unable to load import template"),
+                    tr("Import template has already been added to the project."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return;
+    }
+
     try
     {
         // Load import template.
@@ -650,6 +710,18 @@ void ProjectOverviewWindow::onAddExistingRecordsFileClicked(bool checked)
 
     QDir projectDirectory = QDir(projectPath);
     const QString& relativeRecordFilePath = projectDirectory.relativeFilePath(recordSetFileName);
+
+    // Check whether the specified file has already been added to the project.
+    if (this->projectController.hasRecordSet(relativeRecordFilePath))
+    {
+        QMessageBox::information(
+                    this,
+                    tr("Unable to load records file"),
+                    tr("Records file has already been added to the project."),
+                    QMessageBox::Close,
+                    QMessageBox::Close);
+        return;
+    }
 
     try
     {

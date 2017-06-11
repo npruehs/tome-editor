@@ -14,7 +14,7 @@
     </Type>
     <Type Name="Movement Type">
         <FundamentalFacets>
-            <FundamentalFacet Key="Enumeration" Value="Air;Ground"/>
+            <FundamentalFacet Key="Enumeration" Value="Air;Ground;Projectile"/>
         </FundamentalFacets>
         <ConstrainingFacets/>
     </Type>

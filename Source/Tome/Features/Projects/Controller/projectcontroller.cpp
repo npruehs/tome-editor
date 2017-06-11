@@ -133,6 +133,96 @@ bool ProjectController::getProjectIgnoreReadOnly() const
     return this->project->ignoreReadOnly;
 }
 
+bool ProjectController::hasComponentSet(const QString &componentSetName) const
+{
+    for (auto it = this->project->componentSets.cbegin();
+         it != this->project->componentSets.cend();
+         ++it)
+    {
+        if ((*it).name == componentSetName)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ProjectController::hasCustomTypeSet(const QString &customTypeSetName) const
+{
+    for (auto it = this->project->typeSets.cbegin();
+         it != this->project->typeSets.cend();
+         ++it)
+    {
+        if ((*it).name == customTypeSetName)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ProjectController::hasExportTemplate(const QString &exportTemplatePath) const
+{
+    for (auto it = this->project->recordExportTemplates.cbegin();
+         it != this->project->recordExportTemplates.cend();
+         ++it)
+    {
+        if ((*it).path == exportTemplatePath)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ProjectController::hasFieldDefinitionSet(const QString &fieldDefinitionSetName) const
+{
+    for (auto it = this->project->fieldDefinitionSets.cbegin();
+         it != this->project->fieldDefinitionSets.cend();
+         ++it)
+    {
+        if ((*it).name == fieldDefinitionSetName)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ProjectController::hasImportTemplate(const QString &importTemplatePath) const
+{
+    for (auto it = this->project->recordTableImportTemplates.cbegin();
+         it != this->project->recordTableImportTemplates.cend();
+         ++it)
+    {
+        if ((*it).path == importTemplatePath)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ProjectController::hasRecordSet(const QString &recordSetName) const
+{
+    for (auto it = this->project->recordSets.cbegin();
+         it != this->project->recordSets.cend();
+         ++it)
+    {
+        if ((*it).name == recordSetName)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool ProjectController::isProjectLoaded() const
 {
     return this->project != 0;
