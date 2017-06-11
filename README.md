@@ -92,11 +92,12 @@ Tome is built and deployed using the usual Qt tools for [Windows](https://doc.qt
 
 1. Open a command prompt.
 2. Call `C:\Program Files (x86)\Qt\5.8\mingw53_32\bin\qtenv2.bat` to set up your environment variables.
-3. Make a release build of TomeIssueReporter in QtCreator.
-4. Navigate to the output directory `Bin\release\TomeIssueReporter`.
-5. Run `windeployqt.exe TomeIssueReporter.exe`.
-6. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll` to the output directory (required for creating GitHub issues).
-7. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll` to the output directory (required for creating GitHub issues).
+3. Correctly set GITHUB_USER and GITHUB_PASSWORD in [config.h](https://github.com/npruehs/tome-editor/blob/develop/Source/TomeIssueReporter/config.h).
+4. Make a release build of TomeIssueReporter in QtCreator.
+5. Navigate to the output directory `Bin\release\TomeIssueReporter`.
+6. Run `windeployqt.exe TomeIssueReporter.exe`.
+7. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll` to the output directory (required for creating GitHub issues).
+8. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll` to the output directory (required for creating GitHub issues).
 
 ### Tome for Mac OS X
 
