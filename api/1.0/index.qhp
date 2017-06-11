@@ -453,6 +453,12 @@
                 <section title="getProjectName" ref="class_tome_1_1_project_controller.html#aee6465109af7aef8c0ff84eb580a1d72" />
                 <section title="getProjectPath" ref="class_tome_1_1_project_controller.html#a1964b3204cabc838cb22d503fc10ef5c" />
                 <section title="getProjectRecordIdType" ref="class_tome_1_1_project_controller.html#af62dd1faf282f341743a9556062227b8" />
+                <section title="hasComponentSet" ref="class_tome_1_1_project_controller.html#a2ac994d42035192d322d289feeb140f7" />
+                <section title="hasCustomTypeSet" ref="class_tome_1_1_project_controller.html#afdcd8382a06edbd1c275a9afaacbb0e6" />
+                <section title="hasExportTemplate" ref="class_tome_1_1_project_controller.html#a9bc6b8a1f254ac53c46afd2d6f22ee50" />
+                <section title="hasFieldDefinitionSet" ref="class_tome_1_1_project_controller.html#aeef04fe524b07b1ce59d0860a14e0de6" />
+                <section title="hasImportTemplate" ref="class_tome_1_1_project_controller.html#abc0257819b95460902d1f2bb8ae68b21" />
+                <section title="hasRecordSet" ref="class_tome_1_1_project_controller.html#a2fd77b090c067f4a82cf98df5a5dc349" />
                 <section title="isProjectLoaded" ref="class_tome_1_1_project_controller.html#a13ddf31cf5bcc3d08e021d1b8980b2a6" />
                 <section title="loadComponentSet" ref="class_tome_1_1_project_controller.html#a5019df97f128d3da2a7facc64919b3ae" />
                 <section title="loadCustomTypeSet" ref="class_tome_1_1_project_controller.html#a4eb07a97342ef72fbb67a85704f31358" />
@@ -591,7 +597,7 @@
                 <section title="RecordTreeWidget" ref="class_tome_1_1_record_tree_widget.html#af8bf87bc8c76216ec3a138d20fb2c6e4" />
                 <section title="addRecord" ref="class_tome_1_1_record_tree_widget.html#aea98eb43f3c71f5cf796c19bf44f720e" />
                 <section title="contextMenuEvent" ref="class_tome_1_1_record_tree_widget.html#adada8927a8ca6c8a195c9222d516246e" />
-                <section title="dropMimeData" ref="class_tome_1_1_record_tree_widget.html#a77b5e3b2328bfbfb290ce81cec9d7328" />
+                <section title="dropMimeData" ref="class_tome_1_1_record_tree_widget.html#ad580a32202b4aa2649b426b75546be75" />
                 <section title="getSelectedRecordId" ref="class_tome_1_1_record_tree_widget.html#aa397fa83c3c0f34f62e66ba7f4b7a2f3" />
                 <section title="getSelectedRecordIds" ref="class_tome_1_1_record_tree_widget.html#a0837a5d56c1e68ac8934fc0df10d5883" />
                 <section title="mousePressEvent" ref="class_tome_1_1_record_tree_widget.html#aaa57a3b0867cb9370bb97b7ed9fbdc92" />
@@ -884,7 +890,7 @@
             <section title="ComponentWindow" ref="class_component_window.html">
               <section title="ComponentWindow" ref="class_component_window.html#a7b91382f46b97b0e8ab82f5c4b130116" />
               <section title="~ComponentWindow" ref="class_component_window.html#ae31e79a74fcdbcf891670bdd646ccc58" />
-              <section title="accept" ref="class_component_window.html#a1c4b785898463ab736f280657a7266b9" />
+              <section title="accept" ref="class_component_window.html#add9003de416733a5c6a0ef04fef8cfbc" />
               <section title="getComponentName" ref="class_component_window.html#a4c3304fbf39fabfc2bdc7709a00e7b40" />
               <section title="getComponentSetName" ref="class_component_window.html#a4774eb614f7e6cab935a8dfefa078962" />
               <section title="setComponentSetName" ref="class_component_window.html#a9127a50c467060c214cbb9ce779a1fe3" />
@@ -900,7 +906,7 @@
             <section title="DerivedTypeWindow" ref="class_derived_type_window.html">
               <section title="DerivedTypeWindow" ref="class_derived_type_window.html#a7f829811cad6555147eca48fb7d75969" />
               <section title="~DerivedTypeWindow" ref="class_derived_type_window.html#a1bd10d70c23698c93f6bc316827b14b4" />
-              <section title="accept" ref="class_derived_type_window.html#a77beb13c1ffeb0e27e54e8b6f769c5a5" />
+              <section title="accept" ref="class_derived_type_window.html#ae176bdceb4311b8afec0b594fa31468f" />
               <section title="getBaseType" ref="class_derived_type_window.html#ac284fece66f82dcf1a53bb35cdeb7919" />
               <section title="getFacets" ref="class_derived_type_window.html#a6f1c895359bd1ab5bdbb13d529747bfd" />
               <section title="getTypeName" ref="class_derived_type_window.html#aefe60e9ad12dbf26ea4d3a3cde6b8220" />
@@ -925,14 +931,14 @@
             <section title="EnumerationMemberWindow" ref="class_enumeration_member_window.html">
               <section title="EnumerationMemberWindow" ref="class_enumeration_member_window.html#af5276c0f31a161fcf1fa8d1471a3f099" />
               <section title="~EnumerationMemberWindow" ref="class_enumeration_member_window.html#a4c0b9e409116bb1043f71a17ede3334e" />
-              <section title="accept" ref="class_enumeration_member_window.html#a762f5df52e591125035634c3b4be1daa" />
+              <section title="accept" ref="class_enumeration_member_window.html#aebc16bf7c4c950852904223fca00e056" />
               <section title="getText" ref="class_enumeration_member_window.html#ab42bef74ff2f0cf8254aa605667fedbb" />
               <section title="showEvent" ref="class_enumeration_member_window.html#aca1cc81ddbad0d7b7e8864816b72821d" />
             </section>
             <section title="EnumerationWindow" ref="class_enumeration_window.html">
               <section title="EnumerationWindow" ref="class_enumeration_window.html#adce95a7f292b296910a19ed2189ea835" />
               <section title="~EnumerationWindow" ref="class_enumeration_window.html#adbf665eebf03aa0ef04a51adefaf571a" />
-              <section title="accept" ref="class_enumeration_window.html#a024c485a738e3c68d7c5d9a2e3873c3a" />
+              <section title="accept" ref="class_enumeration_window.html#a5ba87d76c4597492da47df422a924b21" />
               <section title="getEnumerationMembers" ref="class_enumeration_window.html#a8192c6ce88802717feb33a0c6727efa9" />
               <section title="getEnumerationName" ref="class_enumeration_window.html#a0abf51511b2b98e1c6158d4a4cdc1054" />
               <section title="getTypeSetName" ref="class_enumeration_window.html#a6a13c83309682331f46e393ea19ff525" />
@@ -973,7 +979,7 @@
             <section title="FieldValueWindow" ref="class_field_value_window.html">
               <section title="FieldValueWindow" ref="class_field_value_window.html#a526665377e51659089361c928bc5c823" />
               <section title="~FieldValueWindow" ref="class_field_value_window.html#a364cf7d42ac3cc3d8a43ff10c6f67edc" />
-              <section title="accept" ref="class_field_value_window.html#a3f79aa07ebf02c513556160812ac09db" />
+              <section title="accept" ref="class_field_value_window.html#ad99647fd941497c37954e53959d32938" />
               <section title="getFieldValue" ref="class_field_value_window.html#a93ca6f985fcded54f5d3468545878140" />
               <section title="revert" ref="class_field_value_window.html#a1dccfa58baffc56fe29c114a43aa3004" />
               <section title="setFieldCount" ref="class_field_value_window.html#a5a89c46406dcae2702ebe9b6de073a7c" />
@@ -991,7 +997,7 @@
             <section title="ListItemWindow" ref="class_list_item_window.html">
               <section title="ListItemWindow" ref="class_list_item_window.html#ae98d5453788c9b2acd25d9255e99592e" />
               <section title="~ListItemWindow" ref="class_list_item_window.html#a6752ba504ce55c70f15154a20f03329e" />
-              <section title="accept" ref="class_list_item_window.html#a4e798cb61294647da856717a347b4450" />
+              <section title="accept" ref="class_list_item_window.html#a32b19509a081880eb09f35ccfa9540a5" />
               <section title="getValue" ref="class_list_item_window.html#a570a2cccb2f97b1041b9c0533a6afdc0" />
               <section title="setFieldType" ref="class_list_item_window.html#a308fdb9cf08e1511f44f4eee958719bb" />
               <section title="setValue" ref="class_list_item_window.html#a852ea5b5e6c84dc798af9cc59b7be795" />
@@ -1000,7 +1006,7 @@
             <section title="ListWindow" ref="class_list_window.html">
               <section title="ListWindow" ref="class_list_window.html#ac78b83d637085a62ad9b574884760ed6" />
               <section title="~ListWindow" ref="class_list_window.html#aa853a90136b8aadc015f4cb000ad1e25" />
-              <section title="accept" ref="class_list_window.html#a93e2a0caf8e8b2d6fab537688d7065be" />
+              <section title="accept" ref="class_list_window.html#a82b6186cd2778f884875c26005cb7c5e" />
               <section title="getListItemType" ref="class_list_window.html#a9ce57e3d9c16f0f24c8e5ceef083d80b" />
               <section title="getListName" ref="class_list_window.html#a633cbef3cc594d9dcb042f58d0291b40" />
               <section title="getTypeSetName" ref="class_list_window.html#a8e45df93c20a4968fbc0e67b2fdf6665" />
@@ -1019,7 +1025,7 @@
             <section title="MapItemWindow" ref="class_map_item_window.html">
               <section title="MapItemWindow" ref="class_map_item_window.html#afcf55bbf9ecc61b35943eacf14c051a4" />
               <section title="~MapItemWindow" ref="class_map_item_window.html#a04bee919382fe39fda2155d757447f59" />
-              <section title="accept" ref="class_map_item_window.html#a4bec88dca9c6e9a07798d2a38fa0f9f4" />
+              <section title="accept" ref="class_map_item_window.html#ac2b8fee19a47544a6a4e885826a9cb99" />
               <section title="getKey" ref="class_map_item_window.html#a759d5faad0d731f23af5545eb4c491a6" />
               <section title="getValue" ref="class_map_item_window.html#a08f33a77291a9d278697bfa6baf8204d" />
               <section title="setKey" ref="class_map_item_window.html#ac2c9e188271cc7913f089eb417fe3f18" />
@@ -1031,7 +1037,7 @@
             <section title="MapWindow" ref="class_map_window.html">
               <section title="MapWindow" ref="class_map_window.html#ac3e77f1cb305eb74d69396db568e72f4" />
               <section title="~MapWindow" ref="class_map_window.html#a12edf2fb9ac7a6ebf501c0da8aa327dc" />
-              <section title="accept" ref="class_map_window.html#a6fcc455a1aeb559544de6fc39ae478c8" />
+              <section title="accept" ref="class_map_window.html#af026425d0c3c7f7d06ef892885c2baef" />
               <section title="getMapKeyType" ref="class_map_window.html#a8428eae1cb210a582b2ed9a20aaa1936" />
               <section title="getMapName" ref="class_map_window.html#a2451ab9d9f51fdce0169aba614cdd113" />
               <section title="getMapValueType" ref="class_map_window.html#acbc5c8ddec7eef52b3fcc378c39bf956" />
@@ -1658,7 +1664,7 @@
       <keyword name="ComponentsWindow" id="ComponentsWindow" ref="class_components_window.html" />
       <keyword name="ComponentsWindow" id="ComponentsWindow::ComponentsWindow" ref="class_components_window.html#aa50b8a9836a39267c1e4d768ab7cab1d" />
       <keyword name="ComponentWindow" id="ComponentWindow" ref="class_component_window.html" />
-      <keyword name="accept" id="ComponentWindow::accept" ref="class_component_window.html#a1c4b785898463ab736f280657a7266b9" />
+      <keyword name="accept" id="ComponentWindow::accept" ref="class_component_window.html#add9003de416733a5c6a0ef04fef8cfbc" />
       <keyword name="ComponentWindow" id="ComponentWindow::ComponentWindow" ref="class_component_window.html#a7b91382f46b97b0e8ab82f5c4b130116" />
       <keyword name="getComponentName" id="ComponentWindow::getComponentName" ref="class_component_window.html#a4c3304fbf39fabfc2bdc7709a00e7b40" />
       <keyword name="getComponentSetName" id="ComponentWindow::getComponentSetName" ref="class_component_window.html#a4774eb614f7e6cab935a8dfefa078962" />
@@ -1670,7 +1676,7 @@
       <keyword name="CustomTypesWindow" id="CustomTypesWindow::CustomTypesWindow" ref="class_custom_types_window.html#a3e114deab092d7346f929565911ed866" />
       <keyword name="showEvent" id="CustomTypesWindow::showEvent" ref="class_custom_types_window.html#ae931a81411177dd320278c1cc45230d8" />
       <keyword name="DerivedTypeWindow" id="DerivedTypeWindow" ref="class_derived_type_window.html" />
-      <keyword name="accept" id="DerivedTypeWindow::accept" ref="class_derived_type_window.html#a77beb13c1ffeb0e27e54e8b6f769c5a5" />
+      <keyword name="accept" id="DerivedTypeWindow::accept" ref="class_derived_type_window.html#ae176bdceb4311b8afec0b594fa31468f" />
       <keyword name="DerivedTypeWindow" id="DerivedTypeWindow::DerivedTypeWindow" ref="class_derived_type_window.html#a7f829811cad6555147eca48fb7d75969" />
       <keyword name="getBaseType" id="DerivedTypeWindow::getBaseType" ref="class_derived_type_window.html#ac284fece66f82dcf1a53bb35cdeb7919" />
       <keyword name="getFacets" id="DerivedTypeWindow::getFacets" ref="class_derived_type_window.html#a6f1c895359bd1ab5bdbb13d529747bfd" />
@@ -1691,12 +1697,12 @@
       <keyword name="setRecordId" id="DuplicateRecordWindow::setRecordId" ref="class_duplicate_record_window.html#aacbaa0ab0a9195f843132b3708421bfd" />
       <keyword name="showEvent" id="DuplicateRecordWindow::showEvent" ref="class_duplicate_record_window.html#a2e311569ff78aa8211d0f262e2810767" />
       <keyword name="EnumerationMemberWindow" id="EnumerationMemberWindow" ref="class_enumeration_member_window.html" />
-      <keyword name="accept" id="EnumerationMemberWindow::accept" ref="class_enumeration_member_window.html#a762f5df52e591125035634c3b4be1daa" />
+      <keyword name="accept" id="EnumerationMemberWindow::accept" ref="class_enumeration_member_window.html#aebc16bf7c4c950852904223fca00e056" />
       <keyword name="EnumerationMemberWindow" id="EnumerationMemberWindow::EnumerationMemberWindow" ref="class_enumeration_member_window.html#af5276c0f31a161fcf1fa8d1471a3f099" />
       <keyword name="getText" id="EnumerationMemberWindow::getText" ref="class_enumeration_member_window.html#ab42bef74ff2f0cf8254aa605667fedbb" />
       <keyword name="showEvent" id="EnumerationMemberWindow::showEvent" ref="class_enumeration_member_window.html#aca1cc81ddbad0d7b7e8864816b72821d" />
       <keyword name="EnumerationWindow" id="EnumerationWindow" ref="class_enumeration_window.html" />
-      <keyword name="accept" id="EnumerationWindow::accept" ref="class_enumeration_window.html#a024c485a738e3c68d7c5d9a2e3873c3a" />
+      <keyword name="accept" id="EnumerationWindow::accept" ref="class_enumeration_window.html#a5ba87d76c4597492da47df422a924b21" />
       <keyword name="EnumerationWindow" id="EnumerationWindow::EnumerationWindow" ref="class_enumeration_window.html#adce95a7f292b296910a19ed2189ea835" />
       <keyword name="getEnumerationName" id="EnumerationWindow::getEnumerationName" ref="class_enumeration_window.html#a0abf51511b2b98e1c6158d4a4cdc1054" />
       <keyword name="getEnumerationMembers" id="EnumerationWindow::getEnumerationMembers" ref="class_enumeration_window.html#a8192c6ce88802717feb33a0c6727efa9" />
@@ -1731,7 +1737,7 @@
       <keyword name="setFieldType" id="FieldDefinitionWindow::setFieldType" ref="class_field_definition_window.html#acd11b7b3cbde21bc649399ae55de2a9a" />
       <keyword name="showEvent" id="FieldDefinitionWindow::showEvent" ref="class_field_definition_window.html#add3f6b63e2bbf41638e0fd0a4a981bff" />
       <keyword name="FieldValueWindow" id="FieldValueWindow" ref="class_field_value_window.html" />
-      <keyword name="accept" id="FieldValueWindow::accept" ref="class_field_value_window.html#a3f79aa07ebf02c513556160812ac09db" />
+      <keyword name="accept" id="FieldValueWindow::accept" ref="class_field_value_window.html#ad99647fd941497c37954e53959d32938" />
       <keyword name="revert" id="FieldValueWindow::revert" ref="class_field_value_window.html#a1dccfa58baffc56fe29c114a43aa3004" />
       <keyword name="FieldValueWindow" id="FieldValueWindow::FieldValueWindow" ref="class_field_value_window.html#a526665377e51659089361c928bc5c823" />
       <keyword name="getFieldValue" id="FieldValueWindow::getFieldValue" ref="class_field_value_window.html#a93ca6f985fcded54f5d3468545878140" />
@@ -1745,14 +1751,14 @@
       <keyword name="FindRecordWindow" id="FindRecordWindow::FindRecordWindow" ref="class_find_record_window.html#a8b4f63bdc4d8c00902a79d8c6cea843c" />
       <keyword name="getSearchPattern" id="FindRecordWindow::getSearchPattern" ref="class_find_record_window.html#a47e65e4712b9ed9e28bb4e5e52cdd5b4" />
       <keyword name="ListItemWindow" id="ListItemWindow" ref="class_list_item_window.html" />
-      <keyword name="accept" id="ListItemWindow::accept" ref="class_list_item_window.html#a4e798cb61294647da856717a347b4450" />
+      <keyword name="accept" id="ListItemWindow::accept" ref="class_list_item_window.html#a32b19509a081880eb09f35ccfa9540a5" />
       <keyword name="ListItemWindow" id="ListItemWindow::ListItemWindow" ref="class_list_item_window.html#ae98d5453788c9b2acd25d9255e99592e" />
       <keyword name="getValue" id="ListItemWindow::getValue" ref="class_list_item_window.html#a570a2cccb2f97b1041b9c0533a6afdc0" />
       <keyword name="setValue" id="ListItemWindow::setValue" ref="class_list_item_window.html#a852ea5b5e6c84dc798af9cc59b7be795" />
       <keyword name="setFieldType" id="ListItemWindow::setFieldType" ref="class_list_item_window.html#a308fdb9cf08e1511f44f4eee958719bb" />
       <keyword name="showEvent" id="ListItemWindow::showEvent" ref="class_list_item_window.html#a735b1b9d901d8d821616bb7fa54b7070" />
       <keyword name="ListWindow" id="ListWindow" ref="class_list_window.html" />
-      <keyword name="accept" id="ListWindow::accept" ref="class_list_window.html#a93e2a0caf8e8b2d6fab537688d7065be" />
+      <keyword name="accept" id="ListWindow::accept" ref="class_list_window.html#a82b6186cd2778f884875c26005cb7c5e" />
       <keyword name="ListWindow" id="ListWindow::ListWindow" ref="class_list_window.html#ac78b83d637085a62ad9b574884760ed6" />
       <keyword name="getListName" id="ListWindow::getListName" ref="class_list_window.html#a633cbef3cc594d9dcb042f58d0291b40" />
       <keyword name="getListItemType" id="ListWindow::getListItemType" ref="class_list_window.html#a9ce57e3d9c16f0f24c8e5ceef083d80b" />
@@ -1767,7 +1773,7 @@
       <keyword name="MainWindow" id="MainWindow::MainWindow" ref="class_main_window.html#a3d3fb4a29309f8a841e1b94ae5071d5b" />
       <keyword name="closeEvent" id="MainWindow::closeEvent" ref="class_main_window.html#a4e20a4a065fbb0e4d3532a45a0a91425" />
       <keyword name="MapItemWindow" id="MapItemWindow" ref="class_map_item_window.html" />
-      <keyword name="accept" id="MapItemWindow::accept" ref="class_map_item_window.html#a4bec88dca9c6e9a07798d2a38fa0f9f4" />
+      <keyword name="accept" id="MapItemWindow::accept" ref="class_map_item_window.html#ac2b8fee19a47544a6a4e885826a9cb99" />
       <keyword name="MapItemWindow" id="MapItemWindow::MapItemWindow" ref="class_map_item_window.html#afcf55bbf9ecc61b35943eacf14c051a4" />
       <keyword name="getKey" id="MapItemWindow::getKey" ref="class_map_item_window.html#a759d5faad0d731f23af5545eb4c491a6" />
       <keyword name="getValue" id="MapItemWindow::getValue" ref="class_map_item_window.html#a08f33a77291a9d278697bfa6baf8204d" />
@@ -1777,7 +1783,7 @@
       <keyword name="setValueType" id="MapItemWindow::setValueType" ref="class_map_item_window.html#ae7f56fd2c2ede388b9c1771787dea3d8" />
       <keyword name="showEvent" id="MapItemWindow::showEvent" ref="class_map_item_window.html#a2192345df286d3f2415711b66f6d4464" />
       <keyword name="MapWindow" id="MapWindow" ref="class_map_window.html" />
-      <keyword name="accept" id="MapWindow::accept" ref="class_map_window.html#a6fcc455a1aeb559544de6fc39ae478c8" />
+      <keyword name="accept" id="MapWindow::accept" ref="class_map_window.html#af026425d0c3c7f7d06ef892885c2baef" />
       <keyword name="MapWindow" id="MapWindow::MapWindow" ref="class_map_window.html#ac3e77f1cb305eb74d69396db568e72f4" />
       <keyword name="getMapName" id="MapWindow::getMapName" ref="class_map_window.html#a2451ab9d9f51fdce0169aba614cdd113" />
       <keyword name="getMapKeyType" id="MapWindow::getMapKeyType" ref="class_map_window.html#a8428eae1cb210a582b2ed9a20aaa1936" />
@@ -2259,6 +2265,12 @@
       <keyword name="getProjectPath" id="Tome::ProjectController::getProjectPath" ref="class_tome_1_1_project_controller.html#a1964b3204cabc838cb22d503fc10ef5c" />
       <keyword name="getProjectRecordIdType" id="Tome::ProjectController::getProjectRecordIdType" ref="class_tome_1_1_project_controller.html#af62dd1faf282f341743a9556062227b8" />
       <keyword name="getProjectIgnoreReadOnly" id="Tome::ProjectController::getProjectIgnoreReadOnly" ref="class_tome_1_1_project_controller.html#a2aa8e3c50264a9187e2d7fa49d56d8d0" />
+      <keyword name="hasComponentSet" id="Tome::ProjectController::hasComponentSet" ref="class_tome_1_1_project_controller.html#a2ac994d42035192d322d289feeb140f7" />
+      <keyword name="hasCustomTypeSet" id="Tome::ProjectController::hasCustomTypeSet" ref="class_tome_1_1_project_controller.html#afdcd8382a06edbd1c275a9afaacbb0e6" />
+      <keyword name="hasExportTemplate" id="Tome::ProjectController::hasExportTemplate" ref="class_tome_1_1_project_controller.html#a9bc6b8a1f254ac53c46afd2d6f22ee50" />
+      <keyword name="hasFieldDefinitionSet" id="Tome::ProjectController::hasFieldDefinitionSet" ref="class_tome_1_1_project_controller.html#aeef04fe524b07b1ce59d0860a14e0de6" />
+      <keyword name="hasImportTemplate" id="Tome::ProjectController::hasImportTemplate" ref="class_tome_1_1_project_controller.html#abc0257819b95460902d1f2bb8ae68b21" />
+      <keyword name="hasRecordSet" id="Tome::ProjectController::hasRecordSet" ref="class_tome_1_1_project_controller.html#a2fd77b090c067f4a82cf98df5a5dc349" />
       <keyword name="isProjectLoaded" id="Tome::ProjectController::isProjectLoaded" ref="class_tome_1_1_project_controller.html#a13ddf31cf5bcc3d08e021d1b8980b2a6" />
       <keyword name="loadComponentSet" id="Tome::ProjectController::loadComponentSet" ref="class_tome_1_1_project_controller.html#a5019df97f128d3da2a7facc64919b3ae" />
       <keyword name="loadCustomTypeSet" id="Tome::ProjectController::loadCustomTypeSet" ref="class_tome_1_1_project_controller.html#a4eb07a97342ef72fbb67a85704f31358" />
@@ -2414,7 +2426,7 @@
       <keyword name="setRecords" id="Tome::RecordTreeWidget::setRecords" ref="class_tome_1_1_record_tree_widget.html#a69ce2aae0543e6800c10ed9ac28a7489" />
       <keyword name="removeRecord" id="Tome::RecordTreeWidget::removeRecord" ref="class_tome_1_1_record_tree_widget.html#a825c53695f872e2cc0779cfb24b89893" />
       <keyword name="contextMenuEvent" id="Tome::RecordTreeWidget::contextMenuEvent" ref="class_tome_1_1_record_tree_widget.html#adada8927a8ca6c8a195c9222d516246e" />
-      <keyword name="dropMimeData" id="Tome::RecordTreeWidget::dropMimeData" ref="class_tome_1_1_record_tree_widget.html#a77b5e3b2328bfbfb290ce81cec9d7328" />
+      <keyword name="dropMimeData" id="Tome::RecordTreeWidget::dropMimeData" ref="class_tome_1_1_record_tree_widget.html#ad580a32202b4aa2649b426b75546be75" />
       <keyword name="mousePressEvent" id="Tome::RecordTreeWidget::mousePressEvent" ref="class_tome_1_1_record_tree_widget.html#aaa57a3b0867cb9370bb97b7ed9fbdc92" />
       <keyword name="Tome::RecordTreeWidgetItem" id="Tome::RecordTreeWidgetItem" ref="class_tome_1_1_record_tree_widget_item.html" />
       <keyword name="RecordTreeWidgetItem" id="Tome::RecordTreeWidgetItem::RecordTreeWidgetItem" ref="class_tome_1_1_record_tree_widget_item.html#af59d856be215cfec0ff30e91a8b38e7e" />

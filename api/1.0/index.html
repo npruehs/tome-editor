@@ -112,7 +112,7 @@ $(function() {
 <p>Tome is developed using the <a href="http://nvie.com/posts/a-successful-git-branching-model/">GitFlow branching model</a>. In order to contribute, you should check out the latest develop branch, and create a new feature or hotfix branch to be merged back.</p>
 <h3>Step 3: Implement your feature or bugfix</h3>
 <p>Tome is based on <a href="http://www.qt.io/">Qt 5.8</a>.</p>
-<p>You might also take a look at our <a href="https://github.com/npruehs/game-data-editor/wiki">development wiki</a> in order to get a better understanding of how everything's tied together.</p>
+<p>You might also want to take a look at the Tome API documentation (see below).</p>
 <h3>Step 4: Open a pull request</h3>
 <p>Finally, <a href="https://help.github.com/articles/creating-a-pull-request/">open a pull request</a> so we can review your changes together, and finally integrate it into the next release.</p>
 <h2>Building Tome</h2>
@@ -124,22 +124,25 @@ $(function() {
 <li>Make a release build of Tome in QtCreator.</li>
 <li>Navigate to the output directory <code>Bin\release\Tome</code>.</li>
 <li>Run <code>windeployqt.exe Tome.exe</code>.</li>
+<li>Copy <code>C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll</code> to the output directory (required for Google Sheets import).</li>
+<li>Copy <code>C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll</code> to the output directory (required for Google Sheets import).</li>
 </ol>
 <h3>Tome Issue Reporter for Windows</h3>
 <ol type="1">
 <li>Open a command prompt.</li>
 <li>Call <code>C:\Program Files (x86)\Qt\5.8\mingw53_32\bin\qtenv2.bat</code> to set up your environment variables.</li>
+<li>Correctly set GITHUB_USER and GITHUB_PASSWORD in <a href="https://github.com/npruehs/tome-editor/blob/develop/Source/TomeIssueReporter/config.h">config.h</a>.</li>
 <li>Make a release build of TomeIssueReporter in QtCreator.</li>
 <li>Navigate to the output directory <code>Bin\release\TomeIssueReporter</code>.</li>
 <li>Run <code>windeployqt.exe TomeIssueReporter.exe</code>.</li>
-<li>Copy <code>C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll</code> to the output directory.</li>
-<li>Copy <code>C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll</code> to the output directory.</li>
+<li>Copy <code>C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll</code> to the output directory (required for creating GitHub issues).</li>
+<li>Copy <code>C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll</code> to the output directory (required for creating GitHub issues).</li>
 </ol>
 <h3>Tome for Mac OS X</h3>
 <ol type="1">
 <li>Open a shell.</li>
 <li>Make a release build of Tome in QtCreator.</li>
-<li>Navigate to the output directory <code>Bin\release\Tome</code>.</li>
+<li>Navigate to the output directory, e.g. <code>build-Tome-Desktop_Qt_5_8_0_clang_64bit-Release</code>.</li>
 <li>Run <code>Qt/5.8/clang_64/bin/macdeployqt Tome.app -dmg</code>.</li>
 </ol>
 <h2>Building API documentation</h2>
@@ -154,12 +157,13 @@ $(function() {
 <li>in your browser, at <code>Doc\Api\html\index.html</code>.</li>
 <li>in QtCreator, by pressing F1 while your cursor is at any Tome symbol.</li>
 </ul>
+<p>The most recent API documentation is also available at <a href="http://www.tome-editor.org/api/1.0/">http://www.tome-editor.org/api/1.0/</a>.</p>
 <h2>License</h2>
 <p>Tome is released under the <a href="https://github.com/npruehs/game-data-editor/blob/master/LICENSE">GNU Lesser General Public License 3.0</a>. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 25 2017 15:15:32 for Tome by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jun 11 2017 19:29:39 for Tome by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>
