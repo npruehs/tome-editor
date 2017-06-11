@@ -79,7 +79,7 @@ class MapItemWindow : public QDialog
         /**
          * @brief Validates all data and closes this window if successful.
          */
-        void accept();
+        void accept() Q_DECL_OVERRIDE;
 
     protected:
         /**

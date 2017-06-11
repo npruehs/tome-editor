@@ -142,7 +142,7 @@ namespace Tome
              * @param action Unused.
              * @return True, if a record has been dragged & dropped onto another one, and false otherwise.
              */
-            bool dropMimeData(QTreeWidgetItem* parent, int index, const QMimeData* data, Qt::DropAction action);
+            bool dropMimeData(QTreeWidgetItem* parent, int index, const QMimeData* data, Qt::DropAction action) Q_DECL_OVERRIDE;
 
             /**
              * @brief Selects a record in the hierarchy, or clears the current selection.
