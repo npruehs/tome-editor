@@ -322,11 +322,6 @@ void RecordTreeWidget::setRecords(const RecordList& records)
                 RecordTreeWidgetItem* recordParent = recordItems[recordItemParentId];
                 recordParent->addChild(recordItem);
             }
-            else
-            {
-                // Reset parent reference.
-                this->recordsController.reparentRecord(recordItem->getId(), QString());
-            }
         }
 
         items.append(recordItem);
