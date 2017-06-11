@@ -9,17 +9,45 @@
 
 namespace Tome
 {
+    /**
+     * @brief Field that can be added to a record to hold data.
+     */
     class FieldDefinition
     {
         public:
-            FieldDefinition();
-
+            /**
+             * @brief Component this field definition belongs to.
+             */
             Component component;
+
+            /**
+             * @brief Default value of this field.
+             */
             QVariant defaultValue;
+
+            /**
+             * @brief Textual description of this field.
+             */
             QString description;
+
+            /**
+             * @brief Display name of this field.
+             */
             QString displayName;
+
+            /**
+             * @brief Name of the set this field definition belongs to.
+             */
             QString fieldDefinitionSetName;
+
+            /**
+             * @brief Type of the values of this field.
+             */
             QString fieldType;
+
+            /**
+             * @brief Unique id of this field definition.
+             */
             QString id;
     };
 

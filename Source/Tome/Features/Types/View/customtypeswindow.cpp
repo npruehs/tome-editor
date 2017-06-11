@@ -527,10 +527,11 @@ void CustomTypesWindow::updateRow(const int index, const CustomType& type)
         // Combine detail information.
         QString details = type.getBaseType();
 
-        QVariant requiredAncestor = this->facetsController.getFacetValue(type.name, RequiredReferenceAncestorFacet::FacetKey);
-        if (requiredAncestor.isValid())
+        QVariant requiredAncestorId = this->facetsController.getFacetValue(type.name, RequiredReferenceAncestorFacet::FacetKey);
+        if (requiredAncestorId.isValid())
         {
-            details += QString(" (%1)").arg(requiredAncestor.toString());
+            const Record& requiredAncestor = this->recordsController.getRecord(requiredAncestorId);
+            details += QString(" (%1)").arg(requiredAncestor.displayName);
         }
 
         QVariant localized = this->facetsController.getFacetValue(type.name, LocalizedStringFacet::FacetKey);

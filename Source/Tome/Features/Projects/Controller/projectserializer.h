@@ -8,20 +8,21 @@ namespace Tome
 {
     class Project;
 
+    /**
+     * @brief Reads and writes projects from any device.
+     */
     class ProjectSerializer
     {
         public:
-            ProjectSerializer();
-
             /**
-             * @brief serialize Writes the passed project to the specified device.
+             * @brief Writes the passed project to the specified device.
              * @param device Device to write the project to.
              * @param project Project to write.
              */
             void serialize(QIODevice& device, QSharedPointer<Project> project) const;
 
             /**
-             * @brief deserialize Reads the project from the specified device.
+             * @brief Reads the project from the specified device.
              * @param device Device to read the project from.
              * @param project Project to fill with read data.
              */

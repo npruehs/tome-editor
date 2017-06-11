@@ -10,10 +10,6 @@ using namespace Tome;
 const QString MapValueTypeNotSupportedTask::MessageCode = "TO0106";
 
 
-MapValueTypeNotSupportedTask::MapValueTypeNotSupportedTask()
-{
-}
-
 const QString MapValueTypeNotSupportedTask::getDisplayName() const
 {
     return MessageCode + tr(" - Map Value Type Not Supported");

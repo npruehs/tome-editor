@@ -9,10 +9,6 @@ using namespace Tome;
 const QString MapValueTypeDoesNotExistTask::MessageCode = "TO0104";
 
 
-MapValueTypeDoesNotExistTask::MapValueTypeDoesNotExistTask()
-{
-}
-
 const QString MapValueTypeDoesNotExistTask::getDisplayName() const
 {
     return MessageCode + tr(" - Map Value Type Does Not Exist");

@@ -23,11 +23,24 @@ namespace Tome
     class UndoController;
 }
 
+/**
+ * @brief Window for adding and removing custom types.
+ */
 class CustomTypesWindow : public QMainWindow
 {
         Q_OBJECT
 
     public:
+        /**
+         * @brief Constructs a new window for adding and removing custom types.
+         * @param typesController Controller for adding, updating and removing custom types
+         * @param facetsController Controller for validating type facets.
+         * @param fieldDefinitionsController Controller for adding, updating and removing field definitions.
+         * @param findUsagesController Controller for finding usages of fields, records and custom types.
+         * @param recordsController Controller for adding, updating and removing records.
+         * @param undoController Controller for performing undo-able commands.
+         * @param parent Optional owner widget.
+         */
         explicit CustomTypesWindow(Tome::TypesController& typesController,
                                    Tome::FacetsController& facetsController,
                                    Tome::FieldDefinitionsController& fieldDefinitionsController,
@@ -38,7 +51,11 @@ class CustomTypesWindow : public QMainWindow
         ~CustomTypesWindow();
 
     protected:
-        void showEvent(QShowEvent * event);
+        /**
+         * @brief Updates the view, if necessary, and shows the window.
+         * @param event Event for showing the window.
+         */
+        void showEvent(QShowEvent* event);
 
     private slots:
         void on_actionNew_Derived_Type_triggered();

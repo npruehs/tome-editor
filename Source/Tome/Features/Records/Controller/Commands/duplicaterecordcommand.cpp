@@ -17,7 +17,7 @@ DuplicateRecordCommand::DuplicateRecordCommand(RecordsController& recordsControl
 
 void DuplicateRecordCommand::undo()
 {
-    qInfo(QString("Undo duplicate record %1.").arg(this->existingRecordId.toString()).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Undo duplicate record %1.").arg(this->existingRecordId.toString())));
 
     this->recordsController.removeRecord(this->newRecordId);
 }

@@ -26,7 +26,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <!-- version should MATCH as closely as possible with the underlying software -->
     <!-- Is the version a prerelease of a version? https://docs.nuget.org/create/versioning#creating-prerelease-packages -->
     <!-- Note that unstable versions like 0.0.1 can be considered a released version, but it's possible that one can release a 0.0.1-beta before you release a 0.0.1 version. If the version number is final, that is considered a released version and not a prerelease. -->
-    <version>0.9-beta</version>
+    <version>1.0</version>
     <packageSourceUrl>https://github.com/npruehs/tome-editor</packageSourceUrl>
     <!-- owners is a poor name for maintainers of the package. It sticks around by this name for compatibility reasons. It basically means you. -->
     <owners>Nick Prühs</owners>
@@ -54,48 +54,34 @@ Developing games is all about data. With game systems for modifying data and use
 
 Tome solves two problems that arise with every new game you build: First, you can import the definition of your game's data so game designers can create new data records and modify existing ones very conveniently. Second, you can export the results to any format your game engine understands.
     </description>
-    <releaseNotes>
-Integer IDs and UUIDs release.
+    <releaseNotes>First major release.
 
-The second beta release of Tome greatly improves overall usability of the tool, and increases the range of different types of projects that Tome can be used for.
-
-## New Features
-- **Integer IDs and UUIDs.** When creating new projects, you can now decide whether to use manually chosen string IDs, automatically incremented integer IDs or automatically generated UUIDs for all records.
-- **Multi-Editing.** You can now edit the field values of multiple records with the same parent at once, and revert or remove multiple records with the same parent at once.
-- **File Datatype.** The new built-in File datatype allows browsing the file system and storing relative file paths, with or without prefix and/or extension. The record table shows a preview of the selected file, if it's an image, and image file fields can be used as record icons in the record tree.
+This release contains usability improvements and bug fixes, only. It does not add any new features, export placeholders or integrity checks. 
 
 ## Data
-- Added placeholder for the MD5 hash of all record data.
-- Added importing of list values, separated by commas.
-- Added integrity checks for components without fields, unused fields, unused types, broken record references and fields that always have their default value.
-- Skipping record rows with empty ids while importing.
+
+* Assigning pseudo-random integer record ids instead of increasing ones, in order to improve collaboration.
 
 ## Usability
-- Asking the user whether to save unsaved changes before creating a new project or opening an existing one.
-- Disabled record context menu actions while no record is selected.
-- Added deselection of records.
-- Added adding new child records.
-- Showing more descriptive error messages if an XLSX sheet could not be found.
-- Automatically focussing line edit for entering names of new components or new derived types.
-- Showing more detailed information on derived types in Custom Types window.
-- Stripping whitespaces when automatically converting display names to ids in New Record window.
-- Sorting type names strictly by name, instead of always showing built-in types first.
-- Added progress bars when running integrity checks.
-- Showing issue counts after running integrity checks.
-- Added option for showing record field values along with their component names, which causes grouping of fields by component.
-- Remembering the location of the last succesfully opened project.
-- Added a menu item for reloading the current project.
-- The record id is no longer automatically updated to reflect the record display name, except when creating new records.
+
+* Showing record display names instead of ids in field value reference selection dropdowns, and for reference field values in the record table.
+* Sorting record tree and reference dropdowns by record display name.
+* Saving records sorted by ID in order to avoid merge conflicts.
+* Set record tree initial width to 1/5 of window width.
+* Automatically resizing first record table column to fit contents.
+* Disabled Reload Project menu item while no project is loaded.
 
 ## Bug Fixes
-- Fixed a crash that could occur when renaming a record with children.
-- Fixed a crash that could occur when validating a Required Reference Ancestor facet and the reference to validate could not be found.
-- Fixed a crash that could occur when importing data with a parent record that didn't exist.
-- Fixed a bug that caused the progress bar not to disappear if any error occurred while importing data from an XLSX file.
-- Fixed a bug that caused CSV and Excel files not to be correctly closed after an import.
-- Fixed a bug that prevented the error list from correctly being filtered by severity.
-- Fixed a bug that occasionally caused lists to be incorrectly sorted.
-    </releaseNotes>
+
+* Fixed multiple crashes that could occur when reference field values were is not set or invalid.
+* Fixed a crash that could occur when exporting map values.
+* Fixed a crash that could occur when adding a records file referencing a field or another record that does not exist.
+* Fixed multiple issues that could occur when assigning the same id to multiple records, only differing in lower and upper case characters.
+* Correctly prevent creating records with empty ids again.
+* Correctly detect whitespaces at the beginning or end of record ids.
+* No longer showing "prefix will automatically be removed" hint in Edit Field Value window if it isn't.
+* Showing correct question before discarding unsaved changes.
+* Adding the same file multiple times to the same project is no longer allowed.</releaseNotes>
     <!-- =============================== -->      
 
     <!-- Specifying dependencies and version ranges? https://docs.nuget.org/create/versioning#specifying-version-ranges-in-.nuspec-files -->

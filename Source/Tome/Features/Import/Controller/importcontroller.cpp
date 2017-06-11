@@ -22,7 +22,7 @@ ImportController::ImportController(FieldDefinitionsController& fieldDefinitionsC
 
 void ImportController::addRecordImportTemplate(const RecordTableImportTemplate& importTemplate)
 {
-    qInfo(QString("Adding import template %1.").arg(importTemplate.name).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Adding import template %1.").arg(importTemplate.name)));
 
     // Update model.
     this->model->push_back(importTemplate);
@@ -44,8 +44,8 @@ const RecordTableImportTemplate ImportController::getRecordTableImportTemplate(c
     }
 
     QString errorMessage = QObject::tr("Import template not  found: ") + name;
-    qCritical(errorMessage.toUtf8().constData());
-    throw std::runtime_error(errorMessage.toStdString());
+    qCritical(qUtf8Printable(errorMessage));
+    throw std::out_of_range(errorMessage.toStdString());
 }
 
 const RecordTableImportTemplateList ImportController::getRecordTableImportTemplates() const
@@ -55,8 +55,8 @@ const RecordTableImportTemplateList ImportController::getRecordTableImportTempla
 
 void ImportController::importRecords(const RecordTableImportTemplate& importTemplate, const QVariant& context)
 {
-    qInfo(QString("Importing data from %1 with import template %2.")
-             .arg(context.toString(), importTemplate.name).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Importing data from %1 with import template %2.")
+             .arg(context.toString(), importTemplate.name)));
 
     // Create data source.
     RecordDataSource* dataSource;
@@ -100,9 +100,9 @@ void ImportController::importRecords(const RecordTableImportTemplate& importTemp
     dataSource->importData(importTemplate, context);
 }
 
-void ImportController::removeImportTemplate(const QString& name)
+bool ImportController::removeImportTemplate(const QString& name)
 {
-    qInfo(QString("Removing import template %1.").arg(name).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Removing import template %1.").arg(name)));
 
     // Update model.
     for (RecordTableImportTemplateList::iterator it = this->model->begin();
@@ -115,9 +115,11 @@ void ImportController::removeImportTemplate(const QString& name)
 
             // Notify listeners.
             emit this->importTemplatesChanged();
-            return;
+            return true;
         }
     }
+
+    return false;
 }
 
 void ImportController::setRecordTableImportTemplates(RecordTableImportTemplateList& importTemplates)
@@ -163,8 +165,8 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
     QString progressBarTitle = tr("Importing %1 With %2").arg(contextName, importTemplateName);
     int index = 0;
 
-    for (QMap<QString, RecordFieldValueMap>::const_iterator itRecords = data.begin();
-         itRecords != data.end();
+    for (QMap<QString, RecordFieldValueMap>::const_iterator itRecords = data.cbegin();
+         itRecords != data.cend();
          ++itRecords)
     {
         ++index;
@@ -196,14 +198,14 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
         }
         else
         {
-            qInfo(QString("Updating record %1.").arg(recordId).toUtf8().constData());
+            qInfo(qUtf8Printable(QString("Updating record %1.").arg(recordId)));
         }
 
         // Get current record field values.
         const RecordFieldValueMap oldRecordFieldValues = this->recordsController.getRecordFieldValues(recordId);
 
-        for (RecordFieldValueMap::const_iterator itFields = newRecordFieldValues.begin();
-             itFields != newRecordFieldValues.end();
+        for (RecordFieldValueMap::const_iterator itFields = newRecordFieldValues.cbegin();
+             itFields != newRecordFieldValues.cend();
              ++itFields)
         {
             // Get field.
@@ -218,7 +220,7 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
 
             if (!this->fieldDefinitionsController.hasFieldDefinition(fieldId))
             {
-                qWarning(QString("Skipping unknown field: %1").arg(fieldId).toUtf8().constData());
+                qWarning(qUtf8Printable(QString("Skipping unknown field: %1").arg(fieldId)));
                 ++fieldsSkipped;
                 continue;
             }
@@ -245,12 +247,11 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
         }
     }
 
-    qInfo(QString("Import finished. %1 new records added. %2 field values updated, %3 skipped, %4 up-to-date.")
+    qInfo(qUtf8Printable(QString("Import finished. %1 new records added. %2 field values updated, %3 skipped, %4 up-to-date.")
           .arg(QString::number(recordsAdded),
                QString::number(fieldsUpdated),
                QString::number(fieldsSkipped),
-               QString::number(fieldsUpToDate))
-          .toUtf8().constData());
+               QString::number(fieldsUpToDate))));
 
     emit this->importFinished();
 }

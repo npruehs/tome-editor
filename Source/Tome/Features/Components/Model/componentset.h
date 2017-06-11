@@ -5,12 +5,20 @@
 
 namespace Tome
 {
+    /**
+     * @brief Named set of Tome components.
+     */
     class ComponentSet
     {
         public:
-            ComponentSet();
-
+            /**
+             * @brief Name of this component set.
+             */
             QString name;
+
+            /**
+             * @brief Components of this component set.
+             */
             ComponentList components;
     };
 }

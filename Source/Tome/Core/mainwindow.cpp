@@ -362,6 +362,13 @@ MainWindow::MainWindow(Controller* controller, QWidget *parent) :
     // Maximize window.
     this->showMaximized();
 
+    // Set splitter sizes.
+    int splitterWidth = this->ui->splitter->width();
+    QList<int> splitterSizes;
+    splitterSizes << splitterWidth * 1 / 5;
+    splitterSizes << splitterWidth * 4 / 5;
+    this->ui->splitter->setSizes(splitterSizes);
+
     // Set window title.
     this->updateWindowTitle();
 
@@ -427,7 +434,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
     // Ask user whether they want to save their changes.
     QMessageBox::StandardButton result = QMessageBox::question(this,
                                                                tr("Tome"),
-                                                               tr("Want to save your changes before exiting?"),
+                                                               tr("Do you want to save your changes before exiting?"),
                                                                QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
                                                                QMessageBox::Cancel);
     if (result == QMessageBox::Yes)
@@ -485,8 +492,8 @@ void MainWindow::on_actionField_Definions_triggered()
 
         connect(
                     this->fieldDefinitionsWindow,
-                    SIGNAL(fieldChanged()),
-                    SLOT(onFieldChanged())
+                    SIGNAL(fieldChanged(const QString)),
+                    SLOT(onFieldChanged(const QString))
                     );
     }
 
@@ -545,7 +552,7 @@ void MainWindow::on_actionNew_Project_triggered()
             // Ask user whether they want to save their changes.
             QMessageBox::StandardButton result = QMessageBox::question(this,
                                                                        tr("Tome"),
-                                                                       tr("Want to save your changes before exiting?"),
+                                                                       tr("Do you want to save your changes before creating a new project?"),
                                                                        QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
                                                                        QMessageBox::Cancel);
 
@@ -682,8 +689,8 @@ void MainWindow::on_actionNew_Record_triggered()
 
         const QMap<QString, RecordFieldState::RecordFieldState> recordFields = this->recordWindow->getRecordFields();
 
-        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.begin();
-             it != recordFields.end();
+        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.cbegin();
+             it != recordFields.cend();
              ++it)
         {
             const QString& fieldId = it.key();
@@ -767,8 +774,8 @@ void MainWindow::on_actionAdd_Child_triggered()
 
         const QMap<QString, RecordFieldState::RecordFieldState> recordFields = this->recordWindow->getRecordFields();
 
-        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.begin();
-             it != recordFields.end();
+        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.cbegin();
+             it != recordFields.cend();
              ++it)
         {
             const QString& fieldId = it.key();
@@ -859,8 +866,8 @@ void MainWindow::on_actionEdit_Record_triggered()
 
         const QMap<QString, RecordFieldState::RecordFieldState> recordFields = this->recordWindow->getRecordFields();
 
-        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.begin();
-             it != recordFields.end();
+        for (QMap<QString, RecordFieldState::RecordFieldState>::const_iterator it = recordFields.cbegin();
+             it != recordFields.cend();
              ++it)
         {
             const QString& fieldId = it.key();
@@ -1514,7 +1521,7 @@ void MainWindow::openProject(QString path)
         // Ask user whether they want to save their changes.
         QMessageBox::StandardButton result = QMessageBox::question(this,
                                                                    tr("Tome"),
-                                                                   tr("Want to save your changes before exiting?"),
+                                                                   tr("Do you want to save your changes before loading another project?"),
                                                                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
                                                                    QMessageBox::Cancel);
 
@@ -1547,8 +1554,10 @@ void MainWindow::openProject(QString path)
     }
 }
 
-void MainWindow::onFieldChanged()
+void MainWindow::onFieldChanged(const QString fieldId)
 {
+    Q_UNUSED(fieldId)
+
     this->refreshRecordTable();
 }
 
@@ -1716,8 +1725,8 @@ void MainWindow::refreshExportMenu()
     const RecordExportTemplateList& recordExportTemplateList =
             this->controller->getExportController().getRecordExportTemplates();
 
-    for (RecordExportTemplateList::const_iterator it = recordExportTemplateList.begin();
-         it != recordExportTemplateList.end();
+    for (RecordExportTemplateList::const_iterator it = recordExportTemplateList.cbegin();
+         it != recordExportTemplateList.cend();
          ++it)
     {
         QAction* exportAction = new QAction(it->name, this);
@@ -1732,8 +1741,8 @@ void MainWindow::refreshImportMenu()
     const RecordTableImportTemplateList& recordTableImportTemplateList =
             this->controller->getImportController().getRecordTableImportTemplates();
 
-    for (RecordTableImportTemplateList::const_iterator it = recordTableImportTemplateList.begin();
-         it != recordTableImportTemplateList.end();
+    for (RecordTableImportTemplateList::const_iterator it = recordTableImportTemplateList.cbegin();
+         it != recordTableImportTemplateList.cend();
          ++it)
     {
         QAction* importAction = new QAction(it->name, this);
@@ -1797,7 +1806,7 @@ void MainWindow::showWindow(QWidget* widget)
     widget->activateWindow();
 
     // Check if dock widget.
-    QDockWidget* dockWidget = dynamic_cast<QDockWidget*>(widget);
+    QDockWidget* dockWidget = qobject_cast<QDockWidget*>(widget);
     if (dockWidget != NULL)
     {
         // Tabify dock widget.
@@ -1816,10 +1825,11 @@ void MainWindow::showWindow(QWidget* widget)
 void MainWindow::updateMenus()
 {
     bool projectLoaded = this->controller->getProjectController().isProjectLoaded();
-    bool anyRecordSelected = this->recordTreeWidget->getSelectedRecordItem() != nullptr;
+    bool anyRecordSelected = !this->recordTreeWidget->getSelectedRecordIds().empty();
 
     // Update actions.
     this->ui->actionSave_Project->setEnabled(projectLoaded);
+    this->ui->actionReload_Project->setEnabled(projectLoaded);
 
     this->ui->actionProject_Overview->setEnabled(projectLoaded);
 

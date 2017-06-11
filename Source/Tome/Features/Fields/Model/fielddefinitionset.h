@@ -7,12 +7,20 @@
 
 namespace Tome
 {
+    /**
+     * @brief Named set of Tome field definitions.
+     */
     class FieldDefinitionSet
     {
         public:
-            FieldDefinitionSet();
-
+            /**
+             * @brief Name of this field definition set.
+             */
             QString name;
+
+            /**
+             * @brief Field definitions of this field definition set.
+             */
             FieldDefinitionList fieldDefinitions;
     };
 }

@@ -9,14 +9,18 @@ namespace Tome
 {
     class TaskContext;
 
+    /**
+     * @brief Finds custom map types whose value type could not be found.
+     */
     class MapValueTypeDoesNotExistTask : public QObject, public Task
     {
         public:
-            MapValueTypeDoesNotExistTask();
+            const QString getDisplayName() const Q_DECL_OVERRIDE;
+            const MessageList execute(const TaskContext& context) const Q_DECL_OVERRIDE;
 
-            const QString getDisplayName() const;
-            const MessageList execute(const TaskContext& context) const;
-
+            /**
+             * @brief Unique message code of this task. Used for looking up more verbose documentation.
+             */
             static const QString MessageCode;
     };
 }

@@ -38,7 +38,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
     // Check for errors.
     if (reply->error() != QNetworkReply::NoError)
     {
-        qCritical(reply->errorString().toUtf8().constData());
+        qCritical(qUtf8Printable(reply->errorString()));
         emit this->dataUnavailable(this->importTemplateName, this->context, reply->errorString());
         return;
     }
@@ -49,7 +49,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
     {
         QString errorMessage = QObject::tr("HTTP %1 while accessing the sheet - is link sharing active?")
                 .arg(QString::number(status));
-        qCritical(errorMessage.toUtf8().constData());
+        qCritical(qUtf8Printable(errorMessage));
         emit this->dataUnavailable(this->importTemplateName, this->context, errorMessage);
         return;
     }
@@ -64,7 +64,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
     if (line.isEmpty())
     {
         QString errorMessage = QObject::tr("Source sheet is empty.");
-        qCritical(errorMessage.toUtf8().constData());
+        qCritical(qUtf8Printable(errorMessage));
         emit this->dataUnavailable(this->importTemplateName, this->context, errorMessage);
         return;
     }
@@ -87,7 +87,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
     {
         QString errorMessage = QObject::tr("Could not find id column %1 in source sheet.")
                 .arg(this->idColumn);
-        qCritical(errorMessage.toUtf8().constData());
+        qCritical(qUtf8Printable(errorMessage));
         emit this->dataUnavailable(this->importTemplateName, this->context, errorMessage);
         return;
     }
@@ -106,7 +106,7 @@ void GoogleSheetsRecordDataSource::onFinished(QNetworkReply* reply)
         {
             QString errorMessage = QObject::tr("Row %1 has %2 columns, but the header has %3 columns.")
                     .arg(QString::number(rowIndex), QString::number(row.count()), QString::number(headers.count()));
-            qCritical(errorMessage.toUtf8().constData());
+            qCritical(qUtf8Printable(errorMessage));
             emit this->dataUnavailable(this->importTemplateName, this->context, errorMessage);
             return;
         }

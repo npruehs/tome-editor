@@ -10,7 +10,7 @@ namespace Tome
 {
     template<typename T>
     /**
-     * @brief findInsertionIndex Assuming the passed list is sorted, returns the index to insert the specified item at to keep the list sorted.
+     * @brief Assuming the passed list is sorted, returns the index to insert the specified item at to keep the list sorted.
      * @param list List to add the item to.
      * @param item Item to add.
      * @return Index to insert the specified item at to keep the list sorted.
@@ -66,8 +66,8 @@ namespace Tome
     {
         QString s("[");
 
-        for (QVariantMap::const_iterator it = map.begin();
-             it != map.end();
+        for (QVariantMap::const_iterator it = map.cbegin();
+             it != map.cend();
              ++it)
         {
             QVariant key = it.key();

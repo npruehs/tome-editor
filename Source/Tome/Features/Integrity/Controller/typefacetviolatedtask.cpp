@@ -11,10 +11,6 @@ using namespace Tome;
 const QString TypeFacetViolatedTask::MessageCode = "TO0200";
 
 
-TypeFacetViolatedTask::TypeFacetViolatedTask()
-{
-}
-
 const QString TypeFacetViolatedTask::getDisplayName() const
 {
     return MessageCode + tr(" - Type Facet Violated");
@@ -34,8 +30,8 @@ const MessageList TypeFacetViolatedTask::execute(const TaskContext& context) con
         // Check all field values.
         const RecordFieldValueMap& fieldValues = context.recordsController.getRecordFieldValues(record.id);
 
-        for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
-             it != fieldValues.end();
+        for (RecordFieldValueMap::const_iterator it = fieldValues.cbegin();
+             it != fieldValues.cend();
              ++it)
         {
             // Validate all facets.

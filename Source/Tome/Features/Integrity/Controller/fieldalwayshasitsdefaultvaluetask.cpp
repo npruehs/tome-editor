@@ -12,10 +12,6 @@ using namespace Tome;
 const QString FieldAlwaysHasItsDefaultValueTask::MessageCode = "TO0303";
 
 
-FieldAlwaysHasItsDefaultValueTask::FieldAlwaysHasItsDefaultValueTask()
-{
-}
-
 const QString FieldAlwaysHasItsDefaultValueTask::getDisplayName() const
 {
     return MessageCode + tr(" - Field Always Has Its Default Value");
@@ -34,8 +30,8 @@ const MessageList FieldAlwaysHasItsDefaultValueTask::execute(const TaskContext& 
     {
         const Record& record = records.at(i);
 
-        for (RecordFieldValueMap::const_iterator it = record.fieldValues.begin();
-             it != record.fieldValues.end();
+        for (RecordFieldValueMap::const_iterator it = record.fieldValues.cbegin();
+             it != record.fieldValues.cend();
              ++it)
         {
             const QString& fieldId = it.key();

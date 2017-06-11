@@ -6,6 +6,7 @@
             <Item Value="Air"/>
             <Item Value="Ground"/>
         </AllowedTargets>
+        <Armor Value="0"/>
         <ArmorType Value="Leather"/>
         <AttackDamage Value="8"/>
         <AttackRange Value="8"/>
@@ -18,6 +19,7 @@
         <Mana Value="0"/>
         <Mass Value="1"/>
         <MovementSpeed Value="14"/>
+        <MovementType Value="Ground"/>
         <Name Value="Archer"/>
         <Projectile Value="Arrow"/>
         <ResourceCosts>
@@ -44,6 +46,7 @@
         <AllowedTargets>
             <Item Value="Ground"/>
         </AllowedTargets>
+        <Armor Value="2"/>
         <ArmorType Value="Mail"/>
         <AttackDamage Value="7"/>
         <AttackRange Value="1"/>
@@ -56,6 +59,7 @@
         <Mana Value="0"/>
         <Mass Value="2.5"/>
         <MovementSpeed Value="20"/>
+        <MovementType Value="Ground"/>
         <Name Value="Knight"/>
         <Projectile Value=""/>
         <ResourceCosts>
@@ -73,6 +77,7 @@
             <Item Value="Air"/>
             <Item Value="Ground"/>
         </AllowedTargets>
+        <Armor Value="0"/>
         <ArmorType Value="Cloth"/>
         <AttackDamage Value="10"/>
         <AttackRange Value="6"/>
@@ -85,6 +90,7 @@
         <Mana Value="70"/>
         <Mass Value="1"/>
         <MovementSpeed Value="13"/>
+        <MovementType Value="Ground"/>
         <Name Value="Mage"/>
         <Projectile Value="Fireball"/>
         <ProjectileBase>
@@ -105,6 +111,7 @@
         <AllowedTargets>
             <Item Value="Ground"/>
         </AllowedTargets>
+        <Armor Value="0"/>
         <ArmorType Value="Cloth"/>
         <AttackDamage Value="5"/>
         <AttackRange Value="1"/>
@@ -117,6 +124,7 @@
         <Mana Value="0"/>
         <Mass Value="1"/>
         <MovementSpeed Value="12.75"/>
+        <MovementType Value="Ground"/>
         <Name Value="Peasant"/>
         <Projectile Value=""/>
         <ResourceCosts>
@@ -131,6 +139,7 @@
         <Acceleration Value="4.500"/>
         <Mass Value="1.000"/>
         <MovementSpeed Value="12.750"/>
+        <MovementType Value="Projectile"/>
         <RotationSpeed Value="360.000"/>
         <Sprite Value=""/>
         <SpriteColor Value="#ffffff"/>
@@ -140,6 +149,7 @@
         <AllowedTargets>
             <Item Value="Ground"/>
         </AllowedTargets>
+        <Armor Value="0"/>
         <ArmorType Value="Cloth"/>
         <AttackDamage Value="12"/>
         <AttackRange Value="18.250"/>
@@ -152,6 +162,7 @@
         <Mana Value="100"/>
         <Mass Value="1.000"/>
         <MovementSpeed Value="12.750"/>
+        <MovementType Value="Ground"/>
         <Name Value=""/>
         <Projectile Value=""/>
         <ProjectileBase>

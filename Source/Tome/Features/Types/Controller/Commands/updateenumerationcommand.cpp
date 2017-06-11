@@ -22,7 +22,7 @@ UpdateEnumerationCommand::UpdateEnumerationCommand(TypesController& typesControl
 
 void UpdateEnumerationCommand::undo()
 {
-    qInfo(QString("Undo update enumeration %1.").arg(this->oldName).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Undo update enumeration %1.").arg(this->oldName)));
 
     // Restore custom type.
     this->typesController.updateEnumeration(this->newName,

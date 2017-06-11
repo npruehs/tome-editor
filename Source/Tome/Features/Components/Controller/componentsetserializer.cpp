@@ -28,8 +28,8 @@ void ComponentSetSerializer::serialize(QIODevice& device, const Tome::ComponentS
         // Write components.
         writer.writeStartElement(ElementComponents);
         {
-            for (ComponentList::const_iterator it = componentSet.components.begin();
-                 it != componentSet.components.end();
+            for (ComponentList::const_iterator it = componentSet.components.cbegin();
+                 it != componentSet.components.cend();
                  ++it)
             {
                 Component component = *it;
@@ -45,8 +45,11 @@ void ComponentSetSerializer::serialize(QIODevice& device, const Tome::ComponentS
 void ComponentSetSerializer::deserialize(QIODevice& device, ComponentSet& componentSet) const
 {
     // Open device stream.
-    QXmlStreamReader stream(&device);
-    XmlReader reader(stream);
+    XmlReader reader(&device);
+
+    // Validate components file.
+    reader.validate(":/Source/Tome/Features/Components/Model/TomeComponents.xsd",
+                    QObject::tr("Invalid components file: %1 (line %2, column %3)"));
 
     // Begin document.
     reader.readStartDocument();

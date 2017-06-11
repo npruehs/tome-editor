@@ -55,7 +55,7 @@ void RecordTreeWidget::addRecord(const QVariant& id, const QString& displayName,
         this->insertTopLevelItem(0, recordItem);
     }
 
-    this->sortItems(0, Qt::AscendingOrder);
+    this->sort();
 
     // Select new record.
     this->setCurrentItem(recordItem);
@@ -161,7 +161,7 @@ void RecordTreeWidget::updateRecord(const QVariant& oldId,
     // Sort by display name.
     if (oldDisplayName != newDisplayName)
     {
-        this->sortItems(0, Qt::AscendingOrder);
+        this->sort();
     }
 
     if (oldEditorIconFieldId != newEditorIconFieldId)
@@ -197,7 +197,7 @@ void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
     // Check if has preview icon.
     const QString editorIconFieldId = this->recordsController.getRecordEditorIconFieldId(recordId);
 
-    if (!editorIconFieldId.isEmpty())
+    if (!editorIconFieldId.isEmpty() && this->fieldDefinitionsController.hasFieldDefinition(editorIconFieldId))
     {
         const FieldDefinition& iconField = this->fieldDefinitionsController.getFieldDefinition(editorIconFieldId);
         const RecordFieldValueMap recordFieldValues = this->recordsController.getRecordFieldValues(record.id);
@@ -288,14 +288,14 @@ void RecordTreeWidget::setRecords(const RecordList& records)
     this->selectedRecordRedoStack.clear();
 
     // Create record tree items.
-    QMap<QVariant, RecordTreeWidgetItem*> recordItems;
+    QMap<QString, RecordTreeWidgetItem*> recordItems;
 
     for (int i = 0; i < records.size(); ++i)
     {
         const Record& record = records[i];
         RecordTreeWidgetItem* recordItem =
                 new RecordTreeWidgetItem(record.id, record.displayName, record.parentId, record.readOnly);
-        recordItems.insert(record.id, recordItem);
+        recordItems.insert(record.id.toString(), recordItem);
         updateRecordItem( recordItem );
 
         // Report progress.
@@ -308,24 +308,19 @@ void RecordTreeWidget::setRecords(const RecordList& records)
     // Build hierarchy and prepare item list for tree widget.
     QList<QTreeWidgetItem* > items;
 
-    for (QMap<QVariant, RecordTreeWidgetItem*>::iterator it = recordItems.begin();
+    for (QMap<QString, RecordTreeWidgetItem*>::iterator it = recordItems.begin();
          it != recordItems.end();
          ++it)
     {
         RecordTreeWidgetItem* recordItem = it.value();
-        QVariant recordItemParentId = recordItem->getParentId();
-        if (!recordItemParentId.isNull())
+        QString recordItemParentId = recordItem->getParentId().toString();
+        if (!recordItemParentId.isEmpty())
         {
             if (recordItems.contains(recordItemParentId))
             {
                 // Insert into tree.
                 RecordTreeWidgetItem* recordParent = recordItems[recordItemParentId];
                 recordParent->addChild(recordItem);
-            }
-            else
-            {
-                // Reset parent reference.
-                this->recordsController.reparentRecord(recordItem->getId(), QString());
             }
         }
 
@@ -334,6 +329,8 @@ void RecordTreeWidget::setRecords(const RecordList& records)
 
     // Fill tree widget.
     this->insertTopLevelItems(0, items);
+    this->sort();
+
     if (this->settingsController.getExpandRecordTreeOnRefresh())
     {
         this->expandAll();
@@ -459,4 +456,11 @@ RecordTreeWidgetItem* RecordTreeWidget::getRecordItem(const QVariant& id)
     }
 
     return nullptr;
+}
+
+void RecordTreeWidget::sort()
+{
+    this->setSortingEnabled(true);
+    this->sortByColumn(0);
+    this->setSortingEnabled(false);
 }

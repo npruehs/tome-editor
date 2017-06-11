@@ -25,10 +25,6 @@ const QString CustomTypeSetSerializer::ElementTypes = "Types";
 const int CustomTypeSetSerializer::Version = 2;
 
 
-CustomTypeSetSerializer::CustomTypeSetSerializer()
-{
-}
-
 void CustomTypeSetSerializer::serialize(QIODevice& device, const CustomTypeSet& customTypeSet) const
 {
     // Open device stream.
@@ -55,8 +51,8 @@ void CustomTypeSetSerializer::serialize(QIODevice& device, const CustomTypeSet& 
                     // Write facet maps.
                     writer.writeStartElement(ElementFundamentalFacets);
                     {
-                        for (QVariantMap::const_iterator itFundamentalFacets = type.fundamentalFacets.begin();
-                             itFundamentalFacets != type.fundamentalFacets.end();
+                        for (QVariantMap::const_iterator itFundamentalFacets = type.fundamentalFacets.cbegin();
+                             itFundamentalFacets != type.fundamentalFacets.cend();
                              ++itFundamentalFacets)
                         {
                             writer.writeStartElement(ElementFundamentalFacet);
@@ -69,8 +65,8 @@ void CustomTypeSetSerializer::serialize(QIODevice& device, const CustomTypeSet& 
 
                     writer.writeStartElement(ElementConstrainingFacets);
                     {
-                        for (QVariantMap::const_iterator itConstrainingFacets = type.constrainingFacets.begin();
-                             itConstrainingFacets != type.constrainingFacets.end();
+                        for (QVariantMap::const_iterator itConstrainingFacets = type.constrainingFacets.cbegin();
+                             itConstrainingFacets != type.constrainingFacets.cend();
                              ++itConstrainingFacets)
                         {
                             writer.writeStartElement(ElementConstrainingFacet);
@@ -93,20 +89,15 @@ void CustomTypeSetSerializer::serialize(QIODevice& device, const CustomTypeSet& 
 void CustomTypeSetSerializer::deserialize(QIODevice& device, CustomTypeSet& customTypeSet) const
 {
     // Open device stream.
-    QXmlStreamReader streamReader(&device);
-    XmlReader reader(streamReader);
+    XmlReader reader(&device);
+
+    // Validate types file.
+    reader.validate(":/Source/Tome/Features/Types/Model/TomeTypes2.xsd",
+                    QObject::tr("Invalid types file: %1 (line %2, column %3)"));
 
     // Begin document.
     reader.readStartDocument();
     {
-        // Read version.
-        int version = reader.readAttribute(AttributeVersion).toInt();
-
-        if (version == 0)
-        {
-            version = reader.readAttribute(AttributeVersionDeprecated).toInt();
-        }
-
         // Read types.
         reader.readStartElement(ElementTypes);
         {
@@ -119,57 +110,36 @@ void CustomTypeSetSerializer::deserialize(QIODevice& device, CustomTypeSet& cust
 
                 reader.readStartElement(ElementType);
                 {
-                    if (version >= 2)
+                    // Read facet maps.
+                    reader.readStartElement(ElementFundamentalFacets);
                     {
-                        // Read facet maps.
-                        reader.readStartElement(ElementFundamentalFacets);
+                        while (reader.isAtElement(ElementFundamentalFacet))
                         {
-                            while (reader.isAtElement(ElementFundamentalFacet))
-                            {
-                                QString restrictionKey = reader.readAttribute(AttributeKey);
-                                QString restrictionValue = reader.readAttribute(AttributeValue);
+                            QString restrictionKey = reader.readAttribute(AttributeKey);
+                            QString restrictionValue = reader.readAttribute(AttributeValue);
 
-                                type.fundamentalFacets.insert(restrictionKey, restrictionValue);
+                            type.fundamentalFacets.insert(restrictionKey, restrictionValue);
 
-                                // Advance reader.
-                                reader.readEmptyElement(ElementFundamentalFacet);
-                            }
+                            // Advance reader.
+                            reader.readEmptyElement(ElementFundamentalFacet);
                         }
-                        reader.readEndElement();
-
-                        reader.readStartElement(ElementConstrainingFacets);
-                        {
-                            while (reader.isAtElement(ElementConstrainingFacet))
-                            {
-                                QString restrictionKey = reader.readAttribute(AttributeKey);
-                                QString restrictionValue = reader.readAttribute(AttributeValue);
-
-                                type.constrainingFacets.insert(restrictionKey, restrictionValue);
-
-                                // Advance reader.
-                                reader.readEmptyElement(ElementConstrainingFacet);
-                            }
-                        }
-                        reader.readEndElement();
                     }
-                    else
+                    reader.readEndElement();
+
+                    reader.readStartElement(ElementConstrainingFacets);
                     {
-                        // Read type restriction map.
-                        reader.readStartElement(ElementRestrictions);
+                        while (reader.isAtElement(ElementConstrainingFacet))
                         {
-                            while (reader.isAtElement(ElementRestriction))
-                            {
-                                QString restrictionKey = reader.readAttribute(AttributeKey);
-                                QString restrictionValue = reader.readAttribute(AttributeValue);
+                            QString restrictionKey = reader.readAttribute(AttributeKey);
+                            QString restrictionValue = reader.readAttribute(AttributeValue);
 
-                                type.fundamentalFacets.insert(restrictionKey, restrictionValue);
+                            type.constrainingFacets.insert(restrictionKey, restrictionValue);
 
-                                // Advance reader.
-                                reader.readEmptyElement(ElementRestriction);
-                            }
+                            // Advance reader.
+                            reader.readEmptyElement(ElementConstrainingFacet);
                         }
-                        reader.readEndElement();
                     }
+                    reader.readEndElement();
                 }
                 reader.readEndElement();
 

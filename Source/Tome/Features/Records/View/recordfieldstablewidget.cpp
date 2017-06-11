@@ -72,8 +72,8 @@ void RecordFieldsTableWidget::setRecord(const QVariant recordId)
     // Sort by display name and component.
     FieldDefinitionList fields;
 
-    for (RecordFieldValueMap::const_iterator it = fieldValues.begin();
-         it != fieldValues.end();
+    for (RecordFieldValueMap::const_iterator it = fieldValues.cbegin();
+         it != fieldValues.cend();
          ++it)
     {
         const QString fieldId = it.key();
@@ -106,6 +106,9 @@ void RecordFieldsTableWidget::setRecord(const QVariant recordId)
     {
         this->updateFieldValue(i);
     }
+
+    // Resize first column.
+    this->resizeColumnToContents(0);
 }
 
 void RecordFieldsTableWidget::setShowComponentNames(bool showComponentNames)
@@ -131,7 +134,108 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
     QString keyString = this->getFieldKeyString(field);
 
     // Compose value string.
-    QString valueString = this->typesController.valueToString(value, field.fieldType);
+    QString valueString;
+
+    if (this->typesController.isCustomType(field.fieldType))
+    {
+        const CustomType& customType = this->typesController.getCustomType(field.fieldType);
+
+        if (customType.isList())
+        {
+            if (this->typesController.isTypeOrDerivedFromType(customType.getItemType(), BuiltInType::Reference))
+            {
+                // Replace by list of record display names.
+                QVariantList recordIds = value.toList();
+                QVariantList recordDisplayNames;
+
+                for (const QVariant& recordId : recordIds)
+                {
+                    if (this->recordsController.hasRecord(recordId))
+                    {
+                        const Record& record = this->recordsController.getRecord(recordId);
+                        recordDisplayNames << record.displayName;
+                    }
+                    else
+                    {
+                        recordDisplayNames << recordId.toString();
+                    }
+                }
+
+                valueString = toString(recordDisplayNames);
+            }
+        }
+        else if (customType.isMap())
+        {
+            bool hasReferenceKeys = this->typesController.isTypeOrDerivedFromType(customType.getKeyType(), BuiltInType::Reference);
+            bool hasReferenceValues = this->typesController.isTypeOrDerivedFromType(customType.getValueType(), BuiltInType::Reference);
+
+            if (hasReferenceKeys || hasReferenceValues)
+            {
+                // Replace by map of record display names.
+                QVariantMap valueMap = value.toMap();
+                QVariantMap valueMapWithDisplayNames;
+
+                for (QVariantMap::const_iterator it = valueMap.cbegin();
+                     it != valueMap.cend();
+                     ++it)
+                {
+                    // Make key string.
+                    QString keyString;
+
+                    if (hasReferenceKeys)
+                    {
+                        QVariant recordId = QVariant(it.key());
+
+                        if (this->recordsController.hasRecord(recordId))
+                        {
+                            const Record& record = this->recordsController.getRecord(recordId);
+                            keyString = record.displayName;
+                        }
+                        else
+                        {
+                            keyString = recordId.toString();
+                        }
+                    }
+                    else
+                    {
+                        keyString = it.key();
+                    }
+
+                    // Make value string.
+                    QString valueString;
+
+                    if (hasReferenceValues)
+                    {
+                        QVariant recordId = it.value();
+
+                        if (this->recordsController.hasRecord(recordId))
+                        {
+                            const Record& record = this->recordsController.getRecord(recordId);
+                            valueString = record.displayName;
+                        }
+                        else
+                        {
+                            valueString = recordId.toString();
+                        }
+                    }
+                    else
+                    {
+                        valueString = it.value().toString();
+                    }
+
+                    // Insert into display map.
+                    valueMapWithDisplayNames.insert(keyString, valueString);
+                }
+
+                valueString = toString(valueMapWithDisplayNames);
+            }
+        }
+    }
+
+    if (valueString.isEmpty())
+    {
+        valueString = this->typesController.valueToString(value, field.fieldType);
+    }
 
     // Show field name.
     this->item(i, 0)->setData(Qt::DisplayRole, keyString);
@@ -148,7 +252,14 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
     // Show hyperlink for reference fields, and normal text for other fields.
     if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference))
     {
-        QString href = "<a href='" + valueString + "'>" + valueString + "</a>";
+        QString href;
+
+        if (this->recordsController.hasRecord(value))
+        {
+            const Record& record = this->recordsController.getRecord(value);
+            href = QString("<a href='%1'>%2</a>").arg(record.id.toString(), record.displayName);
+        }
+
         QModelIndex index = this->model()->index(i, 1);
 
         // Create new index widget.

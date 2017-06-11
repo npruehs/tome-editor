@@ -12,10 +12,6 @@ using namespace Tome;
 const QString ComponentHasNoFieldsTask::MessageCode = "TO0300";
 
 
-ComponentHasNoFieldsTask::ComponentHasNoFieldsTask()
-{
-}
-
 const QString ComponentHasNoFieldsTask::getDisplayName() const
 {
     return MessageCode + tr(" - Component Has No Fields");

@@ -202,12 +202,12 @@ int Controller::start()
     }
 
     // Log system information.
-    qInfo(QString("Tome Version: %1").arg(QApplication::instance()->applicationVersion()).toUtf8().constData());
-    qInfo(QString("Log File: %1").arg(QFileInfo(FileMessageHandler::logfileName).absoluteFilePath()).toUtf8().constData());
-    qInfo(QString("Qt Build Architecture: %1").arg(QSysInfo::buildAbi()).toUtf8().constData());
-    qInfo(QString("CPU Architecture: %1").arg(QSysInfo::currentCpuArchitecture()).toUtf8().constData());
-    qInfo(QString("OS: %1 %2").arg(QSysInfo::prettyProductName(), QSysInfo::kernelVersion()).toUtf8().constData());
-    qInfo(QString("Machine Host Name: %1").arg(QSysInfo::machineHostName()).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Tome Version: %1").arg(QApplication::instance()->applicationVersion())));
+    qInfo(qUtf8Printable(QString("Log File: %1").arg(QFileInfo(FileMessageHandler::logfileName).absoluteFilePath())));
+    qInfo(qUtf8Printable(QString("Qt Build Architecture: %1").arg(QSysInfo::buildAbi())));
+    qInfo(qUtf8Printable(QString("CPU Architecture: %1").arg(QSysInfo::currentCpuArchitecture())));
+    qInfo(qUtf8Printable(QString("OS: %1 %2").arg(QSysInfo::prettyProductName(), QSysInfo::kernelVersion())));
+    qInfo(qUtf8Printable(QString("Machine Host Name: %1").arg(QSysInfo::machineHostName())));
 
     if (!this->options->noGui)
     {

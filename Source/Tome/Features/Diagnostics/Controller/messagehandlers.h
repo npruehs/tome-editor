@@ -6,9 +6,16 @@
 
 namespace Tome
 {
+    /**
+     * @brief Manages all registered handlers for Qt messages (e.g. qInfo or qCritical).
+     */
     class MessageHandlers
     {
         public:
+            /**
+             * @brief Appends a new handler for Qt messages, in addition to the default handler.
+             * @param handler Handler to append.
+             */
             static void addMessageHandler(QtMessageHandler handler);
 
         private:

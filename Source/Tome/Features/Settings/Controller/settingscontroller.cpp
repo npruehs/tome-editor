@@ -31,7 +31,7 @@ SettingsController::~SettingsController()
 
 void SettingsController::addRecentProject(const QString& path)
 {
-    qInfo(QString("Adding %1 to recent projects list.").arg(path).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Adding %1 to recent projects list.").arg(path)));
 
     QStringList recentProjects = this->getRecentProjects();
 
@@ -89,7 +89,7 @@ const QString SettingsController::getLastProjectPath() const
 
 void SettingsController::removeRecentProject(const QString& path)
 {
-    qInfo(QString("Removing %1 from recent projects list.").arg(path).toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Removing %1 from recent projects list.").arg(path)));
 
     QStringList recentProjects = this->getRecentProjects();
     recentProjects.removeOne(path);
@@ -109,49 +109,43 @@ void SettingsController::setRecentProjects(const QStringList& recentProjects)
 
 void SettingsController::setRunIntegrityChecksOnLoad(bool runIntegrityChecksOnLoad)
 {
-    qInfo(QString("Setting run integrity checks on load to %1.")
-          .arg(runIntegrityChecksOnLoad ? "true" : "false")
-          .toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Setting run integrity checks on load to %1.")
+          .arg(runIntegrityChecksOnLoad ? "true" : "false")));
     this->settings->setValue(SettingRunIntegrityChecksOnLoad, runIntegrityChecksOnLoad);
 }
 
 void SettingsController::setRunIntegrityChecksOnSave(bool runIntegrityChecksOnSave)
 {
-    qInfo(QString("Setting run integrity checks on save to %1.")
-          .arg(runIntegrityChecksOnSave ? "true" : "false")
-          .toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Setting run integrity checks on save to %1.")
+          .arg(runIntegrityChecksOnSave ? "true" : "false")));
     this->settings->setValue(SettingRunIntegrityChecksOnSave, runIntegrityChecksOnSave);
 }
 
 void SettingsController::setShowComponentNamesInRecordTable(bool showComponentNamesInRecordTable)
 {
-    qInfo(QString("Setting show component names in record table to %1.")
-          .arg(showComponentNamesInRecordTable ? "true" : "false")
-          .toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Setting show component names in record table to %1.")
+          .arg(showComponentNamesInRecordTable ? "true" : "false")));
     this->settings->setValue(SettingShowComponentNamesInRecordTable, showComponentNamesInRecordTable);
 }
 
 void SettingsController::setShowDescriptionColumnInsteadOfFieldTooltips(bool showDescriptionColumnInsteadOfFieldTooltips)
 {
-    qInfo(QString("Setting show description column in stead of field tooltips to %1.")
-          .arg(showDescriptionColumnInsteadOfFieldTooltips ? "true" : "false")
-          .toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Setting show description column in stead of field tooltips to %1.")
+          .arg(showDescriptionColumnInsteadOfFieldTooltips ? "true" : "false")));
     this->settings->setValue(SettingShowDescriptionColumnInsteadOfFieldTooltips, showDescriptionColumnInsteadOfFieldTooltips);
 }
 
 void SettingsController::setExpandRecordTreeOnRefresh(bool expandRecordTreeOnRefresh)
 {
-    qInfo(QString("Setting expand record tree on refresh to %1.")
-          .arg(expandRecordTreeOnRefresh ? "true" : "false")
-          .toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Setting expand record tree on refresh to %1.")
+          .arg(expandRecordTreeOnRefresh ? "true" : "false")));
     this->settings->setValue(SettingExpandRecordTreeOnRefresh, expandRecordTreeOnRefresh);
 }
 
 void SettingsController::setLastProjectPath( const QString &path )
 
 {
-    qInfo(QString("Setting last project path to %1.")
-          .arg(path)
-          .toUtf8().constData());
+    qInfo(qUtf8Printable(QString("Setting last project path to %1.")
+          .arg(path)));
     this->settings->setValue(SettingLastProjectPath, path);
 }
