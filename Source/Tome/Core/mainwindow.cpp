@@ -434,7 +434,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
     // Ask user whether they want to save their changes.
     QMessageBox::StandardButton result = QMessageBox::question(this,
                                                                tr("Tome"),
-                                                               tr("Want to save your changes before exiting?"),
+                                                               tr("Do you want to save your changes before exiting?"),
                                                                QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
                                                                QMessageBox::Cancel);
     if (result == QMessageBox::Yes)
@@ -552,7 +552,7 @@ void MainWindow::on_actionNew_Project_triggered()
             // Ask user whether they want to save their changes.
             QMessageBox::StandardButton result = QMessageBox::question(this,
                                                                        tr("Tome"),
-                                                                       tr("Want to save your changes before exiting?"),
+                                                                       tr("Do you want to save your changes before creating a new project?"),
                                                                        QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
                                                                        QMessageBox::Cancel);
 
@@ -1521,7 +1521,7 @@ void MainWindow::openProject(QString path)
         // Ask user whether they want to save their changes.
         QMessageBox::StandardButton result = QMessageBox::question(this,
                                                                    tr("Tome"),
-                                                                   tr("Want to save your changes before exiting?"),
+                                                                   tr("Do you want to save your changes before loading another project?"),
                                                                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
                                                                    QMessageBox::Cancel);
 
