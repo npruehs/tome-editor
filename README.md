@@ -103,7 +103,7 @@ Tome is built and deployed using the usual Qt tools for [Windows](https://doc.qt
 
 1. Open a shell.
 2. Make a release build of Tome in QtCreator.
-3. Navigate to the output directory `Bin\release\Tome`.
+3. Navigate to the output directory, e.g. `build-Tome-Desktop_Qt_5_8_0_clang_64bit-Release`.
 4. Run `Qt/5.8/clang_64/bin/macdeployqt Tome.app -dmg`.
 
 ## Building API documentation
