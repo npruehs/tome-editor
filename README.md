@@ -68,7 +68,7 @@ Tome is developed using the [GitFlow branching model](http://nvie.com/posts/a-su
 
 Tome is based on [Qt 5.8](http://www.qt.io/).
 
-You might also take a look at our [development wiki](https://github.com/npruehs/game-data-editor/wiki) in order to get a better understanding of how everything's tied together.
+You might also want to take a look at the Tome API documentation (see below).
 
 ### Step 4: Open a pull request
 
@@ -85,6 +85,8 @@ Tome is built and deployed using the usual Qt tools for [Windows](https://doc.qt
 3. Make a release build of Tome in QtCreator.
 4. Navigate to the output directory `Bin\release\Tome`.
 5. Run `windeployqt.exe Tome.exe`.
+6. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll` to the output directory (required for Google Sheets import).
+7. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll` to the output directory (required for Google Sheets import).
 
 ### Tome Issue Reporter for Windows
 
@@ -93,8 +95,8 @@ Tome is built and deployed using the usual Qt tools for [Windows](https://doc.qt
 3. Make a release build of TomeIssueReporter in QtCreator.
 4. Navigate to the output directory `Bin\release\TomeIssueReporter`.
 5. Run `windeployqt.exe TomeIssueReporter.exe`.
-6. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll` to the output directory.
-7. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll` to the output directory.
+6. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\libeay32.dll` to the output directory (required for creating GitHub issues).
+7. Copy `C:\Program Files (x86)\Qt\Tools\mingw530_32\opt\bin\ssleay32.dll` to the output directory (required for creating GitHub issues).
 
 ### Tome for Mac OS X
 
