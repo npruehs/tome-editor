@@ -106,6 +106,8 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
 {
     QFile file(filePath);
 
+    qInfo(qUtf8Printable(QString("Opening file %1 for record export.").arg(filePath)));
+
     if (file.open(QIODevice::ReadWrite | QIODevice::Truncate))
     {
         this->exportRecords(exportTemplate, file);
