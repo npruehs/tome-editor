@@ -6,7 +6,7 @@
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QLabel>
-#include <QLineEdit>
+#include <QPlainTextEdit>
 #include <QSpinBox>
 #include <QString>
 #include <QVBoxLayout>
@@ -101,7 +101,7 @@ namespace Tome
     private slots:
             void onColorDialogCurrentColorChanged(const QColor& color);
             void onDoubleSpinBoxValueChanged(double d);
-            void onLineEditTextChanged(const QString& text);
+            void onPlainTextEditTextChanged();
             void onComboBoxCurrentIndexChanged(const QString& text);
             void onSpinBoxValueChanged(int i);
 
@@ -114,7 +114,7 @@ namespace Tome
             QDoubleSpinBox* doubleSpinBox;
             FilePickerWidget* filePicker;
             QVBoxLayout* layout;
-            QLineEdit* lineEdit;
+            QPlainTextEdit* plainTextEdit;
             ListWidget* listWidget;
             MapWidget* mapWidget;
             QComboBox* comboBox;
