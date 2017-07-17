@@ -22,6 +22,9 @@ const QString ExportTemplateSerializer::ElementIgnoredFields = "IgnoredFields";
 const QString ExportTemplateSerializer::ElementIgnoredRecords = "IgnoredRecords";
 const QString ExportTemplateSerializer::ElementMapping = "Mapping";
 const QString ExportTemplateSerializer::ElementName = "Name";
+const QString ExportTemplateSerializer::ElementReplaceWith = "ReplaceWith";
+const QString ExportTemplateSerializer::ElementString = "String";
+const QString ExportTemplateSerializer::ElementStringReplacementMap = "StringReplacementMap";
 const QString ExportTemplateSerializer::ElementTemplate = "Template";
 const QString ExportTemplateSerializer::ElementTypeMap = "TypeMap";
 
@@ -86,6 +89,21 @@ void ExportTemplateSerializer::serialize(QIODevice& device, const RecordExportTe
                     writer.writeStartElement(ElementMapping);
                     writer.writeAttribute(AttributeTomeType, itTypeMap.key());
                     writer.writeAttribute(AttributeExportedType, itTypeMap.value());
+                    writer.writeEndElement();
+                }
+            }
+            writer.writeEndElement();
+
+            // Write string replacement map.
+            writer.writeStartElement(ElementStringReplacementMap);
+            {
+                for (auto itStringReplacementMap = exportTemplate.stringReplacementMap.cbegin();
+                     itStringReplacementMap != exportTemplate.stringReplacementMap.cend();
+                     ++itStringReplacementMap)
+                {
+                    writer.writeStartElement(ElementMapping);
+                    writer.writeTextElement(ElementString, itStringReplacementMap.key());
+                    writer.writeTextElement(ElementReplaceWith, itStringReplacementMap.value());
                     writer.writeEndElement();
                 }
             }
@@ -159,6 +177,23 @@ void ExportTemplateSerializer::deserialize(QIODevice& device, RecordExportTempla
 
                     // Advance reader.
                     reader.readEmptyElement(ElementMapping);
+                }
+            }
+            reader.readEndElement();
+
+            // Read string replacement map.
+            reader.readStartElement(ElementStringReplacementMap);
+            {
+                while (reader.isAtElement(ElementMapping))
+                {
+                    reader.readStartElement(ElementMapping);
+                    {
+                        QString stringReplacementKey = reader.readTextElement(ElementString);
+                        QString stringReplacementValue = reader.readTextElement(ElementReplaceWith);
+
+                        exportTemplate.stringReplacementMap.insert(stringReplacementKey, stringReplacementValue);
+                    }
+                    reader.readEndElement();
                 }
             }
             reader.readEndElement();

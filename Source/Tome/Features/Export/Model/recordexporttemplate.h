@@ -123,6 +123,11 @@ namespace Tome
             QString recordTemplate;
 
             /**
+             * @brief Map that specifies which strings to replace by which ones during export.
+             */
+            QMap<QString, QString> stringReplacementMap;
+
+            /**
              * @brief Map that specifies which type names to replace on export.
              */
             QMap<QString, QString> typeMap;
