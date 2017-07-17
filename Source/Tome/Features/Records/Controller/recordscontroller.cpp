@@ -652,6 +652,9 @@ void RecordsController::setRecordDisplayName(const QVariant& recordId, const QSt
 
     record->displayName = displayName;
 
+    // Notify listeners.
+    emit this->recordUpdated(record->id, oldDisplayName, record->editorIconFieldId, record->id, displayName, record->editorIconFieldId);
+
     // Sort record model to ensure deterministic serialization.
     bool needsSorting = oldDisplayName != displayName;
 
@@ -664,9 +667,6 @@ void RecordsController::setRecordDisplayName(const QVariant& recordId, const QSt
             std::sort((*it).records.begin(), (*it).records.end(), recordLessThanDisplayName);
         }
     }
-
-    // Notify listeners.
-    emit this->recordUpdated(record->id, oldDisplayName, record->editorIconFieldId, record->id, displayName, record->editorIconFieldId);
 }
 
 void RecordsController::setRecordEditorIconFieldId(const QVariant& recordId, const QString& editorIconFieldId)
