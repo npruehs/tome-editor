@@ -1694,8 +1694,6 @@ void MainWindow::onRecordUpdated(const QVariant& oldId,
                                  const QString& newDisplayName,
                                  const QString& newEditorIconFieldId)
 {
-    Q_UNUSED(oldDisplayName)
-
     // Update view.
     this->recordTreeWidget->updateRecord(oldId, oldDisplayName, oldEditorIconFieldId, newId, newDisplayName, newEditorIconFieldId);
     this->refreshRecordTable();

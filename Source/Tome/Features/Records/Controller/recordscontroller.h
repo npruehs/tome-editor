@@ -271,6 +271,30 @@ namespace Tome
             void setReadOnly(const QVariant& recordId, const bool readOnly);
 
             /**
+             * @brief Changes the display name of the record with the specified id.
+             *
+             * @throws std::out_of_range if the record to rename could not be found.
+             *
+             * @see hasRecord for checking whether the record to rename exists.
+             *
+             * @param recordId Id of the record to change the display name of.
+             * @param displayName New display name of the record.
+             */
+            void setRecordDisplayName(const QVariant& recordId, const QString& displayName);
+
+            /**
+             * @brief Changes the editor icon field id of the record with the specified id.
+             *
+             * @throws std::out_of_range if the record to change could not be found.
+             *
+             * @see hasRecord for checking whether the record to change exists.
+             *
+             * @param recordId Id of the record to change the editor icon field id of.
+             * @param editorIconFieldId New editor icon field id of the record.
+             */
+            void setRecordEditorIconFieldId(const QVariant& recordId, const QString& editorIconFieldId);
+
+            /**
              * @brief Uses the specified list of record sets as model for this controller.
              *
              * @exception std::out_of_range if the record id type of the project is invalid.

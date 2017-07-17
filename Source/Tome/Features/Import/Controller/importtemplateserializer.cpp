@@ -14,6 +14,8 @@ const QString ImportTemplateSerializer::AttributeValue = "Value";
 const QString ImportTemplateSerializer::AttributeVersion = "Version";
 
 const QString ImportTemplateSerializer::ElementColumnMap = "ColumnMap";
+const QString ImportTemplateSerializer::ElementDisplayNameColumn = "DisplayNameColumn";
+const QString ImportTemplateSerializer::ElementEditorIconFieldIdColumn = "EditorIconFieldIdColumn";
 const QString ImportTemplateSerializer::ElementId = "Id";
 const QString ImportTemplateSerializer::ElementIdColumn = "IdColumn";
 const QString ImportTemplateSerializer::ElementIgnoredIds = "IgnoredIds";
@@ -49,6 +51,8 @@ void ImportTemplateSerializer::serialize(QIODevice& device, const RecordTableImp
             writer.writeTextElement(ElementName, importTemplate.name);
             writer.writeTextElement(ElementSourceType, TableType::toString(importTemplate.sourceType));
             writer.writeTextElement(ElementIdColumn, importTemplate.idColumn);
+            writer.writeTextElement(ElementDisplayNameColumn, importTemplate.displayNameColumn);
+            writer.writeTextElement(ElementEditorIconFieldIdColumn, importTemplate.editorIconFieldIdColumn);
             writer.writeTextElement(ElementRootRecordId, importTemplate.rootRecordId);
 
             // Write column map.
@@ -130,6 +134,17 @@ void ImportTemplateSerializer::deserialize(QIODevice& device, RecordTableImportT
             importTemplate.name = reader.readTextElement(ElementName);
             importTemplate.sourceType = TableType::fromString(reader.readTextElement(ElementSourceType));
             importTemplate.idColumn = reader.readTextElement(ElementIdColumn);
+
+            if (reader.isAtElement(ElementDisplayNameColumn))
+            {
+                importTemplate.displayNameColumn = reader.readTextElement(ElementDisplayNameColumn);
+            }
+
+            if (reader.isAtElement(ElementEditorIconFieldIdColumn))
+            {
+                importTemplate.editorIconFieldIdColumn = reader.readTextElement(ElementEditorIconFieldIdColumn);
+            }
+
             importTemplate.rootRecordId = reader.readTextElement(ElementRootRecordId);
 
             // Read column map.

@@ -14,6 +14,8 @@
           </xs:simpleType>
         </xs:element>
         <xs:element name="IdColumn" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="DisplayNameColumn" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="EditorIconFieldIdColumn" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="RootRecordId" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="ColumnMap" minOccurs="1" maxOccurs="1">
           <xs:complexType>

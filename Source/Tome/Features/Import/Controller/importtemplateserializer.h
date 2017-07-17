@@ -35,6 +35,8 @@ namespace Tome
             static const QString AttributeVersion;
 
             static const QString ElementColumnMap;
+            static const QString ElementDisplayNameColumn;
+            static const QString ElementEditorIconFieldIdColumn;
             static const QString ElementId;
             static const QString ElementIdColumn;
             static const QString ElementIgnoredIds;
