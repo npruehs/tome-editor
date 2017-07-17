@@ -42,8 +42,11 @@ namespace Tome
             static const QString ElementName;
             static const QString ElementParameter;
             static const QString ElementParameters;
+            static const QString ElementReplaceWith;
             static const QString ElementRootRecordId;
             static const QString ElementSourceType;
+            static const QString ElementString;
+            static const QString ElementStringReplacementMap;
             static const QString ElementTemplate;
 
             static const int Version;

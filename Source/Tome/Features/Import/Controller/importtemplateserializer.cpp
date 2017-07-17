@@ -21,8 +21,11 @@ const QString ImportTemplateSerializer::ElementMapping = "Mapping";
 const QString ImportTemplateSerializer::ElementName = "Name";
 const QString ImportTemplateSerializer::ElementParameter = "Parameter";
 const QString ImportTemplateSerializer::ElementParameters = "Parameters";
+const QString ImportTemplateSerializer::ElementReplaceWith = "ReplaceWith";
 const QString ImportTemplateSerializer::ElementRootRecordId = "RootRecordId";
 const QString ImportTemplateSerializer::ElementSourceType = "SourceType";
+const QString ImportTemplateSerializer::ElementString = "String";
+const QString ImportTemplateSerializer::ElementStringReplacementMap = "StringReplacementMap";
 const QString ImportTemplateSerializer::ElementTemplate = "Template";
 
 const int ImportTemplateSerializer::Version = 1;
@@ -58,6 +61,21 @@ void ImportTemplateSerializer::serialize(QIODevice& device, const RecordTableImp
                     writer.writeStartElement(ElementMapping);
                     writer.writeAttribute(AttributeColumnName, itColumnMap.key());
                     writer.writeAttribute(AttributeFieldId, itColumnMap.value());
+                    writer.writeEndElement();
+                }
+            }
+            writer.writeEndElement();
+
+            // Write string replacement map.
+            writer.writeStartElement(ElementStringReplacementMap);
+            {
+                for (auto itStringReplacementMap = importTemplate.stringReplacementMap.cbegin();
+                     itStringReplacementMap != importTemplate.stringReplacementMap.cend();
+                     ++itStringReplacementMap)
+                {
+                    writer.writeStartElement(ElementMapping);
+                    writer.writeTextElement(ElementString, itStringReplacementMap.key());
+                    writer.writeTextElement(ElementReplaceWith, itStringReplacementMap.value());
                     writer.writeEndElement();
                 }
             }
@@ -126,6 +144,23 @@ void ImportTemplateSerializer::deserialize(QIODevice& device, RecordTableImportT
 
                     // Advance reader.
                     reader.readEmptyElement(ElementMapping);
+                }
+            }
+            reader.readEndElement();
+
+            // Read string replacement map.
+            reader.readStartElement(ElementStringReplacementMap);
+            {
+                while (reader.isAtElement(ElementMapping))
+                {
+                    reader.readStartElement(ElementMapping);
+                    {
+                        QString stringReplacementKey = reader.readTextElement(ElementString);
+                        QString stringReplacementValue = reader.readTextElement(ElementReplaceWith);
+
+                        importTemplate.stringReplacementMap.insert(stringReplacementKey, stringReplacementValue);
+                    }
+                    reader.readEndElement();
                 }
             }
             reader.readEndElement();

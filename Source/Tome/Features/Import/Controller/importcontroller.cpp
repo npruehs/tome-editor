@@ -225,6 +225,19 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
                 continue;
             }
 
+            // Apply string replacement.
+            for (auto itStringReplacementMap = importTemplate.stringReplacementMap.cbegin();
+                 itStringReplacementMap != importTemplate.stringReplacementMap.cend();
+                 ++itStringReplacementMap)
+            {
+                QString fieldValueString = fieldValue.toString();
+
+                if (fieldValueString.contains(itStringReplacementMap.key()))
+                {
+                    fieldValue = fieldValueString.replace(itStringReplacementMap.key(), itStringReplacementMap.value());
+                }
+            }
+
             // Convert to list if necessary.
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
             bool isList = this->typesController.isCustomType(field.fieldType) && this->typesController.getCustomType(field.fieldType).isList();

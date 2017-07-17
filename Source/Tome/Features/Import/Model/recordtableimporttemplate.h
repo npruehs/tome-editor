@@ -54,6 +54,11 @@ namespace Tome
              * @brief Optional additional import parameters (e.g. which table to import).
              */
             QMap<QString, QString> parameters;
+
+            /**
+             * @brief Map that specifies which strings to replace by which ones during import.
+             */
+            QMap<QString, QString> stringReplacementMap;
     };
 }
 
