@@ -335,3 +335,11 @@ FORMS    += ../Source/Tome/Core/mainwindow.ui \
 
 RESOURCES += \
     tome.qrc
+
+DISTFILES += \
+    ../Source/Tome/Features/Export/Model/TomeExportTemplate2.xsd \
+    ../Source/Tome/Features/Components/Model/TomeComponents.xsd \
+    ../Source/Tome/Features/Fields/Model/TomeFields.xsd \
+    ../Source/Tome/Features/Import/Model/TomeImportTemplate.xsd \
+    ../Source/Tome/Features/Projects/Model/TomeProject6.xsd \
+    ../Source/Tome/Features/Types/Model/TomeTypes2.xsd
