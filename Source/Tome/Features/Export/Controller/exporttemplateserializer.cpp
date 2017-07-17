@@ -182,21 +182,24 @@ void ExportTemplateSerializer::deserialize(QIODevice& device, RecordExportTempla
             reader.readEndElement();
 
             // Read string replacement map.
-            reader.readStartElement(ElementStringReplacementMap);
+            if (reader.isAtElement(ElementStringReplacementMap))
             {
-                while (reader.isAtElement(ElementMapping))
+                reader.readStartElement(ElementStringReplacementMap);
                 {
-                    reader.readStartElement(ElementMapping);
+                    while (reader.isAtElement(ElementMapping))
                     {
-                        QString stringReplacementKey = reader.readTextElement(ElementString);
-                        QString stringReplacementValue = reader.readTextElement(ElementReplaceWith);
+                        reader.readStartElement(ElementMapping);
+                        {
+                            QString stringReplacementKey = reader.readTextElement(ElementString);
+                            QString stringReplacementValue = reader.readTextElement(ElementReplaceWith);
 
-                        exportTemplate.stringReplacementMap.insert(stringReplacementKey, stringReplacementValue);
+                            exportTemplate.stringReplacementMap.insert(stringReplacementKey, stringReplacementValue);
+                        }
+                        reader.readEndElement();
                     }
-                    reader.readEndElement();
                 }
+                reader.readEndElement();
             }
-            reader.readEndElement();
 
             // Read ignore lists.
             reader.readStartElement(ElementIgnoredRecords);
