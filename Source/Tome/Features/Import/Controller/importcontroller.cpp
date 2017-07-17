@@ -235,7 +235,7 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
             }
 
             // Check if needs update.
-            if (oldRecordFieldValues.contains(fieldId) && oldRecordFieldValues[fieldId] == newRecordFieldValues[fieldId])
+            if (oldRecordFieldValues.contains(fieldId) && oldRecordFieldValues[fieldId] == fieldValue)
             {
                 ++fieldsUpToDate;
             }
