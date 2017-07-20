@@ -335,7 +335,7 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
             connect(
                         valueLabel,
                         SIGNAL(linkActivated(const QString&)),
-                        SLOT(onRecordLinkActivated(const QString&))
+                        SLOT(onFileLinkActivated(const QString&))
                         );
 
             // Add margin for increased readability.
