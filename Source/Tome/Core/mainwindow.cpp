@@ -1373,16 +1373,14 @@ void MainWindow::revertFieldValue()
     QVariant recordId = this->recordTreeWidget->getSelectedRecordId();
 
     // Get field to revert.
-    QModelIndexList selectedIndexes = this->recordFieldTableWidget->selectionModel()->selectedRows(0);
+    auto selectedItems = this->recordFieldTableWidget->selectedItems();
 
-    if (selectedIndexes.empty())
+    if (selectedItems.empty())
     {
         return;
     }
 
-    const RecordFieldValueMap fieldValues =
-            this->controller->getRecordsController().getRecordFieldValues(recordId);
-    const QString fieldId = fieldValues.keys()[selectedIndexes.first().row()];
+    const QString fieldId = selectedItems.first()->data(Qt::UserRole).toString();
 
     // Get inherited field value.
     QVariant valueToRevertTo = this->controller->getRecordsController().getInheritedFieldValue(recordId, fieldId);
