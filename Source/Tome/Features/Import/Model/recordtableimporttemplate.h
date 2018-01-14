@@ -31,6 +31,16 @@ namespace Tome
             QString idColumn;
 
             /**
+             * @brief Header the table column which contains the record display names.
+             */
+            QString displayNameColumn;
+
+            /**
+             * @brief Header the table column which contains the IDs of the fields to use as editor icons for the records.
+             */
+            QString editorIconFieldIdColumn;
+
+            /**
              * @brief Entries of the ID column that should cause the importer to skip the respective row.
              */
             QStringList ignoredIds;
@@ -54,6 +64,11 @@ namespace Tome
              * @brief Optional additional import parameters (e.g. which table to import).
              */
             QMap<QString, QString> parameters;
+
+            /**
+             * @brief Map that specifies which strings to replace by which ones during import.
+             */
+            QMap<QString, QString> stringReplacementMap;
     };
 }
 

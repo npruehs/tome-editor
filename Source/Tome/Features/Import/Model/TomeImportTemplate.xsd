@@ -6,14 +6,16 @@
         <xs:element name="Name" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="SourceType" minOccurs="1" maxOccurs="1">
           <xs:simpleType>
-            <xs:restriction base="xs:string">
-              <xs:enumeration value="CSV"/>
-              <xs:enumeration value="GoogleSheets"/>
-              <xs:enumeration value="XLSX"/>
-            </xs:restriction>
-          </xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="CSV"/>
+              <xs:enumeration value="GoogleSheets"/>
+              <xs:enumeration value="XLSX"/>
+            </xs:restriction>
+          </xs:simpleType>
         </xs:element>
         <xs:element name="IdColumn" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="DisplayNameColumn" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="EditorIconFieldIdColumn" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="RootRecordId" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="ColumnMap" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -22,6 +24,20 @@
                 <xs:complexType>
                   <xs:attribute name="ColumnName" type="xs:string" use="required" />
                   <xs:attribute name="FieldId" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="StringReplacementMap" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Mapping" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                      <xs:element name="String" type="xs:string" minOccurs="1" maxOccurs="1" />
+                      <xs:element name="ReplaceWith" type="xs:string" minOccurs="1" maxOccurs="1" />
+                  </xs:sequence>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

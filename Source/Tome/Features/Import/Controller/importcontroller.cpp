@@ -183,6 +183,24 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
         // Update progress bar.
         emit this->progressChanged(progressBarTitle, recordId, index, data.count());
 
+        // Get record display name and editor icon, if available.
+        QVariant recordDisplayName;
+        QVariant recordEditorIconFieldId;
+
+        if (newRecordFieldValues.contains(importTemplate.displayNameColumn))
+        {
+            recordDisplayName = newRecordFieldValues[importTemplate.displayNameColumn];
+        }
+        else
+        {
+            recordDisplayName = recordId;
+        }
+
+        if (newRecordFieldValues.contains(importTemplate.editorIconFieldIdColumn))
+        {
+            recordEditorIconFieldId = newRecordFieldValues[importTemplate.editorIconFieldIdColumn];
+        }
+
         // Check if need to add new record.
         if (!this->recordsController.hasRecord(recordId))
         {
@@ -192,13 +210,23 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
                 this->recordsController.addRecord(importTemplate.rootRecordId, importTemplate.rootRecordId, QString(), QStringList(), recordSetName);
                 ++recordsAdded;
             }
-            this->recordsController.addRecord(recordId, recordId, QString(), QStringList(), recordSetName);
+            this->recordsController.addRecord(recordId, recordDisplayName.toString(), recordEditorIconFieldId.toString(), QStringList(), recordSetName);
             this->recordsController.reparentRecord(recordId, importTemplate.rootRecordId);
             ++recordsAdded;
         }
         else
         {
             qInfo(qUtf8Printable(QString("Updating record %1.").arg(recordId)));
+
+            if (recordDisplayName.isValid())
+            {
+                this->recordsController.setRecordDisplayName(recordId, recordDisplayName.toString());
+            }
+
+            if (recordEditorIconFieldId.isValid())
+            {
+                this->recordsController.setRecordEditorIconFieldId(recordId, recordEditorIconFieldId.toString());
+            }
         }
 
         // Get current record field values.
@@ -225,6 +253,19 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
                 continue;
             }
 
+            // Apply string replacement.
+            for (auto itStringReplacementMap = importTemplate.stringReplacementMap.cbegin();
+                 itStringReplacementMap != importTemplate.stringReplacementMap.cend();
+                 ++itStringReplacementMap)
+            {
+                QString fieldValueString = fieldValue.toString();
+
+                if (fieldValueString.contains(itStringReplacementMap.key()))
+                {
+                    fieldValue = fieldValueString.replace(itStringReplacementMap.key(), itStringReplacementMap.value());
+                }
+            }
+
             // Convert to list if necessary.
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
             bool isList = this->typesController.isCustomType(field.fieldType) && this->typesController.getCustomType(field.fieldType).isList();
@@ -235,7 +276,7 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
             }
 
             // Check if needs update.
-            if (oldRecordFieldValues.contains(fieldId) && oldRecordFieldValues[fieldId] == newRecordFieldValues[fieldId])
+            if (oldRecordFieldValues.contains(fieldId) && oldRecordFieldValues[fieldId] == fieldValue)
             {
                 ++fieldsUpToDate;
             }

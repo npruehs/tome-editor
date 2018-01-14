@@ -40,8 +40,8 @@ FieldValueWidget::FieldValueWidget(FacetsController& facetsController,
     this->layout = new QVBoxLayout();
 
     // Add field value widgets.
-    this->lineEdit = new QLineEdit();
-    this->addWidget(this->lineEdit);
+    this->plainTextEdit = new QPlainTextEdit();
+    this->addWidget(this->plainTextEdit);
 
     this->spinBox = new QSpinBox();
     this->spinBox->setMinimum(std::numeric_limits<int>::min());
@@ -104,9 +104,9 @@ FieldValueWidget::FieldValueWidget(FacetsController& facetsController,
                 );
 
     connect(
-                this->lineEdit,
-                SIGNAL(textChanged(QString)),
-                SLOT(onLineEditTextChanged(QString))
+                this->plainTextEdit,
+                SIGNAL(textChanged()),
+                SLOT(onPlainTextEditTextChanged())
                 );
 
     connect(
@@ -197,7 +197,7 @@ void FieldValueWidget::focusInEvent(QFocusEvent* event)
         }
         else if (this->fieldType == BuiltInType::String || customType.getBaseType() == BuiltInType::String)
         {
-            this->lineEdit->selectAll();
+            this->plainTextEdit->selectAll();
         }
     }
 }
@@ -214,9 +214,8 @@ void FieldValueWidget::onDoubleSpinBoxValueChanged(double d)
     this->updateErrorLabel();
 }
 
-void FieldValueWidget::onLineEditTextChanged(const QString &text)
+void FieldValueWidget::onPlainTextEditTextChanged()
 {
-    Q_UNUSED(text)
     this->updateErrorLabel();
 }
 
@@ -271,7 +270,7 @@ QVariant FieldValueWidget::getFieldValueForType(const QString& typeName) const
 
     if (typeName == BuiltInType::String)
     {
-        return this->lineEdit->text();
+        return this->plainTextEdit->toPlainText();
     }
 
     if (typeName == BuiltInType::Reference)
@@ -303,7 +302,7 @@ QVariant FieldValueWidget::getFieldValueForType(const QString& typeName) const
     if (!this->typesController.isCustomType(typeName))
     {
         // Fall back to string.
-        return this->lineEdit->text();
+        return this->plainTextEdit->toPlainText();
     }
 
     // Check custom data types.
@@ -369,7 +368,7 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
 
     if (typeName == BuiltInType::String)
     {
-        this->setCurrentWidget(this->lineEdit);
+        this->setCurrentWidget(this->plainTextEdit);
         return;
     }
 
@@ -427,7 +426,7 @@ void FieldValueWidget::selectWidgetForType(const QString& typeName)
     if (!this->typesController.isCustomType(typeName))
     {
         // Fall back to string.
-        this->setCurrentWidget(this->lineEdit);
+        this->setCurrentWidget(this->plainTextEdit);
         return;
     }
 
@@ -529,7 +528,7 @@ void FieldValueWidget::setFieldValueForType(const QVariant& fieldValue, const QS
     if (typeName == BuiltInType::String)
     {
         QString value = fieldValue.toString();
-        this->lineEdit->setText(value);
+        this->plainTextEdit->setPlainText(value);
         return;
     }
 
@@ -574,7 +573,7 @@ void FieldValueWidget::setFieldValueForType(const QVariant& fieldValue, const QS
     {
         // Fall back to string.
         QString value = fieldValue.toString();
-        this->lineEdit->setText(value);
+        this->plainTextEdit->setPlainText(value);
         return;
     }
 

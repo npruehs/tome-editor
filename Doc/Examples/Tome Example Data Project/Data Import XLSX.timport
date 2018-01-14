@@ -3,10 +3,13 @@
     <Name>Units (XLSX)</Name>
     <SourceType>XLSX</SourceType>
     <IdColumn>ID</IdColumn>
+    <DisplayNameColumn></DisplayNameColumn>
+    <EditorIconFieldIdColumn></EditorIconFieldIdColumn>
     <RootRecordId>Unit</RootRecordId>
     <ColumnMap>
         <Mapping ColumnName="Attack Damage" FieldId="AttackDamage"/>
     </ColumnMap>
+    <StringReplacementMap/>
     <IgnoredIds>
         <Id>COMMENT</Id>
     </IgnoredIds>

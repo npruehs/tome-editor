@@ -10,6 +10,7 @@
         <Mapping TomeType="Reference" ExportedType="String"/>
         <Mapping TomeType="String" ExportedType="String"/>
     </TypeMap>
+    <StringReplacementMap/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>

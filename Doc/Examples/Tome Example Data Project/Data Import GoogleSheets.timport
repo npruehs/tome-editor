@@ -3,12 +3,15 @@
     <Name>Units (Google Sheets)</Name>
     <SourceType>GoogleSheets</SourceType>
     <IdColumn>ID</IdColumn>
+    <DisplayNameColumn></DisplayNameColumn>
+    <EditorIconFieldIdColumn></EditorIconFieldIdColumn>
     <RootRecordId>Unit</RootRecordId>
     <ColumnMap>
         <Mapping ColumnName="Attack Damage" FieldId="AttackDamage"/>
         <Mapping ColumnName="Attack Range" FieldId="AttackRange"/>
         <Mapping ColumnName="Damage Type" FieldId="DamageType"/>
     </ColumnMap>
+    <StringReplacementMap/>
     <IgnoredIds>
         <Id>COMMENT</Id>
     </IgnoredIds>

@@ -898,55 +898,101 @@ void MainWindow::on_actionDuplicate_Record_triggered()
         this->duplicateRecordWindow = new DuplicateRecordWindow(this);
     }
 
-    const QVariant& recordId = this->recordTreeWidget->getSelectedRecordId();
-    const QVariantList recordIds = this->controller->getRecordsController().getRecordIds();
-
-    if (recordId.isNull())
-    {
-        return;
-    }
+    // Get selected record id.
+    const QVariantList& selectedRecordIds = this->recordTreeWidget->getSelectedRecordIds();
+    const QVariantList existingRecordIds = this->controller->getRecordsController().getRecordIds();
 
     // Check record id type.
     RecordIdType::RecordIdType recordIdType = this->controller->getProjectController().getProjectRecordIdType();
+
+    // Get new record id.
     DuplicateRecordCommand* command;
 
-    if (recordIdType == RecordIdType::String)
+    if (selectedRecordIds.count() <= 0)
     {
-        // Disallow all existing record ids.
-        this->duplicateRecordWindow->setRecordId(recordId.toString());
+        return;
+    }
+    else if (selectedRecordIds.count() == 1)
+    {
+        const QVariant& recordId = selectedRecordIds.first();
 
-        QStringList recordStringIds;
-        for (QVariant v : recordIds)
+        if (recordIdType == RecordIdType::String)
         {
-            recordStringIds << v.toString();
+            // Disallow all existing record ids.
+            this->duplicateRecordWindow->setRecordId(recordId.toString());
+
+            QStringList recordStringIds;
+            for (QVariant v : existingRecordIds)
+            {
+                recordStringIds << v.toString();
+            }
+
+            this->duplicateRecordWindow->setDisallowedRecordIds(recordStringIds);
+
+            // Show window.
+            int result = this->duplicateRecordWindow->exec();
+
+            if (result != QDialog::Accepted)
+            {
+                return;
+            }
+
+            const QString& newRecordId = this->duplicateRecordWindow->getRecordId();
+
+
+            command = new DuplicateRecordCommand(this->controller->getRecordsController(),
+                                                                         recordId,
+                                                                         newRecordId);
+        }
+        else
+        {
+            command = new DuplicateRecordCommand(this->controller->getRecordsController(),
+                                                                         recordId,
+                                                                         QVariant());
         }
 
-        this->duplicateRecordWindow->setDisallowedRecordIds(recordStringIds);
+        // Update model.
+        this->controller->getUndoController().doCommand(command);
+    }
+    else
+    {
+        const QString& question = tr("Are you sure you want to duplicate %1 records? Tome will automatically assign IDs for them.")
+                                  .arg(selectedRecordIds.count());
 
-        // Show window.
-        int result = this->duplicateRecordWindow->exec();
+        int answer = QMessageBox::question(
+                    this,
+                    tr("Duplicate Records"),
+                    question,
+                    QMessageBox::Yes,
+                    QMessageBox::No);
 
-        if (result != QDialog::Accepted)
+        if (answer != QMessageBox::Yes)
         {
             return;
         }
 
-        const QString& newRecordId = this->duplicateRecordWindow->getRecordId();
+        for (auto recordId : selectedRecordIds)
+        {
+            if (recordIdType == RecordIdType::String)
+            {
+                const QString& newRecordId = QString("%1New").arg(recordId.toString());
 
 
-        command = new DuplicateRecordCommand(this->controller->getRecordsController(),
-                                                                     recordId,
-                                                                     newRecordId);
+                command = new DuplicateRecordCommand(this->controller->getRecordsController(),
+                                                                             recordId,
+                                                                             newRecordId);
+            }
+            else
+            {
+                command = new DuplicateRecordCommand(this->controller->getRecordsController(),
+                                                                             recordId,
+                                                                             QVariant());
+            }
+
+            // Update model.
+            this->controller->getUndoController().doCommand(command);
+        }
     }
-    else
-    {
-        command = new DuplicateRecordCommand(this->controller->getRecordsController(),
-                                                                     recordId,
-                                                                     QVariant());
-    }
-
-    // Update model.
-    this->controller->getUndoController().doCommand(command);
 }
 
 void MainWindow::on_actionRevert_Record_triggered()
@@ -1327,16 +1373,14 @@ void MainWindow::revertFieldValue()
     QVariant recordId = this->recordTreeWidget->getSelectedRecordId();
 
     // Get field to revert.
-    QModelIndexList selectedIndexes = this->recordFieldTableWidget->selectionModel()->selectedRows(0);
+    auto selectedItems = this->recordFieldTableWidget->selectedItems();
 
-    if (selectedIndexes.empty())
+    if (selectedItems.empty())
     {
         return;
     }
 
-    const RecordFieldValueMap fieldValues =
-            this->controller->getRecordsController().getRecordFieldValues(recordId);
-    const QString fieldId = fieldValues.keys()[selectedIndexes.first().row()];
+    const QString fieldId = selectedItems.first()->data(Qt::UserRole).toString();
 
     // Get inherited field value.
     QVariant valueToRevertTo = this->controller->getRecordsController().getInheritedFieldValue(recordId, fieldId);
@@ -1694,8 +1738,6 @@ void MainWindow::onRecordUpdated(const QVariant& oldId,
                                  const QString& newDisplayName,
                                  const QString& newEditorIconFieldId)
 {
-    Q_UNUSED(oldDisplayName)
-
     // Update view.
     this->recordTreeWidget->updateRecord(oldId, oldDisplayName, oldEditorIconFieldId, newId, newDisplayName, newEditorIconFieldId);
     this->refreshRecordTable();

@@ -345,6 +345,14 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                     }
                 }
 
+                // Apply string replacement.
+                for (auto itStringReplacementMap = exportTemplate.stringReplacementMap.cbegin();
+                     itStringReplacementMap != exportTemplate.stringReplacementMap.cend();
+                     ++itStringReplacementMap)
+                {
+                    fieldValueText = fieldValueText.replace(itStringReplacementMap.key(), itStringReplacementMap.value());
+                }
+
                 // Store for later use.
                 fieldValueTexts[fieldId] = fieldValueText;
             }

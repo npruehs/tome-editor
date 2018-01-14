@@ -637,6 +637,57 @@ void RecordsController::setReadOnly(const QVariant& recordId, const bool readOnl
     record.readOnly = readOnly;
 }
 
+void RecordsController::setRecordDisplayName(const QVariant& recordId, const QString& displayName)
+{
+    Record* record = this->getRecordById(recordId);
+    const QString oldDisplayName = record->displayName;
+
+    if (oldDisplayName == displayName)
+    {
+        return;
+    }
+
+    qInfo(qUtf8Printable(QString("Updating record %1 display name to %2.")
+          .arg(recordId.toString(), displayName)));
+
+    record->displayName = displayName;
+
+    // Notify listeners.
+    emit this->recordUpdated(record->id, oldDisplayName, record->editorIconFieldId, record->id, displayName, record->editorIconFieldId);
+
+    // Sort record model to ensure deterministic serialization.
+    bool needsSorting = oldDisplayName != displayName;
+
+    if (needsSorting)
+    {
+        for (RecordSetList::iterator it = this->model->begin();
+             it != this->model->end();
+             ++it)
+        {
+            std::sort((*it).records.begin(), (*it).records.end(), recordLessThanDisplayName);
+        }
+    }
+}
+
+void RecordsController::setRecordEditorIconFieldId(const QVariant& recordId, const QString& editorIconFieldId)
+{
+    Record* record = this->getRecordById(recordId);
+    const QString oldEditorIconFieldId = record->editorIconFieldId;
+
+    if (oldEditorIconFieldId == editorIconFieldId)
+    {
+        return;
+    }
+
+    qInfo(qUtf8Printable(QString("Updating record %1 editor icon field id to %2.")
+          .arg(recordId.toString(), editorIconFieldId)));
+
+    record->editorIconFieldId = editorIconFieldId;
+
+    // Notify listeners.
+    emit this->recordUpdated(record->id, record->displayName, oldEditorIconFieldId, record->id, record->displayName, editorIconFieldId);
+}
+
 void RecordsController::setRecordSets(RecordSetList& model)
 {
     this->model = &model;
@@ -677,8 +728,8 @@ void RecordsController::updateRecord(const QVariant oldId,
 
     // Update record itself.
     Record* record = this->getRecordById(newId);
-    record->displayName = newDisplayName;
-    record->editorIconFieldId = newEditorIconFieldId;
+    setRecordDisplayName(newId, newDisplayName);
+    setRecordEditorIconFieldId(newId, newEditorIconFieldId);
 
     // Move record, if necessary.
     if (record->recordSetName != newRecordSetName)
@@ -717,21 +768,8 @@ void RecordsController::updateRecord(const QVariant oldId,
         }
     }
 
-    // Sort record model to ensure deterministic serialization.
-    bool needsSorting = oldDisplayName != newDisplayName;
-
-    if (needsSorting)
-    {
-        for (RecordSetList::iterator it = this->model->begin();
-             it != this->model->end();
-             ++it)
-        {
-            std::sort((*it).records.begin(), (*it).records.end(), recordLessThanDisplayName);
-        }
-    }
-
-    // Notify listeners.
-    emit this->recordUpdated(oldId, oldDisplayName, oldEditorIconFieldId, newId, newDisplayName, newEditorIconFieldId);
+    // Notify listeners of changed id and data.
+    emit this->recordUpdated(oldId, newDisplayName, newEditorIconFieldId, newId, newDisplayName, newEditorIconFieldId);
 }
 
 void RecordsController::updateRecordFieldValue(const QVariant& recordId, const QString& fieldId, const QVariant& fieldValue)
