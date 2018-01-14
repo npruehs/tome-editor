@@ -514,9 +514,6 @@ void CustomTypesWindow::updateMap(const QString& oldName, const QString& newName
 
 void CustomTypesWindow::updateRow(const int index, const CustomType& type)
 {
-    // Disable sorting before upading data (see http://doc.qt.io/qt-5.7/qtablewidget.html#setItem)
-    this->ui->tableWidget->setSortingEnabled(false);
-
     // Update view.
     this->ui->tableWidget->setItem(index, 0, new QTableWidgetItem(type.name));
 
@@ -557,14 +554,14 @@ void CustomTypesWindow::updateRow(const int index, const CustomType& type)
         this->ui->tableWidget->setItem(index, 1, new QTableWidgetItem("Map"));
         this->ui->tableWidget->setItem(index, 2, new QTableWidgetItem(type.getKeyType() + " -> " + type.getValueType()));
     }
-
-    // Enable sorting again.
-    this->ui->tableWidget->setSortingEnabled(true);
 }
 
 void CustomTypesWindow::updateTable()
 {
     const CustomTypeList& types = this->typesController.getCustomTypes();
+
+    // Disable sorting before upading data (see http://doc.qt.io/qt-5.7/qtablewidget.html#setItem)
+    this->ui->tableWidget->setSortingEnabled(false);
 
     if (this->ui->tableWidget->rowCount() != types.length())
     {
@@ -575,4 +572,7 @@ void CustomTypesWindow::updateTable()
     {
         this->updateRow(i, types[i]);
     }
+
+    // Enable sorting again.
+    this->ui->tableWidget->setSortingEnabled(true);
 }
