@@ -3,6 +3,7 @@
     <Name>Localization (XLIFF 1.2)</Name>
     <FileExtension>.xlf</FileExtension>
     <TypeMap/>
+    <StringReplacementMap/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>

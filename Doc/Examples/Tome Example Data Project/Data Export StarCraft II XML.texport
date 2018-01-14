@@ -3,6 +3,7 @@
     <Name>Data (StarCraft II XML)</Name>
     <FileExtension>.xml</FileExtension>
     <TypeMap/>
+    <StringReplacementMap/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>

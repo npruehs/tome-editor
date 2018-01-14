@@ -26,7 +26,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <!-- version should MATCH as closely as possible with the underlying software -->
     <!-- Is the version a prerelease of a version? https://docs.nuget.org/create/versioning#creating-prerelease-packages -->
     <!-- Note that unstable versions like 0.0.1 can be considered a released version, but it's possible that one can release a 0.0.1-beta before you release a 0.0.1 version. If the version number is final, that is considered a released version and not a prerelease. -->
-    <version>1.0</version>
+    <version>1.1</version>
     <packageSourceUrl>https://github.com/npruehs/tome-editor</packageSourceUrl>
     <!-- owners is a poor name for maintainers of the package. It sticks around by this name for compatibility reasons. It basically means you. -->
     <owners>Nick Prühs</owners>
@@ -54,34 +54,26 @@ Developing games is all about data. With game systems for modifying data and use
 
 Tome solves two problems that arise with every new game you build: First, you can import the definition of your game's data so game designers can create new data records and modify existing ones very conveniently. Second, you can export the results to any format your game engine understands.
     </description>
-    <releaseNotes>First major release.
+    <releaseNotes>First minor update.
 
-This release contains usability improvements and bug fixes, only. It does not add any new features, export placeholders or integrity checks. 
+This release contains mostly usability improvements and bug fixes.
 
 ## Data
 
-* Assigning pseudo-random integer record ids instead of increasing ones, in order to improve collaboration.
+* Added string replacement maps for export and import templates.
+* Added importing record display names and editor icon field ids.
 
 ## Usability
 
-* Showing record display names instead of ids in field value reference selection dropdowns, and for reference field values in the record table.
-* Sorting record tree and reference dropdowns by record display name.
-* Saving records sorted by ID in order to avoid merge conflicts.
-* Set record tree initial width to 1/5 of window width.
-* Automatically resizing first record table column to fit contents.
-* Disabled Reload Project menu item while no project is loaded.
+* Allow duplicating multiple records at once, automatically assigning IDs for them.
+* Increased size of String field value widgets.
 
 ## Bug Fixes
 
-* Fixed multiple crashes that could occur when reference field values were is not set or invalid.
-* Fixed a crash that could occur when exporting map values.
-* Fixed a crash that could occur when adding a records file referencing a field or another record that does not exist.
-* Fixed multiple issues that could occur when assigning the same id to multiple records, only differing in lower and upper case characters.
-* Correctly prevent creating records with empty ids again.
-* Correctly detect whitespaces at the beginning or end of record ids.
-* No longer showing "prefix will automatically be removed" hint in Edit Field Value window if it isn't.
-* Showing correct question before discarding unsaved changes.
-* Adding the same file multiple times to the same project is no longer allowed.</releaseNotes>
+* Correctly sort record tree again after changing any display name.
+* Correctly open file links, even if they don't have a preview image.
+* Revert correct field value, even if record table is sorted differently than model (e.g. because Show Component Names In Record Table is checked).
+* Don't show duplicate custom types (and miss others) if changing the model while sorting the custom type table by any column but the first one.</releaseNotes>
     <!-- =============================== -->      
 
     <!-- Specifying dependencies and version ranges? https://docs.nuget.org/create/versioning#specifying-version-ranges-in-.nuspec-files -->

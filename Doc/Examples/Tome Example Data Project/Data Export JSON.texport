@@ -3,6 +3,7 @@
     <Name>Data (JSON)</Name>
     <FileExtension>.json</FileExtension>
     <TypeMap/>
+    <StringReplacementMap/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>

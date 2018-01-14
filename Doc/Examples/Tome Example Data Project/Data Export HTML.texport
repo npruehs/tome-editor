@@ -3,6 +3,7 @@
     <Name>Data (HTML)</Name>
     <FileExtension>.html</FileExtension>
     <TypeMap/>
+    <StringReplacementMap/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>

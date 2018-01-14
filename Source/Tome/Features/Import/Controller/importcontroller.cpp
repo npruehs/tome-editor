@@ -191,6 +191,10 @@ void ImportController::onDataAvailable(const QString& importTemplateName, const 
         {
             recordDisplayName = newRecordFieldValues[importTemplate.displayNameColumn];
         }
+        else
+        {
+            recordDisplayName = recordId;
+        }
 
         if (newRecordFieldValues.contains(importTemplate.editorIconFieldIdColumn))
         {
