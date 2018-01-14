@@ -3,6 +3,7 @@
     <Name>Localization (CSV)</Name>
     <FileExtension>.csv</FileExtension>
     <TypeMap/>
+    <StringReplacementMap/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>

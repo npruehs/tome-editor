@@ -3,6 +3,7 @@
     <Name>Data (YAML)</Name>
     <FileExtension>.yaml</FileExtension>
     <TypeMap/>
+    <StringReplacementMap/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>

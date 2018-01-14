@@ -3,6 +3,7 @@
     <Name>Data (INI)</Name>
     <FileExtension>.ini</FileExtension>
     <TypeMap/>
+    <StringReplacementMap/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>
