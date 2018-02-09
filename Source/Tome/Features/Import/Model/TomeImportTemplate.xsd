@@ -46,7 +46,7 @@
         <xs:element name="IgnoredIds" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="Id" type="xs:string" minOccurs="0" />
+              <xs:element name="Id" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
