@@ -16,6 +16,7 @@ const QString ExportTemplateSerializer::AttributeExportLocalizedFieldsOnly = "Ex
 const QString ExportTemplateSerializer::AttributeExportedType = "ExportedType";
 const QString ExportTemplateSerializer::AttributeTomeType = "TomeType";
 const QString ExportTemplateSerializer::AttributeVersion = "Version";
+const QString ExportTemplateSerializer::ElementDefaultFilename = "DefaultFilename";
 const QString ExportTemplateSerializer::ElementFileExtension = "FileExtension";
 const QString ExportTemplateSerializer::ElementId = "Id";
 const QString ExportTemplateSerializer::ElementIgnoredFields = "IgnoredFields";
@@ -78,6 +79,7 @@ void ExportTemplateSerializer::serialize(QIODevice& device, const RecordExportTe
 
             // Write name and file extension.
             writer.writeTextElement(ElementName, exportTemplate.name);
+            writer.writeTextElement(ElementDefaultFilename, exportTemplate.defaultFileName);
             writer.writeTextElement(ElementFileExtension, exportTemplate.fileExtension);
 
             // Write export type map.
@@ -173,6 +175,12 @@ void ExportTemplateSerializer::deserialize(QIODevice& device, RecordExportTempla
         reader.readStartElement(ElementTemplate);
         {
             exportTemplate.name = reader.readTextElement(ElementName);
+
+            if (reader.isAtElement(ElementDefaultFilename))
+            {
+                exportTemplate.defaultFileName = reader.readTextElement(ElementDefaultFilename);
+            }
+
             exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);
 
             // Read export type map.

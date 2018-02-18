@@ -1261,8 +1261,11 @@ void MainWindow::exportRecords(QAction* exportAction)
             this->controller->getExportController().getRecordExportTemplate(exportTemplateName);
 
     // Build export file name suggestion.
-    const QString suggestedFileName = this->controller->getProjectController().getProjectName() + exportTemplate.fileExtension;
-    const QString suggestedFilePath = combinePaths(this->controller->getProjectController().getProjectPath(), suggestedFileName);
+    const QString suggestedFileName = !exportTemplate.defaultFileName.isEmpty()
+            ? exportTemplate.defaultFileName
+            : this->controller->getProjectController().getProjectName();
+    const QString suggestedFileNameWithExtension = suggestedFileName + exportTemplate.fileExtension;
+    const QString suggestedFilePath = combinePaths(this->controller->getProjectController().getProjectPath(), suggestedFileNameWithExtension);
     const QString filter = exportTemplateName + " (*" + exportTemplate.fileExtension + ")";
 
     // Show file dialog.

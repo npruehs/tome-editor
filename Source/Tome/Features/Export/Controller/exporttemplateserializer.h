@@ -41,6 +41,7 @@ namespace Tome
             static const QString AttributeExportedType;
             static const QString AttributeTomeType;
             static const QString AttributeVersion;
+            static const QString ElementDefaultFilename;
             static const QString ElementFileExtension;
             static const QString ElementId;
             static const QString ElementIgnoredFields;

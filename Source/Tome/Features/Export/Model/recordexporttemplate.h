@@ -23,6 +23,11 @@ namespace Tome
             QString componentTemplate;
 
             /**
+             * @brief Default file name for exported files, without extension.
+             */
+            QString defaultFileName;
+
+            /**
              * @brief Whether to fill each record export so that all fields are exported for all records.
              */
             bool exportAsTable;
