@@ -7,6 +7,7 @@ using namespace Tome;
 
 
 const QString CsvRecordDataSource::ParameterDelimiter = "Delimiter";
+const QString CsvRecordDataSource::ParameterStripQuotes = "StripQuotes";
 
 
 CsvRecordDataSource::CsvRecordDataSource()
@@ -39,6 +40,10 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
             ? importTemplate.parameters[ParameterDelimiter]
             : ";";
 
+    bool stripQuotes = importTemplate.parameters.contains(ParameterStripQuotes)
+            ? QVariant(importTemplate.parameters[ParameterStripQuotes]).toBool()
+            : false;
+
     // Read headers.
     QString line;
     line = textStream.readLine();
@@ -52,7 +57,31 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
         return;
     }
 
-    QStringList headers = line.split(delimiter);
+    QStringList headers;
+
+    if (stripQuotes)
+    {
+        // Clean headers.
+        QStringList rawHeaders = line.split(delimiter);
+
+        for (int i = 0; i < rawHeaders.count(); ++i)
+        {
+            QString rawHeader = rawHeaders[i];
+
+            if (rawHeader.startsWith('"') && rawHeader.endsWith('"'))
+            {
+                headers << rawHeader.mid(1, rawHeader.length() - 2);
+            }
+            else
+            {
+                headers << rawHeader;
+            }
+        }
+    }
+    else
+    {
+        headers = line.split(delimiter);
+    }
 
     // Find id column.
     int idColumnIndex = -1;
@@ -98,6 +127,11 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
         // Get record id.
         QString recordId = row[idColumnIndex];
 
+        if (stripQuotes && recordId.startsWith('"') && recordId.endsWith('"'))
+        {
+            recordId = recordId.mid(1, recordId.length() - 2);
+        }
+
         // Update progress bar.
         emit this->progressChanged(progressBarTitle, recordId, file.pos(), file.size());
 
@@ -117,7 +151,14 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
                 continue;
             }
 
-            map[headers[i]] = row[i];
+            QString value = row[i];
+
+            if (stripQuotes && value.startsWith('"') && value.endsWith('"'))
+            {
+                value = value.mid(1, value.length() - 2);
+            }
+
+            map[headers[i]] = value;
         }
 
         data[recordId] = map;

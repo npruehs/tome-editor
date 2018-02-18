@@ -53,6 +53,7 @@ namespace Tome
 
     private:
             static const QString ParameterDelimiter;
+            static const QString ParameterStripQuotes;
     };
 }
 
