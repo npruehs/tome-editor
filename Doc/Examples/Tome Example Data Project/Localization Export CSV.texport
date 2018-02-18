@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Template Version="2" ExportLeafs="true" ExportLocalizedFieldsOnly="true">
     <Name>Localization (CSV)</Name>
+    <DefaultFilename></DefaultFilename>
     <FileExtension>.csv</FileExtension>
     <TypeMap/>
     <StringReplacementMap/>

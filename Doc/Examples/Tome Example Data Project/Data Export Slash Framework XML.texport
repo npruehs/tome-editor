@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Template Version="2" ExportLeafs="true">
     <Name>Data (Slash Framework XML)</Name>
+    <DefaultFilename></DefaultFilename>
     <FileExtension>.blueprints.xml</FileExtension>
     <TypeMap>
         <Mapping TomeType="Armor Type" ExportedType="FantasyGame.Data.ArmorType"/>

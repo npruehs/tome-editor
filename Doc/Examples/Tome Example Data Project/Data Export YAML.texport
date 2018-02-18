@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Template Version="2" ExportLeafs="true">
     <Name>Data (YAML)</Name>
+    <DefaultFilename></DefaultFilename>
     <FileExtension>.yaml</FileExtension>
     <TypeMap/>
     <StringReplacementMap/>

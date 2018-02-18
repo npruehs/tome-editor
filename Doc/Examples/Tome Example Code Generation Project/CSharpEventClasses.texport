@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Template Version="2" ExportRoots="true">
     <Name>Event Classes (CSharp)</Name>
+    <DefaultFilename></DefaultFilename>
     <FileExtension>.cs</FileExtension>
     <TypeMap>
         <Mapping TomeType="Boolean" ExportedType="bool"/>

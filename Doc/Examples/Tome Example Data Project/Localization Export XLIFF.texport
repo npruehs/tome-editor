@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Template Version="2" ExportLeafs="true" ExportLocalizedFieldsOnly="true">
     <Name>Localization (XLIFF 1.2)</Name>
+    <DefaultFilename></DefaultFilename>
     <FileExtension>.xlf</FileExtension>
     <TypeMap/>
     <StringReplacementMap/>

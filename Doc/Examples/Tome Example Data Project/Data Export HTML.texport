@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Template Version="2" ExportAsTable="true" ExportLeafs="true">
     <Name>Data (HTML)</Name>
+    <DefaultFilename></DefaultFilename>
     <FileExtension>.html</FileExtension>
     <TypeMap/>
     <StringReplacementMap/>
