@@ -53,6 +53,7 @@ namespace Tome
             static const QString ElementString;
             static const QString ElementStringReplacementMap;
             static const QString ElementTemplate;
+            static const QString ElementTemplateFilesPath;
             static const QString ElementTypeMap;
 
             static const int Version;

@@ -28,6 +28,7 @@ const QString ExportTemplateSerializer::ElementReplaceWith = "ReplaceWith";
 const QString ExportTemplateSerializer::ElementString = "String";
 const QString ExportTemplateSerializer::ElementStringReplacementMap = "StringReplacementMap";
 const QString ExportTemplateSerializer::ElementTemplate = "Template";
+const QString ExportTemplateSerializer::ElementTemplateFilesPath = "TemplateFilesPath";
 const QString ExportTemplateSerializer::ElementTypeMap = "TypeMap";
 
 const int ExportTemplateSerializer::Version = 2;
@@ -81,6 +82,7 @@ void ExportTemplateSerializer::serialize(QIODevice& device, const RecordExportTe
             writer.writeTextElement(ElementName, exportTemplate.name);
             writer.writeTextElement(ElementDefaultFilename, exportTemplate.defaultFileName);
             writer.writeTextElement(ElementFileExtension, exportTemplate.fileExtension);
+            writer.writeTextElement(ElementTemplateFilesPath, exportTemplate.templateFilesPath);
 
             // Write export type map.
             writer.writeStartElement(ElementTypeMap);
@@ -182,6 +184,11 @@ void ExportTemplateSerializer::deserialize(QIODevice& device, RecordExportTempla
             }
 
             exportTemplate.fileExtension = reader.readTextElement(ElementFileExtension);
+
+            if (reader.isAtElement(ElementTemplateFilesPath))
+            {
+                exportTemplate.templateFilesPath = reader.readTextElement(ElementTemplateFilesPath);
+            }
 
             // Read export type map.
             reader.readStartElement(ElementTypeMap);

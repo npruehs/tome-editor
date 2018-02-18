@@ -330,16 +330,34 @@ void ProjectController::loadExportTemplate(const QString& projectPath, RecordExp
     // Read template contents.
     try
     {
-        QString templatePath = exportTemplate.path;
+        QString templatePath;
 
-        if (QDir::isRelativePath(templatePath))
+        // Check if any subpath has been specified.
+        if (!exportTemplate.templateFilesPath.isEmpty())
         {
-            templatePath = combinePaths(projectPath, templatePath);
+            if (QDir::isRelativePath(exportTemplate.templateFilesPath))
+            {
+                templatePath = combinePaths(projectPath, exportTemplate.templateFilesPath);
+            }
+            else
+            {
+                templatePath = exportTemplate.templateFilesPath;
+            }
         }
-
-        if (templatePath.endsWith(RecordExportTemplateFileExtension))
+        else
         {
-            templatePath = templatePath.remove(RecordExportTemplateFileExtension);
+            // Fall back to files with same name at same location at the template itself.
+            templatePath = exportTemplate.path;
+
+            if (QDir::isRelativePath(templatePath))
+            {
+                templatePath = combinePaths(projectPath, templatePath);
+            }
+
+            if (templatePath.endsWith(RecordExportTemplateFileExtension))
+            {
+                templatePath = templatePath.remove(RecordExportTemplateFileExtension);
+            }
         }
 
         exportTemplate.fieldValueDelimiter =

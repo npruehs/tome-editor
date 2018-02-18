@@ -133,6 +133,11 @@ namespace Tome
             QMap<QString, QString> stringReplacementMap;
 
             /**
+             * @brief Path of the template content files on disk, relative to the project file.
+             */
+            QString templateFilesPath;
+
+            /**
              * @brief Map that specifies which type names to replace on export.
              */
             QMap<QString, QString> typeMap;
