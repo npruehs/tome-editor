@@ -6,6 +6,9 @@
 using namespace Tome;
 
 
+const QString CsvRecordDataSource::ParameterDelimiter = "Delimiter";
+
+
 CsvRecordDataSource::CsvRecordDataSource()
 {
 }
@@ -31,6 +34,11 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
     QTextStream textStream(&file);
     textStream.setCodec("UTF-8");
 
+    // Read configuration.
+    QString delimiter = importTemplate.parameters.contains(ParameterDelimiter)
+            ? importTemplate.parameters[ParameterDelimiter]
+            : ";";
+
     // Read headers.
     QString line;
     line = textStream.readLine();
@@ -44,7 +52,7 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
         return;
     }
 
-    QStringList headers = line.split(';');
+    QStringList headers = line.split(delimiter);
 
     // Find id column.
     int idColumnIndex = -1;
@@ -75,7 +83,7 @@ void CsvRecordDataSource::importData(const RecordTableImportTemplate& importTemp
     while (!(line = textStream.readLine()).isEmpty())
     {
         ++rowIndex;
-        QStringList row = line.split(';');
+        QStringList row = line.split(delimiter);
 
         if (row.count() != headers.count())
         {

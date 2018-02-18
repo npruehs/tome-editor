@@ -50,6 +50,9 @@ namespace Tome
              * @param maximumValue Maximum progress value (e.g. maximum record count).
              */
             void progressChanged(const QString title, const QString text, const int currentValue, const int maximumValue) const Q_DECL_OVERRIDE;
+
+    private:
+            static const QString ParameterDelimiter;
     };
 }
 
