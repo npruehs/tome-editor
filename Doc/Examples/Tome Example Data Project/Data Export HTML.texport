@@ -4,6 +4,7 @@
     <FileExtension>.html</FileExtension>
     <TypeMap/>
     <StringReplacementMap/>
+    <IncludedRecords/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>

@@ -20,6 +20,7 @@
         <Mapping TomeType="String" ExportedType="System.String"/>
     </TypeMap>
     <StringReplacementMap/>
+    <IncludedRecords/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>

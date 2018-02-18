@@ -4,6 +4,7 @@
     <FileExtension>.ini</FileExtension>
     <TypeMap/>
     <StringReplacementMap/>
+    <IncludedRecords/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>

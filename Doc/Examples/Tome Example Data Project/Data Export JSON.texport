@@ -4,6 +4,7 @@
     <FileExtension>.json</FileExtension>
     <TypeMap/>
     <StringReplacementMap/>
+    <IncludedRecords/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>

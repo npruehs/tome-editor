@@ -4,6 +4,7 @@
     <FileExtension>.xml</FileExtension>
     <TypeMap/>
     <StringReplacementMap/>
+    <IncludedRecords/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>

@@ -4,6 +4,7 @@
     <FileExtension>.yaml</FileExtension>
     <TypeMap/>
     <StringReplacementMap/>
+    <IncludedRecords/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>

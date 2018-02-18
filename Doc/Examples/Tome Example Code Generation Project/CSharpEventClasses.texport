@@ -11,6 +11,7 @@
         <Mapping TomeType="String" ExportedType="string"/>
     </TypeMap>
     <StringReplacementMap/>
+    <IncludedRecords/>
     <IgnoredRecords/>
     <IgnoredFields/>
 </Template>
