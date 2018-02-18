@@ -1101,14 +1101,95 @@ void RecordsController::updateRecordReferences(const QVariant oldReference, cons
         {
             const QString fieldId = it.key();
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
+            QVariant const &fieldValue = it.value();
 
             if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference))
             {
-                const QString reference = it.value().toString();
+                const QString reference = fieldValue.toString();
 
                 if (reference == oldReference)
                 {
                     this->updateRecordFieldValue(record.id, fieldId, newReference);
+                }
+            }
+            // Check if it is a list type containing references.
+            else if (this->typesController.isCustomType(field.fieldType))
+            {
+                const CustomType& customType = this->typesController.getCustomType(field.fieldType);
+                if (customType.isList())
+                {
+                    if (this->typesController.isTypeOrDerivedFromType(customType.getItemType(), BuiltInType::Reference))
+                    {
+                        bool replacedReferences = false;
+                        QVariantList fieldValueAsList = fieldValue.toList();
+                        for (auto &listItem : fieldValueAsList)
+                        {
+                            const QString itemAsReference = listItem.toString();
+                            if (itemAsReference == oldReference)
+                            {
+                                listItem = newReference;
+                                replacedReferences = true;
+                            }
+                        }
+                        if (replacedReferences)
+                        {
+                            this->updateRecordFieldValue(record.id, fieldId, fieldValueAsList);
+                        }
+                    }
+                }
+                // Check if it is a map type containing references.
+                else if (customType.isMap())
+                {
+                    bool const keyIsReference = this->typesController.isTypeOrDerivedFromType(customType.getKeyType(), BuiltInType::Reference);
+                    bool const valueIsReference = this->typesController.isTypeOrDerivedFromType(customType.getValueType(), BuiltInType::Reference);
+                    if (keyIsReference || valueIsReference)
+                    {
+                        bool fieldValueChanged = false;
+                        QVariant const &fieldValue = it.value();
+                        if (QMetaType::QVariantMap == fieldValue.userType())
+                        {
+                            QVariantMap newFieldValue;
+                            // avoid getting map by value
+                            QVariantMap const &fieldValueAsMap = *reinterpret_cast<const QVariantMap *>(fieldValue.constData());
+                            for (QVariantMap::const_iterator itMap = fieldValueAsMap.begin(); fieldValueAsMap.end() != itMap; itMap++)
+                            {
+                                bool keyRemoved = false;
+                                bool valueChanged = false;
+                                if (keyIsReference)
+                                {
+                                    QString const &keyAsReference = itMap.key();
+                                    if (keyAsReference == oldReference)
+                                    {
+                                        // The key will be removed entirely.
+                                        // [pg] It is arguable if we want to allow empty reference keys.
+                                        // In that case, all removed reference keys will collapse into a single entry
+                                        fieldValueChanged = true;
+                                        keyRemoved = true;
+                                    }
+                                }
+                                if (valueIsReference && !keyRemoved)
+                                {
+                                    QString valueAsReference = itMap.value().toString();
+                                    if (valueAsReference == oldReference)
+                                    {
+                                        newFieldValue.insert(itMap.key(), newReference);
+                                        valueChanged = true;
+                                        fieldValueChanged = true;
+                                    }
+                                }
+
+                                // copy the original value
+                                if (!valueChanged)
+                                {
+                                    newFieldValue.insert(itMap.key(), itMap.value());
+                                }
+                            }
+                            if (fieldValueChanged)
+                            {
+                                this->updateRecordFieldValue(record.id, fieldId, newFieldValue);
+                            }
+                        }
+                    }
                 }
             }
         }

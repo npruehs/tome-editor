@@ -106,6 +106,11 @@ void RemoveRecordCommand::redo()
             const QString fieldId = itFields.key();
             const FieldDefinition& field = this->fieldDefinitionsController.getFieldDefinition(fieldId);
 
+            // Indicator if we have to store this field
+            bool storeFieldValue = false;
+
+            QVariant const &fieldValue = itFields.value();
+
             // Check if it's a reference field.
             if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference))
             {
@@ -120,10 +125,101 @@ void RemoveRecordCommand::redo()
 
                     if (reference == removedRecordId.toString())
                     {
-                        // Remember field so we can restore the reference later.
-                        removedFieldValues.insert(fieldId, removedRecordId);
+                        storeFieldValue = true;
                     }
                 }
+            }
+            // Check if it is a list type containing references.
+            else if (this->typesController.isCustomType(field.fieldType))
+            {
+                const CustomType& customType = this->typesController.getCustomType(field.fieldType);
+                if (customType.isList())
+                {
+                    if (this->typesController.isTypeOrDerivedFromType(customType.getItemType(), BuiltInType::Reference))
+                    {
+                        QVariantList fieldValueAsList = fieldValue.toList();
+                        for (auto const &listItem : fieldValueAsList)
+                        {
+                            const QString itemAsReference = listItem.toString();
+                            // Check if it references any removed record.
+                            for (auto const &removedRecord : this->removedRecords)
+                            {
+                                QVariant const &removedRecordId = removedRecord.id;
+
+                                if (itemAsReference == removedRecordId.toString())
+                                {
+                                    // one reference to a removed record inside the list is sufficient,
+                                    // so we are finished here
+                                    storeFieldValue = true;
+                                    break;
+                                }
+                            }
+                            // Do not continue to search the list for matching references
+                            if (storeFieldValue)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+                // Check if it is a map type containing references.
+                else if (customType.isMap())
+                {
+                    bool const keyIsReference = this->typesController.isTypeOrDerivedFromType(customType.getKeyType(), BuiltInType::Reference);
+                    bool const valueIsReference = this->typesController.isTypeOrDerivedFromType(customType.getValueType(), BuiltInType::Reference);
+                    if (keyIsReference || valueIsReference)
+                    {
+                        QVariantMap fieldValueAsMap = fieldValue.toMap();
+                        for (QVariantMap::const_iterator itMap = fieldValueAsMap.begin(); fieldValueAsMap.end() != itMap; itMap++)
+                        {
+                            if (keyIsReference)
+                            {
+                                QString const &keyAsReference = itMap.key();
+                                // Check if it references any removed record.
+                                for (auto const &removedRecord : this->removedRecords)
+                                {
+                                    QVariant const &removedRecordId = removedRecord.id;
+
+                                    if (keyAsReference == removedRecordId.toString())
+                                    {
+                                        // one reference to a removed record inside the map is sufficient,
+                                        // so we are finished here
+                                        storeFieldValue = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!storeFieldValue && valueIsReference)
+                            {
+                                const QString valueAsReference = itMap.value().toString();
+                                // Check if it references any removed record.
+                                for (auto const &removedRecord : this->removedRecords)
+                                {
+                                    QVariant const &removedRecordId = removedRecord.id;
+
+                                    if (valueAsReference == removedRecordId.toString())
+                                    {
+                                        // one reference to a removed record inside the map is sufficient,
+                                        // so we are finished here
+                                        storeFieldValue = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            // Do not continue to search the list for matching references
+                            if (storeFieldValue)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Remember field so we can restore the reference later.
+            if (storeFieldValue)
+            {
+                removedFieldValues.insert(fieldId, fieldValue);
             }
         }
 
