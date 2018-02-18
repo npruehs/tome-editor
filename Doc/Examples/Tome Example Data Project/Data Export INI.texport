@@ -3,6 +3,7 @@
     <Name>Data (INI)</Name>
     <DefaultFilename></DefaultFilename>
     <FileExtension>.ini</FileExtension>
+    <TemplateFilesPath></TemplateFilesPath>
     <TypeMap/>
     <StringReplacementMap/>
     <IncludedRecords/>

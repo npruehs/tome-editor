@@ -3,6 +3,7 @@
     <Name>Data (JSON)</Name>
     <DefaultFilename></DefaultFilename>
     <FileExtension>.json</FileExtension>
+    <TemplateFilesPath></TemplateFilesPath>
     <TypeMap/>
     <StringReplacementMap/>
     <IncludedRecords/>

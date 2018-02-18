@@ -3,6 +3,7 @@
     <Name>Data (Slash Framework XML)</Name>
     <DefaultFilename></DefaultFilename>
     <FileExtension>.blueprints.xml</FileExtension>
+    <TemplateFilesPath></TemplateFilesPath>
     <TypeMap>
         <Mapping TomeType="Armor Type" ExportedType="FantasyGame.Data.ArmorType"/>
         <Mapping TomeType="Boolean" ExportedType="System.Boolean"/>

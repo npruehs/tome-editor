@@ -3,6 +3,7 @@
     <Name>Event Deserializer (CSharp)</Name>
     <DefaultFilename></DefaultFilename>
     <FileExtension>.cs</FileExtension>
+    <TemplateFilesPath></TemplateFilesPath>
     <TypeMap>
         <Mapping TomeType="Boolean" ExportedType="Boolean"/>
         <Mapping TomeType="Color" ExportedType="String"/>

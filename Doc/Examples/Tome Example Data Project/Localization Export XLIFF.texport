@@ -3,6 +3,7 @@
     <Name>Localization (XLIFF 1.2)</Name>
     <DefaultFilename></DefaultFilename>
     <FileExtension>.xlf</FileExtension>
+    <TemplateFilesPath></TemplateFilesPath>
     <TypeMap/>
     <StringReplacementMap/>
     <IncludedRecords/>

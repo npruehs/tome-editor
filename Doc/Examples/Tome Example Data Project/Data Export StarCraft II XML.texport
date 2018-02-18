@@ -3,6 +3,7 @@
     <Name>Data (StarCraft II XML)</Name>
     <DefaultFilename></DefaultFilename>
     <FileExtension>.xml</FileExtension>
+    <TemplateFilesPath></TemplateFilesPath>
     <TypeMap/>
     <StringReplacementMap/>
     <IncludedRecords/>

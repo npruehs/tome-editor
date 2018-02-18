@@ -3,6 +3,7 @@
     <Name>Data (HTML)</Name>
     <DefaultFilename></DefaultFilename>
     <FileExtension>.html</FileExtension>
+    <TemplateFilesPath></TemplateFilesPath>
     <TypeMap/>
     <StringReplacementMap/>
     <IncludedRecords/>

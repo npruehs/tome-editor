@@ -3,6 +3,7 @@
     <Name>Localization (CSV)</Name>
     <DefaultFilename></DefaultFilename>
     <FileExtension>.csv</FileExtension>
+    <TemplateFilesPath></TemplateFilesPath>
     <TypeMap/>
     <StringReplacementMap/>
     <IncludedRecords/>

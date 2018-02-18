@@ -3,6 +3,7 @@
     <Name>Event Classes (CSharp)</Name>
     <DefaultFilename></DefaultFilename>
     <FileExtension>.cs</FileExtension>
+    <TemplateFilesPath></TemplateFilesPath>
     <TypeMap>
         <Mapping TomeType="Boolean" ExportedType="bool"/>
         <Mapping TomeType="Color" ExportedType="string"/>

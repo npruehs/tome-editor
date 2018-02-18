@@ -3,6 +3,7 @@
     <Name>Data (YAML)</Name>
     <DefaultFilename></DefaultFilename>
     <FileExtension>.yaml</FileExtension>
+    <TemplateFilesPath></TemplateFilesPath>
     <TypeMap/>
     <StringReplacementMap/>
     <IncludedRecords/>
