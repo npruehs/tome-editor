@@ -20,6 +20,7 @@ const QString ExportTemplateSerializer::ElementFileExtension = "FileExtension";
 const QString ExportTemplateSerializer::ElementId = "Id";
 const QString ExportTemplateSerializer::ElementIgnoredFields = "IgnoredFields";
 const QString ExportTemplateSerializer::ElementIgnoredRecords = "IgnoredRecords";
+const QString ExportTemplateSerializer::ElementIncludedRecords = "IncludedRecords";
 const QString ExportTemplateSerializer::ElementMapping = "Mapping";
 const QString ExportTemplateSerializer::ElementName = "Name";
 const QString ExportTemplateSerializer::ElementReplaceWith = "ReplaceWith";
@@ -110,6 +111,15 @@ void ExportTemplateSerializer::serialize(QIODevice& device, const RecordExportTe
             writer.writeEndElement();
 
             // Write ignore lists.
+            writer.writeStartElement(ElementIncludedRecords);
+            {
+                for (int i = 0; i < exportTemplate.includedRecords.size(); ++i)
+                {
+                    writer.writeTextElement(ElementId, exportTemplate.includedRecords[i]);
+                }
+            }
+            writer.writeEndElement();
+
             writer.writeStartElement(ElementIgnoredRecords);
             {
                 for (int i = 0; i < exportTemplate.ignoredRecords.size(); ++i)
@@ -202,6 +212,18 @@ void ExportTemplateSerializer::deserialize(QIODevice& device, RecordExportTempla
             }
 
             // Read ignore lists.
+            if (reader.isAtElement(ElementIncludedRecords))
+            {
+                reader.readStartElement(ElementIncludedRecords);
+                {
+                    while (reader.isAtElement(ElementId))
+                    {
+                        exportTemplate.includedRecords << reader.readTextElement(ElementId);
+                    }
+                }
+                reader.readEndElement();
+            }
+
             reader.readStartElement(ElementIgnoredRecords);
             {
                 while (reader.isAtElement(ElementId))

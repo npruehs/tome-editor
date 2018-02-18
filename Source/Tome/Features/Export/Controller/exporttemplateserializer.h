@@ -45,6 +45,7 @@ namespace Tome
             static const QString ElementId;
             static const QString ElementIgnoredFields;
             static const QString ElementIgnoredRecords;
+            static const QString ElementIncludedRecords;
             static const QString ElementMapping;
             static const QString ElementName;
             static const QString ElementReplaceWith;

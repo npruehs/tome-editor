@@ -31,6 +31,13 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="IncludedRecords" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="IgnoredRecords" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>

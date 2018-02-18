@@ -170,6 +170,32 @@ void ExportController::exportRecords(const RecordExportTemplate& exportTemplate,
                 }
             }
 
+            // Check if whitelisted.
+            if (!exportTemplate.includedRecords.isEmpty())
+            {
+                bool whitelisted = exportTemplate.includedRecords.contains(record.id.toString());
+
+                if (!whitelisted)
+                {
+                    // Check if any ancestor whitelisted.
+                    RecordList ancestors = this->recordsController.getAncestors(record.id);
+
+                    for (int i = 0; i < ancestors.size(); ++i)
+                    {
+                        if (exportTemplate.includedRecords.contains(ancestors[i].id.toString()))
+                        {
+                            whitelisted = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!whitelisted)
+                {
+                    continue;
+                }
+            }
+
             // Check if ignored.
             if (exportTemplate.ignoredRecords.contains(record.id.toString()))
             {

@@ -133,6 +133,11 @@ namespace Tome
             QMap<QString, QString> typeMap;
 
             /**
+             * @brief Records to export.
+             */
+            QStringList includedRecords;
+
+            /**
              * @brief Records to skip while exporting.
              */
             QStringList ignoredRecords;
