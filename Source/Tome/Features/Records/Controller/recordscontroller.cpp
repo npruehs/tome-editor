@@ -726,6 +726,7 @@ void RecordsController::updateRecord(const QVariant oldId,
         this->removeRecord(oldId);
     }
 
+    // Update record itself.
     Record* record = this->getRecordById(newId);
 
     QVariant recordId = record->id;
