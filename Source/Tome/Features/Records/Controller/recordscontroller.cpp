@@ -728,7 +728,17 @@ void RecordsController::updateRecord(const QVariant oldId,
 
     // Update record itself.
     Record* record = this->getRecordById(newId);
+
+    QVariant recordId = record->id;
+
+    // Update record itself.
     setRecordDisplayName(newId, newDisplayName);
+
+    //When setRecordDisplayName is called it can cause our old pointer to now point to the wrong record due to sorting
+    if(record->id != recordId){
+        record = this->getRecordById(newId);
+    }
+
     setRecordEditorIconFieldId(newId, newEditorIconFieldId);
 
     // Move record, if necessary.
