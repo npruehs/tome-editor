@@ -216,8 +216,9 @@ void MapWidget::removeItem()
     int row = selectedIndexes.first().row();
     QTableWidgetItem* keyTableWidgetItem = this->tableWidget->item(row, 0);
 
-    // Update model.
-    this->map.remove(keyTableWidgetItem->text());
+    QVariant actualKey = keyTableWidgetItem->data(Qt::UserRole);
+
+    this->map.remove(actualKey.toString());
 
     // Update view.
     this->tableWidget->removeRow(row);
