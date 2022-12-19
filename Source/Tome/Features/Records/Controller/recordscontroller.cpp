@@ -552,7 +552,7 @@ void RecordsController::removeRecord(const QVariant& recordId)
     }
 
     // Remove references to record.
-    this->updateRecordReferences(recordId, QString());
+    //this->updateRecordReferences(recordId, QString());
 
     // Remove record.
     for (RecordSetList::iterator itSets = this->model->begin();
