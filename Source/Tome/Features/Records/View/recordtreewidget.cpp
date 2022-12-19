@@ -174,6 +174,13 @@ void RecordTreeWidget::updateRecord(const QVariant& oldId,
     }
 }
 
+void RecordTreeWidget::updateRecordIcon(const QVariant &RecordId)
+{
+    RecordTreeWidgetItem* recordItem = this->getRecordItem(RecordId);
+
+    this->updateRecordItemRecursively(recordItem);
+}
+
 void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
 {
     if (recordTreeItem == nullptr)

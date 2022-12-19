@@ -86,6 +86,12 @@ namespace Tome
                               const QString& newEditorIconFieldId);
 
             /**
+             * @brief Updates the specified records display icon in the hiearchy.
+             * @param RecordId id of the record to update
+             */
+            void updateRecordIcon(const QVariant& RecordId);
+
+            /**
              * @brief Selects the specified record in the hierarchy.
              * @param id Id of the record to select.
              * @param addToHistory Whether to add the record to the navigation history, or not.

@@ -1832,6 +1832,8 @@ void MainWindow::refreshRecordTable()
         this->recordFieldTableWidget->setEnabled(true);
         this->recordFieldTableWidget->setToolTip(QString());
     }
+
+    recordTreeWidget->updateRecordIcon(id);
 }
 
 void MainWindow::showReadOnlyMessage(const QVariant& recordId)
