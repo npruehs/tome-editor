@@ -253,11 +253,17 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
     if (this->typesController.isTypeOrDerivedFromType(field.fieldType, BuiltInType::Reference))
     {
         QString href;
+        QString valueString = value.toString();
 
-        if (this->recordsController.hasRecord(value))
+        if (!valueString.isEmpty())
         {
-            const Record& record = this->recordsController.getRecord(value);
-            href = QString("<a href='%1'>%2</a>").arg(record.id.toString(), record.displayName);
+            if (this->recordsController.hasRecord(value))
+            {
+                const Record& record = this->recordsController.getRecord(value);
+                href = QString("<a href='%1'>%2</a>").arg(record.id.toString(), record.displayName);
+            }else{
+                href = QString("<i><font color='red'>INVALID REFERENCE</font></i>");
+            }
         }
 
         QModelIndex index = this->model()->index(i, 1);
