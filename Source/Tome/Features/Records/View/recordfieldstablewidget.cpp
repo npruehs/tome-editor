@@ -289,13 +289,15 @@ void RecordFieldsTableWidget::updateFieldValue(int i)
 
         fileName = combinePaths(projectPath, fileName);
 
+        QString fileNameLower = fileName.toLower();
+
         // Get preview.
         QPixmap preview;
 
         QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
         for (QByteArray& format : supportedImageFormats)
         {
-            if (fileName.endsWith(format))
+            if (fileNameLower.endsWith(format))
             {
                 preview.load(fileName);
 

@@ -219,13 +219,15 @@ void RecordTreeWidget::updateRecordItem(RecordTreeWidgetItem *recordTreeItem)
 
         iconFileName = combinePaths(projectPath, iconFileName);
 
+        QString iconFileNameLower = iconFileName.toLower();
+
         // Get preview.
         QPixmap iconPixmap;
 
         QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
         for (QByteArray& format : supportedImageFormats)
         {
-            if (iconFileName.endsWith(format))
+            if (iconFileNameLower.endsWith(format))
             {
                 iconPixmap.load(iconFileName);
 
