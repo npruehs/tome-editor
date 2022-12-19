@@ -52,12 +52,13 @@
       <xs:attribute name="IgnoreReadOnly" type="xs:boolean" />
       <xs:attribute name="RecordIdType" use="required">
         <xs:simpleType>
-          <xs:restriction base="xs:string">
-            <xs:enumeration value="String"/>
-            <xs:enumeration value="Integer"/>
-            <xs:enumeration value="Uuid"/>
-          </xs:restriction>
-        </xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="String"/>
+            <xs:enumeration value="Integer"/>
+            <xs:enumeration value="IncrementingInteger"/>
+            <xs:enumeration value="Uuid"/>
+          </xs:restriction>
+        </xs:simpleType>
       </xs:attribute>
     </xs:complexType>
   </xs:element>

@@ -425,6 +425,8 @@ namespace Tome
             void verifyRecordIntegerIds();
             void verifyRecordStringIds();
             void verifyRecordUuids();
+
+            int nextRecordId = -1;
     };
 }
 

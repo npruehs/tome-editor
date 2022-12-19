@@ -12,6 +12,7 @@ namespace Tome
             Invalid,
             String,
             Integer,
+            IncrementingInteger,
             Uuid
         };
 
@@ -30,6 +31,8 @@ namespace Tome
 
                 case RecordIdType::Uuid:
                     return "Uuid";
+                case RecordIdType::IncrementingInteger:
+                    return "IncrementingInteger";
             }
 
             return QString();
@@ -48,6 +51,8 @@ namespace Tome
             else if (recordIdType == "Uuid")
             {
                 return RecordIdType::Uuid;
+            }else if(recordIdType == "IncrementingInteger"){
+                return RecordIdType::IncrementingInteger;
             }
 
             return RecordIdType::Invalid;

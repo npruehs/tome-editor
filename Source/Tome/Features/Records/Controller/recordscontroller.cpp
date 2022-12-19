@@ -54,6 +54,16 @@ const Record RecordsController::addRecord(const QVariant& id,
     // Assign id.
     RecordIdType::RecordIdType recordIdType = this->projectController.getProjectRecordIdType();
 
+    if(recordIdType == RecordIdType::IncrementingInteger && nextRecordId < 0){
+        nextRecordId = 0;
+        foreach(Record record, getRecords()){
+            int recordIntId = record.id.toInt();
+            if(recordIntId > nextRecordId){
+                nextRecordId = recordIntId;
+            }
+        }
+    }
+
     switch (recordIdType)
     {
         case RecordIdType::String:
@@ -64,6 +74,9 @@ const Record RecordsController::addRecord(const QVariant& id,
             break;
         case RecordIdType::Uuid:
             record.id = id.isNull() ? this->generateUuid() : id;
+            break;
+        case RecordIdType::IncrementingInteger:
+            record.id = id.isNull() ? ++nextRecordId : id;
             break;
         case RecordIdType::Invalid:
             const QString errorMessage = "Invalid project record id type.";

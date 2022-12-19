@@ -138,6 +138,7 @@ void RecordWindow::setRecordIdType(const RecordIdType::RecordIdType recordIdType
     switch (recordIdType)
     {
         case RecordIdType::Integer:
+        case RecordIdType::IncrementingInteger:
         case RecordIdType::Uuid:
         case RecordIdType::Invalid:
             this->ui->labelIdLineEdit->hide();
